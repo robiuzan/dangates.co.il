@@ -1,0 +1,42 @@
+{
+  "_comment": "Normalized per-site manifest. SYNCED FROM THE HUB: 'Israeli services sites'/roster/sites/dangates.json. Edit there (the canonical roster) and sync here. Conforms to @ishub/site-kit SiteManifest.",
+  "domain": "dangates.co.il",
+  "url": "https://dangates.co.il",
+  "brandName": "דן שערים חשמליים",
+  "brandNameEn": "Dan Electric Gates",
+  "legalName": "דן שערים חשמליים",
+  "locale": "he-IL",
+  "dir": "rtl",
+  "foundedYear": null,
+  "tagline": "תיקון והתקנת שערים חשמליים מקצועית",
+  "shortPitch": "מתמחים בתיקון והתקנת שערים חשמליים בהתאמה אישית — שירות מהיר ואמין, אחריות מלאה וזמינות 24/7 לחירום, בפריסה ארצית.",
+  "contact": {
+    "phoneDisplay": "072-2587772",
+    "phoneE164": "+972722587772",
+    "whatsappE164": "+972722587772",
+    "email": "info@dangates.co.il",
+    "phoneOverride": true
+  },
+  "brand": {
+    "themeColor": "#B6070C",
+    "primary": "#B6070C",
+    "secondary": "#3D55AD",
+    "accent": "#ffd700",
+    "fontHeading": "Rubik",
+    "fontBody": "Rubik"
+  },
+  "schema": {
+    "type": "GeneralContractor",
+    "priceRange": "₪₪",
+    "areaServed": "מרכז הארץ ופריסה ארצית",
+    "openingHours": [
+      { "days": ["su", "mo", "tu", "we", "th"], "opens": "08:00", "closes": "18:00" },
+      { "days": ["fr"], "opens": "08:00", "closes": "15:00" }
+    ],
+    "sameAs": []
+  },
+  "analytics": {
+    "gtmId": "GTM-5K3WQN8W",
+    "googleSiteVerification": null
+  }
+}

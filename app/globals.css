@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+/*
+ * דן שערים חשמליים (Dan Electric Gates) design system (Tailwind v4). Fleet standard:
+ * Tailwind v4, tokens in `@theme` (see ../../Israeli services sites/docs/template-standard.md).
+ * Palette from the live dangates.co.il brand: deep red primary + navy secondary + gold accent.
+ * Accent CTAs use DARK text on gold (accent-foreground); accent-600+ are AA-safe on white.
+ * Every existing utility (bg-primary, text-accent-600, rounded-xl/2xl, font-heading, ...) keeps working.
+ */
+@theme {
+  /* Primary — deep brand red (#B6070C) */
+  --color-primary: #b6070c;
+  --color-primary-50: #fcebec;
+  --color-primary-100: #f8ccce;
+  --color-primary-200: #f0999c;
+  --color-primary-300: #e5595e;
+  --color-primary-400: #d21f27;
+  --color-primary-500: #c00d14;
+  --color-primary-600: #b6070c;
+  --color-primary-700: #97060a;
+  --color-primary-800: #7a0709;
+  --color-primary-900: #520406;
+  --color-primary-foreground: #ffffff;
+
+  /* Secondary — navy / royal blue (#3D55AD) */
+  --color-secondary: #3d55ad;
+  --color-secondary-50: #eef1fa;
+  --color-secondary-100: #d6ddf1;
+  --color-secondary-200: #b3c0e6;
+  --color-secondary-300: #8b9dda;
+  --color-secondary-400: #6478c6;
+  --color-secondary-500: #3d55ad;
+  --color-secondary-600: #33468f;
+  --color-secondary-700: #2b3a75;
+  --color-secondary-800: #232f5c;
+  --color-secondary-900: #172040;
+  --color-secondary-foreground: #ffffff;
+
+  /* Accent / CTA — gold (#ffd700). Base 400 = gold for backgrounds (with DARK text);
+     600+ are darkened amber that pass WCAG AA (>=4.5:1) as text on white. */
+  --color-accent-50: #fffdf0;
+  --color-accent-100: #fff8d1;
+  --color-accent-200: #ffef99;
+  --color-accent-300: #ffe45c;
+  --color-accent-400: #ffd700;
+  --color-accent: #ffd700;
+  --color-accent-500: #d9b400;
+  --color-accent-600: #8a6d00;
+  --color-accent-700: #6e5700;
+  --color-accent-800: #574500;
+  --color-accent-900: #3d3000;
+  /* Dark text for on-gold surfaces (buttons, badges) — high contrast on gold. */
+  --color-accent-foreground: #3d2b00;
+
+  /* Border radius — reproduce the v3 overrides (rounded-lg stays v4 default 0.5rem). */
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.25rem;
+
+  /* Typography — Rubik (brand font, via next/font CSS var in app/layout.tsx). */
+  --font-sans: var(--font-rubik), system-ui, Arial, sans-serif;
+  --font-heading: var(--font-rubik), system-ui, sans-serif;
+}
+
+/*
+ * Tailwind v4 compatibility: v4 defaults border-color to currentColor; v3 defaulted to
+ * gray-200. Preserve the v3 look for any bare `border` utilities.
+ */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    font-family: var(--font-rubik), system-ui, Arial, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-rubik), system-ui, sans-serif;
+  }
+
+  /* Respect reduced-motion preference globally (WCAG). */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Isolate latin/LTR snippets (phone, email, URLs) inside RTL Hebrew text. */
+  .ltr {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+}

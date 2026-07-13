@@ -1,0 +1,7 @@
+# dangates.co.il — static export (Next.js). Deploy target is GitHub Pages (this Apache
+# file is inert there); kept for portability to any Apache/cPanel host.
+# Cloudflare manages HTTPS/redirects at the edge (see REDIRECTS.md).
+
+Options -Indexes
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
