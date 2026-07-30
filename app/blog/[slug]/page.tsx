@@ -17,6 +17,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const post = getPost(params.slug);
   if (!post) return {};
   return {
+    alternates: { canonical: `/blog/${post.slug}/` },
     title: post.title,
     description: post.excerpt,
     openGraph: { type: "article", title: post.title, description: post.excerpt },

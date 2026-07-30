@@ -4,6 +4,7 @@ import { ServicesGrid } from "@/components/marketing/ServicesGrid";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/שירותים/" },
   title: "השירותים שלנו",
   description:
     "שירותי תיקון והתקנת שערים חשמליים: שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה, שער זרוע, תריסי גלילה חשמליים ושערים לדירה — עם אחריות מלאה ושירות מהיר.",

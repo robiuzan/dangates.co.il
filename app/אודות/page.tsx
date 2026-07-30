@@ -8,6 +8,7 @@ import { TrustBar } from "@/components/marketing/TrustBar";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/אודות/" },
   title: "אודות דן שערים חשמליים",
   description:
     "דן שערים חשמליים — מומחים בתיקון והתקנת שערים חשמליים עם ניסיון רב שנים. שירות מהיר ואמין, אחריות מלאה, צוות מומחים וזמינות 24/7 לקריאות חירום.",

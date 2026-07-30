@@ -23,6 +23,7 @@ export function generateMetadata({ params }: { params: { city: string } }): Meta
   const loc = findLocation(params.city);
   if (!loc) return {};
   return {
+    alternates: { canonical: `/locations/${loc.slug}/` },
     title: `תיקון והתקנת שערים חשמליים ב${loc.name} | ${siteConfig.name}`,
     description: `תיקון והתקנת שערים חשמליים ב${loc.name} — שירות מהיר ואמין, אחריות מלאה וזמינות 24/7 לקריאות חירום. לכל סוגי השערים: נגררים, כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`,
   };

@@ -4,6 +4,7 @@ import { Section } from "@/components/ui/Section";
 import { PricingTeaser } from "@/components/marketing/PricingTeaser";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/מחירון/" },
   title: "מחירון תיקון והתקנת שערים חשמליים",
   description:
     "מחירון להתרשמות לתיקון והתקנת שערים חשמליים: ביקור טכנאי, תיקון מנוע, החלפת מסילה, תחזוקה והתקנת שער חדש. עלות ביקור טכנאי 150–350 ₪; המחיר הסופי לפי אבחון.",
