@@ -11,8 +11,13 @@ export type PostBlock = { type: "h" | "p" | "li"; text: string };
 export interface Post {
   slug: string;
   title: string;
-  /** ISO date (from the live post-sitemap lastmod). */
+  /** ISO publish date (from the live post-sitemap lastmod). Rendered on the post + index. */
   date: string;
+  /**
+   * ISO date the body was last revised, when that differs from `date`. Sitemap <lastmod>
+   * prefers it; set it instead of editing `date`, which is the displayed publish date.
+   */
+  updated?: string;
   excerpt: string;
   blocks: PostBlock[];
 }

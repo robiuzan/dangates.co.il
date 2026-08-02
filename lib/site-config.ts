@@ -56,15 +56,19 @@ export const siteConfig = {
  * Services (live-site services silo), flagship first.
  * `slug` = Hebrew route segment (`app/services/[service]`); `name` = Hebrew display name.
  * Marketing descriptions live with the page content (lib/content.ts), not here.
+ *
+ * `updated` = ISO date this service's copy (its serviceMeta entry in lib/content.ts) last
+ * changed. It becomes the page's sitemap <lastmod>, so bump it ONLY for real copy edits —
+ * never for styling, metadata or analytics work, or the signal stops meaning anything.
  */
 export const services = [
-  { slug: "שערים-נגררים", name: "שערים נגררים" },
-  { slug: "שערי-כנף", name: "שערי כנף" },
-  { slug: "שערים-מתרוממים", name: "שערים מתרוממים" },
-  { slug: "שערים-לחניה", name: "שערים לחניה" },
-  { slug: "שער-זרוע", name: "שער זרוע" },
-  { slug: "תריסי-גלילה-חשמליים", name: "תריסי גלילה חשמליים" },
-  { slug: "שערים-לדירה", name: "שערים לדירה" },
+  { slug: "שערים-נגררים", name: "שערים נגררים", updated: "2026-07-13" },
+  { slug: "שערי-כנף", name: "שערי כנף", updated: "2026-07-13" },
+  { slug: "שערים-מתרוממים", name: "שערים מתרוממים", updated: "2026-07-13" },
+  { slug: "שערים-לחניה", name: "שערים לחניה", updated: "2026-07-13" },
+  { slug: "שער-זרוע", name: "שער זרוע", updated: "2026-07-13" },
+  { slug: "תריסי-גלילה-חשמליים", name: "תריסי גלילה חשמליים", updated: "2026-07-13" },
+  { slug: "שערים-לדירה", name: "שערים לדירה", updated: "2026-07-13" },
 ] as const;
 
 export type ServiceSlug = (typeof services)[number]["slug"];
@@ -96,6 +100,15 @@ export const locations = [
 ] as const;
 
 export type LocationSlug = (typeof locations)[number]["slug"];
+
+/**
+ * ISO date the location copy last changed — the sitemap <lastmod> for all 18 city pages.
+ * One date, not eighteen: every city renders from the same template
+ * (`app/locations/[city]/page.tsx`) with only the name interpolated, so they always change
+ * together. Bump it when that template's copy changes; per-city dates would be false
+ * precision until a city gets bespoke copy.
+ */
+export const locationsUpdated = "2026-07-13";
 
 // ── Link helpers ───────────────────────────────────────────────────────────
 
