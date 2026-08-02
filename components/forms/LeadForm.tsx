@@ -82,14 +82,19 @@ export function LeadForm({ className }: { className?: string }) {
       });
       const result: { success?: boolean } = await res.json();
       if (!res.ok || !result.success) throw new Error("bad status");
-      setStatus("done");
-      // GTM conversion hook: fires only on a CONFIRMED send (the dev simulation above does not).
-      trackEvent("lead_submit", { form: "lead" });
     } catch {
       // Fall back to WhatsApp so the lead is never lost.
       setStatus("error");
       window.open(buildWhatsapp(form), "_blank", "noopener");
+      return;
     }
+
+    // Past this point the lead IS delivered. Success handling stays OUTSIDE the try so that
+    // nothing here can reach the catch above and report a delivered lead as a failure —
+    // analytics must never share a failure path with lead delivery.
+    setStatus("done");
+    // GTM conversion hook: fires only on a CONFIRMED send (the dev simulation above does not).
+    trackEvent("lead_submit", { form: "lead" });
   }
 
   if (status === "done") {
