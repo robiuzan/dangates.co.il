@@ -20,8 +20,14 @@ import { posts } from "@/lib/posts";
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteConfig.domain;
 
-  /** `path` → absolute URL with the trailing slash the static export serves. */
-  const url = (path: string) => `${base}/${path ? `${path}/` : ""}`;
+  /**
+   * `path` → absolute URL with the trailing slash the static export serves.
+   *
+   * `encodeURI` percent-escapes the Hebrew slugs. The sitemap protocol requires escaped
+   * URLs, and Cloudflare Pages only matches the escaped asset key — it 404s a path sent
+   * as raw UTF-8 bytes. Escaping also makes `loc` byte-identical to the page's canonical.
+   */
+  const url = (path: string) => encodeURI(`${base}/${path ? `${path}/` : ""}`);
 
   /** Top-level routes whose copy is hand-written in their own `page.tsx`. */
   const staticPages = [
