@@ -1,6 +1,11 @@
 {
   "_comment": "Single source for the claim and spam lexicons. Read by scripts/audit/claims-grep.mjs, scripts/audit/spam-grep.mjs and .claude/hooks/post-edit-lint.ps1 (the hook cannot carry Hebrew literals: PS 5.1 mis-decodes non-ASCII in -File scripts). Each claim maps a regex to the docs/business-facts.md row that would have to be confirmed before the phrase may ship as fact. status: unconfirmed = a live hit fails the audit; never = never permitted (content-standards.md section 6); gated = allowed only when the named guard is set.",
-  "copyFiles": ["lib/content.ts", "lib/posts.ts", "lib/site-config.ts", "content/**/*.ts"],
+  "copyFiles": [
+    "lib/content.ts",
+    "lib/posts.ts",
+    "lib/site-config.ts",
+    "content/**/*.ts"
+  ],
   "spam": ["onlyfans", "leaked", "casino", "porn", "allgatesrepair", "escort", "viagra"],
   "claims": [
     {

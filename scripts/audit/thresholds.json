@@ -1,0 +1,32 @@
+{
+  "_comment": "Acceptance thresholds for scripts/audit/*. Word floors mirror docs/content-standards.md section 1 and are measured inside <main> (site chrome excluded). doorwayMinUniqueTokens is the measurable half of the doorway test (section 2): the number of tokens a page must carry that its nearest sibling of the same type does not. Today locations score 3 and services 17 -- the floor is the target, not the baseline.",
+  "wordFloors": {
+    "home": 800,
+    "service": 450,
+    "location": 350,
+    "post": 900,
+    "guide": 900,
+    "services-index": 250,
+    "areas-index": 250,
+    "blog-index": 250,
+    "guides-index": 250,
+    "pricing": 400,
+    "about": 500,
+    "contact": 0,
+    "legal": 0,
+    "thanks": 0,
+    "other": 0
+  },
+  "doorwayMinUniqueTokens": 120,
+  "title": { "maxChars": 60, "brandToken": "דן שערים חשמליים" },
+  "description": { "minChars": 120, "maxChars": 160 },
+  "answerBlock": { "minWords": 40, "maxWords": 60 },
+  "perf": {
+    "maxOutBytes": 12000000,
+    "maxJsFileBytes": 1000000,
+    "maxJsTotalBytes": 1200000
+  },
+  "links": { "maxRelatedSlice": 4, "chromeShare": 0.9 },
+  "cta": { "chromeShare": 0.9 },
+  "sharedBlocks": { "minWords": 12, "minPages": 3 }
+}
