@@ -105,7 +105,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         crumbs={[
           { label: "בית", href: "/" },
           { label: "בלוג", href: "/blog" },
-          { label: post.title },
+          { label: post.title, href: `/blog/${post.slug}/` },
         ]}
       />
 

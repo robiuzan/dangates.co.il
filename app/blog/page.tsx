@@ -27,7 +27,10 @@ export default function BlogIndexPage() {
       <PageHeader
         title="הבלוג של דן שערים חשמליים"
         subtitle="טיפים מקצועיים וחדשות מהתחום — כל מה שכדאי לדעת על תיקון, תחזוקה ובטיחות של שערים חשמליים."
-        crumbs={[{ label: "בית", href: "/" }, { label: "בלוג" }]}
+        crumbs={[
+          { label: "בית", href: "/" },
+          { label: "בלוג", href: "/blog/" },
+        ]}
       />
 
       <Section tone="white">

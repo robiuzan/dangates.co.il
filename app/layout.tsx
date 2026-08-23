@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogImageMeta } from "@ishub/site-kit";
 import { Rubik } from "next/font/google";
 import { siteConfig, manifest } from "@/lib/site-config";
 import { Header } from "@/components/layout/Header";
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
   },
   description: siteConfig.tagline,
   openGraph: {
+    images: ogImageMeta(manifest.images),
     type: "website",
     locale: "he_IL",
     siteName: siteConfig.name,
@@ -43,6 +45,15 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="he" dir="rtl" className={rubik.variable}>
+      <head>
+        {manifest.images?.mediaHost && (
+          <link
+            rel="preconnect"
+            href={`https://${manifest.images.mediaHost}`}
+            crossOrigin=""
+          />
+        )}
+      </head>
       <body className="flex min-h-screen flex-col font-sans">
         {gtmNoScript && (
           <noscript>
@@ -55,7 +66,9 @@ export default function RootLayout({
             />
           </noscript>
         )}
-        {gtmHead && <script id="gtm-init" dangerouslySetInnerHTML={{ __html: gtmHead }} />}
+        {gtmHead && (
+          <script id="gtm-init" dangerouslySetInnerHTML={{ __html: gtmHead }} />
+        )}
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

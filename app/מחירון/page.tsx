@@ -16,7 +16,10 @@ export default function PricingPage() {
       <PageHeader
         title="מחירון תיקון והתקנת שערים חשמליים"
         subtitle="מחירים הוגנים ושקופים. הטווחים מובאים להתרשמות; המחיר הסופי נקבע לאחר אבחון בשטח — תמיד ברור מראש."
-        crumbs={[{ label: "בית", href: "/" }, { label: "מחירון" }]}
+        crumbs={[
+          { label: "בית", href: "/" },
+          { label: "מחירון", href: "/מחירון/" },
+        ]}
       />
       <PricingTeaser />
       <Section tone="muted">

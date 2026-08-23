@@ -22,7 +22,7 @@ export function Hero() {
           <p className="mb-3 text-sm font-semibold text-accent-300">
             ניסיון רב שנים · מרכז הארץ ופריסה ארצית · זמינות 24/7
           </p>
-          <h1 className="font-heading text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
+          <h1 className="font-heading text-3xl leading-tight font-extrabold sm:text-4xl lg:text-5xl">
             דן שערים חשמליים – תיקון והתקנה מקצועית
           </h1>
           <p className="mt-5 max-w-xl text-lg text-white/85">
@@ -48,7 +48,8 @@ export function Hero() {
               חייגו עכשיו: <span dir="ltr">{siteConfig.phone}</span>
             </Button>
             <Button
-              href={whatsappHref("היי, אני מעוניין/ת בהצעת מחיר לתיקון/התקנת שער חשמלי")} data-cta="hero-whatsapp"
+              href={whatsappHref("היי, אני מעוניין/ת בהצעת מחיר לתיקון/התקנת שער חשמלי")}
+              data-cta="hero-whatsapp"
               variant="whatsapp"
               size="lg"
             >

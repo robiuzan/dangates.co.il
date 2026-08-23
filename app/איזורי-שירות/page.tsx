@@ -19,7 +19,10 @@ export default function AreasPage() {
       <PageHeader
         title="אזורי שירות"
         subtitle="נותנים שירות במרכז הארץ ובפריסה ארצית — עם מענה מהיר וזמינות 24/7 לחירום. בחרו את העיר שלכם."
-        crumbs={[{ label: "בית", href: "/" }, { label: "אזורי שירות" }]}
+        crumbs={[
+          { label: "בית", href: "/" },
+          { label: "אזורי שירות", href: "/איזורי-שירות/" },
+        ]}
       />
 
       <Section tone="white">

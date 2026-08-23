@@ -10,6 +10,14 @@
 # next.js
 /.next/
 /out/
+# rollback copy kept by ops/deploy-site.ps1 — generated, never committed
+/out.prev/
+# stale hand-made backups (site.config.json.bak etc.) — the roster is the rollback source
+*.bak
+
+# agent-session audit trail (.claude/hooks/audit-logger.ps1) and personal overrides
+/logs/
+.claude/settings.local.json
 
 # production
 /build

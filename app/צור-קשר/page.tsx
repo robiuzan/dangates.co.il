@@ -18,7 +18,10 @@ export default function ContactPage() {
       <PageHeader
         title="צור קשר"
         subtitle="מענה מהיר, ייעוץ ראשוני והצעת מחיר ללא התחייבות."
-        crumbs={[{ label: "בית", href: "/" }, { label: "צור קשר" }]}
+        crumbs={[
+          { label: "בית", href: "/" },
+          { label: "צור קשר", href: "/צור-קשר/" },
+        ]}
       />
 
       <Section tone="white">
@@ -40,7 +43,9 @@ export default function ContactPage() {
                   <MessageCircle className="h-5 w-5" aria-hidden />
                 </span>
                 <a
-                  href={whatsappHref("היי, אני מעוניין/ת בהצעת מחיר לתיקון/התקנת שער חשמלי")}
+                  href={whatsappHref(
+                    "היי, אני מעוניין/ת בהצעת מחיר לתיקון/התקנת שער חשמלי",
+                  )}
                   className="font-medium hover:text-primary"
                 >
                   וואטסאפ

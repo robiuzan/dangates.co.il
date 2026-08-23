@@ -16,7 +16,10 @@ export default function ServicesPage() {
       <PageHeader
         title="השירותים שלנו"
         subtitle="פתרון לכל סוג שער חשמלי — מתיקון תקלות ומנועים ועד התקנת שער חדש, עם שירות מהיר ואחריות מלאה."
-        crumbs={[{ label: "בית", href: "/" }, { label: "השירותים שלנו" }]}
+        crumbs={[
+          { label: "בית", href: "/" },
+          { label: "השירותים שלנו", href: "/שירותים/" },
+        ]}
       />
       <ServicesGrid />
       <FinalCta />

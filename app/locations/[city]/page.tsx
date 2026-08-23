@@ -24,7 +24,10 @@ export function generateMetadata({ params }: { params: { city: string } }): Meta
   if (!loc) return {};
   return {
     alternates: { canonical: `/locations/${loc.slug}/` },
-    title: `תיקון והתקנת שערים חשמליים ב${loc.name} | ${siteConfig.name}`,
+    // Bare subject only — app/layout.tsx already appends "| דן שערים חשמליים" via the
+    // title template. Appending it here too is what shipped the doubled suffix on 25 pages.
+    // Shortened from "תיקון והתקנת…" so the rendered title stays under ~60 chars.
+    title: `תיקון שערים חשמליים ב${loc.name}`,
     description: `תיקון והתקנת שערים חשמליים ב${loc.name} — שירות מהיר ואמין, אחריות מלאה וזמינות 24/7 לקריאות חירום. לכל סוגי השערים: נגררים, כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`,
   };
 }
@@ -41,7 +44,7 @@ export default function LocationPage({ params }: { params: { city: string } }) {
         crumbs={[
           { label: "בית", href: "/" },
           { label: "אזורי שירות", href: "/איזורי-שירות" },
-          { label: loc.name },
+          { label: loc.name, href: `/locations/${loc.slug}/` },
         ]}
       />
 
@@ -53,9 +56,9 @@ export default function LocationPage({ params }: { params: { city: string } }) {
             גלילה — עם אבחון מדויק, ציוד מתקדם ותיקונים עמידים לאורך זמן.
           </p>
           <p className="mt-4 text-gray-700">
-            אנחנו נותנים שירות ללקוחות פרטיים, ועדי בתים ועסקים ב{loc.name} ובכל אזור
-            המרכז, עם מענה מהיר וזמינות 24/7 לקריאות חירום. השער תקוע, לא נסגר או שהמנוע לא
-            מגיב? התקשרו ונגיע לבדוק ולתקן.
+            אנחנו נותנים שירות ללקוחות פרטיים, ועדי בתים ועסקים ב{loc.name} והסביבה, עם
+            מענה מהיר וזמינות לקריאות חירום. השער תקוע, לא נסגר או שהמנוע לא מגיב? התקשרו
+            ונגיע לבדוק ולתקן.
           </p>
 
           <h2 className="mt-10 font-heading text-xl font-bold text-primary">

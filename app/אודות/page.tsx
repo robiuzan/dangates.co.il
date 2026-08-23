@@ -9,7 +9,8 @@ import { FinalCta } from "@/components/marketing/FinalCta";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/אודות/" },
-  title: "אודות דן שערים חשמליים",
+  // The layout title template appends the brand — writing it here too repeats it.
+  title: "אודות",
   description:
     "דן שערים חשמליים — מומחים בתיקון והתקנת שערים חשמליים עם ניסיון רב שנים. שירות מהיר ואמין, אחריות מלאה, צוות מומחים וזמינות 24/7 לקריאות חירום.",
 };
@@ -20,16 +21,19 @@ export default function AboutPage() {
       <PageHeader
         title="אודות דן שערים חשמליים"
         subtitle="מומחים בתיקון והתקנת שערים חשמליים — פתרון מותאם אישית לכל שער, עם דגש על איכות, מקצועיות ובטיחות."
-        crumbs={[{ label: "בית", href: "/" }, { label: "אודות" }]}
+        crumbs={[
+          { label: "בית", href: "/" },
+          { label: "אודות", href: "/אודות/" },
+        ]}
       />
 
       <Section tone="white">
         <div className="mx-auto max-w-3xl">
           <p className="text-lg leading-relaxed text-gray-700">
-            ברוכים הבאים ל{siteConfig.name} — מתמחים בתיקון והתקנת שערים חשמליים. עם ניסיון
-            רב שנים בתחום, אנו מספקים שירות ברמה הגבוהה ביותר, תוך הקפדה על איכות, מקצועיות
-            ובטיחות. המטרה שלנו היא להבטיח שהשערים החשמליים שלכם יתפקדו בצורה מושלמת וישרתו
-            אתכם נאמנה לאורך זמן.
+            ברוכים הבאים ל{siteConfig.name} — מתמחים בתיקון והתקנת שערים חשמליים. עם
+            ניסיון רב שנים בתחום, אנו מספקים שירות ברמה הגבוהה ביותר, תוך הקפדה על איכות,
+            מקצועיות ובטיחות. המטרה שלנו היא להבטיח שהשערים החשמליים שלכם יתפקדו בצורה
+            מושלמת וישרתו אתכם נאמנה לאורך זמן.
           </p>
 
           {aboutSections.map((sec) => (
@@ -41,7 +45,9 @@ export default function AboutPage() {
             </div>
           ))}
 
-          <h2 className="mt-10 font-heading text-xl font-bold text-primary">הערכים שלנו</h2>
+          <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+            הערכים שלנו
+          </h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {aboutValues.map((v) => (
               <li key={v.title} className="flex items-start gap-2 text-gray-700">

@@ -33,7 +33,9 @@ export function generateMetadata({ params }: { params: { service: string } }): M
   if (!card) return {};
   return {
     alternates: { canonical: `/services/${card.slug}/` },
-    title: `${card.name} | ${siteConfig.name}`,
+    // Bare subject only — app/layout.tsx already appends "| דן שערים חשמליים" via the
+    // title template. Appending it here too is what shipped the doubled suffix on 25 pages.
+    title: card.name,
     description: card.description,
   };
 }
@@ -68,7 +70,7 @@ export default function ServicePage({ params }: { params: { service: string } })
         crumbs={[
           { label: "בית", href: "/" },
           { label: "השירותים שלנו", href: "/שירותים" },
-          { label: card.name },
+          { label: card.name, href: `/services/${card.slug}/` },
         ]}
       />
 
