@@ -1,0 +1,168 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(npm run lint)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run dev)",
+      "Bash(npm run format)",
+      "Bash(npm run format:check)",
+      "Bash(npm run audit:*)",
+      "Bash(npm run audit)",
+      "Bash(npm run gate)",
+      "Bash(npm audit:*)",
+      "Bash(node scripts/gen-redirects.mjs)",
+      "Bash(node scripts/audit/:*)",
+      "Bash(node -e:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(curl -s:*)",
+      "Bash(curl -sS:*)",
+      "Bash(curl -sSI:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git ls-files:*)",
+      "Edit(.claude/**)",
+      "Write(.claude/**)",
+      "Edit(docs/**)",
+      "Write(docs/**)",
+      "Edit(scripts/audit/**)",
+      "Write(scripts/audit/**)",
+      "WebSearch",
+      "WebFetch(domain:dangates.co.il)",
+      "WebFetch(domain:www.dangates.co.il)",
+      "WebFetch(domain:galbath.co.il)",
+      "WebFetch(domain:sii.org.il)",
+      "WebFetch(domain:www.gov.il)",
+      "WebFetch(domain:www.googletagmanager.com)",
+      "Skill(dangates-architecture)",
+      "Skill(seo-metadata)",
+      "Skill(schema-structured-data)",
+      "Skill(local-seo-il)",
+      "Skill(aeo-answer-content)",
+      "Skill(hebrew-rtl)",
+      "Skill(internal-linking)",
+      "Skill(conversion-cro)",
+      "Skill(tracking-analytics)",
+      "Skill(performance-web-vitals)",
+      "Skill(responsive-accessibility)",
+      "Skill(web-security-headers)",
+      "Skill(new-city)",
+      "Skill(new-service)",
+      "Skill(new-article)",
+      "Skill(qa-build-gate)",
+      "Skill(deploy-dangates)",
+      "Skill(audit)",
+      "Skill(improve)",
+      "Skill(keyword-research)",
+      "Skill(content-hub)",
+      "Skill(new-guide)",
+      "Skill(eeat-build)",
+      "Skill(engagement-ux)",
+      "Skill(site-images)"
+    ],
+    "deny": [
+      "Edit(site.config.json)",
+      "Write(site.config.json)",
+      "Edit(out/**)",
+      "Write(out/**)",
+      "Edit(out.prev/**)",
+      "Write(out.prev/**)",
+      "Edit(vendor/**)",
+      "Write(vendor/**)",
+      "Edit(node_modules/**)",
+      "Write(node_modules/**)",
+      "Edit(.next/**)",
+      "Write(.next/**)",
+      "Edit(public/**/index.html)",
+      "Write(public/**/index.html)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-context.ps1\"",
+            "statusMessage": "Loading backlog and audit context",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-protected-paths.ps1\"",
+            "statusMessage": "Checking protected paths",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/secret-scan.ps1\"",
+            "statusMessage": "Scanning for secrets",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-destructive-ops.ps1\"",
+            "statusMessage": "Checking for destructive or production operations",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-lint.ps1\"",
+            "statusMessage": "Linting the edit (RTL utilities, hex, spam, claims)",
+            "timeout": 20
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell|Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/audit-logger.ps1\"",
+            "async": true,
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/format-changed.ps1\"",
+            "statusMessage": "Formatting changed files with Prettier",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}

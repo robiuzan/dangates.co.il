@@ -1,0 +1,105 @@
+{
+  "_comment": "Single source for the claim and spam lexicons. Read by scripts/audit/claims-grep.mjs, scripts/audit/spam-grep.mjs and .claude/hooks/post-edit-lint.ps1 (the hook cannot carry Hebrew literals: PS 5.1 mis-decodes non-ASCII in -File scripts). Each claim maps a regex to the docs/business-facts.md row that would have to be confirmed before the phrase may ship as fact. status: unconfirmed = a live hit fails the audit; never = never permitted (content-standards.md section 6); gated = allowed only when the named guard is set.",
+  "copyFiles": ["lib/content.ts", "lib/posts.ts", "lib/site-config.ts", "content/**/*.ts"],
+  "spam": ["onlyfans", "leaked", "casino", "porn", "allgatesrepair", "escort", "viagra"],
+  "claims": [
+    {
+      "id": "licence",
+      "pattern": "רישיון|רשיון|מורשה|מוסמך|מוסמכים|חשמלאי מוסמך|חשמלאים מוסמכים",
+      "section": "C",
+      "row": "Electrician licence / grade",
+      "status": "unconfirmed",
+      "note": "No licence or grade has been supplied; the 2026-08-17 owner intake says it is not coming."
+    },
+    {
+      "id": "insurance",
+      "pattern": "ביטוח|מבוטח|מבוטחים",
+      "section": "C",
+      "row": "Insurance (ביטוח צד ג׳)",
+      "status": "unconfirmed"
+    },
+    {
+      "id": "certification",
+      "pattern": "תעודת הסמכה|הסמכה|מוסמך על ידי|הכשרה של היצרן",
+      "section": "C",
+      "row": "Manufacturer training / brands",
+      "status": "unconfirmed"
+    },
+    {
+      "id": "experience",
+      "pattern": "שנות ניסיון|ניסיון רב|ניסיון של \\d+|מעל \\d+ שנ|למעלה מ-?\\d+ שנ|עשרות שנים",
+      "section": "B",
+      "row": "Owner's years in the trade / Year founded",
+      "status": "unconfirmed",
+      "note": "foundedYear is null in the manifest. Replace duration claims with mechanism depth."
+    },
+    {
+      "id": "founded",
+      "pattern": "נוסדה? ב|מאז \\d{4}|משנת \\d{4}|הוקמה? ב",
+      "section": "B",
+      "row": "Year founded",
+      "status": "unconfirmed"
+    },
+    {
+      "id": "warranty-full",
+      "pattern": "אחריות מלאה",
+      "section": "D",
+      "row": "Warranty duration / Warranty scope + exclusions",
+      "status": "unconfirmed",
+      "note": "No term, scope or exclusions exist. Say 'אחריות על העבודה' instead."
+    },
+    {
+      "id": "warranty-term",
+      "pattern": "אחריות (של|ל-?|למשך )\\s*\\d+\\s*(שנ|חודש)",
+      "section": "D",
+      "row": "Warranty duration",
+      "status": "unconfirmed"
+    },
+    {
+      "id": "national-coverage",
+      "pattern": "פריסה ארצית|בכל הארץ|בכל רחבי הארץ|מכל רחבי הארץ",
+      "section": "E",
+      "row": "Is \"פריסה ארצית\" true?",
+      "status": "unconfirmed",
+      "note": "The manifest areaServed carries the phrase; locations span קריות to באר שבע only."
+    },
+    {
+      "id": "around-the-clock",
+      "pattern": "24/7|24\\s*שעות ביממה|מסביב לשעון|בכל שעות היממה",
+      "section": "E",
+      "row": "Is 24/7 emergency service real, and where?",
+      "status": "unconfirmed"
+    },
+    {
+      "id": "response-time",
+      "pattern": "תוך \\d+ דקות|תוך שעה|באותו היום|הגעה מיידית|תוך \\d+ שעות",
+      "section": "E",
+      "row": "Real response-time capability per area",
+      "status": "unconfirmed"
+    },
+    {
+      "id": "rating",
+      "pattern": "דירוג \\d|\\d(\\.\\d)? כוכבים|\\d+ ביקורות|\\d+ לקוחות מרוצים|5\\.0",
+      "section": "A",
+      "row": "Real review texts / REVIEW_SOURCE_URL",
+      "status": "gated",
+      "guard": "REVIEW_SOURCE_URL",
+      "note": "Allowed only when lib/content.ts REVIEW_SOURCE_URL is set and reviews are verbatim."
+    },
+    {
+      "id": "superlative",
+      "pattern": "המובילים|המובילה בישראל|הטובים ביותר|הטובה ביותר|מספר 1|מס׳ 1|הכי טוב",
+      "section": "content-standards §6",
+      "row": "Superlatives",
+      "status": "never"
+    },
+    {
+      "id": "named-person",
+      "pattern": "הבעלים [א-ת]+ [א-ת]+|המייסד [א-ת]+|הטכנאי שלנו [א-ת]+",
+      "section": "B",
+      "row": "Owner / founder name",
+      "status": "unconfirmed",
+      "note": "No person may be named until business-facts §B carries the name and permission."
+    }
+  ]
+}
