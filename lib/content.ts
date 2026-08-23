@@ -211,75 +211,49 @@ export const faqs = [
 ] as const;
 
 /**
- * Customer reviews. The business shows a Google rating of 5.0 based on 10 reviews (live-site
- * audit); the individual review text was not retrievable, so the copy below is a faithful
- * reconstruction attributed to the 10 real reviewer names (all 5★). AggregateRating = 5.0/10.
+ * Customer reviews — EMPTY BY DESIGN.
+ *
+ * This array previously held ten five-star testimonials whose TEXT was authored (the old
+ * comment called it "a faithful reconstruction") and attributed to ten REAL named reviewers,
+ * shipped as Review + AggregateRating JSON-LD with no public profile to verify them against.
+ * Invented words in a named real person's mouth is a Google structured-data policy violation
+ * and a consumer-protection exposure. Removed 2026-08-17.
+ *
+ * TO RESTORE, all three are required — the code enforces it:
+ *   1. Paste the REAL review text, quoted verbatim from a public profile.
+ *   2. Set REVIEW_SOURCE_URL to that profile.
+ *   3. Add the profile to schema.sameAs in the ROSTER manifest, then sync.
+ *
+ * Reviews render and emit schema ONLY when the array and the source URL are both populated
+ * (components/marketing/Reviews.tsx returns null otherwise). NEVER author review text.
+ * See docs/business-facts.md §A.
  */
-export const reviews = [
-  {
-    name: "דניאל חזן",
-    role: "תל אביב",
-    rating: 5,
-    text: "השער החשמלי בכניסה לבית הפסיק לעבוד, והטכנאי הגיע כבר באותו היום. אבחון מהיר, תיקון מקצועי והשער חזר לעבוד מצוין. מומלץ בחום.",
-  },
-  {
-    name: "הילה פרץ",
-    role: "השרון",
-    rating: 5,
-    text: "התקינו לנו שער כנף חדש בכניסה לחצר. עבודה נקייה, יחס אדיב והסבר מלא על התחזוקה. מרוצה מאוד.",
-  },
-  {
-    name: "אורן לוי",
-    role: "פתח תקווה",
-    rating: 5,
-    text: "קראתי להם לתיקון מנוע של שער נגרר בעסק. הגיעו בזמן, המחיר היה הוגן ושקוף והשירות מהיר ואמין.",
-  },
-  {
-    name: "שיר בן-דוד",
-    role: "ראשון לציון",
-    rating: 5,
-    text: "שירות מעולה מתחילת השיחה ועד סיום העבודה. הטכנאי מקצועי וסבלני, והשאיר את השער עובד כמו חדש.",
-  },
-  {
-    name: "טליה אדרי",
-    role: "חולון",
-    rating: 5,
-    text: "התריס החשמלי נתקע באמצע, וקיבלתי מענה מהיר גם בשעה מאוחרת. תוקן במקום. ממליצה.",
-  },
-  {
-    name: "דורון שחר",
-    role: "נתניה",
-    rating: 5,
-    text: "התקנת שער חניה לבניין מגורים — תיאום נוח, ביצוע מהיר וצוות אחראי. הכול עבד חלק.",
-  },
-  {
-    name: "ליאור כהן",
-    role: "חיפה",
-    rating: 5,
-    text: "השער המתרומם בחניה השמיע רעשים ולא נסגר עד הסוף. הגיעו, איתרו את התקלה ותיקנו באותו ביקור. מקצועיים.",
-  },
-  {
-    name: "מיכל רוזן",
-    role: "כפר סבא",
-    rating: 5,
-    text: "יחס אישי ומחירים הוגנים. הסבירו לי בדיוק מה צריך לתקן בלי למכור לי דברים מיותרים. תודה!",
-  },
-  {
-    name: "רן לביא",
-    role: "מודיעין",
-    rating: 5,
-    text: "שער הזרוע בכניסה לחניה שלנו תוקן במהירות ובאמינות. אחריות מלאה ושירות אדיב. בהחלט אחזור אליהם.",
-  },
-  {
-    name: "עדי ברק",
-    role: "ירושלים",
-    rating: 5,
-    text: "צוות מקצועי וזמין. תיקנו את השער החשמלי אצלנו בבית ונתנו טיפים לתחזוקה שוטפת. שירות ברמה גבוהה.",
-  },
-] as const;
+export interface Review {
+  /** Reviewer name, exactly as it appears on the public profile. */
+  name: string;
+  /** City or context shown under the name. */
+  role: string;
+  /** 1–5, as given on the profile. Never rounded up. */
+  rating: number;
+  /** Verbatim review text. Never paraphrased, never authored. */
+  text: string;
+}
+
+export const reviews: readonly Review[] = [];
+
+/**
+ * Public URL the reviews above are quoted from (the Google Business Profile).
+ * `null` means nothing may be rendered or marked up — this is the gate, not a formality.
+ */
+export const REVIEW_SOURCE_URL: string | null = null;
 
 export const REVIEW_COUNT = reviews.length;
-export const REVIEW_AVG = "5.0";
+
+/** Derived from the ratings above — never hand-set. `null` when there are no reviews. */
+export const REVIEW_AVG: string | null =
+  REVIEW_COUNT > 0
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / REVIEW_COUNT).toFixed(1)
+    : null;
 
 /** About-page core values (live-site audit "למה לבחור בנו?" / values, 6 items). */
 export const aboutValues = [
