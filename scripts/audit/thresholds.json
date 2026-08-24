@@ -1,5 +1,5 @@
 {
-  "_comment": "Acceptance thresholds for scripts/audit/*. Word floors mirror docs/content-standards.md section 1 and are measured inside <main> (site chrome excluded). doorwayMinUniqueTokens is the measurable half of the doorway test (section 2): the number of tokens a page must carry that its nearest sibling of the same type does not. Today locations score 3 and services 17 -- the floor is the target, not the baseline.",
+  "_comment": "Acceptance thresholds for scripts/audit/*. Word floors mirror docs/content-standards.md section 1 and are measured inside <main> (site chrome excluded). doorwayMinUniqueTokens is the measurable half of the doorway test (section 2): the number of tokens a page must carry that its nearest sibling of the same type does not. Measured 2026-08-23: locations score 2 (3 for two-word city names) and services 13-23 -- the floor is the target, not the baseline.",
   "wordFloors": {
     "home": 800,
     "service": 450,

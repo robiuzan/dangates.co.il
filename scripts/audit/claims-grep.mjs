@@ -102,15 +102,13 @@ export function run() {
           for (const m of line.matchAll(c.re)) {
             if (isComment) commentHits.set(c.id, commentHits.get(c.id) + 1);
             else
-              hits
-                .get(c.id)
-                .push({
-                  rel: f.rel,
-                  line: i + 1,
-                  text: m[0],
-                  ack: ACKNOWLEDGED.test(line),
-                  snippet: clip(line),
-                });
+              hits.get(c.id).push({
+                rel: f.rel,
+                line: i + 1,
+                text: m[0],
+                ack: ACKNOWLEDGED.test(line),
+                snippet: clip(line),
+              });
           }
         }
       });
