@@ -7,7 +7,7 @@
  *     from-path is still shadowed by a stub directory under public/
  *   - public/_headers present with HSTS, nosniff, Referrer-Policy, framing and Permissions-Policy
  *   - no .github/workflows/deploy.yml, public/CNAME, public/.htaccess; no foreign-market stub dirs
- *   - public/llms.txt present; out/robots.txt quoted (Cloudflare's managed robots.txt overrides it)
+ *   - public/llms.txt present; out/robots.txt quoted (what this file says is not what the edge does)
  *   - .env.example ↔ process.env usage drift; stale cPanel comment in next.config.mjs
  *   - out/ carries no source maps and no dev-only React/Next chunks
  *
@@ -204,7 +204,7 @@ export function run() {
   else {
     const lines = readFileSync(robotsFile, "utf8").split(/\r?\n/);
     r.note(
-      `out/robots.txt (first ${Math.min(10, lines.length)} of ${lines.length} lines) — Cloudflare's managed robots.txt overrides it at the edge and currently blocks every major AI crawler`,
+      `out/robots.txt (first ${Math.min(10, lines.length)} of ${lines.length} lines) — this file is served as written (the managed robots.txt is off as of 2026-08-23), but the edge answers 403 to AI-crawler user agents regardless of what it says; verify with the curl probe in docs/cloudflare-runbook.md step 1`,
       lines.slice(0, 10).join("\n"),
       "backlog §6.1",
     );
