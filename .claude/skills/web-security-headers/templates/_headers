@@ -1,0 +1,46 @@
+# Cloudflare Pages response headers for dangates.co.il — copy to public/_headers (Phase 1, ADR 0004,
+# backlog §12.1). Next copies public/ verbatim into out/, and wrangler's direct upload ships it.
+#
+# Next's headers() is unavailable under `output: "export"`, so this file is where response headers
+# come from. Cloudflare Pages MERGES these with its project defaults (it already sends
+# x-content-type-options and referrer-policy) and with any zone Transform Rule — it does not
+# replace them. Until the owner deletes the zone rule (docs/owner-actions.md §1.3,
+# docs/cloudflare-runbook.md step 4) the same header may be emitted twice; harmless.
+#
+# Verify after every deploy against the live response, never against this file:
+#   curl -sSI https://dangates.co.il/       | grep -iE 'strict-transport|content-security|x-frame|permissions|referrer|content-type-options'
+#   curl -sSI https://dangates.pages.dev/   | grep -iE 'strict-transport|x-frame|permissions'
+# The second line has no zone rules in front of it — if the headers show there, the repo is the source.
+
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+
+# HSTS notes. The zone serves max-age=15552000 (180 d) today; a year is the normal next step.
+# `preload` is deliberately ABSENT: it commits dangates.co.il and every subdomain to HTTPS effectively
+# permanently (removal from the browser preload list takes months). `includeSubDomains` is also
+# absent: apex and www are both proxied and HTTPS, but nobody has confirmed there is no other
+# subdomain — add it only once the owner has (docs/cloudflare-runbook.md step 4, item 3).
+#
+# X-Frame-Options SAMEORIGIN rather than DENY leaves room for a future embed of the site's own pages.
+# Access-Control-Allow-Origin: * is a Pages default on a static site with no credentials — left alone.
+
+# Report-only, so it can never break the site. GTM is injected via dangerouslySetInnerHTML
+# (app/layout.tsx:69-70) and a static export cannot mint a per-request nonce, hence 'unsafe-inline'
+# for scripts. Rubik is self-hosted by next/font (font-src 'self'); imgquarry.com is the media host
+# in the manifest (OG card, future photos); api.web3forms.com is the lead-form POST — it must be in
+# connect-src AND form-action. Without a report-uri/report-to endpoint, violations surface only in
+# the browser console: watch it for a week of real traffic — including one real form submission,
+# one tracked call click and one legacy-URL hit — before tightening this and switching to the
+# enforcing header. Do NOT enforce while the 37 meta-refresh stubs exist: each carries an inline
+# <script>location.replace(...)</script> (scripts/gen-redirects.mjs) — the _redirects cutover
+# removes them first.
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://api.web3forms.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://imgquarry.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'self' https://api.web3forms.com; object-src 'none'
+
+# Hashed build assets are immutable — safe to cache hard. HTML keeps the Pages default
+# (public, max-age=0, must-revalidate), which is what makes a deploy visible immediately.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable

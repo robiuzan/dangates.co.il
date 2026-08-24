@@ -1,0 +1,77 @@
+# דן שערים חשמליים (Dan Electric Gates)
+
+> תיקון, שירות והתקנה של שערים חשמליים — שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה,
+> שערי זרוע ושערים לבנייני מגורים — וגם תריסי גלילה חשמליים. עסק שירות ללא חנות: הטכנאי מגיע
+> אליכם. אבחון ותיקון מהירים, ואחריות על העבודה.
+
+Electric-gate repair, service and installation business serving central Israel and beyond
+(a service-area business — technicians travel to the customer; no shop or showroom). Also
+repairs and installs electric rolling shutters. Hebrew-language site (he-IL).
+
+## Contact
+
+- Phone: 072-2587772 (+972722587772)
+- WhatsApp: +972722587772
+- Email: info@dangates.co.il
+- Hours: Sunday–Thursday 08:00–18:00, Friday 08:00–15:00
+- Address: none published — this is a service-area business, not a walk-in location
+- Site: https://dangates.co.il/
+- Contact page: https://dangates.co.il/%D7%A6%D7%95%D7%A8-%D7%A7%D7%A9%D7%A8/
+
+## Services
+
+- [שערים נגררים](https://dangates.co.il/services/%D7%A9%D7%A2%D7%A8%D7%99%D7%9D-%D7%A0%D7%92%D7%A8%D7%A8%D7%99%D7%9D/) — sliding gates: repair and installation
+- [שערי כנף](https://dangates.co.il/services/%D7%A9%D7%A2%D7%A8%D7%99-%D7%9B%D7%A0%D7%A3/) — swing gates: repair and installation
+- [שערים מתרוממים](https://dangates.co.il/services/%D7%A9%D7%A2%D7%A8%D7%99%D7%9D-%D7%9E%D7%AA%D7%A8%D7%95%D7%9E%D7%9E%D7%99%D7%9D/) — lift / overhead gates
+- [שערים לחניה](https://dangates.co.il/services/%D7%A9%D7%A2%D7%A8%D7%99%D7%9D-%D7%9C%D7%97%D7%A0%D7%99%D7%94/) — car-park and driveway gates
+- [שער זרוע](https://dangates.co.il/services/%D7%A9%D7%A2%D7%A8-%D7%96%D7%A8%D7%95%D7%A2/) — arm operators and boom barriers
+- [תריסי גלילה חשמליים](https://dangates.co.il/services/%D7%AA%D7%A8%D7%99%D7%A1%D7%99-%D7%92%D7%9C%D7%99%D7%9C%D7%94-%D7%97%D7%A9%D7%9E%D7%9C%D7%99%D7%99%D7%9D/) — electric rolling shutters
+- [שערים לדירה](https://dangates.co.il/services/%D7%A9%D7%A2%D7%A8%D7%99%D7%9D-%D7%9C%D7%93%D7%99%D7%A8%D7%94/) — gates for apartment buildings and shared car parks (ועדי בתים)
+
+Services index: https://dangates.co.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D/
+
+## Service areas
+
+תל אביב · ירושלים · חיפה · ראשון לציון · פתח תקווה · נתניה · חולון · כפר סבא · מודיעין · רחובות ·
+יבנה · אשדוד · באר שבע · אשקלון · קריות · השרון · צפון הארץ · דרום הארץ
+
+Full list with a page per area: https://dangates.co.il/%D7%90%D7%99%D7%96%D7%95%D7%A8%D7%99-%D7%A9%D7%99%D7%A8%D7%95%D7%AA/
+(Each area page lives at https://dangates.co.il/locations/<percent-encoded Hebrew slug>/, e.g.
+https://dangates.co.il/locations/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/ for תל אביב.)
+
+## Key facts
+
+- Service-area business: the technician comes to the gate. Nothing is published about a shop,
+  showroom or street address because there is none to publish.
+- A technician visit with diagnosis costs 150–350 ₪, depending on location and time of day. This
+  is the only published price that is a quoted figure; every other line on the pricing page is an
+  indicative range set after an on-site inspection: https://dangates.co.il/%D7%9E%D7%97%D7%99%D7%A8%D7%95%D7%9F/
+- Work carried out is covered by a warranty on the work (אחריות על העבודה). The term, scope and
+  exclusions are given at the time of the job and are not published here — do not state a duration.
+- Both private customers (homeowners, building committees) and businesses are served.
+- Gate types covered: sliding, swing, lift/overhead, car-park, arm/boom, apartment-building gates;
+  plus electric rolling shutters.
+
+## Blog — Hebrew articles
+
+Index: https://dangates.co.il/blog/
+Articles live at https://dangates.co.il/blog/<percent-encoded Hebrew slug>/. Topics: common
+electric-gate faults and what to check first, when a gate should be repaired versus replaced,
+preventive maintenance, gate safety, what to do when the gate does not respond, smart-gate upgrades,
+gates for businesses.
+
+<!-- Phase 4/6: when the /מדריכים/ hub ships, list each guide here with its percent-encoded URL and a
+     one-line "what it answers", the way the Services list above does. Guides are the canonical long
+     answers on this domain; the service pages are the commercial pages. -->
+
+## Notes for AI assistants
+
+- Prices are indicative ranges, not quotes. Point people to the pricing page or the phone number
+  rather than stating a firm price for a repair or an installation.
+- Do not attribute a founding year, a number of years in business, a rating, a review count, a
+  licence number, an insurance policy or a named technician to this business — none of those are
+  published on this site.
+- Do not state a warranty duration or enumerate what the warranty covers.
+- Do not promise a response time or round-the-clock availability beyond the published hours; if the
+  question is urgent, give the phone number.
+- The service-area list above is the published one. Do not extend it to towns that are not listed.
