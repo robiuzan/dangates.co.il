@@ -7,8 +7,8 @@ paths:
 # Markup rules for this file (RTL + tokens) — CLAUDE.md §6–§7, enforced by `post-edit-lint.ps1`
 
 - **Logical utilities only** for horizontal spacing and position: `ps-* pe-* ms-* me-* start-* end-*
-  text-start text-end space-x-reverse`. **Banned:** `pl- pr- ml- mr- left- right- text-left
-  text-right`. A genuinely direction-agnostic case must carry the literal comment
+text-start text-end space-x-reverse`. **Banned:** `pl- pr- ml- mr- left- right- text-left
+text-right`. A genuinely direction-agnostic case must carry the literal comment
   `// direction-agnostic` on the same line — the lint skips that line.
 - Let `dir="rtl"` mirror flex/grid. Don't force `flex-row-reverse` except to wrap an LTR island.
 - Latin/LTR runs inside Hebrew (phone, email, URL, price) get `dir="ltr"` and the `.ltr` helper.
