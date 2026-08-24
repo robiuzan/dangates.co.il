@@ -165,9 +165,12 @@ one shared date becomes false precision the moment the pages diverge.
 
 ### 2.4 — P1 · M · [NOT STARTED] Service descriptions are the on-page opening paragraph verbatim
 
-Three of seven run **190–229 characters** and truncate in SERPs. `app/services/[service]/page.tsx:39`
-reuses `card.description`, which is also rendered as body copy. `titles.mjs` warns on every
-description outside 120–160.
+**Five** of seven run **163–229 characters** and truncate in SERPs (re-measured 2026-08-24 by
+`titles.mjs`; the earlier "three of seven" counted only the 190+ breaches — `שערים-לחניה` and
+`תריסי-גלילה-חשמליים` sit at 163). `app/services/[service]/page.tsx:39` reuses `card.description`,
+which is also rendered as body copy. Two location descriptions also breach at 162 and 164, and the
+two legal statics are far **under** at 40 and 57. `titles.mjs` warns on every description outside
+120–160.
 
 ### 2.5 — P2 · S · [NOT STARTED] Blog titles render at 58–72 characters after the template
 
@@ -277,7 +280,14 @@ the brand name). Replace with גרשיים `״` or drop the quotes.
 `content-depth.mjs` as of 2026-08-23: `/איזורי-שירות/` 111/250 · `/שירותים/` 111/250 (its 323
 words are almost all the shared service teasers) · `/מחירון/` 144/400 · `/אודות/` 277/500, and the
 About page is fully substitutable boilerplate. The pricing page pivots to _what drives the price_
-([keyword-map.md](keyword-map.md) §10) — real numbers are not coming (business-facts §D).
+([keyword-map.md](keyword-map.md) §10) — real numbers are not coming (business-facts §D); that pivot
+is now its own item, N14.
+
+⚠️ **The homepage joined this list on 2026-08-24**: `675 unique / 800` ❌. It is not a regression in
+the ordinary sense — removing the ten fabricated reviews (§7.1) took ~200 words of body copy with
+them, and content-standards' "~1,130 ✅" predates that removal. The honest fix is not to restore
+volume but to add substance the homepage lacks: an answer block (§6.2) and the fault/price
+mechanism copy that N14 needs anyway.
 
 ---
 
@@ -828,6 +838,65 @@ passes 4.5:1, where the current `hover:bg-accent-600` (`components/ui/Button.tsx
 
 ---
 
+## §16. New defects found 2026-08-24 (`docs/audits/2026-08-24-full.md`)
+
+### N13 — P2 · M · [NOT STARTED] User-facing Hebrew and a phone literal live in route files
+
+Golden rule 6 says business facts come from `lib/site-config.ts` and CLAUDE.md §5 says copy lives in
+`lib/content.ts` — but `app/page.tsx:25` ends its metadata description with the literal
+`חייגו 072-2587772` without importing `siteConfig` at all, and marketing copy is spread across
+`app/locations/[city]/page.tsx:31,43`, `app/אודות/page.tsx:15,34`, `app/שירותים/page.tsx:10,18`,
+`app/צור-קשר/page.tsx:12,71` and `components/marketing/{Hero,FinalCta,ServiceAreas}.tsx`.
+
+This is the **mechanism** behind §7.2: each unconfirmed claim is spread over seven to nine files, so
+softening it is a hunt rather than one edit. Move the copy first, then soften once.
+
+### N14 — P1 · M · [NOT STARTED] The `/מחירון/` price pivot is unblocked and overdue
+
+§7.3 and §4.10 are recorded as blocked on real prices — but the 2026-08-17 owner intake answered:
+real prices are **❌ not coming**. That resolves the item rather than deferring it. The page must stop
+being a price list of eight authored estimates and become _what determines the price_ (fault type,
+gate weight and width, motor class, whether the existing motor can be reused, access and cabling,
+whether the diagnosis fee is credited) — the pivot in `docs/keyword-map.md` §10, which targets the
+same intent, is more useful than a range, and needs no number the business has not confirmed.
+
+Verified 2026-08-24: `grep -rl '800–1,500' out --include=index.html` → `out/index.html`,
+`out/מחירון/index.html`.
+
+### N15 — P2 · S · [NOT STARTED] No transparency surface beyond a phone number
+
+`grep -rnE 'ח\.פ\.|ע\.מ\.|תלונ|ביטול עסקה|החזר כספי' lib app` → nothing. No legal entity name, no
+ח.פ./ע.מ., no complaints route, no cancellation or refund path. The **absent street address is
+correct** for a service-area business (§5.6) and is not part of this item. A complaints and
+cancellation channel needs no owner fact beyond the phone, WhatsApp and email that already exist —
+it is the cheapest trust gain on the list. The ח.פ. itself stays 🔶 (business-facts §B).
+
+### N16 — P2 · S · [NOT STARTED] The manifest is cast rather than narrowed
+
+`lib/site-config.ts:20` — `siteManifest as unknown as SiteManifest` defeats strict-mode narrowing on
+every field downstream (`manifest.contact`, `manifest.schema`, `manifest.analytics`), so a missing or
+renamed roster key becomes a runtime `undefined` instead of a type error. Narrow at the boundary.
+
+### N17 — P3 · M · [NOT STARTED] Three high `npm audit` advisories, build-time only
+
+`npm audit --omit=dev --json` → `{"high":3,"total":3}` (2026-08-24) — all the same `postcss`
+source-map path-traversal family bundled inside `next`'s own tree. `postcss` runs at build time only
+on a static export: no runtime, no server, no browser exposure. The fix is a semver-major Next.js
+bump; track it for the next planned major rather than as a release blocker.
+
+### N18 — P2 · S · [NOT STARTED] Documentation drift on the AI-crawler mechanism
+
+§6.1 below, `docs/business-facts.md` §H and the `aeo-answer-content` Gate 1 text all describe the
+2026-08-16 state: a Cloudflare **managed `robots.txt`** sending `Disallow: /`. That file is gone —
+the live `robots.txt` is byte-identical to what `app/robots.ts` emits and returns `200 Allow: /`
+**even to a blocked user agent**. The block moved to an enforced **403** at the edge (verified
+2026-08-24 against 10 published AI-crawler signatures; Googlebot, bingbot and curl get 200).
+
+Consequence: anyone verifying §6.1 by reading `robots.txt` gets a **false pass**. Only
+`docs/cloudflare-runbook.md` step 1 is current — re-anchor the other three to it.
+
+---
+
 ## §15. Environment
 
 ### 15.1 — P2 · S · [PARTIAL] Citation drift is a measured quantity
@@ -838,11 +907,14 @@ the deny set and the roster. As of 2026-08-23: every citation resolves (0 dead);
 roster naming assets still landing in this change (5 agents, 8 skills). Acceptance: 0 failures, and
 step 0 of `qa-build-gate` from then on.
 
-### 15.2 — P2 · S · [NOT STARTED] No audit report exists yet
+### 15.2 — P2 · S · [✅ DONE] The baseline audit report exists
 
-`docs/audits/` holds the convention and template only. The first `/audit full` writes the baseline
-report; every later run diffs against it and updates the status tags above. Cadence: monthly
-(Phase 7), and after every phase ships.
+`docs/audits/2026-08-24-full.md` — written by `/audit full` on 2026-08-24 at commit `82a2a73`:
+`run-all.mjs --scope full` exit **37** (matching the known baseline exactly — the environment work
+introduced no regression), plus nine read-only auditors, each re-measuring rather than trusting the
+handed-down numbers. It found six defects the 2026-08-23 pass had missed (N13–N18) and two figures
+that had drifted (see the notes on §2.4 and §3.13). Every later run diffs against it. Cadence:
+monthly (Phase 7), and after every phase ships.
 
 ### 15.3 — P3 · S · [⏳ BLOCKED · owner] `gsc-ingest.mjs` has no data to ingest
 
