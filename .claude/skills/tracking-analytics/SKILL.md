@@ -1,6 +1,6 @@
 ---
 name: tracking-analytics
-description: GTM, GA4 and conversion events for dangates on the shared Israeli fleet container GTM-KWGGH438 — moving the init script from <body> into <head>, hostname-based GA4 routing inside the container, the data-cta inventory measured by cta-coverage.mjs, the event contract in docs/event-taxonomy.md (lead_submit with page/service/city, form_start, lead_error, the /תודה/ page view), and the mandatory gtm.js 200-check whenever a container id changes. Use when turning on analytics, wiring an event, or when conversions are not being recorded. Triggers: "set up GTM", "GA4", "track calls", "conversion tracking not firing", "data-cta", "lead_submit", "Search Console", "container id", "אנליטיקס", "מעקב המרות".
+description: GTM, GA4 and conversion events for dangates on the shared Israeli fleet container GTM-KWGGH438 — the init script now loading from <head> (moved 2026-09), hostname-based GA4 routing inside the container, the data-cta inventory measured by cta-coverage.mjs, the event contract in docs/event-taxonomy.md (lead_submit with page/service/city, form_start, lead_error, the /תודה/ page view), and the mandatory gtm.js 200-check whenever a container id changes. Use when turning on analytics, wiring an event, or when conversions are not being recorded. Triggers: "set up GTM", "GA4", "track calls", "conversion tracking not firing", "data-cta", "lead_submit", "Search Console", "container id", "אנליטיקס", "מעקב המרות".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -20,8 +20,10 @@ grep -n 'gtm-init\|</head>' out/index.html           # where the init script act
 curl -o /dev/null -w '%{http_code}\n' "https://www.googletagmanager.com/gtm.js?id=GTM-KWGGH438"
 ```
 
-As of 2026-08-23: 113 CTA elements on 45 pages, 89 tagged, **24 missing** `data-cta`, 9 distinct
-tagged source elements (8 distinct values); `gtm-init` is emitted **after** `</head>`; gtm.js → 200.
+As of 2026-09-06 `cta-coverage.mjs` **passes**: 113 CTA elements on 45 pages, **113 tagged, 0
+missing**, 24 distinct tagged source elements across 17 values seen in the export (18 exist in
+source); `gtm-init` is emitted **inside** `<head>` on all 46 pages; gtm.js → 200. The repo half of
+tracking is done — everything still missing is container-side.
 
 ## The container is shared — this changes everything
 
@@ -36,15 +38,24 @@ in the **roster manifest**, never typed into `site.config.json` (golden rule 2).
 nothing. Two fabricated ids in a row cost the fleet **18 days of zero analytics on every site**. Run
 the `curl` above whenever an id changes, and again after deploy. `GTM-KWGGH438` is the first verified id.
 
-## Head placement — still open (backlog §13.1)
+## Head placement — done, and the check that keeps it done (backlog §13.1)
 
-`app/layout.tsx:69-70` renders `<script id="gtm-init">` (the kit's `gtmHeadSnippet`) as a child of
-**`<body>`**, after the `<noscript>` iframe (`:58-68`). `<head>` already exists (`:48-56`, the
-`imgquarry.com` preconnect). Google's install puts the loader in `<head>`; body placement delays the
-container and can miss early events. Fix: move the `{gtmHead && <script …/>}` block into `<head>`;
-**keep the `<noscript>` iframe in `<body>`**. Rebuild, then prove it: `gtm-init` must appear before
-`</head>` in `out/index.html`. This inline script is what the CSP in `/web-security-headers` has to
-accommodate.
+`app/layout.tsx` renders `<script id="gtm-init">` (the kit's `gtmHeadSnippet`) inside `<head>`, beside
+the `imgquarry.com` preconnect, with the `<noscript>` iframe still in `<body>` where it belongs.
+Closed 2026-09-06 by commit `13a6bdc`; before that the loader was a child of `<body>`, after the
+`<noscript>`, which delays the container and can miss early events.
+
+**Prove it after any layout change** — a byte-offset comparison, not an eyeball, and across the whole
+export rather than one page:
+
+```bash
+node -e "const fs=require('fs'),p=require('path');let n=0,bad=0;(function w(d){for(const e of fs.readdirSync(d,{withFileTypes:true})){const f=p.join(d,e.name);if(e.isDirectory())w(f);else if(e.name==='index.html'){const h=fs.readFileSync(f,'utf8');n++;if(!(h.indexOf('gtm-init')>-1&&h.indexOf('gtm-init')<h.indexOf('</head>')))bad++;}}})('out');console.log(n,bad);"
+# 46 0
+```
+
+This inline script is what the report-only CSP in `public/_headers` accommodates with
+`script-src 'unsafe-inline'` — a static export cannot mint a per-request nonce
+(`/web-security-headers`).
 
 ## The `data-cta` inventory
 
@@ -53,35 +64,34 @@ Call, WhatsApp and email clicks are tracked **in the container** by click trigge
 `{location}-{action}` (the script warns on anything outside `^[a-z0-9]+-[a-z0-9]+$`, and on one value
 shared by two element kinds). The prefix maps to the taxonomy's `placement` parameter.
 
-**Tagged today — 9 source elements:**
+**The inventory is complete as of 2026-09-06** (§13.2, commit `fee7f69`) — 18 values across 24
+source elements. Read the live list rather than trusting this one:
 
-| Value                                 | Source                                                        |
-| ------------------------------------- | ------------------------------------------------------------- |
-| `header-call` (×2 elements)           | `components/layout/Header.tsx:45` desktop · `:87` mobile menu |
-| `hero-call` · `hero-whatsapp`         | `components/marketing/Hero.tsx:46` · `:52`                    |
-| `finalcta-call` · `finalcta-whatsapp` | `components/marketing/FinalCta.tsx:20` · `:26`                |
-| `footer-call`                         | `components/layout/Footer.tsx:23`                             |
-| `sticky-call` · `sticky-whatsapp`     | `components/layout/MobileCtaBar.tsx:13` · `:21`               |
+```bash
+grep -rho 'data-cta="[^"]*"' app components | sort | uniq -c | sort -rn
+```
 
-**Missing — 24 page-instances (backlog §13.2), with the value to add:**
+| Placement   | Values                                                      |
+| ----------- | ----------------------------------------------------------- |
+| `header-`   | `header-call` (×2 elements — desktop and mobile menu)       |
+| `hero-`     | `hero-call` · `hero-whatsapp`                               |
+| `finalcta-` | `finalcta-call` · `finalcta-whatsapp`                       |
+| `footer-`   | `footer-call` · `footer-email`                              |
+| `sticky-`   | `sticky-call` · `sticky-whatsapp`                           |
+| `service-`  | `service-call` · `service-whatsapp` (sticky card, ×7 pages) |
+| `contact-`  | `contact-call` · `contact-whatsapp` · `contact-email`       |
+| `pricing-`  | `pricing-contact`                                           |
+| `form-`     | `form-submit` · `form-whatsapp` (×2) · `form-call`          |
 
-| Source                                                                     | Add                                                   | Instances  |
-| -------------------------------------------------------------------------- | ----------------------------------------------------- | ---------- |
-| `app/services/[service]/page.tsx:121` sticky-card call · `:125` WhatsApp   | `service-call` · `service-whatsapp`                   | 7 + 7      |
-| `app/צור-קשר/page.tsx:37` call · `:45` WhatsApp · `:58` mailto             | `contact-call` · `contact-whatsapp` · `contact-email` | 3          |
-| `components/forms/LeadForm.tsx:208` submit · `:221` WhatsApp fallback link | `form-submit` · `form-whatsapp`                       | 2 + 2      |
-| `components/marketing/PricingTeaser.tsx:49` link to `/צור-קשר`             | `pricing-contact` (and see `/conversion-cro` §8.5)    | 2          |
-| `components/layout/Footer.tsx:32` mailto                                   | `footer-email`                                        | 1 (chrome) |
+`Button` spreads its props, so `data-cta` on a `<Button>` reaches the anchor. Adding a CTA without a
+value is the only way `missingDataCta` moves off 0 — re-run the script after touching any of them.
 
-`Button` spreads its props, so `data-cta` on a `<Button>` reaches the anchor. The service sidebar is
-on all 7 service pages and `/צור-קשר/` is the highest-intent page on the site — those are not
-marginal misses. Re-run the script after tagging: `missingDataCta` must read 0.
+**Why the script reports 17 values, not 18:** `form-call` and one of the two `form-whatsapp` elements
+render only when the form is in its `status === "error"` state, so a scan of the static export never
+sees them. That gap is expected and is not a coverage failure; the source grep above is the full list.
 
 **Container side:** icons render _inside_ the anchors, so the click variable must read
-`closest('a[data-cta]')`, not the event target. Two WhatsApp opens are **JS-driven**
-(`components/forms/LeadForm.tsx:65`, `:88` — `window.open`) and no click trigger can see them: push
-`whatsapp_click` explicitly there with the same parameter shape, and add the value you choose to the
-taxonomy table in the same change.
+`closest('a[data-cta]')`, not the event target. The WhatsApp fallback open is **JS-driven** (`window.open` in `openWhatsappFallback`) and no click trigger can ever see it — so since `fee7f69` that function pushes `whatsapp_click` itself, with `cta: "form-whatsapp"`, `page` and `placement: "form"`. A blocked popup reports `lead_error` with `reason: "popup_blocked"`. Any new JS-driven open must push its own event the same way, and add the value to the taxonomy table in the same change.
 
 ## Events — wire against `docs/event-taxonomy.md`
 
@@ -123,7 +133,7 @@ view as **Key events**, then submit `https://dangates.co.il/sitemap.xml` in Sear
 
 ## Verifying a deploy
 
-1. Live source: `gtm.js?id=GTM-KWGGH438` **inside `<head>`** (after §13.1 lands).
+1. Live source: `gtm.js?id=GTM-KWGGH438` **inside `<head>`** (§13.1, done 2026-09-06).
 2. `curl` the gtm.js URL → 200.
 3. GTM Preview on the live domain: one call click, one WhatsApp click, one form submit — each trigger
    fires **once**, with `cta`, `page` and `placement` populated.
@@ -149,5 +159,4 @@ view as **Key events**, then submit `https://dangates.co.il/sitemap.xml` in Sear
 - The footer `mailto:` is a conversion path — Cloudflare Email Obfuscation must stay **off**
   (`docs/cloudflare-runbook.md` "Leave these alone") or the click 404s before any trigger sees it.
 - Rocket Loader defers scripts and is a classic cause of GTM firing late — also stays off.
-- The 37 legacy stubs strip the query string (§13.3), so `gclid`/`utm` on old URLs is lost until
-  `/web-security-headers` ships real 301s.
+- Legacy URLs are real 301s since 2026-09-06 (ADR 0004), so `gclid`/`utm` survive an old inbound link — the 37 meta-refresh stubs that used to destroy them are gone (§13.3). It is only actually fixed once the deploy lands: probe with `curl -sSI ".../?utm_source=test"` and check the query survives into `Location` (`/deploy-dangates`).

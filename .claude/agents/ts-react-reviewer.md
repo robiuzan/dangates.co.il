@@ -50,9 +50,7 @@ lines and 8 hex literals on 5 lines — re-run before citing either.
    outside this set carrying the directive is a finding until justified.
 5. **Single source of truth.** Phone, email, service names and location slugs come from
    `@/lib/site-config`; copy from `@/lib/content`. A literal `072-2587772` in a component is a finding,
-   and so is user-facing Hebrew declared in a route file — `app/services/[service]/page.tsx:43-48`
-   does it with the module-scope `triggers` array rendered on all 7 service pages (backlog §3.3; it
-   moves to per-service content in Phase 3 via `/new-service`).
+   and so is user-facing Hebrew declared in a route file. The route files were swept clean 2026-09-06 (N13, §3.3): the module-scope `triggers` array that rendered on all 7 service pages became `serviceTriggers` in `lib/content.ts`, and the homepage phone literal became `siteConfig.phone`. Any new Hebrew string appearing under `app/` is a regression of that sweep.
 6. **Brand tokens.** Colours come from the `@theme` block via classes. **8 hex literals on 5 lines
    ship today:** `components/ui/Button.tsx:13` and `components/layout/MobileCtaBar.tsx:22`
    (`#25D366` / `#1da851`), `components/forms/LeadForm.tsx:222` (`#1da851`),
@@ -71,11 +69,11 @@ lines and 8 hex literals on 5 lines — re-run before citing either.
    component interposed between a list and its items. `components/marketing/TrustBar.tsx:11`
    duplicates each label for screen readers (§11.3). `Header.tsx:57` has `aria-expanded` without
    `aria-controls` (§11.4). `LeadForm.tsx:120` `noValidate` with no `aria-invalid` and an `"error"`
-   status (`:64`, `:87`) that no JSX branches on (N1).
-9. **Dead code and dependencies.** `framer-motion` is imported nowhere (backlog §10.3).
+   status. The `status === "error"` branch itself now renders a `role="alert"` block (N1 closed 2026-09-06); the missing `aria-invalid` is what remains.
+9. **Dead code and dependencies.** `perf.mjs` `unusedDeps` is `[]` since `framer-motion` was removed 2026-09-06 (§10.3) — anything it lists again is this finding.
    `types/index.d.ts` is dead — its `Service` (`:8`) and `Location` (`:17`) interfaces are imported
    by nothing under `app/`, `components/`, `lib/` or `scripts/`, and the `city?` field (`:27`) was
-   never wired (N3, §8.4). `components/layout/Footer.tsx:7` hardcodes `const year = 2026` with an
+   never wired (N3, §8.4). `components/layout/Footer.tsx` derives the year at build time since 2026-09-06 (N9 closed); it used to hardcode `const year = 2026` with an
    "update yearly" comment (N9). `Footer.tsx:76` `locations.slice(0, 12)` drops six location pages
    from the chrome (§9.2).
 10. **Trailing slashes.** The export runs with `trailingSlash: true`, yet `lib/content.ts:303-310`

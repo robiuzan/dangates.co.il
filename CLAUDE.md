@@ -54,8 +54,9 @@
 3. **Never "fix" `/איזורי-שירות/`.** It would spell correctly as `אזורי`; the nav label already reads
    correctly and the URL does not. It is the live URL. Renaming it without a 301 discards every ranking
    signal it holds.
-4. **Pushing to `main` does not deploy production.** It publishes to GitHub Pages, which no longer
-   serves this domain. Production is `wrangler` direct-upload to Cloudflare Pages — see §10.
+4. **Pushing to `main` does not deploy production.** It now publishes nothing at all: the GitHub
+   Pages workflow that used to run on every push was retired 2026-09-06 (ADR 0004). Production is
+   `wrangler` direct-upload to Cloudflare Pages — see §10.
 5. **No page ships under the content bar in [docs/content-standards.md](docs/content-standards.md).**
    A location or service page a find-and-replace could regenerate is a doorway page.
 6. **Business facts come from `lib/site-config.ts`, never hardcoded in components.** Import
@@ -69,9 +70,13 @@
    `https://www.googletagmanager.com/gtm.js?id=<ID>` returns **200**. Two fabricated ids cost the IL
    fleet 18 days of zero analytics across every site.
 9. **Never edit generated or vendored output** — `node_modules/`, `vendor/`, `.next/`, `out/`,
-   `out.prev/`, and the 37 generated stubs under `public/` (regenerate them via
-   `node scripts/gen-redirects.mjs` instead). _Hook-enforced:_ every one of those paths is in the
-   `permissions.deny` list and `guard-protected-paths.ps1`.
+   `out.prev/`. _Hook-enforced:_ every one of those paths is in the `permissions.deny` list and
+   `guard-protected-paths.ps1`, and so is `public/**/index.html` — that rule stays even though the
+   37 meta-refresh stubs it guarded are gone (ADR 0004, 2026-09-06), because it costs nothing and
+   stops the pattern coming back. **`public/_redirects` is generated too** — `prebuild` runs
+   `scripts/gen-redirects.mjs` over `REDIRECTS.md` on every build — but it is not hook-blocked, so
+   the discipline is yours: edit the map, then `node scripts/gen-redirects.mjs`. A hand-edit is
+   silently overwritten by the next build.
 10. **Don't put PII in `dataLayer`.**
 11. **Numbers come from `scripts/audit/`; citations must resolve.** Never quote a count from prose or
     memory — run the script (`npm run audit`, or the check named in [docs/agent-roster.md](docs/agent-roster.md)
@@ -128,10 +133,12 @@ lib/
   content.ts       # ⭐ all Hebrew marketing copy; reviews = [] (gated)
   posts.ts         # ⭐ 11 migrated blog posts (untrusted — see golden rule 7)
   utils.ts         # cn()
-scripts/gen-redirects.mjs   # emits the 37 meta-refresh stubs into public/
+scripts/gen-redirects.mjs   # emits public/_redirects (72 real 301 rules) from REDIRECTS.md; runs on prebuild
 scripts/audit/     # ⭐ the measurements (12 checks + thresholds.json + claims.json) — roster §4
 site.config.json   # SiteManifest — SYNCED FROM THE ROSTER, do not edit here
-REDIRECTS.md       # the old→new URL map the stub generator implements
+public/_redirects  # GENERATED — 72 Cloudflare Pages 301 rules; edit REDIRECTS.md, not this
+public/_headers    # the repo's own security headers + the report-only CSP (ADR 0004)
+REDIRECTS.md       # the old→new URL map the redirect generator implements
 docs/              # README (the layer map — start there) · implementation-sprints (the sequenced plan)
                    # backlog · content-standards · schema-graph · keyword-map · business-facts
                    # agent-roster (routing) · owner-actions · audits/ · decisions/ (ADRs 0001–0004)
@@ -251,9 +258,11 @@ the wrong way, does not ship. The `qa-build-gate` skill adds the auditor sweep a
 
 ## 10. Deploy — read this before shipping
 
-**Production is Cloudflare Pages, direct upload via wrangler.** `.github/workflows/deploy.yml` still
-publishes to **GitHub Pages** on every push to `main` — a real deployment that nobody sees, because the
-domain no longer resolves there. `public/CNAME` is its dead companion.
+**Production is Cloudflare Pages, direct upload via wrangler.** Pushing to `main` publishes
+**nothing**: `.github/workflows/deploy.yml`, `public/CNAME` and `public/.htaccess` were deleted
+2026-09-06 (ADR 0004, commit `a0e0fe2`). Until then that workflow published a redirect-less copy of
+the site to GitHub Pages on every push — a real deployment nobody saw, because the domain stopped
+resolving there. There is no second origin now.
 
 Verified 2026-08-16 from live headers (`Server: cloudflare`, `cf-cache-status: DYNAMIC`, Cloudflare's
 managed `robots.txt`, no GitHub/Fastly edge headers — the galbath.co.il fingerprint). The roster's
@@ -271,12 +280,28 @@ blocks `deploy-site.ps1` / `wrangler pages deploy` unless the call carries `-Dry
 **and** a `# APPROVED: <reason>` marker on the same command — dry run first, every time. It also
 blocks force-push, `reset --hard`, recursive deletes and Cloudflare/DNS mutations. See `deploy-dangates`.
 
-**Redirects and headers.** No `public/_redirects` or `public/_headers` yet. The 37 legacy URLs redirect
-via generated meta-refresh stubs (`node scripts/gen-redirects.mjs`, map in `REDIRECTS.md`) — a GitHub
-Pages workaround Phase 1 replaces per [ADR 0004](docs/decisions/0004-redirects-replace-stubs.md). The
-live security headers (HSTS, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`,
-`Permissions-Policy`) come from **Cloudflare zone rules, not this repo**; there is no CSP.
-`node scripts/audit/edge.mjs` measures both.
+**Redirects and headers — this repo owns both since 2026-09-06**
+([ADR 0004](docs/decisions/0004-redirects-replace-stubs.md), commit `a0e0fe2`).
+
+- **`public/_redirects`** carries **72 real 301 rules** that Cloudflare Pages issues at the edge —
+  each of the 36 mapped legacy paths in both its slashed and bare form, both columns percent-encoded.
+  It is **generated**: `scripts/gen-redirects.mjs` builds it from `REDIRECTS.md` and runs on
+  `prebuild`, so edit the map, never the file. The 37 meta-refresh stubs it replaced are deleted; a
+  static asset at a path would shadow its own redirect rule, which is why deleting them was
+  mandatory rather than tidy.
+- **`public/_headers`** adopts the five headers the Cloudflare zone was already sending (HSTS,
+  `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`), plus
+  `/_next/static/*` immutable caching and a **report-only** CSP around the inline GTM snippet —
+  report-only because a static export cannot mint a per-request nonce, and an enforcing `script-src`
+  that gets it wrong kills every conversion signal while the pages still look fine. Cloudflare Pages
+  **merges** this with the zone rule rather than replacing it, so a header can be emitted twice
+  until the owner deletes the zone rule ([docs/owner-actions.md](docs/owner-actions.md) §1.3) — do
+  not delete it before `_headers` is confirmed live on `dangates.pages.dev`, which has no zone rules
+  in front of it.
+
+`node scripts/audit/edge.mjs` measures both — `redirectRules 72 · stubs 0 · redirectsFile true ·
+headersFile true · deadHostArtifacts 0 · foreignStubs 0` as of 2026-09-06. **None of it is live
+until the next deploy**; the acceptance test is the three-URL `301` probe in `deploy-dangates`.
 
 ---
 
@@ -292,7 +317,7 @@ live security headers (HSTS, `X-Frame-Options`, `X-Content-Type-Options`, `Refer
 | Audit the export      | `npm run audit` · `npm run audit -- --scope seo` (`--json`)      |
 | Audit the environment | `npm run audit:env`                                              |
 | Full gate             | `npm run gate` (lint → typecheck → format:check → build → audit) |
-| Regenerate redirects  | `node scripts/gen-redirects.mjs`                                 |
+| Regenerate redirects  | `npm run redirects` (also runs on `prebuild`)                    |
 
 ---
 

@@ -109,7 +109,6 @@ today. Separate explicitly: available now · blocked on business-facts · owner 
 - **Never invent NAP, an address, coverage, a landmark, ratings or review counts.** Unknown → a
   business-facts row and a 🔶 in your rows. Never suggest a keyword volume without a source.
 - Never recommend a 19th location while the 18 fail the doorway delta — that multiplies the risk.
-- Never recommend renaming `/איזורי-שירות/` without a 301 plan; the city URLs already moved once and
-  are held together by 37 stubs (`/seo-auditor` owns that finding).
+- Never recommend renaming `/איזורי-שירות/` without a 301 plan; the city URLs already moved once and are held together by the 301 rules in `public/_redirects` (`/seo-auditor` owns that finding).
 - One business, one node. Never a `LocalBusiness` per city.
 - Reviews come back verbatim from the GBP or not at all — the `REVIEW_SOURCE_URL` guard stays.

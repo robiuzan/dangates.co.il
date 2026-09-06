@@ -1,6 +1,6 @@
 ---
 name: deploy-dangates
-description: Ship dangates to production — ops/deploy-site.ps1 with -DryRun first, then -Confirm plus a trailing "# APPROVED: <reason>" (the exact form guard-destructive-ops.ps1 accepts), wrangler direct upload to the Cloudflare Pages project, why the GitHub Pages workflow no longer deploys this domain, the npm file: tarball and .next cache traps, /qa-build-gate and ops/validate-manifests.ps1 as the pre-deploy gates, the out.prev rollback, and post-deploy verification against the live site including the legacy-URL 301s once ADR 0004 lands. Use when publishing. Triggers: "deploy", "ship it", "publish the site", "go live", "roll back", "why isn't my change live", "להעלות לאוויר", "פריסה".
+description: Ship dangates to production — ops/deploy-site.ps1 with -DryRun first, then -Confirm plus a trailing "# APPROVED: <reason>" (the exact form guard-destructive-ops.ps1 accepts), wrangler direct upload to the Cloudflare Pages project, why pushing to main now publishes nothing at all (the GitHub Pages workflow was retired with ADR 0004), the npm file: tarball and .next cache traps, /qa-build-gate and ops/validate-manifests.ps1 as the pre-deploy gates, the out.prev rollback, and post-deploy verification against the live site — the legacy-URL 301 probe and the two header curls are part of every deploy now, not a future step. Use when publishing. Triggers: "deploy", "ship it", "publish the site", "go live", "roll back", "why isn't my change live", "להעלות לאוויר", "פריסה".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -11,11 +11,12 @@ allowed-tools: Read, Grep, Glob, Bash
 **Production is Cloudflare Pages via wrangler direct upload** — project `dangates`
 (`dangates.pages.dev`), zone details in `docs/cloudflare-runbook.md`.
 
-`.github/workflows/deploy.yml` still builds and publishes to **GitHub Pages** on every push to `main`.
-That deployment is real but **nobody sees it** — the domain no longer resolves there. A green check
-on that workflow is not a production deploy; `public/CNAME` and `public/.htaccess` are its dead
-companions (`edge.mjs` reports all three as dead-host artifacts, backlog §12.4 / N5; ADR 0004
-retires them with the `_redirects` cutover).
+Pushing to `main` now publishes **nothing**. `.github/workflows/deploy.yml`, `public/CNAME` and
+`public/.htaccess` were deleted 2026-09-06 with the `_redirects` cutover (commit `a0e0fe2`,
+ADR 0004, backlog §12.4 / N5). Until then that workflow published a redirect-less copy of the site
+to GitHub Pages on every push — a real deployment nobody saw, because the domain no longer resolved
+there. `edge.mjs` → `deadHostArtifacts 0` holds the line; wrangler direct upload is the only path to
+production.
 
 Verified 2026-08-16 from live headers (`Server: cloudflare`, `cf-cache-status: DYNAMIC`, no
 GitHub/Fastly edge headers) and re-verified 2026-08-23 in the runbook. The roster's
@@ -85,10 +86,10 @@ node -e "require('fs').rmSync('.next',{recursive:true,force:true})" && npm run b
 3. **Roster check** — `powershell -File "c:/Users/robiu/antigravity/Projects/Israeli services sites/ops/validate-manifests.ps1"`.
    Read-only; exit code = ERROR count. It enforces the single-source-of-truth contract, including
    the `phoneOverride` rule — dangates is the one site legitimately off the shared lead number.
-4. **Redirect map touched?** Until ADR 0004 lands: `node scripts/gen-redirects.mjs` and commit the
-   regenerated stubs **before** building — they live in `public/` and reach `out/` only through a
-   build. After it: `public/_redirects` is generated from the same `REDIRECTS.md` map and the stub
-   directories are gone (`/web-security-headers` has the cutover procedure).
+4. **Redirect map touched?** `npm run redirects` regenerates `public/_redirects` from `REDIRECTS.md`
+   and `prebuild` runs it anyway, but commit the regenerated file — `git status --porcelain public/`
+   must be clean before you build, or the map and the shipped rules have drifted (§1.6). `public/`
+   reaches `out/` only through a build.
 5. **Stop-ship, all script-proven:** a doubled `<title>` or missing canonical (`titles.mjs`); a live
    🔶/⛔ claim (`claims-grep.mjs`); `Review`/`AggregateRating` or an `author` key reappearing
    (`schema.mjs` fails — the review block is gated in code, golden rule 1); a container id change
@@ -105,9 +106,13 @@ curl -sSI "https://dangates.co.il/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/" | grep
 ```
 
 Check: the page is the new build; the title carries the brand exactly once; the sitemap lists 45
-URLs; GTM returns 200; the legacy URL still lands on its target. **Today** the last line is `200` from
-a meta-refresh stub. **Once ADR 0004 ships**, probe one legacy URL from each section of `REDIRECTS.md`
-and expect `301` + `Location` with the query string preserved:
+URLs; GTM returns 200.
+
+### The legacy-URL 301 probe — run it on every deploy
+
+Since ADR 0004 landed in the repo (2026-09-06, commit `a0e0fe2`) the legacy URLs are **real 301s**
+from `public/_redirects`, not meta-refresh stubs. Probe one legacy URL from each section of
+`REDIRECTS.md` and expect `301` + `Location` with the query string preserved:
 
 ```bash
 for p in "/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/?utm_source=test" \
@@ -118,17 +123,44 @@ done
 # expect: 301 → /locations/תל-אביב/ (query kept) · 301 → /blog/שערים-חשמליים-השקעה/ · 301 → /צור-קשר/
 ```
 
+A `200` on any of the three means either `_redirects` did not ship or a static asset is shadowing
+its own rule — `find public -name index.html` must be 0, and a stub returning would be exactly that
+failure. Purge the Cloudflare cache and re-probe before concluding anything. `?utm_source=test`
+surviving into `Location` is the §13.3 acceptance test: a 301 preserves the query string where the
+old `location.replace()` stub destroyed it, so paid and campaign attribution on legacy links is only
+actually fixed once this probe passes live.
+
+**The first deploy after Sprint 1 is the one that makes this real.** As of 2026-09-06 the 72 rules
+and `public/_headers` exist only in the repo — `edge.mjs` measures files, not responses.
+
 **AI-crawler state and `robots.txt`:** do not restate it here — it moved on 2026-08-23 (managed
 `robots.txt` off, edge 403) and again by 2026-09-06 (every AI crawler 200 — backlog §6.1 ✅).
 `docs/cloudflare-runbook.md` step 1 carries the current state, the decision table and the full-UA
 probe loop; reading `robots.txt` alone proves nothing. The per-bot list in `app/robots.ts` (commit `6f4a1a8`) has been live since the Sprint 0 deploy on 2026-09-06 — the post-deploy verification checks it stays.
 
-## Response headers are not in this repo
+## Response headers — this repo owns them since 2026-09-06
 
-No `public/_headers` yet. The live `Strict-Transport-Security`, `X-Frame-Options`,
-`Permissions-Policy` come from **Cloudflare zone rules**, `nosniff` / `Referrer-Policy` from Pages
-defaults — a deploy neither sets nor preserves them, and there is no CSP. Phase 1 moves them into the
-repo (ADR 0004, `/web-security-headers` `templates/_headers`, runbook step 4). `edge.mjs` measures.
+`public/_headers` (commit `a0e0fe2`, ADR 0004, backlog §12.1) declares HSTS, `X-Frame-Options`,
+`X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `/_next/static/*` immutable
+caching and a **report-only** CSP. Before that the live headers came from Cloudflare zone rules and
+Pages defaults, and a deploy neither set nor preserved them.
+
+Cloudflare Pages **merges** `_headers` with the zone rule rather than replacing it, so a header can
+be emitted twice until the owner deletes the rule (`docs/owner-actions.md` §1.3, runbook step 4).
+Verify against the live response after the deploy, never against the file —
+and check `dangates.pages.dev` too, because it has no zone rules in front of it, so a header showing
+there proves the repo is the source:
+
+```bash
+curl -sSI https://dangates.co.il/     | grep -iE 'strict-transport|content-security|x-frame|permissions|referrer|content-type-options'
+curl -sSI https://dangates.pages.dev/ | grep -iE 'strict-transport|x-frame|permissions'
+```
+
+The CSP is report-only on purpose: a static export cannot mint a per-request nonce for the inline
+GTM snippet, and an enforcing `script-src` that gets it wrong kills every conversion signal while the
+pages still look fine. Watch the browser console over a week of real traffic — including one real
+form submission, one tracked call click and one legacy-URL hit — before switching it to enforcing
+(§12.2 stays PARTIAL until then). `edge.mjs` measures the file; only the two curls measure reality.
 
 ## Rollback
 

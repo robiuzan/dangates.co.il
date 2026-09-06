@@ -1,6 +1,6 @@
 ---
 name: qa-build-gate
-description: The release gate before any deploy on dangates — Step 0 `npm run audit:env`, a clean rebuild that clears `.next/` the hook-approved way, `npm run gate` (lint → typecheck → format:check → build → audit) read against the known-baseline table so a run is judged on regressions rather than on the 37 expected failures, four raw sanity greps a human can eyeball, the auditor sweep routed from docs/agent-roster.md §3, and the stop-ship list. Use before every deploy or when asked whether the site is ready to ship. Triggers: "run the build gate", "is this ready to ship", "pre-deploy check", "QA the site", "verify the build", "מוכן לעלות לאוויר", "בדיקה לפני פריסה".
+description: The release gate before any deploy on dangates — Step 0 `npm run audit:env`, a clean rebuild that clears `.next/` the hook-approved way, `npm run gate` (lint → typecheck → format:check → build → audit) read against the known-baseline table (re-cut 2026-09-06 to 26 expected failures, down from 37) so a run is judged on regressions rather than on that baseline, seven raw sanity greps a human can eyeball, the auditor sweep routed from docs/agent-roster.md §3, and the stop-ship list. Use before every deploy or when asked whether the site is ready to ship. Triggers: "run the build gate", "is this ready to ship", "pre-deploy check", "QA the site", "verify the build", "מוכן לעלות לאוויר", "בדיקה לפני פריסה".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -13,7 +13,7 @@ the start of the gate, not the end. Two rules frame every step:
   if anything under `app/ components/ lib/ public/` is newer than `out/index.html` it exits without
   measuring. Numbers from an old `out/` describe a build nobody shipped.
 - **Judge on regressions, not on the baseline.** `npm run audit` does not exit 0 today and will not
-  until Phase 6 (§Known baseline). A gate run passes when every failure it prints is in that table
+  until Phase 6 (§Known baseline — 26 as of 2026-09-06). A gate run passes when every failure it prints is in that table
   (or in the latest `docs/audits/` report) and no watched metric moved the wrong way.
 
 ## Step 0 — the environment's own self-test
@@ -41,8 +41,8 @@ way to clear `.next/`. `next build` rewrites `out/` itself.
 (`main.js`, `fallback/main.js`, `fallback/amp.js`) — a `next dev` run's artifacts surviving into the
 export, uploaded on every deploy. Deleting them from `out/` afterwards is not the fix; clearing
 `.next/` is. `node scripts/audit/perf.mjs` holds the line (`maxJsFileBytes` 1 MB in
-`scripts/audit/thresholds.json`, `devBuildFiles` in `edge.mjs`); as of 2026-08-23 a clean export is
-5.4 MB, 29 JS chunks totalling 751 KB, largest 173 KB.
+`scripts/audit/thresholds.json`, `devBuildFiles` in `edge.mjs`); as of 2026-09-06 a clean export is
+5.5 MB in 134 files, 30 JS chunks totalling 747 KB, largest 173 KB.
 
 ## Step 2 — `npm run gate`
 
@@ -61,20 +61,28 @@ table against the baseline below. Every inline grep the old gate carried now liv
 weight/preloads → `perf.mjs`, `_redirects`/`_headers`/dead hosts → `edge.mjs`, blog debris →
 `spam-grep.mjs`, unconfirmed claims → `claims-grep.mjs`.
 
-### Known baseline — as of 2026-08-23, `npm run audit` exits 37
+### Known baseline — as of 2026-09-06 (post-Sprint 1), `npm run audit` exits 26
+
+Re-cut from a clean-rebuild `npm run audit -- --scope full --json` on 2026-09-06, after Sprint 1
+change sets A–D (`a0e0fe2` `13a6bdc` `cfff52f` `fee7f69`). The previous baseline was 37 on
+2026-08-23; four checks (`titles`, `cta-coverage`, `perf`, `edge`) moved to ✅, `rtl-lint`'s hex count dropped 8 → 7, and nothing moved the wrong way.
 
 | Check                 | Fails | What is failing                                                                                                                      | Expected until                                                 |
 | --------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| `titles`              | 1     | `og:url` missing on 45/45 pages                                                                                                      | Phase 1 (§1.5)                                                 |
 | `content-depth`       | 10    | floors: home, about, pricing, both indexes, 18 locations, 7 services, 11 posts · doorway delta < 120 on all 18 + 7                   | Phase 3 (§3.1, §3.2, §3.13); posts Phase 4 (§3.8, §3.10)       |
 | `schema`              | 5     | no `WebSite` · 18 locations emit no `Service` · `#business` dangling on 18 pages · raw Hebrew in `url` ×7 and `mainEntityOfPage` ×11 | Phase 2 (§4.2 substance, §4.4, §4.7/N2, §4.9)                  |
-| `cta-coverage`        | 5     | 24 page-instances without `data-cta` (call 8, WhatsApp 10, email 2, submit 2, contact-link 2)                                        | Phase 1 (§13.2); form elements Phase 5                         |
 | `claims-grep`         | 5     | live unconfirmed: warranty-full 77, around-the-clock 75, experience 9, national-coverage 7 · superlative 2                           | Phase 6 (§7.2) · superlative: `/new-article` cleanup, any time |
-| `rtl-lint`            | 2     | 3 banned physical utilities · 8 hex literals on 5 lines                                                                              | Phase 1 (§11.5, N11)                                           |
 | `a11y`                | 4     | `Process.tsx` list broken by `Reveal` · LeadForm `noValidate` without `aria-invalid` · accent hover 2.76:1 · WhatsApp 1.98:1         | Phase 1 (§11.1, §11.2); form Phase 5 (§8.1)                    |
-| `perf`                | 1     | 6 `.woff2` shipped, 0 font preloads                                                                                                  | Phase 1 (§10.1)                                                |
-| `edge`                | 4     | 37 meta-refresh stubs, no `_redirects` · no `_headers` · 3 dead-host artifacts · 1 foreign (Houston) stub                            | Phase 1 (§1.1 ADR 0004, §12.1, §12.4/N5, N4)                   |
+| `rtl-lint`            | 2     | 3 banned physical utilities · 7 hex literals on 4 lines in 4 files                                                                   | Phase 1 (§11.5, N11)                                           |
+| `titles`              | 0     | ✅ since `13a6bdc` (§1.5) — `ogUrlMissing` 45 → 0                                                                                    | keep at 0                                                      |
+| `cta-coverage`        | 0     | ✅ since `fee7f69` (§13.2) — `missingDataCta` 24 → 0                                                                                 | keep at 0                                                      |
+| `perf`                | 0     | ✅ since `13a6bdc` (§10.1, §10.3) — `fontPreloads` 0 → 2, `unusedDeps` → `[]`                                                        | keep at 0                                                      |
+| `edge`                | 0     | ✅ since `a0e0fe2` (§1.1 ADR 0004, §12.1, §12.4/N5, N4) — 37 stubs → 72 real 301 rules, `_headers` owned, 0 dead-host artifacts      | keep at 0                                                      |
+| `export`              | 0     | pass — asserts `out/` is a current build of the source tree (N12)                                                                    | keep at 0                                                      |
 | `links` · `spam-grep` | 0     | pass — their metrics are the regression watch-list below                                                                             | keep at 0                                                      |
+
+The four ✅ rows are green **in the repo**. `edge` in particular measures files, not responses: the
+301s and the headers are inert until the next deploy, and the live probe is `deploy-dangates`'s job.
 
 Phases are the "Suggested order of work" at the end of `docs/optimization-backlog.md`. When a
 `docs/audits/<date>-full.md` report is newer than this table, the report wins — and this table
@@ -87,18 +95,26 @@ gate even though the check itself still passes): `links` → `orphans 0`, `broke
 `spam-grep` → `spamHits 0`, `fusedWords 0`, `relatedTails 0`, `curlyQuotes 4` · `claims-grep`
 `liveOccurrences` → `rating 0`, `named-person 0`, `licence 0`, `insurance 0`, `founded 0` ·
 `schema` → `pagesWithJsonLd 45`, `danglingIds ≤ 18`, `rawHebrewUrls ≤ 18` · `perf` →
-`largestJsBytes`, `fontPreloads`, `devBuildFiles 0` · `rtl-lint` → `bannedUtilities ≤ 3`,
-`hexLiterals ≤ 8`.
+`largestJsBytes`, `fontPreloads 2`, `unusedDeps []`, `devBuildFiles 0`, `sourceMaps 0` · `rtl-lint`
+→ `bannedUtilities ≤ 3`, `hexLiterals ≤ 7` · `titles` → `ogUrlMissing 0` · `cta-coverage` →
+`missingDataCta 0`, `ctaElements 113`, `distinctTaggedElements 24` · `edge` → `stubs 0`,
+`redirectRules 72`, `redirectsFile true`, `headersFile true`, `deadHostArtifacts 0`,
+`foreignStubs 0`.
+
+`fontPreloads` is a two-sided watch: `perf.mjs` also fails if a preloaded href is not a real file in
+`out/`, so a `Rubik({...})` change that re-hashes the faces without updating `lib/fonts.ts` is caught
+here rather than shipping a 404 preload.
 
 ## Step 3 — raw sanity greps (for a human, after the scripts)
 
 ```bash
-find out -name index.html | wc -l                                                  # 83 = 45 content + 37 stubs + /404/
+find out -name index.html | wc -l                                                  # 46 = 45 content + /404/ (was 83 while the 37 stubs shipped)
 grep -c '<url>' out/sitemap.xml                                                    # 45
 grep -rl 'aggregateRating\|"@type":"Review"' out --include=index.html | wc -l      # 0 — anything else is a stop-ship
 grep -rl '"@type":"Person"' out --include=index.html | wc -l                       # 0 — no person exists; lib/authors.ts is Phase 6
 grep -rl 'דן שערים חשמליים | דן שערים חשמליים' out --include=index.html | wc -l  # 0 — doubled brand suffix
-find public -name index.html | wc -l                                               # 37 stubs — until ADR 0004 replaces them
+find public -name index.html | wc -l                                               # 0 — stubs gone (ADR 0004); anything > 0 means one came back
+grep -c ' 301$' public/_redirects                                                  # 72 — the real 301s that replaced them
 ```
 
 Do not grep for a bare `"author"` here: all 11 `BlogPosting` nodes carry an `Organization` author by
@@ -153,8 +169,10 @@ parallel, one message. Routing is `docs/agent-roster.md` §3; each agent returns
   live claim `docs/business-facts.md` marks 🔶 / ⛔ (`claims-verifier` says stop).
 - A doubled brand suffix; a page without a self-referencing canonical; `pagesNotExactlyOneH1` > 0.
 - `spamHits` > 0 or non-Hebrew debris in a blog body.
-- A route in `out/` missing from `sitemap.xml`, `brokenLinks` > 0, or a stub whose target no longer
-  resolves (`linksToStubs`, and `node scripts/gen-redirects.mjs` leaving `public/` dirty).
+- A route in `out/` missing from `sitemap.xml`, `brokenLinks` > 0, a redirect whose destination no
+  longer resolves, or `npm run redirects` leaving `public/` dirty (the map drifted from the
+  generated `_redirects` — §1.6). `find public -name index.html` returning anything but 0 means a
+  meta-refresh stub has come back and is now shadowing its own 301 rule.
 - Any file over 1 MB under `out/_next/`, or `devBuildFiles` > 0.
 - A route count that moved with no reconciled reason.
 - A GTM container id change without the `https://www.googletagmanager.com/gtm.js?id=<ID>` → 200
@@ -164,7 +182,10 @@ parallel, one message. Routing is `docs/agent-roster.md` §3; each agent returns
 
 `/deploy-dangates` — `ops/deploy-site.ps1 -DryRun` first, every time; the real deploy needs the
 user's go-ahead, `-Confirm` **and** a trailing `# APPROVED: <reason>` on the same command. **Pushing
-to `main` publishes to GitHub Pages, which nobody sees** (CLAUDE.md §10).
+to `main` publishes nothing at all** — the GitHub Pages workflow was retired 2026-09-06 (ADR 0004),
+so `wrangler` direct upload is the only path to production (CLAUDE.md §10). Since Sprint 1 that
+deploy is also what makes `_redirects` and `_headers` real: hand `deploy-dangates` the three-URL
+`301` probe as part of the same run.
 
 ## Gotchas
 

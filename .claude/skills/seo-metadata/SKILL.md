@@ -15,11 +15,13 @@ node scripts/audit/links.mjs           # one H1, heading order, sitemap parity, 
 npm run audit -- --scope seo           # both, plus content-depth.mjs
 ```
 
-As of 2026-08-23 (45 pages, 45 unique titles, 45 unique descriptions, brand once on every page):
-`og:url` missing on **45/45** (backlog §1.5); **7 blog titles render at 63–72 chars** (§2.5);
-service descriptions run **163–229 chars** on 5 of 7, three of them 190–229 (§2.4); **2 blog
-descriptions end mid-sentence** with no terminal punctuation (§2.6); 18 location descriptions are
-one interpolated token apart (§2.3). Re-run the script before quoting any of these.
+As of 2026-09-06 `titles.mjs` **passes**: 45 pages, 45 unique titles, 45 unique descriptions, brand
+once on every page, `ogUrlMissing 0` (§1.5 closed by `13a6bdc`). Its remaining output is 24
+warnings, none of them failures: **7 blog titles render at 63–72 chars** (§2.5); service
+descriptions run **163–229 chars** on 5 of 7, three of them 190–229 (§2.4); **2 blog descriptions
+end mid-sentence** with no terminal punctuation (§2.6); 10 more descriptions sit outside the 120–160
+band, the two legal pages worst at 40 and 57 (§2.4); 18 location descriptions are one interpolated
+token apart (§2.3). Re-run the script before quoting any of these.
 
 ## The template rule
 
@@ -95,26 +97,40 @@ Next percent-escapes the Hebrew on output, which makes the canonical byte-identi
 `<loc>` (`encodeURI` in `app/sitemap.ts`) and to the `BreadcrumbList` items (`schemaPath()` in
 `components/layout/PageHeader.tsx`). `titles.mjs` asserts canonical = sitemap entry.
 
-The 37 generated redirect stubs under `public/` carry their **own** canonicals and are `noindex`.
-Leave them alone (`node scripts/gen-redirects.mjs` regenerates them) — ADR 0004 replaces them with
-`public/_redirects` in Phase 1, after which the stub directories are deleted in the same change.
+Legacy URLs carry no canonical of their own any more: since ADR 0004 (2026-09-06, commit `a0e0fe2`)
+they are **301s** from the generated `public/_redirects`, not stub pages. The 37 meta-refresh stubs
+that used to sit under `public/` each combined `noindex` with a canonical — which Google explicitly
+advises against, because the `noindex` can be attributed to the canonical target — and they are gone.
+Nothing about a legacy URL is a metadata question now; it is a redirect rule, and the map is
+`REDIRECTS.md`.
 
 ## og:url and the OG block
 
-The layout's `openGraph` block supplies `images` (`ogImageMeta(manifest.images)`, served from the
-`imgquarry.com` media host), `type`, `locale: "he_IL"` and `siteName` — but no `url`, and Next does
-not derive `og:url` from the canonical. **Next replaces a parent `openGraph` object wholesale when a
-page sets its own**, so adding `openGraph: { url }` on a page silently drops the image. Recipe:
+**This is built — use it, don't re-derive it.** `lib/seo.ts` is the one place `alternates.canonical`
+and `openGraph.url` come from, so the two cannot diverge (§1.5, closed 2026-09-06 by `13a6bdc`):
+
+- `ogBase` — the static half of every route's OG block: `images` (`ogImageMeta(manifest.images)`,
+  served from the `imgquarry.com` media host), `type`, `locale: "he_IL"`, `siteName`.
+- `routeUrl(path)` — the canonical/`og:url` path for a **decoded** route path (`""` for the homepage,
+  no leading or trailing slash, e.g. `services/${card.slug}`). Write the plain Hebrew segment and let
+  Next percent-escape it on output; pre-encoding here double-encodes `%` into `%25`.
 
 ```ts
-// app/layout.tsx (or lib/seo.ts) — export the shared block once
-export const ogBase = { images: ogImageMeta(manifest.images), type: "website", locale: "he_IL", siteName: siteConfig.name } as const;
-// every route
-openGraph: { ...ogBase, url: `/services/${card.slug}/`, title: card.name, description }
+import { ogBase, routeUrl } from "@/lib/seo";
+
+const url = routeUrl(`services/${card.slug}`);
+export const metadata = {
+  alternates: { canonical: url },
+  openGraph: { ...ogBase, url, title: card.name, description },
+};
 ```
 
-`url` is resolved against `metadataBase`, so it comes out percent-escaped like the canonical.
-Twitter tags derive from OG. Backlog §1.5; `titles.mjs` counts `og:url` per page.
+**Spreading `ogBase` is mandatory, not stylistic.** Next replaces a parent `openGraph` object
+wholesale the moment a route sets its own — it does not merge — so a route that writes
+`openGraph: { url }` without the spread silently ships with no OG image. All twelve route files do
+it today. `url` resolves against `metadataBase`, so it comes out percent-escaped like the canonical;
+Twitter tags derive from OG. `titles.mjs` counts `og:url` per page and reads `ogUrlMissing 0` — a
+new route that skips this is the only way that number moves.
 
 ## Sitemap
 

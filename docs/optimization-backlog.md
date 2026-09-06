@@ -123,9 +123,20 @@ post-build step. Confirm nothing references them first.
 
 Closed by commit `c047d4d` (session dangates-co-il-f6, branch `sitemap-static-routes-registry`): `staticPages` is a typed registry in `lib/site-config.ts` beside `services` and `locations`, with an optional `noindex` flag for the coming `/תודה/`; `app/sitemap.ts` derives its static entries from it; `links.mjs` cross-checks the registry against the `app/` tree both ways (`staticRoutesRegistered`) and asserts every `<lastmod>` is a real, non-future W3C date. The same commit wires `verification.google` from `analytics.googleSiteVerification` in `app/layout.tsx` (inert while the roster value is null — the repo half of §13.7). Verified 2026-09-06 after a clean rebuild: `node scripts/audit/links.mjs` → ✅ `staticRoutesRegistered 9 · contentPages 45 · sitemapUrls 45 · orphans 0`; `out/sitemap.xml` byte-identical to the previous build (pure refactor; not deployed yet). Phase 4 appends the guides registry the same way (ADR 0002).
 
-### 1.5 — P2 · S · [NOT STARTED] `og:url` is absent on all 45 pages
+### 1.5 — P2 · S · [✅ DONE 2026-09-06] `og:url` is absent on all 45 pages
 
 `titles.mjs` → `ogUrlMissing: 45`. Cheap to add via the layout's `openGraph` block.
+
+**Closed 2026-09-06** by commit `13a6bdc` (Sprint 1 change set B, row 1.6). `lib/seo.ts` is now the single place
+`alternates.canonical` and `openGraph.url` are derived from: `routeUrl()` builds the path and
+`ogBase` carries image, type, locale and site name, and all twelve route files spread `ogBase` into
+their own `openGraph` — so a route that sets `openGraph` can no longer silently drop the OG image,
+which is what Next's wholesale replacement of a parent `openGraph` object otherwise causes. Verified
+after a clean rebuild:
+
+```bash
+node scripts/audit/titles.mjs   # ✅ pages 45 · ogUrlMissing 0 · uniqueTitles 45 · uniqueDescriptions 45
+```
 
 ### 1.6 — P2 · S · [✅ DONE 2026-09-06] `REDIRECTS.md` and `gen-redirects.mjs` could drift, and nothing ran the generator
 
@@ -222,12 +233,28 @@ all seven and duplicated from the homepage.
 `תריסי גלילה חשמליים` is not a gate at all and needs genuinely different copy, not a noun swap.
 **Fix (Phase 3):** `new-service` skill — `serviceDepth` + per-service `faqs`/`triggers`.
 
-### 3.3 — P1 · S · [NOT STARTED] The shared `triggers` array puts gate faults on the shutters page
+### 3.3 — P1 · S · [✅ DONE 2026-09-06] The shared `triggers` array puts gate faults on the shutters page
 
 `app/services/[service]/page.tsx:43-48` declares four "מתי כדאי לפנות אלינו" bullets at module scope,
 so `השער נתקע, לא נסגר או לא נפתח עד הסוף` renders on `/services/תריסי-גלילה-חשמליים/`. It is also
 user-facing Hebrew living in a route file rather than `lib/content.ts`. Phase 1: move it to content
 as a per-service field.
+
+**Closed 2026-09-06** by commit `cfff52f` (Sprint 1 change set C, row 1.10). `lib/content.ts` exports
+`serviceTriggers: Record<ServiceSlug, readonly string[]>` — a total record, so a missing slug fails
+typecheck — and the route reads `serviceTriggers[card.slug]`; the module-scope array is gone. Seven
+distinct lists, verified in the export after a clean rebuild:
+
+```bash
+# "השער נתקע" now appears on /services/שערים-נגררים/ only — the one service it describes
+node -e "for (const s of require('fs').readdirSync('out/services')) { const h = require('fs').readFileSync('out/services/'+s+'/index.html','utf8'); console.log(s, h.includes('השער נתקע')); }"
+# שער-זרוע false · שערי-כנף false · שערים-לדירה false · שערים-לחניה false
+# שערים-מתרוממים false · שערים-נגררים true · תריסי-גלילה-חשמליים false
+```
+
+`/services/תריסי-גלילה-חשמליים/` now opens its "מתי כדאי לפנות אלינו?" list with
+"התריס לא עולה או לא יורד בלחיצה על המתג". `content-depth.mjs` `serviceMedianDelta` is 40 (was
+13–23 as of 2026-08-23); the 450-word floor is §3.2's remainder, not this row's.
 
 ### 3.4 — P1 · S · [✅ DONE] Location copy claimed "ובכל אזור המרכז" on pages outside המרכז
 
@@ -563,10 +590,27 @@ across 18 areas.
 on 41 of 45 pages; the four without it are `/צור-קשר/` (has the form), the two legal pages, and
 `/מחירון/` — the highest-purchase-intent page on the site.
 
-### 8.6 — P2 · M · [NOT STARTED] Lead-delivery failure is silent
+### 8.6 — P2 · M · [PARTIAL 2026-09-06] Lead-delivery failure is silent
 
 `LeadForm.tsx:64` and `:87` set `status` to `"error"` and open a WhatsApp window that a popup blocker
 can swallow with no notice to the user. N1 is the UI half of this item.
+
+**The UI half landed 2026-09-06** by commit `fee7f69` (Sprint 1 change set D, row 1.12) — see N1 for
+the detail. The user now sees a `role="alert"` block with a real WhatsApp `<a>` (which no popup
+blocker can swallow), a `tel:` link and a retry button; a blocked popup reports itself as
+`lead_error` with `reason: "popup_blocked"`.
+
+**Still open — the measurement half, none of it in this repo:**
+
+- **No tag or trigger consumes `lead_error`.** The event is pushed from the four call sites in
+  `LeadForm.tsx` (no-key misconfig, fetch `catch`, non-ok response, blocked popup) and lands in
+  `dataLayer` where nothing reads it. The GTM container work is manual, in `GTM-KWGGH438`
+  ([event-taxonomy.md](event-taxonomy.md) row `lead_error`).
+- **No GA4 property exists to receive it** — `analytics.ga4MeasurementId` is `null`, §13.7
+  ⏳ BLOCKED · owner ([owner-actions.md](owner-actions.md) §2). Until both move, a delivery failure
+  is visible to the user and still invisible to the business.
+
+Not part of this row: the per-field `aria-invalid` errors (§8.1) and the `/תודה/` route (§8.3).
 
 ---
 
@@ -610,20 +654,46 @@ See §4.3.
 
 Skill: `performance-web-vitals`. Script: `perf.mjs`.
 
-### 10.1 — P1 · S · [NOT STARTED] No font preloads
+### 10.1 — P1 · S · [✅ DONE 2026-09-06] No font preloads
 
 `perf.mjs` → `woff2Files: 6`, `fontPreloads: 0` (two are marked preloadable by `next/font`,
 `*.p.woff2`). With a text-only LCP element the font _is_ the critical path. Highest-value perf change
 available.
+
+**Closed 2026-09-06** by commit `13a6bdc` (Sprint 1 change set B, row 1.9). `next/font`'s own
+`NextFontManifestPlugin` never emitted the preloads on this machine: it matches
+`next-font-loader/index.js` as a **forward-slash** substring of `mod.request`, and `path.join` on
+win32 produces `next-font-loader\index.js` — so the match can never succeed and `fontPreloads` was
+structurally stuck at 0, not merely unconfigured. `lib/fonts.ts` now pins the two preloadable faces
+by hash and `app/layout.tsx` emits them as `<link rel="preload" as="font" type="font/woff2"
+crossorigin="anonymous">` in `<head>`; `perf.mjs` fails if a preloaded href is not a real file in
+`out/`, so a hash that goes stale is caught by the gate rather than shipping a dangling preload.
+Only the two `*.p.woff2` faces are preloaded — the hebrew subset (`u+0590-05ff`) and the latin one —
+never all six. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/perf.mjs   # ✅ fontPreloads 2 · woff2Files 6 · unusedDeps [] · devBuildFiles 0 · sourceMaps 0
+```
 
 ### 10.2 — P2 · M · [NOT STARTED] JS budget
 
 `perf.mjs`: ~751 kB across 29 chunks, 4 `"use client"` components. `Header` is client for one
 boolean; `Faq` could be `<details>/<summary>` with zero JS while keeping answers in the DOM (N8).
 
-### 10.3 — P2 · S · [NOT STARTED] `framer-motion` is a dependency imported nowhere
+### 10.3 — P2 · S · [✅ DONE 2026-09-06] `framer-motion` is a dependency imported nowhere
 
 `perf.mjs` → `unusedDeps: ["framer-motion"]`. `npm uninstall` it.
+
+**Closed 2026-09-06** by commit `13a6bdc` (Sprint 1 change set B, row 1.9) — uninstalled, and gone
+from both `package.json` and `package-lock.json`. `Reveal` never imported it — it drives a CSS transition from an
+`IntersectionObserver` and honours `prefers-reduced-motion` itself.
+Verified after a clean rebuild:
+
+```bash
+node scripts/audit/perf.mjs               # ✅ unusedDeps [] · jsFiles 30 · jsTotalBytes 746950
+grep -rn framer-motion app components lib # (no matches)
+grep -n framer package.json               # (no matches)
+```
 
 ### 10.4 — [✅ HOLDS] Build hygiene is clean — keep it
 
@@ -739,14 +809,25 @@ Do not report it as a leaked credential (`secret-scan.ps1` allow-lists it). Hone
 Skill: `tracking-analytics`. Script: `cta-coverage.mjs` + the gtm.js 200-check. Event names:
 [event-taxonomy.md](event-taxonomy.md).
 
-### 13.1 — P1 · S · [NOT STARTED] GTM loads from `<body>`, not `<head>`
+### 13.1 — P1 · S · [✅ DONE 2026-09-06] GTM loads from `<body>`, not `<head>`
 
 `app/layout.tsx:69-70` renders `<script id="gtm-init">` inside `<body>`, after the `<noscript>`
 iframe; verified in `out/index.html` (the script sits after `</head>`). The `<head>` already exists
 (`:48-56`, it carries the `imgquarry.com` preconnect). Move the init script there; keep the
 `<noscript>` iframe in `<body>`. Re-measure on a fresh build before editing (N12).
 
-### 13.2 — P1 · M · [NOT STARTED] The highest-intent CTAs are untracked
+**Closed 2026-09-06** by commit `13a6bdc` (Sprint 1 change set B, row 1.7). The init script moved
+into the `<head>` that already carried the `imgquarry.com` preconnect; the `<noscript>` iframe stayed
+in `<body>`, where it belongs. Verified on all 46 exported pages after a clean rebuild — a byte-offset
+check, not an eyeball, because "the snippet is in the HTML" proves nothing (golden rule 8):
+
+```bash
+node -e "const fs=require('fs'),p=require('path');let n=0,bad=0;(function w(d){for(const e of fs.readdirSync(d,{withFileTypes:true})){const f=p.join(d,e.name);if(e.isDirectory())w(f);else if(e.name==='index.html'){const h=fs.readFileSync(f,'utf8');n++;if(!(h.indexOf('gtm-init')>-1&&h.indexOf('gtm-init')<h.indexOf('</head>')))bad++;}}})('out');console.log(n,bad);"
+# 46 0 — every page, gtm-init inside <head>; the ns.html <noscript> iframe stays after </head>
+curl -o /dev/null -w '%{http_code}\n' "https://www.googletagmanager.com/gtm.js?id=GTM-KWGGH438"   # 200 (§13.6 re-run)
+```
+
+### 13.2 — P1 · M · [✅ DONE 2026-09-06] The highest-intent CTAs are untracked
 
 `cta-coverage.mjs` as of 2026-08-23: 113 CTA elements, 24 missing `data-cta`, only 9 distinct tagged
 elements (8 distinct values). Missing on `components/forms/LeadForm.tsx:221` (WhatsApp fallback) and
@@ -760,6 +841,27 @@ elements all sit in `Header`, `Footer`, `MobileCtaBar`, `Hero` and `FinalCta`
 Note two WhatsApp opens are **JS-driven** (`LeadForm.tsx:65`, `:88`) and unreachable by any click
 trigger, and icons render inside the CTA anchors, so a naive `Click Element` dataset read returns
 `undefined`.
+
+**Closed 2026-09-06** by commit `fee7f69` (Sprint 1 change set D, row 1.8). Every tel, WhatsApp,
+mailto and submit control now carries a `{placement}-{action}` `data-cta`: the seven service-page
+sticky-card pairs (`service-call`, `service-whatsapp`), the contact page's three
+(`contact-call`, `contact-whatsapp`, `contact-email`), `pricing-contact`, `footer-email`, and the
+form's `form-submit`, `form-whatsapp` and `form-call`. The JS-driven WhatsApp open is no longer
+left to a click trigger at all — `openWhatsappFallback` pushes `whatsapp_click` itself, because no
+GTM click trigger can ever see a `window.open`. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/cta-coverage.mjs
+# ✅ pagesScanned 45 · ctaElements 113 · withDataCta 113 · missingDataCta 0
+#    distinctValues 17 · distinctTaggedElements 24 · chromeCtas 6
+#    missingByKind: call 0 · whatsapp 0 · email 0 · submit 0 · contact-link 0
+```
+
+`distinctValues` reads 17, not 18: `form-whatsapp` and `form-call` render only on
+`status === "error"`, so the static export scan sees `form-whatsapp` once (from the always-visible
+"מעדיפים וואטסאפ?" link) and never sees `form-call`. Both exist in source — `grep -rho 'data-cta="[^"]*"' app components | sort -u`
+lists 18 values. The GTM tags and triggers that consume them are container-side and still to do
+(§13.4, §13.5, §8.6).
 
 ### 13.3 — P1 · S · [✅ DONE 2026-09-06 · repo] The 37 stubs stripped the query string
 
@@ -800,12 +902,36 @@ with the snippet sitting in the HTML looking correct. `GTM-KWGGH438` is the firs
 Found by the scripted sweep that built Phase E0. Each routes per its parent section in
 [agent-roster.md](agent-roster.md) §3.
 
-### N1 — P1 · S · [NOT STARTED] The lead form's error state renders no UI
+### N1 — P1 · S · [✅ DONE 2026-09-06] The lead form's error state renders no UI
 
 `components/forms/LeadForm.tsx:64` and `:87` set `status` to `"error"`, but nothing in the JSX
 branches on `status === "error"` — the only visible error is the client-side `error` string at
 `:201-205`, which delivery failure never sets. A user whose POST failed (and whose WhatsApp popup was
 blocked) sees the form sit there with an enabled submit button and no message. Parent: §8.1 / §8.6.
+
+**Closed 2026-09-06** by commit `fee7f69` (Sprint 1 change set D, row 1.12). `LeadForm.tsx` now
+branches on `status === "error"` and renders a `role="alert"` block **after** the submit button and
+the WhatsApp line, so it reads in source order rather than above the control the user just pressed.
+It carries a real `<a data-cta="form-whatsapp">` to the same message the blocked popup would have
+opened — a link cannot be popup-blocked — a `tel:` link (`data-cta="form-call"`), and the submit
+button relabels to `leadFormErrorCopy.retryLabel` so retrying is one press. All four strings live in
+`leadFormErrorCopy` in `lib/content.ts`, never in the JSX (CLAUDE.md §5). The alert's WhatsApp button
+overrides the `whatsapp` variant with `bg-green-700 hover:bg-green-800` rather than inheriting the
+1.98:1 surface §11.1 still owns everywhere else. That override is a Tailwind palette class, not a hex
+literal, and `a11y.mjs` only samples the literals in `Button.tsx` and `MobileCtaBar.tsx` — so it does
+**not** move `contrastPairs`, and the ≈5:1 it computes to is a hand figure, not a measured one. §11.1
+is where the WhatsApp surface gets fixed for the four other places it renders — `Hero`, `FinalCta`,
+the service-page sticky card, and `MobileCtaBar`'s own `#25D366` literal. Verified after a clean
+rebuild:
+
+```bash
+grep -n 'status === "error"' components/forms/LeadForm.tsx   # the render branch at :268, not only the setters
+grep -n 'reportDeliveryFailure(' components/forms/LeadForm.tsx  # 4 call sites: popup_blocked, network ×2, http_<code>
+npm run audit -- --scope full   # exit 26 · a11y 4 (unchanged) · cta-coverage 0
+```
+
+The measurement half of §8.6 (a GTM tag consuming `lead_error`, a GA4 property to receive it) stays
+open there.
 
 ### N2 — P1 · S · [NOT STARTED] `BlogPosting.mainEntityOfPage` carries raw Hebrew
 
@@ -848,16 +974,41 @@ DOM (so `FAQPage` parity holds) but hidden from every reader that doesn't click,
 every page that renders it. `<details>/<summary>` keeps the answers in the DOM with zero JS
 (`engagement-ux`, §10.2).
 
-### N9 — P3 · S · [NOT STARTED] The footer year is hand-maintained
+### N9 — P3 · S · [✅ DONE 2026-09-06] The footer year is hand-maintained
 
 `components/layout/Footer.tsx:7` — `const year = 2026;` with a "update yearly" comment. Derive it at
 build time; a static export is rebuilt on every deploy anyway.
 
-### N10 — P3 · S · [NOT STARTED] `navItems` and crumb hrefs lack the trailing slash the export enforces
+**Closed 2026-09-06** by commit `13a6bdc` (Sprint 1 change set B, row 1.13). `Footer` is an RSC, so
+`new Date().getFullYear()` runs at build time and is baked into the export — the cadence a copyright
+year needs, since a static export is rebuilt on every deploy. Verified after a clean rebuild:
+
+```bash
+grep -n 'getFullYear' components/layout/Footer.tsx      # const year = new Date().getFullYear();
+grep -o '.\{0,12\}2026.\{0,20\}' out/index.html          # >© <!-- -->2026<!-- --> … (baked, not client-rendered)
+```
+
+### N10 — P3 · S · [✅ DONE 2026-09-06] `navItems` and crumb hrefs lack the trailing slash the export enforces
 
 `lib/content.ts:303-310` (`/שירותים`, `/מחירון`, …) and the crumb `href`s in the routes omit the `/`,
 so every nav click is a client-side redirect to the canonical form. `PageHeader.schemaPath()` patches
 it for the schema; the links themselves should carry it.
+
+**Closed 2026-09-06** by commit `cfff52f` (Sprint 1 change set C, row 1.13). All six `navItems`
+hrefs carry the trailing slash, and the crumb hrefs moved into `crumbLabels` in `lib/content.ts` in
+the same change, slashed. Proven against the **export**, not the source, because that is what a
+crawler sees — zero un-slashed internal hrefs across all 46 exported pages:
+
+```bash
+node -e "const fs=require('fs'),p=require('path');const bad=[];(function w(d){for(const e of fs.readdirSync(d,{withFileTypes:true})){const f=p.join(d,e.name);if(e.isDirectory())w(f);else if(/\.html$/.test(e.name)){const h=fs.readFileSync(f,'utf8');for(const m of h.matchAll(/href=\"(\/[^\"]*)\"/g)){const u=m[1];if(!u.endsWith('/')&&!/\.(xml|txt|ico|png|svg|css|js|json|webmanifest)$/.test(u)&&!u.startsWith('/_next'))bad.push(u);}}}})('out');console.log(bad.length, [...new Set(bad)]);"
+# 0 []
+```
+
+Two source literals survive — the middle crumb in `app/blog/[slug]/page.tsx` (`href: "/blog"`) and
+the `PricingTeaser` button (`href="/צור-קשר"`). Both ship correctly anyway: Next's `Link` normalises
+under `trailingSlash: true`, and `PageHeader.schemaPath()` normalises the crumb for `BreadcrumbList`
+independently — which is why the export scan is clean. Tidy them the next time either file is
+touched; the shipped-output assertion above is the one that matters.
 
 ### N11 — P2 · S · [NOT STARTED] `accent-500` is the AA hover token, already defined
 
@@ -874,7 +1025,7 @@ passes 4.5:1, where the current `hover:bg-accent-600` (`components/ui/Button.tsx
 
 ## §16. New defects found 2026-08-24 (`docs/audits/2026-08-24-full.md`)
 
-### N13 — P2 · M · [NOT STARTED] User-facing Hebrew and a phone literal live in route files
+### N13 — P2 · M · [✅ DONE 2026-09-06] User-facing Hebrew and a phone literal live in route files
 
 Golden rule 6 says business facts come from `lib/site-config.ts` and CLAUDE.md §5 says copy lives in
 `lib/content.ts` — but `app/page.tsx:25` ends its metadata description with the literal
@@ -884,6 +1035,23 @@ Golden rule 6 says business facts come from `lib/site-config.ts` and CLAUDE.md �
 
 This is the **mechanism** behind §7.2: each unconfirmed claim is spread over seven to nine files, so
 softening it is a hunt rather than one edit. Move the copy first, then soften once.
+
+**Closed 2026-09-06** by commit `cfff52f` (Sprint 1 change set C, row 1.11). Every string named above
+moved into `lib/content.ts` under a "Route & component copy" block — `crumbLabels`,
+`defaultWhatsappMessage`, `serviceWhatsappMessage`, `leadFormHeading`, `heroCopy`, `finalCtaCopy`,
+`serviceAreasCopy`, `homeMetaDescription`, `homeFaqHeading`, `servicePageCopy`, the per-city title /
+subtitle / intro builders, and the about, services-index and contact blocks. **Wording is unchanged**
+— only the location moved; Sprint 4 is where any of it gets rewritten, which is the whole point of
+doing this first. The phone literal is gone: `homeMetaDescription` interpolates `siteConfig.phone`
+(golden rule 6). Verified after a clean rebuild:
+
+```bash
+grep -rn '072-2587772\|0722587772' app components   # (no matches — the number exists only in siteConfig)
+npm run audit -- --scope full                        # exit 26 · claims-grep 5, content-depth 10 — both unmoved
+```
+
+`claims-grep` did not move, and that is the expected result, not a miss: this row moves the claims
+into one file so §7.2 can soften each of them in one edit instead of nine.
 
 ### N14 — P1 · M · [NOT STARTED] The `/מחירון/` price pivot is unblocked and overdue
 
@@ -966,10 +1134,17 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
 2. ~~**§1.1** real 301s via `_redirects` (also fixed §13.3, N4; retired §12.4 + N5, §1.6, §12.3/N6, N7;
    `_headers` for §12.1 and the report-only CSP for §12.2)~~ — shipped in the repo 2026-09-06, ADR 0004;
    live after the next deploy.
-3. **§10.1** font preloads · **§1.5** `og:url` · **§1.4** sitemap from data · **§12.1** `_headers` ·
-   **§3.3** triggers to content · **§3.11–3.12** · **§13.1** GTM to `<head>` · **§13.2** `data-cta`.
-4. **§11.1** contrast (via N11) · **§11.2–11.5** · **N6 · N7**.
+3. ~~**§10.1** font preloads~~ · ~~**§1.5** `og:url`~~ · ~~**§1.4** sitemap from data~~ ·
+   ~~**§12.1** `_headers`~~ · ~~**§3.3** triggers to content~~ · **§3.11–3.12** ·
+   ~~**§13.1** GTM to `<head>`~~ · ~~**§13.2** `data-cta`~~ — all struck items shipped in the repo
+   2026-09-06 (Sprint 1, commits `a0e0fe2` `13a6bdc` `cfff52f` `fee7f69`); also ~~§10.3~~, ~~N1~~,
+   ~~N9~~, ~~N10~~, ~~N13~~. §3.11–3.12 are the blog-cleanup remainder and did not ship.
+4. **§11.1** contrast (via N11) · **§11.2–11.5** · ~~**N6 · N7**~~ (shipped 2026-09-06 with §1.1).
    → **Phase 1 = 2–4 + N1.** Acceptance: `npm run gate` = 0 for these checks; 45 routes, 0 stubs.
+   As of 2026-09-06 the audit exits **26** (was 37): `edge`, `perf`, `titles`, `cta-coverage`,
+   `links`, `export` and `spam-grep` all pass. What is left of Phase 1 is §11.1 (2 of the 4 `a11y`
+   failures), §11.2 (1), §11.5 + N11 (`rtl-lint` 2) and §3.11–3.12. The fourth `a11y` failure is
+   §8.1's `aria-invalid`, which is Phase 5.
 5. **Phase 2 — schema:** §4.4 · §4.5 · §4.6 · §4.7/N2 · §4.8 · §4.9 · §4.12 via `lib/jsonld.ts`
    and one `@graph` per page. Acceptance: `schema.mjs` = 0.
 6. **Phase 3 — depth + navigation:** §3.1 / §3.2 (the decision on whether this domain ranks) ·

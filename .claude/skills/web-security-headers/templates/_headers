@@ -35,9 +35,10 @@
 # connect-src AND form-action. Without a report-uri/report-to endpoint, violations surface only in
 # the browser console: watch it for a week of real traffic — including one real form submission,
 # one tracked call click and one legacy-URL hit — before tightening this and switching to the
-# enforcing header. Do NOT enforce while the 37 meta-refresh stubs exist: each carries an inline
-# <script>location.replace(...)</script> (scripts/gen-redirects.mjs) — the _redirects cutover
-# removes them first.
+# enforcing header. Do NOT enforce while any generated redirect stub still ships: each carried an
+# inline <script>location.replace(...)</script>, so the _redirects cutover has to land first. On
+# dangates that cutover shipped 2026-09-06 (ADR 0004) and the GTM snippet is the only inline script
+# left, which is why script-src still needs unsafe-inline.
   Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://api.web3forms.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://imgquarry.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'self' https://api.web3forms.com; object-src 'none'
 
 # Hashed build assets are immutable — safe to cache hard. HTML keeps the Pages default

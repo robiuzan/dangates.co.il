@@ -1,6 +1,7 @@
 # ADR 0004 — Real 301s via `public/_redirects`; retire the meta-refresh stubs and the dead origins
 
-**Date:** 2026-08-23 · **Status:** accepted (implemented in Phase 1)
+**Date:** 2026-08-23 · **Status:** **accepted; implemented in the repo 2026-09-06** (commit
+`a0e0fe2`, Sprint 1 rows 1.1–1.3) · **live after the next deploy**
 
 ## Context
 
@@ -36,3 +37,33 @@ companions — a live second origin serving a redirect-less copy of the site.
   `Location` set.
 - The protected-path guard's `public/**/index.html` rule becomes moot once the stubs are gone; keep
   it — it costs nothing and prevents the pattern returning.
+
+## Implementation — 2026-09-06, commit `a0e0fe2`
+
+Everything above landed in one change. `scripts/gen-redirects.mjs` was **not** retired: it now emits
+`public/_redirects` from the same `REDIRECTS.md` map and is wired as both `npm run redirects` and
+`prebuild`, so the map and the emitted file cannot drift (backlog §1.6). It writes only when the
+content actually changes, so a rebuild cannot bump the file's mtime and trip the audit's staleness
+guard (N12). One delta from the decision as written: each mapped path is emitted in **both** its
+slashed and bare form — Cloudflare Pages matches a source path literally and this export ships
+nothing at the bare path, so a bare-form inbound link would otherwise reach `/404`. That is why
+`_redirects` carries **72 rules** for the 36 mapped paths.
+
+The 37 stub directories, the Houston stub, `.github/workflows/deploy.yml`, `public/CNAME` and
+`public/.htaccess` are deleted; `public/_headers` adopts the five zone headers plus a report-only
+CSP. Pushing to `main` now publishes nothing anywhere.
+
+**Verified in the repo** after a clean rebuild (2026-09-06):
+
+```bash
+node scripts/audit/edge.mjs
+# ✅ redirectRules 72 · stubs 0 · redirectsFile true · headersFile true
+#    deadHostArtifacts 0 · foreignStubs 0 · envDocumented 1 · envUsed 1
+node scripts/audit/links.mjs
+# ✅ contentPages 45 · sitemapUrls 45 · brokenLinks 0 · linksToStubs 0 · orphans 0
+find public -name index.html | wc -l   # 0
+```
+
+**Not yet verified live.** The repo change is inert until the next deploy; the three-URL `301` probe
+in `deploy-dangates` is the acceptance test, and the owner deletes the zone header rule (B7) only
+after `_headers` is confirmed on `dangates.pages.dev`.

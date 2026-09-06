@@ -43,15 +43,14 @@ today's figures only as "as of" context and re-measure before asserting any of t
 2. **Fonts are the LCP lever.** Rubik self-hosts via `next/font` with `display: swap`, but the export
    ships 6 `.woff2` and **0 `<link rel="preload" as="font">`** (as of 2026-08-23). Two files carry the
    `.p.woff2` preloadable marker — name them (backlog §10.1).
-3. **JS budget (INP).** As of today 29 chunks / 751 KB, largest 173 KB — within `thresholds.json`.
+3. **JS budget (INP).** As of 2026-09-06, 30 chunks / 747 KB, largest 173 KB — within `thresholds.json`.
    Judge the four `"use client"` components (`LeadForm`, `Header`, `Faq`, `Reveal`): `Header` is client
    for one boolean and ships the whole nav tree; `Faq` could be `<details>/<summary>` with zero JS
    while keeping answers in the DOM (N8); `LeadForm` and `Reveal` are justified (backlog §10.2).
-4. **Dead weight.** `framer-motion` is a dependency imported nowhere (`perf.mjs` → `unusedDeps`;
-   backlog §10.3). A `framer-motion` animation would also bypass the global reduced-motion rule.
+4. **Dead weight.** `perf.mjs` → `unusedDeps` reads `[]` since `framer-motion` was uninstalled 2026-09-06 (§10.3 closed). Anything it lists again is the same finding — and an animation library would also bypass the global reduced-motion rule that `Reveal` honours.
 5. **RSC payloads.** 45 `index.txt` files, 1.4 MB of crawlable duplicate copy beside every
    `index.html` (backlog §1.3) — strip post-build or disallow at the edge; not a JS-budget item.
-6. **Output hygiene.** `out/` is ~5.4 MB in 170 files with no dev-only chunks (`edge.mjs` →
+6. **Output hygiene.** `out/` is ~5.5 MB in 134 files with no dev-only chunks (`edge.mjs` →
    `devBuildFiles: 0`). This fleet once shipped ~14 MB of `main.js` / `fallback/*` from a polluted
    `.next/`; if it returns, **report the root cause, not the size** — a blind purge breaks the 404 route.
 7. **CLS.** Sound — no media; the sticky bar's spacer is `app/layout.tsx:76`. Confirm both hold.

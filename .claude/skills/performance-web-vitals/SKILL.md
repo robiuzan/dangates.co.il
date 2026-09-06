@@ -1,6 +1,6 @@
 ---
 name: performance-web-vitals
-description: Core Web Vitals for a static export on Cloudflare Pages — measured by scripts/audit/perf.mjs, not by hand — a text-only site with no imagery at all, the missing next/font preloads that sit on the LCP path, the INP client-JS budget (Header client for one boolean, Faq → <details>), the 45 crawlable RSC index.txt payloads, the unused framer-motion dependency, CLS reserves, keeping dev-only chunks out of out/, and the kit's SiteImage/mediaUrl/srcsetFor pipeline (/site-images) for when photos finally arrive. Use before shipping or when LCP, CLS or INP regress. Triggers: "perf pass", "Core Web Vitals", "LCP slow", "image optimization", "bundle size", "srcset", "ביצועים", "מהירות האתר".
+description: Core Web Vitals for a static export on Cloudflare Pages — measured by scripts/audit/perf.mjs, not by hand — a text-only site with no imagery at all, the hand-pinned next/font preloads on the LCP path and why Next cannot emit them on Windows, the INP client-JS budget (Header client for one boolean, Faq → <details>), the 45 crawlable RSC index.txt payloads, the framer-motion dependency removed in 2026-09, CLS reserves, keeping dev-only chunks out of out/, and the kit's SiteImage/mediaUrl/srcsetFor pipeline (/site-images) for when photos finally arrive. Use before shipping or when LCP, CLS or INP regress. Triggers: "perf pass", "Core Web Vitals", "LCP slow", "image optimization", "bundle size", "srcset", "ביצועים", "מהירות האתר".
 ---
 
 # Core Web Vitals
@@ -18,10 +18,11 @@ node scripts/audit/perf.mjs            # or: npm run audit -- --scope perf   (--
 
 `perf.mjs` owns the numbers: `out/` weight, JS chunks, font preloads, RSC payloads, unused
 dependencies, `"use client"` inventory, `<img>` count. It refuses a stale `out/` via `run-all.mjs`
-— **rebuild before asserting** (backlog N12). As of 2026-08-23 (re-run, do not copy): `out/`
-5.42 MB in 170 files · JS 751 KB in 29 chunks, largest 173 KB (within the §10.4 budget) · 6 `.woff2`,
-**0 font preloads** (the one failure, §10.1) · 45 `index.txt` RSC payloads, 1.43 MB (§1.3) ·
-`framer-motion` imported nowhere (§10.3) · 4 client components (§10.2) · 0 `<img>` (§10.5).
+— **rebuild before asserting** (backlog N12). As of 2026-09-06 `perf.mjs` **passes** (re-run, do not
+copy): `out/` 5.53 MB in 134 files · JS 747 KB in 30 chunks, largest 173 KB (within the §10.4
+budget) · 6 `.woff2` with **2 font preloads** (§10.1 closed) · `unusedDeps []` (§10.3 closed) ·
+45 `index.txt` RSC payloads, 1.47 MB — the one open perf item (§1.3) · 4 client components (§10.2) ·
+0 `<img>` (§10.5).
 
 The script reads the artifact; it does not run a browser. For field numbers run Lighthouse / PSI
 against the **live** URL, mobile profile, on a service page, a location page and a blog post (the
@@ -50,39 +51,34 @@ explicitly), and `width`/`height` are mandatory under a static export.
 ## Fonts — the real LCP lever on this site
 
 Rubik is self-hosted via `next/font/google` (`app/layout.tsx:13-17`: subsets `hebrew` + `latin`,
-`display: "swap"`, exposed as `--font-rubik`). The export ships six `.woff2` files, and `next/font`
-marks two of them `.p.woff2` — its own preload candidates — yet the built `<head>` carries **no**
-`<link rel="preload" as="font">` (the only preload there is the webpack chunk). With a text-only LCP,
-every first paint waits on the font. This is the highest-value perf change available (§10.1).
+`display: "swap"`, exposed as `--font-rubik`). The export ships six `.woff2` files, two of them
+`.p.woff2` — `next/font`'s own preload candidates. With a text-only LCP, every first paint waits on
+the font, which is why this was the highest-value perf change available.
 
-Recipe, in order:
+**Done since 2026-09-06 (§10.1, commit `13a6bdc`) — `perf.mjs` → `fontPreloads 2`.** The two hrefs
+are pinned in `lib/fonts.ts` as `FONT_PRELOADS` and rendered by `app/layout.tsx` inside the same
+`<head>` as the `imgquarry` preconnect.
 
-1. Reproduce on a **clean rebuild** (N12) — a polluted `.next/` has dropped framework-injected tags
-   on this fleet before.
-2. Establish why the framework's default preload is absent (it is on by default for `next/font`);
-   the two `.p.woff2` files are the Hebrew + Latin faces the hero renders — confirm that pairing
-   by grepping the `@font-face` blocks in `out/_next/static/css/*.css`.
-3. If the framework still does not emit them, add the two by hand inside the existing `<head>`
-   block of `app/layout.tsx` (next to the `imgquarry` preconnect):
-   ```tsx
-   <link
-     rel="preload"
-     as="font"
-     type="font/woff2"
-     crossOrigin="anonymous"
-     href="/_next/static/media/<hash>-s.p.woff2"
-   />
-   ```
-   Hashes are content-derived and stable until the font file changes; extend `perf.mjs` to assert
-   every preloaded href exists in `out/` so a font bump cannot leave a dangling preload.
-4. **Preload the two `.p.woff2` only.** Preloading all six competes for the bandwidth that the HTML
-   and the one CSS file need first.
+**Why they are hand-added rather than framework-emitted — read this before "fixing" it.** Next's
+`NextFontManifestPlugin` tests `mod.request.includes("/next-font-loader/index.js?")` — a
+forward-slash literal — against a webpack `request` built with `path.join`, which yields backslashes
+on Windows. The substring can never match on this platform, `next-font-manifest.json` stays
+`{"pages":{},"app":{}}` on every build regardless of `output` mode, and no automatic preload link is
+ever emitted here. Deleting the hand-added links to "let the framework do it" ships zero preloads.
 
-Done when `perf.mjs` reports `fontPreloads` of 1–2 and the failure clears.
+**If the font config changes** (any edit to the `Rubik({...})` call), the hashes move and the pinned
+hrefs go stale. The procedure is in `lib/fonts.ts`'s own header comment: clean rebuild, grep the
+`@font-face` blocks in `out/_next/static/css/*.css` for the two `.p.woff2` files, match each to its
+`unicode-range` (Hebrew carries `u+0590-05ff`, Latin carries `u+0131`/`u+00??`), update the two
+hrefs, re-run `perf.mjs`. It fails on a preloaded href that is not a real file in `out/`, so a stale
+hash is caught by the gate rather than shipped as a 404 preload.
+
+**Preload those two and no more.** Preloading all six competes for the bandwidth the HTML and the one
+CSS file need first.
 
 ## JS budget — INP
 
-751 KB across 29 chunks for a brochure site is more than it needs. The four `"use client"` files
+747 KB across 30 chunks for a brochure site is more than it needs. The four `"use client"` files
 (`perf.mjs` / `rtl-lint.mjs` `clientComponents`) and what to do with each:
 
 | Component                       | Why client             | Action                                                                                                                                                                                                                   |
@@ -92,9 +88,7 @@ Done when `perf.mjs` reports `fontPreloads` of 1–2 and the failure clears.
 | `components/forms/LeadForm.tsx` | fetch + state          | Genuinely client. Keep it a leaf.                                                                                                                                                                                        |
 | `components/ui/Reveal.tsx`      | IntersectionObserver   | Genuinely client; see Motion below.                                                                                                                                                                                      |
 
-`framer-motion@^11` is a dependency **imported nowhere** — `npm uninstall framer-motion` (§10.3).
-It is not in the bundle today; the cost is install time, audit surface and the temptation to animate
-around the CSS reduced-motion reset. `perf.mjs` reports `unusedDeps` until it is gone.
+`framer-motion@^11` was a dependency **imported nowhere**; it was uninstalled 2026-09-06 (§10.3, commit `13a6bdc`) and `perf.mjs` now reports `unusedDeps []`. It never reached the bundle — the cost was install time, audit surface and the temptation to animate around the CSS reduced-motion reset. Do not add it back: `Reveal` already covers motion with an `IntersectionObserver` and a CSS transition, and `unusedDeps` will flag anything new that lands installed-but-unimported.
 
 ## RSC payloads — 45 `index.txt` files (§1.3)
 
@@ -135,11 +129,11 @@ breaks list semantics — an a11y finding (§11.2), handled in `/responsive-acce
 ## Checklist
 
 - [ ] `node scripts/audit/perf.mjs` run on a **clean** rebuild; the numbers you quote are from it.
-- [ ] Font preloads present for the two `.p.woff2` faces — and no more than two.
+- [ ] `fontPreloads 2` for the two `.p.woff2` faces — no more, and no dangling href (the script asserts each resolves in `out/`); re-check the pinned hashes in `lib/fonts.ts` after any `Rubik({...})` change.
 - [ ] The LCP element per route type is identified (it is text today — confirm it still is).
 - [ ] No new `"use client"` without a stated reason; Header split and Faq → `<details>` tracked (§10.2).
-- [ ] `framer-motion` removed, or actually used and `useReducedMotion()`-gated.
-- [ ] `out/` has no unreferenced file over 1 MB; total stays near 5.4 MB; `devBuildFiles 0`.
+- [ ] `unusedDeps []` — no dependency installed and imported nowhere.
+- [ ] `out/` has no unreferenced file over 1 MB; total stays near 5.5 MB; `devBuildFiles 0`.
 - [ ] If any image is added: `SiteImage`, Hebrew `alt`, `width`/`height`, box reserved, at most one
       `preloadPropsFor()` resource per page.
 - [ ] Lighthouse mobile on the live service / location / post URLs after deploy.

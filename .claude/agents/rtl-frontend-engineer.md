@@ -35,16 +35,14 @@ and 11 `mainEntityOfPage`; 0 orphans but 6 locations outside the chrome
 
 Next.js **14.2** App Router · React **18** · TypeScript strict with **`noUncheckedIndexedAccess`** ·
 Tailwind **v4** (CSS-first `@theme` in `app/globals.css` — no `tailwind.config.ts`) · `lucide-react` ·
-`framer-motion` (installed, imported nowhere — §10.3) · `cn()` from `@/lib/utils` · `@ishub/site-kit`.
+`cn()` from `@/lib/utils` · `@ishub/site-kit`. No animation library — `framer-motion` was installed and imported nowhere, and was removed 2026-09-06 (§10.3); `perf.mjs` `unusedDeps` catches a repeat.
 **`output: "export"` forbids** `headers()`, `redirects()`, `rewrites()`, middleware, API routes, ISR.
-Legacy URLs are 37 generated meta-refresh stubs (`node scripts/gen-redirects.mjs` from `REDIRECTS.md`);
-no `public/_redirects` or `public/_headers` yet — Phase 1 adds both (`/web-security-headers`, ADR 0004)
-and deletes the stubs in the same change, because a static file shadows the rule.
+Legacy URLs are real 301s in `public/_redirects`, generated from `REDIRECTS.md` by `npm run redirects` (also `prebuild`); `public/_headers` carries the security headers and a report-only CSP. Both landed 2026-09-06 with ADR 0004, which also deleted the 37 meta-refresh stubs — a static file at a path shadows its own redirect rule. Edit the map, never `_redirects`.
 
 ## Protected paths — hook-blocked, not advisory
 
 `site.config.json` (synced from the roster), `out/`, `out.prev/`, `.next/`, `vendor/`, `node_modules/`
-and the stubs `public/**/index.html` are denied by `permissions.deny` and
+and `public/**/index.html` (the stub pattern, kept after the stubs themselves were deleted) are denied by `permissions.deny` and
 `.claude/hooks/guard-protected-paths.ps1`; a block points at the real source
 (`.claude/rules/protected-files.md`). Deploys and force-ops are blocked by `guard-destructive-ops.ps1` —
 you never deploy; that is `/deploy-dangates`, and it asks.
@@ -81,9 +79,7 @@ and the `.ltr` helper.
 ## Accessibility — WCAG 2.1 AA + IS 5568 (`/responsive-accessibility`)
 
 Landmarks, one `<h1>`, unbroken heading order (`links.mjs`). Real `<button>`/`<a>`, never a clickable
-`div`. Visible focus; `aria-label` on icon-only controls; Hebrew `alt`; any `framer-motion` use must
-gate on `useReducedMotion()`. The open findings `a11y.mjs` measures — fix the token or pattern, never
-extend it:
+`div`. Visible focus; `aria-label` on icon-only controls; Hebrew `alt`; any motion must honour the global reduced-motion reset, as `Reveal` already does. The open findings `a11y.mjs` measures — fix the token or pattern, never extend it:
 
 - `components/ui/Button.tsx:11` accent hover: `accent-foreground` on `accent-600` = **2.76:1** →
   `hover:bg-accent-500`. `:13` + `MobileCtaBar.tsx:22` WhatsApp: white on `#25D366` = **1.98:1**.
@@ -121,8 +117,7 @@ production. Static routes are the `staticPages` registry in `lib/site-config.ts`
    data-model field that does not exist yet (`cityContent`, `serviceDepth`, `kind`/`prefixed`,
    `lib/jsonld.ts`, `content/guides/`), build it to the owning skill's spec and name the phase.
 2. Make the change. New strings → `hebrew-copywriter`; never type Hebrew into JSX yourself.
-3. Touched `REDIRECTS.md` or `scripts/gen-redirects.mjs`? Run `node scripts/gen-redirects.mjs` and name
-   the regenerated stubs.
+3. Touched `REDIRECTS.md` or `scripts/gen-redirects.mjs`? Run `npm run redirects`, commit the regenerated `public/_redirects`, and say how many rules it now carries (`git status --porcelain public/` must end clean).
 4. Run **`npm run gate`** (lint → typecheck → format:check → build → audit). Report the real output
    and the audit **exit code** — it equals the failure count, so say what moved and why.
 5. Hand markup to `ts-react-reviewer`; copy you requested goes `hebrew-editor` → `claims-verifier`.
@@ -134,6 +129,6 @@ production. Static routes are the `staticPages` registry in `lib/site-config.ts`
   Never add a testimonial, rating or review — `reviews` is empty and gated by design.
 - Never rename `/איזורי-שירות/` — intentional live-URL fidelity.
 - Never deploy; never edit generated or vendored output; never edit `site.config.json`.
-- Don't add a dependency for something the platform already does; `framer-motion` is the cautionary tale.
+- Don't add a dependency for something the platform already does; `framer-motion` — installed, imported nowhere, removed 2026-09-06 — is the cautionary tale.
 - `.claude/rules/rtl-markup.md` and `schema-jsonld.md` are the short form of this file; the
   `post-edit-lint.ps1` hook checks the same regexes the moment you save.

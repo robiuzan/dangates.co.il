@@ -1,6 +1,6 @@
 ---
 name: dangates-architecture
-description: Start-here orientation for dangates.co.il — the roster → site.config.json → lib/site-config.ts → lib/content.ts / lib/posts.ts → routes data flow, the file map, static-export constraints (no headers, redirects, middleware or API routes), the Hebrew dynamic-route matcher, the meta-refresh redirect stubs and their ADR 0004 replacement, the npm scripts including audit / audit:env / gate, the deploy truth, and the environment map (15 agents, 27 skills, 7 hooks, 4 rules, the audit scripts, the docs layer map, /audit, /improve and /sprint). Use at the start of any task in this repo, or when unsure where content, routes, metadata or business facts come from. Triggers: "where does X live", "how is this site built", "orient me", "architecture", "why is this not working in production", "איפה זה יושב", "איך האתר בנוי".
+description: Start-here orientation for dangates.co.il — the roster → site.config.json → lib/site-config.ts → lib/content.ts / lib/posts.ts → routes data flow, the file map, static-export constraints (no headers, redirects, middleware or API routes), the Hebrew dynamic-route matcher, the generated public/_redirects 301s that replaced the meta-refresh stubs in 2026-09 (ADR 0004), the npm scripts including audit / audit:env / gate, the deploy truth, and the environment map (15 agents, 27 skills, 7 hooks, 4 rules, the audit scripts, the docs layer map, /audit, /improve and /sprint). Use at the start of any task in this repo, or when unsure where content, routes, metadata or business facts come from. Triggers: "where does X live", "how is this site built", "orient me", "architecture", "why is this not working in production", "איפה זה יושב", "איך האתר בנוי".
 ---
 
 # dangates.co.il architecture
@@ -14,7 +14,7 @@ order, the latest audit verdict and the two entry points — start from those.
 
 Next **14.2** · React **18** · TypeScript strict + **`noUncheckedIndexedAccess`** · Tailwind **v4**
 (CSS-first `@theme` in `app/globals.css` — **no `tailwind.config.ts`**) · `lucide-react` ·
-`framer-motion` (imported nowhere, backlog §10.3) · `cn()` from `clsx` + `tailwind-merge` ·
+`cn()` from `clsx` + `tailwind-merge` ·
 `@ishub/site-kit` (vendored tarball of raw TS, hence `transpilePackages`). Flat layout, alias `@/*`.
 
 `next.config.mjs`: `output: "export"` · `trailingSlash: true` · `images: { unoptimized: true }` ·
@@ -80,15 +80,23 @@ Params arrive **percent-encoded** during static export. Both silo routes match w
 404s in production**. The same concern drives `app/sitemap.ts` (`encodeURI`, so `<loc>` equals the
 canonical byte for byte) and the schema `url` fields (`/schema-structured-data`, §4.7).
 
-## Redirects — 37 meta-refresh stubs today, `_redirects` in Phase 1
+## Redirects — real 301s from generated `public/_redirects`
 
-There is **no `public/_redirects`** yet. `scripts/gen-redirects.mjs` emits a stub at
-`public/<old-path>/index.html` for each row of `REDIRECTS.md`; Next copies `public/` into `out/`. The
-stubs are protected generated output — edit the map, then rerun the generator. They were a GitHub
-Pages workaround; on Cloudflare Pages a real `public/_redirects` issues 301s, keeps the query string
-(§13.3) and passes full equity. **ADR 0004** replaces them — same map, percent-encoded, stub
-directories deleted in the same commit, `deploy.yml` / `CNAME` / `.htaccess` retired, the Houston
-stub (N4) dropped. Procedure: `/web-security-headers`; proof: `edge.mjs`.
+`public/_redirects` carries **72 Cloudflare Pages 301 rules**, both columns percent-encoded, covering
+36 legacy paths in both their slashed and bare form (Pages matches a source literally, and this
+export ships nothing at a bare path). It is **generated**: `scripts/gen-redirects.mjs` builds it from
+`REDIRECTS.md` and runs on `prebuild`, writing only on a real change so a rebuild cannot trip the
+audit's staleness guard (N12). Edit the map, then `npm run redirects` — never the file.
+
+`public/_headers` sits beside it and carries the five security headers plus a report-only CSP.
+
+Until 2026-09-06 this worked the other way: 37 meta-refresh stubs at `public/<old-path>/index.html`,
+a GitHub Pages workaround that returned 200 with `noindex` **and** a canonical, stripped `gclid`/`utm`
+(§13.3) and added 45 % to the crawlable URL count. **ADR 0004** replaced them in commit `a0e0fe2`;
+the stub directories, the Houston stub (N4), `deploy.yml`, `CNAME` and `.htaccess` are all deleted.
+The `public/**/index.html` deny rule stays anyway, so the pattern cannot come back. Procedure:
+`/web-security-headers`; proof: `edge.mjs` → `redirectRules 72 · stubs 0 · redirectsFile true ·
+headersFile true · deadHostArtifacts 0`. None of it is live until the next deploy.
 
 ## What `@ishub/site-kit` gives you
 
@@ -114,7 +122,7 @@ is no `WebSite`, and `Service.url` / `mainEntityOfPage` carry raw Hebrew. Blog p
 | Audit the export                    | `npm run audit` · `npm run audit -- --scope seo                                                                   | schema | content | cro | security | perf | a11y`·`--json` |
 | Audit the environment               | `npm run audit:env` (dead citations, frontmatter, hooks, deny set, roster parity)                                 |
 | Full gate                           | `npm run gate` — lint → typecheck → format:check → build → audit                                                  |
-| Regenerate redirects                | `node scripts/gen-redirects.mjs`                                                                                  |
+| Regenerate redirects                | `npm run redirects` — rewrites `public/_redirects` from `REDIRECTS.md`; also runs on `prebuild`                   |
 
 `npm run audit` refuses a stale `out/` (N12) and exits with the failure count. Until Phase 1 lands the
 bar is **no failure absent from the latest `docs/audits/` report** — the known-baseline table lives in
@@ -176,8 +184,8 @@ force-push, `reset --hard`, `git clean`, `rm -rf`, deploys and Cloudflare calls 
 ## Deploy, and where to go next
 
 **Cloudflare Pages, direct upload via wrangler** (`ops/deploy-site.ps1 -DryRun`, then `-Confirm` with
-the approval marker — `/deploy-dangates`). `.github/workflows/deploy.yml` publishes to GitHub Pages,
-which no longer serves this domain. Zone settings are owner-only (`docs/owner-actions.md` §1,
+the approval marker — `/deploy-dangates`). Pushing to `main` publishes **nothing** — the GitHub Pages
+workflow, `CNAME` and `.htaccess` were deleted 2026-09-06 (ADR 0004), so there is no second origin. Zone settings are owner-only (`docs/owner-actions.md` §1,
 `docs/cloudflare-runbook.md`). Backlog id in hand → `/improve <id>`; no id → `docs/agent-roster.md`
 §3 "ask → route"; writing markup → `/hebrew-rtl` first, always; shipping → `/qa-build-gate` then
 `/deploy-dangates`.

@@ -1,6 +1,6 @@
 ---
 name: conversion-cro
-description: Lead conversion on dangates — click-to-call above the fold, the sticky mobile bar, the Web3Forms lead form (the delivery-failure state that renders nothing, per-field errors with aria-invalid, Israeli phone validation that accepts landlines, a consent line, the city field, a real /תודה/ route with a tel link), the pricing page that ends without a CTA, data-cta on every CTA, and the honest-trust gate now that the fabricated reviews are gone. Use when conversions are weak, a page is missing its CTAs, or the form needs work. Triggers: "improve conversions", "CRO pass", "form validation", "thank you page", "add click-to-call", "why aren't leads tracked", "הטופס לא עובד", "דף תודה".
+description: Lead conversion on dangates — click-to-call above the fold, the sticky mobile bar, the Web3Forms lead form (its delivery-failure alert, shipped 2026-09; the still-missing per-field errors with aria-invalid, Israeli phone validation that accepts landlines, a consent line, the city field, a real /תודה/ route with a tel link), the pricing page that ends without a CTA, data-cta now on every CTA, and the honest-trust gate now that the fabricated reviews are gone. Use when conversions are weak, a page is missing its CTAs, or the form needs work. Triggers: "improve conversions", "CRO pass", "form validation", "thank you page", "add click-to-call", "why aren't leads tracked", "הטופס לא עובד", "דף תודה".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -21,33 +21,45 @@ node scripts/audit/run-all.mjs --scope cro     # data-cta coverage, pages with n
 node scripts/audit/a11y.mjs                    # LeadForm / Faq / Header / Process source checks
 ```
 
-As of 2026-08-23: 24 CTA instances without `data-cta`; `/מחירון/` is the one commercial page whose
-`<main>` has no call/WhatsApp/form CTA; `a11y.mjs` fails on the form (no `aria-invalid`, no pattern).
+As of 2026-09-06: `cta-coverage.mjs` **passes** — `missingDataCta 0` across 113 CTA elements (§13.2
+closed by `fee7f69`). `/מחירון/` is still the one commercial page whose `<main>` has no
+call/WhatsApp/form CTA (§8.5, a warning not a failure); `a11y.mjs` still fails on the form (no
+`aria-invalid`, no pattern — §8.1).
 
 ## What already works — don't regress it
 
 - `MobileCtaBar` is fixed-bottom, 50/50 call/WhatsApp, `lg:hidden`, with the `h-16 lg:hidden` spacer
   in `app/layout.tsx:76` so it never covers the footer.
 - Click-to-call above the fold on every page (header + hero); `FinalCta` on 41 of 45 pages.
-- `LeadForm` falls back to a **prefilled WhatsApp deep link** when the Web3Forms POST fails
-  (`components/forms/LeadForm.tsx:85-90`) — lead-loss insurance. Keep the fallback; fix its UI (Gap 1).
+- `LeadForm` falls back to a **prefilled WhatsApp deep link** when the Web3Forms POST fails, and
+  since 2026-09-06 also renders it as a visible `role="alert"` block with a real link and a `tel:`
+  link (Gap 1) — lead-loss insurance that survives a popup blocker. Keep both halves.
 - `trackEvent("lead_submit")` (`:97`) fires only on **confirmed** success, outside the `try`. Keep it.
 - Every field has a `<label htmlFor>`; honeypot `company` (`:45`); public-by-design Web3Forms key
   (backlog §12.5).
 
 ## The six gaps — each with its fix design
 
-### Gap 1 — delivery failure is silent and the error state renders nothing (N1, §8.6)
+### Gap 1 — delivery failure ~~is silent~~ (N1 ✅ 2026-09-06 · §8.6 PARTIAL)
 
-`components/forms/LeadForm.tsx:64-66` and `:85-90` set `status` to `"error"` and `window.open` a
-WhatsApp link — but nothing in the JSX branches on `status === "error"`; the only visible error is the
-client-side `error` string (`:49`, rendered at `:201-205`), which delivery failure never sets. A user
-whose POST failed and whose popup was blocked sees the form sit there, submit button enabled, no
-message. Fix: an explicit `status === "error"` block above the button — `role="alert"`, Hebrew copy
-("השליחה נכשלה — שלחו לנו בוואטסאפ או התקשרו"), the same `buildWhatsapp(form)` href rendered as a
-real `<a data-cta="form-whatsapp">` (a link cannot be popup-blocked) plus the `tel:` link, submit
-re-enabled for retry. Detect the blocked popup (`window.open` returns `null`) and push `lead_error`
-with `reason` per the taxonomy.
+**The UI half shipped** in commit `fee7f69`. `LeadForm` branches on `status === "error"` and renders
+a `role="alert"` block **after** the submit button and the WhatsApp line — deliberately after, so it
+reads in source order rather than above the control the user just pressed. It carries the same
+`buildWhatsapp(form)` href as a real `<a data-cta="form-whatsapp">` (a link cannot be popup-blocked),
+a `tel:` link (`data-cta="form-call"`), and relabels the submit button to
+`leadFormErrorCopy.retryLabel` so retrying is one press. Its four strings live in `leadFormErrorCopy`
+in `lib/content.ts`, not in the JSX. A blocked popup (`window.open` returning `null`) pushes
+`lead_error` with `reason: "popup_blocked"`; the other three call sites push `network` or
+`http_<code>`.
+
+Before this, `status` was set to `"error"` and a WhatsApp window opened, but nothing in the JSX
+branched on it — the only visible error was the client-side validation string, which delivery
+failure never set. A user whose POST failed and whose popup was blocked saw the form sit there,
+submit button enabled, no message.
+
+**Still open under §8.6:** nothing consumes `lead_error`. No GTM tag or trigger reads it, and no GA4
+property exists to receive it (§13.7 ⏳ owner). The failure is visible to the user and invisible to
+the business until both land — that is container work, not a repo change.
 
 ### Gap 2 — validation and a11y (§8.1)
 
@@ -91,19 +103,23 @@ back. Send it in the Web3Forms body and as the `city` dimension on `lead_submit`
 ### Gap 6 — the pricing page ends without a CTA (§8.5)
 
 `/מחירון/` is reached with active buying intent and is the only commercial page whose `<main>` has no
-call/WhatsApp/form action (`cta-coverage.mjs` warns). `components/marketing/PricingTeaser.tsx:49`
-links to `/צור-קשר` — untagged, and missing the trailing slash the export enforces (N10). Fix: add
-`pricing-call` and `pricing-whatsapp` buttons beside it (or render `FinalCta` on the route), tag the
-link `pricing-contact`, and write `/צור-קשר/`. The page's _copy_ problem — eight of nine prices are
+call/WhatsApp/form action (`cta-coverage.mjs` warns). The `PricingTeaser` button now carries
+`data-cta="pricing-contact"` (§13.2, `fee7f69`), so the click is countable — but a link to the
+contact page is not a call. Fix: add `pricing-call` and `pricing-whatsapp` buttons beside it, or
+render `FinalCta` on the route. Its `href` is still the bare `/צור-קשר`; Next normalises it in the
+export (N10 closed on the shipped output), so write `/צור-קשר/` while you are in the file rather
+than as its own task. The page's _copy_ problem — eight of nine prices are
 authored estimates and real ones are not coming — is backlog §4.10/§7.3, not a CRO change.
 
 ## `data-cta` coverage
 
-GTM click triggers read `data-cta`; 24 page-instances carry none today — the service-page sidebar
-(×7), the contact page's call/WhatsApp/email, the form's submit and WhatsApp fallback, the pricing
-link and the footer email. The full table with values to add is in `/tracking-analytics`; the
-convention is `{location}-{action}` and the script enforces it. Tagging is free; a missing attribute
-makes the click permanently invisible.
+GTM click triggers read `data-cta`, and **every CTA carries one since 2026-09-06** (§13.2, commit
+`fee7f69`): `cta-coverage.mjs` → `ctaElements 113 · withDataCta 113 · missingDataCta 0`. The last 24
+untagged instances were the service-page sidebar (×7), the contact page's call/WhatsApp/email, the
+form's submit and WhatsApp fallback, the pricing link and the footer email. The full value list is in
+`/tracking-analytics`; the convention is `{location}-{action}` and the script enforces it. Any new
+CTA needs its own value in the same edit — a missing attribute makes the click permanently invisible,
+and it is the only way that 0 moves.
 
 ## The honest-trust gate — read before adding any trust signal
 

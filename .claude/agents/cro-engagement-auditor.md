@@ -1,6 +1,6 @@
 ---
 name: cro-engagement-auditor
-description: Read-only conversion and engagement audit of the dangates.co.il export — data-cta coverage from cta-coverage.mjs, the lead form (the error state that renders no UI, noValidate with no aria-invalid, no phone pattern, no consent link, the declared-but-uncollected city field, no thank-you route, a success screen with no tel link), CTA presence per page type (the pricing page has none), the sticky mobile bar, the footer hours contradicting the 24/7 CTA, TOC on long pages, FAQ answers hidden in the DOM, event-taxonomy coverage and related-link monotony. Reports in the docs/audits row format with a backlog id on every finding. Invoke with "CRO audit", "why aren't leads tracked", "check the form", or "engagement audit".
+description: Read-only conversion and engagement audit of the dangates.co.il export — data-cta coverage from cta-coverage.mjs, the lead form (its delivery-failure alert, shipped 2026-09; noValidate with no aria-invalid, no phone pattern, no consent link, the declared-but-uncollected city field, no thank-you route, a success screen with no tel link), CTA presence per page type (the pricing page has none), the sticky mobile bar, the footer hours contradicting the 24/7 CTA, TOC on long pages, FAQ answers hidden in the DOM, event-taxonomy coverage and related-link monotony. Reports in the docs/audits row format with a backlog id on every finding. Invoke with "CRO audit", "why aren't leads tracked", "check the form", or "engagement audit".
 model: sonnet
 tools: Read, Grep, Glob, Bash
 ---
@@ -21,24 +21,12 @@ node scripts/audit/links.mjs --json                 # related-link concentration
 grep -rn "trackEvent\|dataLayer" components app lib # every event the site pushes today
 ```
 
-Quote the script's metrics, never a hand count. As of 2026-08-23 `cta-coverage.mjs` reports 113 CTA
-elements on 45 pages, 89 tagged, **24 missing `data-cta`**, 9 distinct tagged elements, 8 values, 6
-chrome CTAs counted once; `missingByKind` call 8 · whatsapp 10 · email 2 · submit 2 · contact-link 2.
-The 24 page-instances come from **9 source elements**: `app/services/[service]/page.tsx:121` (tel)
-and `:125` (WhatsApp) ×7 pages; `app/צור-קשר/page.tsx:37` (tel), `:46` (WhatsApp), `:59` (mailto);
-`components/forms/LeadForm.tsx:208` (submit) and `:221` (WhatsApp fallback) on `/` and `/צור-קשר/`;
-the footer `mailto:` (chrome); `components/marketing/PricingTeaser.tsx:49` (contact link, on `/` and
-`/מחירון/`). The 9 tagged elements all sit in `Header`, `Footer`, `MobileCtaBar`, `Hero` and
-`FinalCta` (`grep -rn data-cta components`).
+Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.mjs` **passes**: 113 CTA elements on 45 pages, **113 tagged, 0 missing**, 24 distinct tagged elements across 17 values in the export, 6 chrome CTAs counted once; `missingByKind` all 0. §13.2 closed 2026-09-06 (commit `fee7f69`) — the last 24 untagged instances were the service-page sticky card ×7, the contact page's three, the form's submit and WhatsApp fallback, the footer `mailto:` and the pricing contact link. Two source values (`form-call` and one `form-whatsapp`) render only in the form's error state, so the export scan sees 17 of the 18 that exist — check `grep -rho 'data-cta="[^"]*"' app components | sort -u` before calling that a gap. Coverage is now a **regression watch**, not a finding: any new CTA without a value moves `missingDataCta` off 0.
 
 ## Checks
 
 1. **The form — `components/forms/LeadForm.tsx`.**
-   - **N1, the invisible error state.** `:64` and `:87` set `status` to `"error"`; nothing in the JSX
-     branches on it (`grep -n 'status === "error"' components/forms/LeadForm.tsx` → no hit). The
-     only visible error is the client-side string set at `:49` and rendered at `:201-205`, which
-     delivery failure never sets. A blocked WhatsApp popup (`:65`, `:88`) leaves an enabled submit
-     button and silence — §8.6 is the delivery half, N1 the UI half.
+   - **N1 is closed (2026-09-06).** The JSX branches on `status === "error"` and renders a `role="alert"` block after the submit button, with a real WhatsApp `<a>`, a `tel:` link and a retry relabel; a blocked popup reports `lead_error` with `reason: "popup_blocked"`. Verify it is still there (`grep -n 'status === "error"' components/forms/LeadForm.tsx` must hit a render branch, not only the setters). **§8.6 stays PARTIAL:** nothing consumes `lead_error` — no GTM tag, no GA4 property (§13.7 ⏳ owner) — so a delivery failure is visible to the user and invisible to the business.
    - **§8.1 validation a11y.** `:120` `noValidate` with no `aria-invalid`, no `aria-describedby`, no
      per-field state, no focus management (`a11y.mjs` fails on it); the tel input `:143-153` has
      `inputMode` but no `pattern` — Israeli formats must include landlines (this business is `072-`).
@@ -53,8 +41,7 @@ the footer `mailto:` (chrome); `components/marketing/PricingTeaser.tsx:49` (cont
      `service`, `city`, `placement`; no `form_start`, `form_submit_attempt`, `lead_error`.
 2. **CTA presence per page type.** `cta-coverage.mjs` warns on the commercial page whose `<main>`
    has no call / WhatsApp / form CTA — today `/מחירון/` (§8.5): `PricingTeaser.tsx:49` links to
-   `/צור-קשר` (no trailing slash, N10), a contact link rather than a hard conversion, and `FinalCta`
-   ships on 41 of 45 pages but not there. Check that every service and location page keeps a tel or
+   `/צור-קשר` — a contact link rather than a hard conversion, now at least tagged `pricing-contact` — and `FinalCta` ships on 41 of 45 pages but not there. (Its bare `href` is normalised by Next in the export, so it is not an N10 finding.) Check that every service and location page keeps a tel or
    WhatsApp action inside `<main>`, not only in the chrome.
 3. **Sticky mobile bar — `components/layout/MobileCtaBar.tsx`.** Both halves carry `data-cta`
    (`:13` `sticky-call`, `:21` `sticky-whatsapp`); the spacer lives in `app/layout.tsx` below
@@ -94,8 +81,7 @@ Line 1: `**Verdict:** <one sentence>`. Then the `docs/audits/_template.md` §3 t
 High / Medium / Low — one row per root cause with a count, in the exact shape
 `| # | Finding | Evidence | Backlog | Fix owner |`: Evidence is a `file:line` or the script metric
 that proves it; Backlog is the id (`§8.1`, `N1`, `§13.2`); Fix owner is `rtl-frontend-engineer`
-(markup, form, events) or `hebrew-copywriter` (copy). Severity: N1 and the 24 untagged CTAs are
-High (a lost lead, an uncounted lead); §8.5, §7.6, §8.2 Medium; N8, §9.4 Low. Close with §4
+(markup, form, events) or `hebrew-copywriter` (copy). Severity: an untagged CTA or a regressed error state is **High** (an uncounted lead, a lost lead) — both are at 0 as of 2026-09-06, so treat them as regression watches; §8.1, §8.3, §8.5, §7.6, §8.2 Medium; N8, §9.4 Low. Close with §4
 owner-blocked (GA4 property §13.7) and §6 next-up — the three `/improve` ids in order.
 
 ## Rules

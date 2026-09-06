@@ -96,8 +96,7 @@ finding), `Offer` / `OfferCatalog` on `/מחירון/` (8 of 9 prices are author
 
 ## Method
 
-1. Run the baseline. Then glob `out/**/index.html`, extract every `ld+json` block, parse each. Exclude
-   the 37 redirect stubs — `noindex`, no schema by design (gone once ADR 0004 lands).
+1. Run the baseline. Then glob `out/**/index.html`, extract every `ld+json` block, parse each. All 46 are real pages — 45 content plus `/404` — since the 37 schema-less redirect stubs were deleted with ADR 0004 (2026-09-06).
 2. Per route type, diff the emitted node set against schema-graph §2 and name what is absent.
 3. Diff values against `site.config.json` and the visible text on the same page.
 4. `grep -rl 'aggregateRating\|"@type": *"Review"' out --include=index.html` must print nothing; also
