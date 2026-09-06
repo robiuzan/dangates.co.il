@@ -680,7 +680,7 @@ node scripts/audit/perf.mjs   # ✅ fontPreloads 2 · woff2Files 6 · unusedDeps
 `perf.mjs`: ~751 kB across 29 chunks, 4 `"use client"` components. `Header` is client for one
 boolean; `Faq` could be `<details>/<summary>` with zero JS while keeping answers in the DOM (N8).
 
-### 10.3 — P2 · S · [✅ DONE 2026-09-06] `framer-motion` is a dependency imported nowhere
+### 10.3 — P2 · S · [✅ DONE 2026-09-06] `framer-motion` was a dependency imported nowhere
 
 `perf.mjs` → `unusedDeps: ["framer-motion"]`. `npm uninstall` it.
 
