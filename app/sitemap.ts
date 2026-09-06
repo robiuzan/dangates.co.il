@@ -1,11 +1,19 @@
 import type { MetadataRoute } from "next";
-import { siteConfig, services, locations, locationsUpdated } from "@/lib/site-config";
+import {
+  siteConfig,
+  services,
+  locations,
+  locationsUpdated,
+  staticPages,
+} from "@/lib/site-config";
 import { posts } from "@/lib/posts";
 
 /**
  * Generates /sitemap.xml from the static routes + the service, location and blog matrices.
  * Paths use the Hebrew URL scheme; all cities are normalized under /locations/<he-slug>/.
- * Extend `staticPages` when new top-level pages are added.
+ * The route set is entirely data-driven: `staticPages`, `services`, `locations` and
+ * `posts`, all from lib/. Nothing is declared here, so a new page cannot ship missing —
+ * `scripts/audit/links.mjs` fails when the registry and the `app/` tree disagree.
  *
  * Every entry MUST carry a trailing slash: the export runs with `trailingSlash: true`
  * (next.config.mjs), so a slash-less URL 301s to the slashed one and the sitemap would
@@ -29,23 +37,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
    */
   const url = (path: string) => encodeURI(`${base}/${path ? `${path}/` : ""}`);
 
-  /** Top-level routes whose copy is hand-written in their own `page.tsx`. */
-  const staticPages = [
-    { path: "", updated: "2026-07-13" },
-    { path: "שירותים", updated: "2026-07-13" },
-    { path: "איזורי-שירות", updated: "2026-07-13" },
-    { path: "מחירון", updated: "2026-07-13" },
-    { path: "blog", updated: "2026-07-13" },
-    { path: "אודות", updated: "2026-07-13" },
-    { path: "צור-קשר", updated: "2026-07-13" },
-    { path: "מדיניות-פרטיות", updated: "2026-07-13" },
-    { path: "הצהרת-נגישות", updated: "2026-07-13" },
-  ];
-
-  const staticEntries: MetadataRoute.Sitemap = staticPages.map((p) => ({
-    url: url(p.path),
-    lastModified: p.updated,
-  }));
+  /** `noindex` routes are registered but never listed — see `StaticPage`. */
+  const staticEntries: MetadataRoute.Sitemap = staticPages
+    .filter((p) => !p.noindex)
+    .map((p) => ({
+      url: url(p.path),
+      lastModified: p.updated,
+    }));
 
   const serviceEntries: MetadataRoute.Sitemap = services.map((s) => ({
     url: url(`services/${s.slug}`),

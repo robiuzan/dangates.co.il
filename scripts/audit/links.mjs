@@ -6,6 +6,9 @@
  *     zero inbound = orphan (fail); a page whose siblings sit in the sitewide chrome (the hrefs
  *     common to ≥ CHROME_SHARE of pages = header/footer/mobile bar) but which does not = warn (§9.2)
  *   - sitemap.xml ↔ emitted content tree, both directions (fail, §1.4/§1.8); stubs + 404 as metrics
+ *   - the staticPages registry (lib/site-config.ts) ↔ the app/ route tree (fail, §1.4): the nine
+ *     static routes derive from no data array, so this is what stops one drifting out of the sitemap
+ *   - <lastmod> is a real, non-future W3C date on every entry (fail, §1.8)
  *   - exactly one <h1> inside <main> (fail, CLAUDE.md §8); skipped heading levels (warn, §3.10)
  *   - BreadcrumbList JSON-LD on every page but "/" (fail, §4.3)
  *   - hrefs that resolve to nothing in out/ (fail, §9) or to a redirect stub / the 404 (warn, §1.1)
@@ -15,10 +18,12 @@
  * Usage: node scripts/audit/links.mjs [--json]
  */
 
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import {
   OUT,
+  ROOT,
+  readSrc,
   emittedPages,
   readSitemap,
   internalLinks,
@@ -40,6 +45,30 @@ function resolvesInOut(p) {
   return existsSync(
     p.endsWith("/") ? path.join(OUT, p, "index.html") : path.join(OUT, p),
   );
+}
+
+/** Is `YYYY-MM-DD` a date that actually exists (rejects 2026-02-30, 2026-13-01)? */
+function isRealDate(d) {
+  const [y, m, day] = d.split("-").map(Number);
+  const t = new Date(Date.UTC(y, m - 1, day));
+  return t.getUTCFullYear() === y && t.getUTCMonth() === m - 1 && t.getUTCDate() === day;
+}
+
+/**
+ * Top-level routes that exist in the app/ tree: every directory directly under app/ holding
+ * its own page.tsx, plus app/page.tsx as the homepage (registered as ""). services/ and
+ * locations/ hold only dynamic children, so they carry no page.tsx here and drop out on
+ * their own — their URLs come from the data arrays instead.
+ */
+function appStaticRoutes() {
+  const app = path.join(ROOT, "app");
+  if (!existsSync(app)) return [];
+  const routes = readdirSync(app, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && !e.name.startsWith("[") && !e.name.startsWith("("))
+    .filter((e) => existsSync(path.join(app, e.name, "page.tsx")))
+    .map((e) => e.name);
+  if (existsSync(path.join(app, "page.tsx"))) routes.push("");
+  return routes;
 }
 
 const push = (map, key, value) => map.set(key, [...(map.get(key) ?? []), value]);
@@ -149,6 +178,77 @@ export function run() {
       `${emittedNotInSitemap.length} content page(s) are absent from sitemap.xml`,
       list(emittedNotInSitemap),
       "backlog §1.4",
+    );
+
+  // ── 2b. staticPages registry ↔ the app/ route tree (§1.4) ───────────────────
+  // The parity check above catches a missing page only after a build, and only names the
+  // URL. This names the route AND the file to fix, and fails even on a build that never ran.
+  const registry =
+    readSrc("lib/site-config.ts").match(
+      /export const staticPages[^=]*=\s*\[([\s\S]*?)\n\];/,
+    )?.[1] ?? null;
+  if (registry === null)
+    r.fail(
+      "staticPages registry not found in lib/site-config.ts",
+      "app/sitemap.ts derives its static entries from it; this check cannot run without it.",
+      "backlog §1.4",
+    );
+  else {
+    const registered = new Set(
+      [...registry.matchAll(/path:\s*"([^"]*)"/g)].map((m) => m[1]),
+    );
+    const appRoutes = appStaticRoutes();
+    const unregistered = appRoutes.filter((n) => !registered.has(n));
+    const ghosts = [...registered].filter((n) => !appRoutes.includes(n));
+    if (unregistered.length)
+      r.fail(
+        `${unregistered.length} top-level route(s) exist in app/ but are absent from the staticPages registry`,
+        [
+          list(unregistered.map((n) => `/${n}` + (n ? "/" : ""))),
+          "Add them to staticPages in lib/site-config.ts, with the date the copy last changed.",
+        ].join("\n"),
+        "backlog §1.4",
+      );
+    if (ghosts.length)
+      r.fail(
+        `${ghosts.length} staticPages entr(ies) name a route that no longer exists in app/`,
+        [
+          list(ghosts.map((n) => `/${n}` + (n ? "/" : ""))),
+          "Remove them from lib/site-config.ts, or the sitemap will list a 404.",
+        ].join("\n"),
+        "backlog §1.4",
+      );
+    r.metric("staticRoutesRegistered", registered.size);
+  }
+
+  // ── 2c. <lastmod> is a real, non-future date (§1.8) ─────────────────────────
+  // Nothing asserted anything about <lastmod> before: pages.mjs parsed the field and no
+  // check read it. Google honours <lastmod> only while it stays verifiably accurate, so a
+  // malformed or future date is worse than none at all.
+  const today = new Date().toISOString().slice(0, 10);
+  const malformed = [];
+  const future = [];
+  for (const u of sitemap) {
+    if (!u.lastmod) {
+      malformed.push(`${u.path} — missing`);
+      continue;
+    }
+    const day = u.lastmod.slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}([T ].*)?$/.test(u.lastmod) || !isRealDate(day))
+      malformed.push(`${u.path} — ${u.lastmod}`);
+    else if (day > today) future.push(`${u.path} — ${u.lastmod}`);
+  }
+  if (malformed.length)
+    r.fail(
+      `${malformed.length} sitemap entr(ies) carry no valid W3C <lastmod>`,
+      list(malformed),
+      "backlog §1.8",
+    );
+  if (future.length)
+    r.fail(
+      `${future.length} sitemap <lastmod> value(s) are in the future (today is ${today})`,
+      list(future),
+      "backlog §1.8",
     );
 
   // ── 3. one <h1> in <main>; no skipped heading levels ───────────────────────

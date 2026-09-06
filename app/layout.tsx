@@ -28,6 +28,13 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.tagline,
+  // Search Console HTML-tag verification. Inert until the owner puts a token in the roster
+  // manifest (analytics.googleSiteVerification, null today), exactly like the GTM loader —
+  // the slot has existed in the manifest since the rebuild with nothing reading it, so the
+  // meta-tag route silently no-opped. The DNS TXT method needs nothing here.
+  ...(manifest.analytics?.googleSiteVerification
+    ? { verification: { google: manifest.analytics.googleSiteVerification } }
+    : {}),
   openGraph: {
     images: ogImageMeta(manifest.images),
     type: "website",

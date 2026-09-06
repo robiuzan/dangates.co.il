@@ -111,6 +111,46 @@ export type LocationSlug = (typeof locations)[number]["slug"];
  */
 export const locationsUpdated = "2026-07-13";
 
+/**
+ * A top-level route whose copy is hand-written in its own `page.tsx`.
+ *
+ * `path`     route segment as it appears after the domain, decoded (`""` = homepage).
+ * `updated`  ISO date this page's copy last changed — it becomes the sitemap <lastmod>,
+ *           so bump it ONLY for real copy edits, never for styling, metadata or
+ *           analytics work, or the signal stops meaning anything.
+ * `noindex`  the route exists but is deliberately kept out of the sitemap (a thank-you
+ *           page, say). Recorded rather than omitted so the audit can tell "excluded on
+ *           purpose" from "forgotten" — without it, backlog §8.3's planned /תודה/ would
+ *           make the links.mjs parity check fail the moment it shipped.
+ */
+export type StaticPage = {
+  readonly path: string;
+  readonly updated: string;
+  readonly noindex?: boolean;
+};
+
+/**
+ * The static routes, completing the URL set: every other page the sitemap emits derives
+ * from `services`, `locations` or `posts`, and these nine derive from nothing.
+ *
+ * They lived as a literal inside `app/sitemap.ts` until backlog §1.4. The sitemap was the
+ * only thing that knew they existed, so nothing tied the list to the routes it claimed to
+ * describe and a tenth top-level page would ship absent from it. Keeping them here puts
+ * every sitemap-eligible route in one file, and `scripts/audit/links.mjs` now cross-checks
+ * this array against the `app/` tree — so drift fails at the registry, naming the route.
+ */
+export const staticPages: readonly StaticPage[] = [
+  { path: "", updated: "2026-07-13" },
+  { path: "שירותים", updated: "2026-07-13" },
+  { path: "איזורי-שירות", updated: "2026-07-13" },
+  { path: "מחירון", updated: "2026-07-13" },
+  { path: "blog", updated: "2026-07-13" },
+  { path: "אודות", updated: "2026-07-13" },
+  { path: "צור-קשר", updated: "2026-07-13" },
+  { path: "מדיניות-פרטיות", updated: "2026-07-13" },
+  { path: "הצהרת-נגישות", updated: "2026-07-13" },
+];
+
 // ── Link helpers ───────────────────────────────────────────────────────────
 
 /** `tel:` href for click-to-call (shared @ishub/site-kit, bound to the manifest). */
