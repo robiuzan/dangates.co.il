@@ -8,8 +8,8 @@ package-lock.json
 pnpm-lock.yaml
 yarn.lock
 
-# Generated output — regenerate with `node scripts/gen-redirects.mjs`, never format.
-# public/ holds the 37 legacy redirect stubs the generator emits. Prettier reformatting
-# them makes the committed files stop matching their generator, so the next regeneration
-# shows 37 spurious diffs (and CLAUDE.md golden rule 9 forbids editing generated output).
+# public/_redirects is generated (regenerate with `node scripts/gen-redirects.mjs`); public/_headers
+# and the site's static assets (e.g. dangates-logo.png) aren't Prettier targets anyway. Ignoring the
+# whole directory keeps the generated file from drifting off its generator on the next run (CLAUDE.md
+# golden rule 9 forbids editing generated output by hand).
 public

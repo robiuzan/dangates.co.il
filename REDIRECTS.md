@@ -1,8 +1,11 @@
 # Redirect map — dangates.co.il rebuild
 
-301 redirects to apply at **Cloudflare** during cutover (old live WordPress URL → new Next.js URL).
-All old→new pairs below. Hebrew paths are shown decoded; apply them URL-encoded (percent-encoded
-UTF-8) as needed. Trailing slashes match the site's `trailingSlash: true` output.
+301 redirects, applied via `public/_redirects` (old live WordPress URL → new Next.js URL) — Cloudflare
+Pages reads that file at the edge and issues the real 301s; `scripts/gen-redirects.mjs` generates it
+from the map below. All old→new pairs below. Hebrew paths are shown decoded; the generator emits them
+URL-encoded (percent-encoded UTF-8). Trailing slashes match the site's `trailingSlash: true` output —
+and because Cloudflare Pages matches a source path literally, the generator emits **each mapped path
+twice**, in its slashed and bare form, so an inbound link in either shape 301s instead of reaching the 404. That is why `_redirects` carries 72 rules for the 37 pairs listed here.
 
 ## 1. Locations — normalize all 18 cities to `/locations/<he-slug>/`
 
@@ -61,9 +64,9 @@ The live site scattered most cities at the site root; the rebuild serves them al
 
 ## 4. Drop the Houston leftover (allgatesrepair automation)
 
-| Old (live)                                                                         | New                                                                              |
-| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `/pages_automation/*` (e.g. `/pages_automation/הנחות-סתיו-בלעדיות-לתושבי-יוסטון/`) | `/` (drop — irrelevant "Houston" automation content from the un-rebranded theme) |
+| Old (live)                                                                         | New                                                                                                                                                                                                                             |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/pages_automation/*` (e.g. `/pages_automation/הנחות-סתיו-בלעדיות-לתושבי-יוסטון/`) | **no rule — let it 404.** Irrelevant "Houston" automation content from the un-rebranded theme; it is not a page of this business, so it is dropped rather than redirected (ADR 0004). The generator's map omits it deliberately |
 
 ## Notes
 

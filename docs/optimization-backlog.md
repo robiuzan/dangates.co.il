@@ -64,11 +64,11 @@ Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region p
 Script: `edge.mjs` (stubs, `_redirects`, `_headers`, dead hosts) · `titles.mjs` (`og:url`) ·
 `perf.mjs` (RSC payloads) · `links.mjs` (sitemap parity).
 
-### 1.1 — P0 · M · [NOT STARTED] The 37 legacy URLs are 200-status meta-refresh stubs, not 301s
+### 1.1 — P0 · M · [✅ DONE 2026-09-06 · repo] The 37 legacy URLs were 200-status meta-refresh stubs, not 301s
 
-`scripts/gen-redirects.mjs:3-4` explains itself: _"On static GitHub Pages there is no server to issue
-301s."_ **That premise is obsolete** — the site runs on Cloudflare Pages, which reads
-`public/_redirects` and issues real 301s. Decision: [ADR 0004](decisions/0004-redirects-replace-stubs.md).
+The old `scripts/gen-redirects.mjs` explained itself in its own header: _"On static GitHub Pages there
+is no server to issue 301s."_ **That premise was obsolete** — the site runs on Cloudflare Pages, which
+reads `public/_redirects` and issues real 301s. Decision: [ADR 0004](decisions/0004-redirects-replace-stubs.md).
 
 Each stub is a rendered HTML page returning **200**, carrying both `<meta name="robots" content="noindex">`
 **and** `<link rel="canonical">` to the destination. Google's guidance is explicitly not to combine
@@ -87,8 +87,22 @@ not a redirect this business needs.
 
 Retire `.github/workflows/deploy.yml`, `public/CNAME` and `public/.htaccess` in the same change —
 GitHub Pages ignores `_redirects`, so once the stubs are gone that second origin serves a redirect-less
-copy of the site (§12.4, N5). Verify: `edge.mjs` → `stubs: 0`, `redirectsFile: true`,
-`deadHostArtifacts: 0`.
+copy of the site (§12.4, N5). Verify: `edge.mjs` → `stubs: 0`, `redirectsFile: true`, `deadHostArtifacts: 0`.
+
+**Closed 2026-09-06 in the repo** (Sprint 1 change set A). `scripts/gen-redirects.mjs` now emits
+`public/_redirects` from the same map and writes only on a real change; the 37 stub directories, the
+Houston stub, `deploy.yml`, `CNAME` and `.htaccess` are deleted. Each mapped path is emitted in **both**
+its slashed and bare form (72 rules from 37 pairs) — Cloudflare Pages matches a source literally and
+this export ships nothing at the bare path, so a bare-form request would otherwise reach `/404`.
+Verified after a clean rebuild:
+
+```bash
+node scripts/audit/edge.mjs   # ✅ redirectRules 72 · stubs 0 · redirectsFile true · headersFile true · deadHostArtifacts 0 · foreignStubs 0
+node scripts/audit/links.mjs  # ✅ contentPages 45 · sitemapUrls 45 · brokenLinks 0 · linksToStubs 0
+```
+
+**Still open:** the live 301s. Nothing is served until the next deploy — probe three legacy URLs with
+`curl -sSI` expecting `301` + `Location` with `?utm_source=test` intact (`deploy-dangates`).
 
 ### 1.2 — P1 · S · [✅ DONE] The 404 page claimed to be the homepage
 
@@ -113,11 +127,14 @@ Closed by commit `c047d4d` (session dangates-co-il-f6, branch `sitemap-static-ro
 
 `titles.mjs` → `ogUrlMissing: 45`. Cheap to add via the layout's `openGraph` block.
 
-### 1.6 — P2 · S · [NOT STARTED] `REDIRECTS.md` and `gen-redirects.mjs` can drift, and nothing runs the generator
+### 1.6 — P2 · S · [✅ DONE 2026-09-06] `REDIRECTS.md` and `gen-redirects.mjs` could drift, and nothing ran the generator
 
 The generator is not wired into any npm script, so the map and the emitted stubs can diverge silently.
-Superseded when §1.1 lands (the same generator emits `_redirects`); until then assert
-`git status --porcelain public/` is clean after `node scripts/gen-redirects.mjs`.
+Closed with §1.1: the generator emits `_redirects` and is wired as both `npm run redirects` and
+`prebuild`, so every build regenerates it from the map. It writes only when the content actually
+changes, so a rebuild cannot bump the file's mtime and trip the audit's staleness guard (N12).
+Verify: `node scripts/gen-redirects.mjs` twice — the second run prints "is current … nothing
+written" — then `git status --porcelain public/` is clean.
 
 ### 1.7 — P3 · S · [⏳ BLOCKED · owner] `www.dangates.co.il` returns 200 with a full duplicate
 
@@ -668,33 +685,47 @@ They render correctly in RTL today, which is exactly why they survive review. Th
 
 Skill: `web-security-headers`. Scripts: `edge.mjs` · `spam-grep.mjs`. Reviewer: `security-auditor`.
 
-### 12.1 — P1 · M · [NOT STARTED] The live security headers are not owned by this repo
+### 12.1 — P1 · M · [✅ DONE 2026-09-06 · repo] The live security headers were not owned by this repo
 
 The site returns HSTS (180d), `X-Frame-Options: SAMEORIGIN`, `Permissions-Policy`, `nosniff` and
 `Referrer-Policy` — all from **Cloudflare zone rules**. `edge.mjs` → `headersFile: false`. A zone
 change, account migration or Pages-project move drops every one silently and nothing in CI notices.
 
-**Fix (Phase 1):** adopt the current values into `public/_headers` from
-`web-security-headers/templates/_headers`, then re-verify with `curl -sSI`.
+**Closed 2026-09-06 in the repo** (Sprint 1 change set A): `public/_headers` carries the template's
+directives verbatim — HSTS `max-age=31536000` (deliberately a year rather than the zone's 180 d, and
+without `preload` or `includeSubDomains`), `X-Frame-Options: SAMEORIGIN`, `nosniff`,
+`Referrer-Policy: strict-origin-when-cross-origin`, the template's wider `Permissions-Policy`, the
+report-only CSP (§12.2) and `Cache-Control: immutable` for `/_next/static/*`. `edge.mjs` →
+`headersFile: true`. **Still open:** it is not live until the next deploy — then `curl -sSI` the apex
+and confirm the **whole** set appears (not only the first block), and the owner deletes the zone rule
+([owner-actions.md](owner-actions.md) §1.3).
 
-### 12.2 — P2 · M · [NOT STARTED] No CSP, and two obstacles to adding one
+### 12.2 — P2 · M · [PARTIAL 2026-09-06] Report-only CSP ships; enforcing waits on observation
 
-GTM is injected via `dangerouslySetInnerHTML` and a static export cannot generate a per-request nonce.
-**Additionally each of the 37 redirect stubs contains an inline `<script>location.replace(...)</script>`**
-— an enforcing `script-src` would break every legacy URL until §1.1 lands. Report-only first, always.
+GTM is injected via `dangerouslySetInnerHTML` and a static export cannot generate a per-request nonce,
+so the policy carries `'unsafe-inline'` for scripts. The second obstacle is gone: the 37 stubs and
+their inline `location.replace()` scripts were deleted with §1.1.
 
-### 12.3 — P2 · S · [NOT STARTED] `.env.example` documents a dead server path
+`public/_headers` ships `Content-Security-Policy-Report-Only` (2026-09-06). **Still open:** it reports
+to nobody — there is no `report-to` endpoint — so the only signal is the browser console. Watch a week
+of real traffic after the deploy, including one form submission, one tracked call click and one legacy
+URL, before tightening it or switching to the enforcing header.
+
+### 12.3 — P2 · S · [✅ DONE 2026-09-06] `.env.example` documented a dead server path
 
 `LEAD_EMAIL_TO` / `public/lead.php`, annotated "not used on GitHub Pages" (itself a stale premise), plus
 three `NEXT_PUBLIC_*` vars nothing reads. Dead paths invite a real secret being wired into one. The
-inverse drift is N6.
+inverse drift is N6. **Closed 2026-09-06:** the file documents exactly `NEXT_PUBLIC_WEB3FORMS_KEY`, the
+one variable the form reads, described as public by design with no value committed. Verify:
+`node scripts/audit/edge.mjs` → `envDocumented 1 · envUsed 1` (was 4 / 1).
 
-### 12.4 — P1 · S · [NOT STARTED] A live second origin
+### 12.4 — P1 · S · [✅ DONE 2026-09-06] A live second origin
 
 `edge.mjs` → `deadHostArtifacts: 3`: `.github/workflows/deploy.yml` builds and publishes to
 **GitHub Pages on every push to `main`** while production is wrangler → Cloudflare Pages;
-`public/CNAME` is its companion; `public/.htaccess` is an Apache leftover (N5). Retire all three with
-§1.1.
+`public/CNAME` is its companion; `public/.htaccess` is an Apache leftover (N5). **All three deleted
+2026-09-06** with §1.1; `edge.mjs` → `deadHostArtifacts: 0`. Pushing to `main` now publishes nothing
+anywhere — production is only the wrangler upload.
 
 ### 12.5 — [✅ HOLDS] The Web3Forms key is public by design
 
@@ -730,10 +761,13 @@ Note two WhatsApp opens are **JS-driven** (`LeadForm.tsx:65`, `:88`) and unreach
 trigger, and icons render inside the CTA anchors, so a naive `Click Element` dataset read returns
 `undefined`.
 
-### 13.3 — P1 · S · [NOT STARTED] The 37 stubs strip the query string
+### 13.3 — P1 · S · [✅ DONE 2026-09-06 · repo] The 37 stubs stripped the query string
 
-`location.replace()` to a bare path destroys `gclid`/`utm` on every legacy entry point — all paid and
-campaign attribution arriving on an old URL. Fixed for free by §1.1 (a 301 preserves the query).
+`location.replace()` to a bare path destroyed `gclid`/`utm` on every legacy entry point — all paid and
+campaign attribution arriving on an old URL. Fixed for free by §1.1 (a 301 preserves the query), in
+the repo since 2026-09-06. Confirm on the live response after the next deploy:
+`curl -sSI "https://dangates.co.il/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/?utm_source=test"` → `301`
+with the query intact in `Location`.
 
 ### 13.4 — P2 · S · [NOT STARTED] `lead_submit` carries no dimension
 
@@ -783,27 +817,29 @@ canonical (`schema.mjs` → `rawHebrewUrls` counts 11 here plus 7 `Service.url`)
 Nothing under `app/`, `components/`, `lib/` or `scripts/` imports it; the `city` field it declares
 (`types/index.d.ts:27`) was never wired (§8.4). Delete it or make the form use it.
 
-### N4 — P2 · S · [NOT STARTED] A Houston promo stub ships under `public/`
+### N4 — P2 · S · [✅ DONE 2026-09-06] A Houston promo stub shipped under `public/`
 
 `public/pages_automation/הנחות-סתיו-בלעדיות-לתושבי-יוסטון/` redirects a foreign-market URL that was
-never this business's (`edge.mjs` → `foreignStubs: 1`). Remove it with §1.1 — it is not in
-`REDIRECTS.md`'s intent.
+never this business's (`edge.mjs` → `foreignStubs: 1`). **Deleted 2026-09-06** with §1.1 and
+deliberately not redirected — it is foreign-market content, not a page of this site, so the path 404s.
+Verify: `edge.mjs` → `foreignStubs: 0`.
 
-### N5 — P2 · S · [NOT STARTED] `public/.htaccess` is a third dead-host artifact
+### N5 — P2 · S · [✅ DONE 2026-09-06] `public/.htaccess` was a third dead-host artifact
 
-An Apache rule file on a Cloudflare Pages site (`edge.mjs` → `deadHostArtifacts: 3`). Retire with
-`deploy.yml` and `CNAME` (§12.4).
+An Apache rule file on a Cloudflare Pages site. Deleted 2026-09-06 with `deploy.yml` and `CNAME`
+(§12.4); `edge.mjs` → `deadHostArtifacts: 0`.
 
-### N6 — P2 · S · [NOT STARTED] `.env.example` inverse drift
+### N6 — P2 · S · [✅ DONE 2026-09-06] `.env.example` inverse drift
 
 `edge.mjs` warns both ways: four documented variables nothing reads (`NEXT_PUBLIC_SITE_URL`,
 `NEXT_PUBLIC_PHONE`, `NEXT_PUBLIC_WHATSAPP`, `LEAD_EMAIL_TO`) and the one variable the app does read —
-`NEXT_PUBLIC_WEB3FORMS_KEY` (`components/forms/LeadForm.tsx:21`) — undocumented. Parent: §12.3.
+`NEXT_PUBLIC_WEB3FORMS_KEY` — undocumented. Parent: §12.3, closed with it on 2026-09-06:
+`edge.mjs` → `envDocumented 1 · envUsed 1`.
 
-### N7 — P2 · S · [NOT STARTED] `next.config.mjs:6-7` still says the deploy target is cPanel/Apache
+### N7 — P2 · S · [✅ DONE 2026-09-06] `next.config.mjs` said the deploy target was cPanel/Apache
 
-Production is Cloudflare Pages (CLAUDE.md §10). `edge.mjs` warns on the comment. Fix the comment;
-it is the first thing an agent reads about deployment.
+Production is Cloudflare Pages (CLAUDE.md §10). The comment now says so — corrected 2026-09-06; it is
+the first thing an agent reads about deployment. `edge.mjs` no longer warns.
 
 ### N8 — P3 · S · [NOT STARTED] FAQ answers are `display:none` in the DOM
 
@@ -927,7 +963,9 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
 0. ✅ **Phase 0** (2026-08-17): §7.1 reviews · §3.6 spam · §2.1 titles · §2.2 · §3.7 · §4.3 ·
    ✅ **Phase E0** (2026-08-23): guards, scripts, reports, ADRs, roster.
 1. ~~§7.1 · §3.6 · §2.1~~ — done.
-2. **§1.1** real 301s via `_redirects` (also fixes §13.3, N4; retires §12.4 + N5) — ADR 0004.
+2. ~~**§1.1** real 301s via `_redirects` (also fixed §13.3, N4; retired §12.4 + N5, §1.6, §12.3/N6, N7;
+   `_headers` for §12.1 and the report-only CSP for §12.2)~~ — shipped in the repo 2026-09-06, ADR 0004;
+   live after the next deploy.
 3. **§10.1** font preloads · **§1.5** `og:url` · **§1.4** sitemap from data · **§12.1** `_headers` ·
    **§3.3** triggers to content · **§3.11–3.12** · **§13.1** GTM to `<head>` · **§13.2** `data-cta`.
 4. **§11.1** contrast (via N11) · **§11.2–11.5** · **N6 · N7**.

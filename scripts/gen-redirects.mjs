@@ -1,27 +1,28 @@
-// Generate static redirect stubs for dangates.co.il's URL normalization.
+// Generate public/_redirects for dangates.co.il's URL normalization.
 //
-// The rebuild moved/renamed many live WordPress URLs (see REDIRECTS.md). On static
-// GitHub Pages there is no server to issue 301s, so for every old->new pair we emit
-// a tiny HTML stub at  public/<old-path>/index.html  that:
-//   - <meta http-equiv="refresh"> redirects immediately,
-//   - <link rel="canonical"> points crawlers at the new URL,
-//   - <meta robots noindex> keeps the stub itself out of the index,
-//   - location.replace() bounces the browser without leaving a history entry.
+// Production is Cloudflare Pages (direct upload via wrangler), which reads
+// public/_redirects at the edge and issues real 301s — see ADR 0004
+// (docs/decisions/0004-redirects-replace-stubs.md). This file replaces the
+// meta-refresh HTML stubs an earlier, GitHub-Pages-era version of this script
+// wrote under public/<old-path>/index.html: a static file at that path would
+// shadow the redirect rule, so no stub may exist alongside this file.
 //
-// Next copies public/ verbatim into out/, so these ship as-is. None of the old
-// paths collide with a real new route (cities live under /locations/, posts under
-// /blog/, pages under their Hebrew slugs), so the stubs are safe to place in public/.
+// The map below mirrors REDIRECTS.md (the human-readable version — edit both
+// together). Every line is "<from> <to> 301", both columns percent-encoded
+// (encodeURI of the decoded path) so scripts/audit/edge.mjs never sees raw
+// Hebrew in the rule. Re-running this script is a no-op: the output is fully
+// determined by the map below.
 //
-// Run:  node scripts/gen-redirects.mjs
+// Run:  node scripts/gen-redirects.mjs  (also wired as the "prebuild" script)
 
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PUBLIC = join(__dirname, "..", "public");
 
-// old live path  ->  new Next.js path
+// old live path  ->  new Next.js path (both decoded here; encoded on write)
 const REDIRECTS = {
   // 1. Locations — root-level cities normalized under /locations/<he-slug>/
   "/תל-אביב/": "/locations/תל-אביב/",
@@ -60,8 +61,9 @@ const REDIRECTS = {
   // Broken on the live site (served the homepage) — was NOT migrated; send to the blog index.
   "/שערים-חשמליים-ועיצוב-איך-לשלב-אסתטיקה-ובטיחות/": "/blog/",
 
-  // 3. Pages
+  // 3. Pages — /contact had both a slash and no-slash form live; redirect both.
   "/contact/": "/צור-קשר/",
+  "/contact": "/צור-קשר/",
   "/services/": "/שירותים/",
   "/accessibility-statement/": "/הצהרת-נגישות/",
   "/privacy/": "/מדיניות-פרטיות/",
@@ -69,30 +71,53 @@ const REDIRECTS = {
   "/table-of-content/": "/",
   "/en/": "/",
 
-  // 4. Houston leftover from the un-rebranded theme — drop to the homepage.
-  "/pages_automation/הנחות-סתיו-בלעדיות-לתושבי-יוסטון/": "/",
+  // 4. The Houston (allgatesrepair) promo URL from the un-rebranded theme is dropped
+  // entirely, not redirected — it is foreign-market content, not a real page of this
+  // site. Let /pages_automation/... 404. See REDIRECTS.md §4 and ADR 0004.
 };
 
-function stub(newPath) {
-  const enc = encodeURI(newPath);
-  const json = JSON.stringify(newPath);
-  return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8">
-<meta name="robots" content="noindex">
-<meta http-equiv="refresh" content="0; url=${enc}">
-<link rel="canonical" href="https://dangates.co.il${enc}">
-<title>מעבר…</title></head>
-<body><p>העמוד עבר. <a href="${enc}">המשך לעמוד החדש</a>.</p>
-<script>location.replace(${json})</script></body></html>
-`;
+/**
+ * Both shapes of every source path.
+ *
+ * Cloudflare Pages matches a `_redirects` source as a literal path — it does not
+ * normalise a missing trailing slash, and this export ships nothing at the bare
+ * path, so a bare-form request would fall through to /404. The live WordPress
+ * site auto-301'd a bare permalink to its slashed form (`redirect_canonical()`),
+ * so inbound links, bookmarks and cached SERP entries exist in both shapes for
+ * these pages. Emit both. A source the map already lists bare (`/contact`) is
+ * emitted once — the first form wins and the duplicate is skipped.
+ */
+function sourceForms(from) {
+  const bare = from.endsWith("/") ? from.slice(0, -1) : null;
+  return bare ? [from, bare] : [from];
 }
 
-let count = 0;
-for (const [oldPath, newPath] of Object.entries(REDIRECTS)) {
-  const inner = oldPath.replace(/^\/+/, "").replace(/\/+$/, "");
-  const dir = join(PUBLIC, inner);
-  mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, "index.html"), stub(newPath), "utf8");
-  count++;
-  console.log(`  ${oldPath}  ->  ${newPath}`);
+const seen = new Set();
+const lines = [];
+for (const [from, to] of Object.entries(REDIRECTS)) {
+  for (const source of sourceForms(from)) {
+    if (seen.has(source)) continue;
+    seen.add(source);
+    lines.push(`${encodeURI(source)} ${encodeURI(to)} 301`);
+  }
 }
-console.log(`\nGenerated ${count} redirect stubs under public/`);
+
+const banner = [
+  "# Generated by scripts/gen-redirects.mjs from the map in REDIRECTS.md — do not edit by hand.",
+  "# Cloudflare Pages reads this file at the edge and issues real 301s (ADR 0004).",
+  "# Each mapped path is emitted in both its slashed and bare form; see sourceForms().",
+  "",
+].join("\n");
+const contents = banner + lines.join("\n") + "\n";
+
+// Write only on a real change: `prebuild` runs this before every build, and an
+// unconditional write would bump the mtime of a file the audit's staleness guard
+// compares against out/ (backlog N12), flagging a fresh export as stale.
+const target = join(PUBLIC, "_redirects");
+const current = existsSync(target) ? readFileSync(target, "utf8") : null;
+if (current === contents) {
+  console.log(`public/_redirects is current — ${lines.length} rule(s), nothing written.`);
+} else {
+  writeFileSync(target, contents, "utf8");
+  console.log(`Wrote public/_redirects with ${lines.length} rule(s).`);
+}
