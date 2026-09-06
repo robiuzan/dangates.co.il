@@ -3,14 +3,15 @@ import { MapPin } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { locations } from "@/lib/site-config";
+import { serviceAreasCopy } from "@/lib/content";
 
 export function ServiceAreas() {
   return (
     <Section id="areas" tone="muted">
       <SectionHeading
-        eyebrow="אזורי שירות"
-        title="נותנים שירות במרכז הארץ ובפריסה ארצית"
-        subtitle="לא בטוחים שאתם בטווח? התקשרו ונבדוק — עם מענה מהיר וזמינות 24/7 לקריאות חירום."
+        eyebrow={serviceAreasCopy.eyebrow}
+        title={serviceAreasCopy.title}
+        subtitle={serviceAreasCopy.subtitle}
       />
 
       <ul className="mx-auto mt-8 flex max-w-4xl flex-wrap justify-center gap-2.5">

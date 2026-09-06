@@ -10,7 +10,15 @@ import {
   telHref,
   whatsappHref,
 } from "@/lib/site-config";
-import { serviceCards, processSteps } from "@/lib/content";
+import {
+  serviceCards,
+  processSteps,
+  serviceTriggers,
+  servicePageCopy,
+  serviceCtaCardTitle,
+  serviceWhatsappMessage,
+  crumbLabels,
+} from "@/lib/content";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { serviceJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -43,18 +51,12 @@ export function generateMetadata({ params }: { params: { service: string } }): M
   };
 }
 
-const triggers = [
-  "השער נתקע, לא נסגר או לא נפתח עד הסוף",
-  "המנוע לא מגיב או משמיע רעשים חריגים",
-  "השלט או החיישנים הפסיקו לעבוד",
-  "מסילה, גלגלת או ציר שחוקים או תקועים",
-];
-
 export default function ServicePage({ params }: { params: { service: string } }) {
   const card = findCard(params.service);
   if (!card) notFound();
 
   const others = serviceCards.filter((c) => c.slug !== card.slug).slice(0, 4);
+  const triggers = serviceTriggers[card.slug];
   const jsonLd = serviceJsonLd(manifest, {
     name: card.name,
     description: card.description,
@@ -71,8 +73,8 @@ export default function ServicePage({ params }: { params: { service: string } })
         title={card.name}
         subtitle={card.tagline}
         crumbs={[
-          { label: "בית", href: "/" },
-          { label: "השירותים שלנו", href: "/שירותים" },
+          { label: crumbLabels.home, href: "/" },
+          { label: crumbLabels.services, href: "/שירותים/" },
           { label: card.name, href: `/services/${card.slug}/` },
         ]}
       />
@@ -83,7 +85,7 @@ export default function ServicePage({ params }: { params: { service: string } })
             <p className="text-lg leading-relaxed text-gray-700">{card.description}</p>
 
             <h2 className="mt-10 font-heading text-xl font-bold text-primary">
-              מתי כדאי לפנות אלינו?
+              {servicePageCopy.triggersHeading}
             </h2>
             <ul className="mt-4 grid gap-2 sm:grid-cols-2">
               {triggers.map((t) => (
@@ -95,7 +97,7 @@ export default function ServicePage({ params }: { params: { service: string } })
             </ul>
 
             <h2 className="mt-10 font-heading text-xl font-bold text-primary">
-              איך אנחנו עובדים
+              {servicePageCopy.processHeading}
             </h2>
             <ol className="mt-4 space-y-3">
               {processSteps.map((step, i) => (
@@ -115,23 +117,21 @@ export default function ServicePage({ params }: { params: { service: string } })
           <aside className="lg:col-span-1">
             <div className="sticky top-24 rounded-2xl border border-gray-100 bg-gray-50 p-6 shadow-sm">
               <p className="font-heading text-lg font-bold text-primary">
-                רוצים הצעת מחיר ל{card.name}?
+                {serviceCtaCardTitle(card.name)}
               </p>
-              <p className="mt-1 text-sm text-gray-600">
-                ביקור, אבחון והצעה שקופה — ללא התחייבות.
-              </p>
+              <p className="mt-1 text-sm text-gray-600">{servicePageCopy.ctaSubtitle}</p>
               <div className="mt-5 flex flex-col gap-3">
                 <Button href={telHref} variant="accent" size="lg">
                   <Phone className="h-5 w-5" aria-hidden />
                   <span dir="ltr">{siteConfig.phone}</span>
                 </Button>
                 <Button
-                  href={whatsappHref(`היי, אני מעוניין/ת בהצעת מחיר ל${card.name}`)}
+                  href={whatsappHref(serviceWhatsappMessage(card.name))}
                   variant="whatsapp"
                   size="lg"
                 >
                   <MessageCircle className="h-5 w-5" aria-hidden />
-                  וואטסאפ
+                  {servicePageCopy.whatsappLabel}
                 </Button>
               </div>
             </div>
@@ -140,7 +140,9 @@ export default function ServicePage({ params }: { params: { service: string } })
 
         {/* Related services */}
         <div className="mt-14 border-t border-gray-100 pt-10">
-          <h2 className="font-heading text-xl font-bold text-primary">שירותים נוספים</h2>
+          <h2 className="font-heading text-xl font-bold text-primary">
+            {servicePageCopy.relatedHeading}
+          </h2>
           <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {others.map((o) => (
               <li key={o.slug}>

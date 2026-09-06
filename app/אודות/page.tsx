@@ -1,45 +1,51 @@
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
-import { siteConfig } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { aboutSections, aboutValues } from "@/lib/content";
+import {
+  aboutSections,
+  aboutValues,
+  crumbLabels,
+  aboutMetaDescription,
+  aboutHeroTitle,
+  aboutHeroSubtitle,
+  aboutIntro,
+  aboutValuesHeading,
+} from "@/lib/content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { TrustBar } from "@/components/marketing/TrustBar";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 const aboutUrl = routeUrl("אודות");
-const aboutDescription =
-  "דן שערים חשמליים — מומחים בתיקון והתקנת שערים חשמליים עם ניסיון רב שנים. שירות מהיר ואמין, אחריות מלאה, צוות מומחים וזמינות 24/7 לקריאות חירום.";
 
 export const metadata: Metadata = {
   alternates: { canonical: aboutUrl },
   // The layout title template appends the brand — writing it here too repeats it.
-  title: "אודות",
-  description: aboutDescription,
-  openGraph: { ...ogBase, url: aboutUrl, title: "אודות", description: aboutDescription },
+  title: crumbLabels.about,
+  description: aboutMetaDescription,
+  openGraph: {
+    ...ogBase,
+    url: aboutUrl,
+    title: crumbLabels.about,
+    description: aboutMetaDescription,
+  },
 };
 
 export default function AboutPage() {
   return (
     <>
       <PageHeader
-        title="אודות דן שערים חשמליים"
-        subtitle="מומחים בתיקון והתקנת שערים חשמליים — פתרון מותאם אישית לכל שער, עם דגש על איכות, מקצועיות ובטיחות."
+        title={aboutHeroTitle}
+        subtitle={aboutHeroSubtitle}
         crumbs={[
-          { label: "בית", href: "/" },
-          { label: "אודות", href: "/אודות/" },
+          { label: crumbLabels.home, href: "/" },
+          { label: crumbLabels.about, href: "/אודות/" },
         ]}
       />
 
       <Section tone="white">
         <div className="mx-auto max-w-3xl">
-          <p className="text-lg leading-relaxed text-gray-700">
-            ברוכים הבאים ל{siteConfig.name} — מתמחים בתיקון והתקנת שערים חשמליים. עם
-            ניסיון רב שנים בתחום, אנו מספקים שירות ברמה הגבוהה ביותר, תוך הקפדה על איכות,
-            מקצועיות ובטיחות. המטרה שלנו היא להבטיח שהשערים החשמליים שלכם יתפקדו בצורה
-            מושלמת וישרתו אתכם נאמנה לאורך זמן.
-          </p>
+          <p className="text-lg leading-relaxed text-gray-700">{aboutIntro}</p>
 
           {aboutSections.map((sec) => (
             <div key={sec.title}>
@@ -51,7 +57,7 @@ export default function AboutPage() {
           ))}
 
           <h2 className="mt-10 font-heading text-xl font-bold text-primary">
-            הערכים שלנו
+            {aboutValuesHeading}
           </h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {aboutValues.map((v) => (

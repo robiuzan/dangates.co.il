@@ -2,23 +2,30 @@ import type { Metadata } from "next";
 import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { siteConfig, telHref, whatsappHref } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
+import {
+  crumbLabels,
+  contactMetaDescription,
+  contactHeroTitle,
+  contactHeroSubtitle,
+  contactPageCopy,
+  defaultWhatsappMessage,
+  leadFormHeading,
+} from "@/lib/content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { LeadForm } from "@/components/forms/LeadForm";
 
 const contactUrl = routeUrl("צור-קשר");
-const contactDescription =
-  "צרו קשר עם דן שערים חשמליים לתיקון והתקנת שערים חשמליים במרכז הארץ ובפריסה ארצית. טלפון, וואטסאפ או טופס — נחזור אליכם עם הצעת מחיר. זמינות 24/7 לחירום.";
 
 export const metadata: Metadata = {
   alternates: { canonical: contactUrl },
-  title: "צור קשר",
-  description: contactDescription,
+  title: contactHeroTitle,
+  description: contactMetaDescription,
   openGraph: {
     ...ogBase,
     url: contactUrl,
-    title: "צור קשר",
-    description: contactDescription,
+    title: contactHeroTitle,
+    description: contactMetaDescription,
   },
 };
 
@@ -26,11 +33,11 @@ export default function ContactPage() {
   return (
     <>
       <PageHeader
-        title="צור קשר"
-        subtitle="מענה מהיר, ייעוץ ראשוני והצעת מחיר ללא התחייבות."
+        title={contactHeroTitle}
+        subtitle={contactHeroSubtitle}
         crumbs={[
-          { label: "בית", href: "/" },
-          { label: "צור קשר", href: "/צור-קשר/" },
+          { label: crumbLabels.home, href: "/" },
+          { label: crumbLabels.contact, href: "/צור-קשר/" },
         ]}
       />
 
@@ -38,7 +45,9 @@ export default function ContactPage() {
         <div className="grid gap-10 lg:grid-cols-2">
           {/* Details */}
           <div>
-            <h2 className="font-heading text-xl font-bold text-primary">פרטי התקשרות</h2>
+            <h2 className="font-heading text-xl font-bold text-primary">
+              {contactPageCopy.detailsHeading}
+            </h2>
             <ul className="mt-5 space-y-4 text-gray-700">
               <li className="flex items-center gap-3">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent-50 text-accent-600">
@@ -53,12 +62,10 @@ export default function ContactPage() {
                   <MessageCircle className="h-5 w-5" aria-hidden />
                 </span>
                 <a
-                  href={whatsappHref(
-                    "היי, אני מעוניין/ת בהצעת מחיר לתיקון/התקנת שער חשמלי",
-                  )}
+                  href={whatsappHref(defaultWhatsappMessage)}
                   className="font-medium hover:text-primary"
                 >
-                  וואטסאפ
+                  {contactPageCopy.whatsappLabel}
                 </a>
               </li>
               <li className="flex items-center gap-3">
@@ -78,7 +85,7 @@ export default function ContactPage() {
                   <MapPin className="h-5 w-5" aria-hidden />
                 </span>
                 <span>
-                  שירות בפריסה ארצית
+                  {contactPageCopy.areaLine}
                   <br />
                   <span className="text-sm text-gray-500">{siteConfig.serviceArea}</span>
                 </span>
@@ -103,9 +110,9 @@ export default function ContactPage() {
           {/* Form */}
           <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6 sm:p-8">
             <h2 className="font-heading text-xl font-bold text-primary">
-              קבלו הצעת מחיר חינם
+              {leadFormHeading}
             </h2>
-            <p className="mt-1 text-sm text-gray-600">השאירו פרטים ונחזור אליכם בהקדם.</p>
+            <p className="mt-1 text-sm text-gray-600">{contactPageCopy.formSubtitle}</p>
             <div className="mt-5">
               <LeadForm />
             </div>

@@ -2,9 +2,19 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { locations, type LocationSlug, siteConfig } from "@/lib/site-config";
+import { locations, type LocationSlug } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { serviceCards } from "@/lib/content";
+import {
+  serviceCards,
+  crumbLabels,
+  locationPageTitle,
+  locationMetaDescription,
+  locationHeroTitle,
+  locationHeroSubtitle,
+  locationIntroParagraph1,
+  locationIntroParagraph2,
+  locationServicesHeading,
+} from "@/lib/content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -24,8 +34,8 @@ export function generateMetadata({ params }: { params: { city: string } }): Meta
   const loc = findLocation(params.city);
   if (!loc) return {};
   const url = routeUrl(`locations/${loc.slug}`);
-  const title = `תיקון שערים חשמליים ב${loc.name}`;
-  const description = `תיקון והתקנת שערים חשמליים ב${loc.name} — שירות מהיר ואמין, אחריות מלאה וזמינות 24/7 לקריאות חירום. לכל סוגי השערים: נגררים, כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`;
+  const title = locationPageTitle(loc.name);
+  const description = locationMetaDescription(loc.name);
   return {
     alternates: { canonical: url },
     // Bare subject only — app/layout.tsx already appends "| דן שערים חשמליים" via the
@@ -44,11 +54,11 @@ export default function LocationPage({ params }: { params: { city: string } }) {
   return (
     <>
       <PageHeader
-        title={`תיקון והתקנת שערים חשמליים ב${loc.name}`}
-        subtitle={`שירות מקצועי לתיקון והתקנת שערים חשמליים ב${loc.name} והסביבה — מענה מהיר, אחריות מלאה וזמינות 24/7 לקריאות חירום.`}
+        title={locationHeroTitle(loc.name)}
+        subtitle={locationHeroSubtitle(loc.name)}
         crumbs={[
-          { label: "בית", href: "/" },
-          { label: "אזורי שירות", href: "/איזורי-שירות" },
+          { label: crumbLabels.home, href: "/" },
+          { label: crumbLabels.areas, href: "/איזורי-שירות/" },
           { label: loc.name, href: `/locations/${loc.slug}/` },
         ]}
       />
@@ -56,18 +66,12 @@ export default function LocationPage({ params }: { params: { city: string } }) {
       <Section tone="white">
         <div className="mx-auto max-w-3xl">
           <p className="text-lg leading-relaxed text-gray-700">
-            מחפשים תיקון או התקנה של שער חשמלי ב{loc.name}? ב{siteConfig.name} מטפלים בכל
-            סוגי השערים החשמליים — נגררים, כנף, מתרוממים, שערים לחניה, שערי זרוע ותריסי
-            גלילה — עם אבחון מדויק, ציוד מתקדם ותיקונים עמידים לאורך זמן.
+            {locationIntroParagraph1(loc.name)}
           </p>
-          <p className="mt-4 text-gray-700">
-            אנחנו נותנים שירות ללקוחות פרטיים, ועדי בתים ועסקים ב{loc.name} והסביבה, עם
-            מענה מהיר וזמינות לקריאות חירום. השער תקוע, לא נסגר או שהמנוע לא מגיב? התקשרו
-            ונגיע לבדוק ולתקן.
-          </p>
+          <p className="mt-4 text-gray-700">{locationIntroParagraph2(loc.name)}</p>
 
           <h2 className="mt-10 font-heading text-xl font-bold text-primary">
-            השירותים שלנו ב{loc.name}
+            {locationServicesHeading(loc.name)}
           </h2>
           <ul className="mt-5 grid gap-3 sm:grid-cols-2">
             {serviceCards.map((s) => (

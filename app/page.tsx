@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { faqs } from "@/lib/content";
+import { faqs, homeMetaDescription, homeFaqHeading } from "@/lib/content";
 import { localBusinessJsonLd, faqJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -21,8 +21,7 @@ import { FinalCta } from "@/components/marketing/FinalCta";
  * `description: siteConfig.tagline` — 34 characters on the site's most important page.
  * The title still comes from the layout's `title.default`; only the description is set here.
  */
-const description =
-  "תיקון והתקנת שערים חשמליים לבתים, ועדי בתים ועסקים — שערים נגררים, כנף, מתרוממים ותריסי גלילה. אבחון מהיר, מחיר שקוף מראש ואחריות על העבודה. חייגו 072-2587772.";
+const description = homeMetaDescription;
 
 export const metadata: Metadata = {
   description,
@@ -49,7 +48,7 @@ export default function HomePage() {
       <Reviews />
 
       <Section id="faq" tone="white">
-        <SectionHeading eyebrow="שאלות נפוצות" title="מידע חשוב לפני תיקון שער חשמלי" />
+        <SectionHeading eyebrow={homeFaqHeading.eyebrow} title={homeFaqHeading.title} />
         <Faq items={faqs} />
       </Section>
 

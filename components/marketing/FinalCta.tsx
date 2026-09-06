@@ -1,5 +1,6 @@
 import { MessageCircle, Phone } from "lucide-react";
 import { siteConfig, telHref, whatsappHref } from "@/lib/site-config";
+import { finalCtaCopy, defaultWhatsappMessage } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 
@@ -9,26 +10,25 @@ export function FinalCta() {
       <Container className="flex flex-col items-center gap-6 py-14 text-center">
         <div>
           <h2 className="font-heading text-2xl font-extrabold text-accent-foreground sm:text-3xl">
-            השער תקוע או לא נסגר? דברו איתנו עוד היום.
+            {finalCtaCopy.title}
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-accent-foreground/90">
-            ייעוץ והצעת מחיר שקופה — ללא התחייבות. תיקון והתקנת שערים חשמליים במהירות, עם
-            אחריות מלאה וזמינות 24/7 לחירום.
+            {finalCtaCopy.body}
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button href={telHref} data-cta="finalcta-call" variant="primary" size="lg">
             <Phone className="h-5 w-5" aria-hidden />
-            חייגו עכשיו: <span dir="ltr">{siteConfig.phone}</span>
+            {finalCtaCopy.callLabel} <span dir="ltr">{siteConfig.phone}</span>
           </Button>
           <Button
-            href={whatsappHref("היי, אני מעוניין/ת בהצעת מחיר לתיקון/התקנת שער חשמלי")}
+            href={whatsappHref(defaultWhatsappMessage)}
             data-cta="finalcta-whatsapp"
             variant="whatsapp"
             size="lg"
           >
             <MessageCircle className="h-5 w-5" aria-hidden />
-            שלחו וואטסאפ
+            {finalCtaCopy.whatsappLabel}
           </Button>
         </div>
       </Container>
