@@ -4,17 +4,21 @@
  *   - <title> unique sitewide, brand token exactly once, ≤ thresholds.title.maxChars (warn)
  *   - meta description present, unique, within thresholds.description, ends with punctuation
  *   - one self-referencing canonical: percent-encoded, trailing slash, byte-equal to the sitemap <loc>
- *   - og:url present (backlog §1.5)
+ *   - og:url present and equal to the canonical (backlog §1.5)
+ *   - /404 claims neither a canonical nor an og:url (backlog §1.2, §1.5)
  *
  * Usage: node scripts/audit/titles.mjs [--json]
  */
 
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   contentPages,
   readSitemap,
   title,
   metaContent,
   canonical,
+  OUT,
   SITE,
 } from "./lib/pages.mjs";
 import { Report, THRESHOLDS, finish, isMain, parseArgs } from "./lib/report.mjs";
@@ -125,6 +129,21 @@ export function run() {
       undefined,
       "backlog §1.5",
     );
+
+  // The 404 must claim no identity of its own. It is not in contentPages(), so the loop above never
+  // sees it — and it has now inherited the homepage's identity twice: first the root canonical
+  // (backlog §1.2), then og:url the moment that shipped sitewide (§1.5). `noindex` does not stop a
+  // social or AI fetcher reading either tag, so every broken URL would resolve to the homepage.
+  const notFound = join(OUT, "404.html");
+  if (existsSync(notFound)) {
+    const html = readFileSync(notFound, "utf8");
+    const c = canonical(html);
+    const og = metaContent(html, "og:url");
+    if (c) r.fail("/404 declares a canonical — it must claim no URL", c, "backlog §1.2");
+    if (og)
+      r.fail("/404 declares an og:url — it must claim no URL", og, "backlog §1.2, §1.5");
+    r.metric("notFoundClaimsUrl", Boolean(c || og));
+  }
 
   r.metric("pages", pages.length);
   r.metric("uniqueTitles", titles.size);

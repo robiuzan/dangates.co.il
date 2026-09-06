@@ -110,6 +110,14 @@ node scripts/audit/links.mjs  # ✅ contentPages 45 · sitemapUrls 45 · brokenL
 Fixed in `app/not-found.tsx` (own title, no canonical, `noindex`). Don't regress: a 404 that
 canonicalises to the homepage invites Google to treat every broken URL as a duplicate of `/`.
 
+**It regressed once, through a second channel (2026-09-06, caught before deploy).** Shipping `og:url`
+sitewide (§1.5) gave the layout an `openGraph.url` for the root, and the 404 inherited it — social and
+AI fetchers read `og:url` as the page's identity and `noindex` does not stop them. `app/not-found.tsx`
+now sets its own `openGraph` (spreading `ogBase` with no `url`; Next replaces a parent `openGraph`
+wholesale rather than merging, and `url: null` does not typecheck). `titles.mjs` gained the assertion:
+**`notFoundClaimsUrl` must be `false`** — it fails if the 404 declares either a canonical or an
+`og:url`. Any future identity tag on this page needs the same treatment.
+
 ### 1.3 — P1 · M · [NOT STARTED] 45 RSC payload files ship to production as crawlable duplicates
 
 `perf.mjs` → `rscPayloads: 45`, `rscBytes` ≈ 1.43 MB (as of 2026-08-23). Next emits an `index.txt`

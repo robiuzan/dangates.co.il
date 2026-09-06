@@ -37,8 +37,9 @@ export const metadata: Metadata = {
   ...(manifest.analytics?.googleSiteVerification
     ? { verification: { google: manifest.analytics.googleSiteVerification } }
     : {}),
-  // Every route overrides this wholesale with its own `openGraph` (see lib/seo.ts) — kept as
-  // the fallback for any route that does not (app/not-found.tsx).
+  // The homepage's own OG block. Every other route overrides it wholesale with its own (see
+  // lib/seo.ts) — including app/not-found.tsx, which must spread `ogBase` without a `url` so a
+  // broken URL never claims to be the homepage through og:url (§1.5; `titles.mjs` enforces it).
   openGraph: { ...ogBase, url: routeUrl("") },
 };
 
