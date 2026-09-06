@@ -58,18 +58,27 @@ export const siteConfig = {
  * `slug` = Hebrew route segment (`app/services/[service]`); `name` = Hebrew display name.
  * Marketing descriptions live with the page content (lib/content.ts), not here.
  *
- * `updated` = ISO date this service's copy (its serviceMeta entry in lib/content.ts) last
- * changed. It becomes the page's sitemap <lastmod>, so bump it ONLY for real copy edits —
- * never for styling, metadata or analytics work, or the signal stops meaning anything.
+ * `updated` = ISO date this service's copy (its serviceMeta and serviceTriggers entries in
+ * lib/content.ts) last changed. It becomes the page's sitemap <lastmod>, so bump it ONLY for real
+ * copy edits — never for styling, metadata or analytics work, or the signal stops meaning anything.
+ *
+ * 2026-09-06: bumped on all seven because each page gained visible copy — the
+ * "מתי כדאי לפנות אלינו?" heading and its own per-service trigger list (backlog §3.3). Nothing else
+ * in that release was a copy edit: og:url, GTM in <head>, data-cta, the font preloads and the
+ * route-file copy move were metadata, infrastructure or a verbatim refactor, so `locationsUpdated`
+ * and the `staticPages` dates deliberately did not move. The lead-form error block is client-only
+ * and absent from the crawled bytes, so /צור-קשר/ did not move either. **No script catches a stale
+ * date** — `links.mjs` asserts a <lastmod> is a real, non-future date, not that it is current — so
+ * this judgement is part of the pre-deploy check in `/deploy-dangates`.
  */
 export const services = [
-  { slug: "שערים-נגררים", name: "שערים נגררים", updated: "2026-07-13" },
-  { slug: "שערי-כנף", name: "שערי כנף", updated: "2026-07-13" },
-  { slug: "שערים-מתרוממים", name: "שערים מתרוממים", updated: "2026-07-13" },
-  { slug: "שערים-לחניה", name: "שערים לחניה", updated: "2026-07-13" },
-  { slug: "שער-זרוע", name: "שער זרוע", updated: "2026-07-13" },
-  { slug: "תריסי-גלילה-חשמליים", name: "תריסי גלילה חשמליים", updated: "2026-07-13" },
-  { slug: "שערים-לדירה", name: "שערים לדירה", updated: "2026-07-13" },
+  { slug: "שערים-נגררים", name: "שערים נגררים", updated: "2026-09-06" },
+  { slug: "שערי-כנף", name: "שערי כנף", updated: "2026-09-06" },
+  { slug: "שערים-מתרוממים", name: "שערים מתרוממים", updated: "2026-09-06" },
+  { slug: "שערים-לחניה", name: "שערים לחניה", updated: "2026-09-06" },
+  { slug: "שער-זרוע", name: "שער זרוע", updated: "2026-09-06" },
+  { slug: "תריסי-גלילה-חשמליים", name: "תריסי גלילה חשמליים", updated: "2026-09-06" },
+  { slug: "שערים-לדירה", name: "שערים לדירה", updated: "2026-09-06" },
 ] as const;
 
 export type ServiceSlug = (typeof services)[number]["slug"];

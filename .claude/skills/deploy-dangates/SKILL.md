@@ -90,7 +90,15 @@ node -e "require('fs').rmSync('.next',{recursive:true,force:true})" && npm run b
    and `prebuild` runs it anyway, but commit the regenerated file — `git status --porcelain public/`
    must be clean before you build, or the map and the shipped rules have drifted (§1.6). `public/`
    reaches `out/` only through a build.
-5. **Stop-ship, all script-proven:** a doubled `<title>` or missing canonical (`titles.mjs`); a live
+5. **Did visible copy change? Bump its `updated` date — no script catches this.** `<lastmod>` comes
+   from `services[].updated`, `locationsUpdated`, `staticPages[].updated` and a post's `updated`.
+   `links.mjs` asserts each is a real, non-future date, **not that it is current**, so a stale date
+   survives a green gate and understates a real change on exactly the pages you want recrawled.
+   Judge it per page type: rendered copy changed → bump; metadata, analytics, styling or a verbatim
+   refactor → leave it. Client-only UI that is absent from the crawled bytes (the lead form's error
+   block) is not a copy change — check the built HTML rather than the component. Precedent:
+   2026-09-06 bumped the seven services for the per-service trigger lists and nothing else.
+6. **Stop-ship, all script-proven:** a doubled `<title>` or missing canonical (`titles.mjs`); a live
    🔶/⛔ claim (`claims-grep.mjs`); `Review`/`AggregateRating` or an `author` key reappearing
    (`schema.mjs` fails — the review block is gated in code, golden rule 1); a container id change
    without the `gtm.js` 200-check (golden rule 8).
