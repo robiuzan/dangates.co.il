@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { ogImageMeta } from "@ishub/site-kit";
 import { Rubik } from "next/font/google";
 import { siteConfig, manifest } from "@/lib/site-config";
+import { ogBase, routeUrl } from "@/lib/seo";
+import { cn } from "@/lib/utils";
+import { FONT_PRELOADS } from "@/lib/fonts";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
@@ -35,12 +37,9 @@ export const metadata: Metadata = {
   ...(manifest.analytics?.googleSiteVerification
     ? { verification: { google: manifest.analytics.googleSiteVerification } }
     : {}),
-  openGraph: {
-    images: ogImageMeta(manifest.images),
-    type: "website",
-    locale: "he_IL",
-    siteName: siteConfig.name,
-  },
+  // Every route overrides this wholesale with its own `openGraph` (see lib/seo.ts) — kept as
+  // the fallback for any route that does not (app/not-found.tsx).
+  openGraph: { ...ogBase, url: routeUrl("") },
 };
 
 /** Shared GTM loader — inert (renders nothing) until analytics.gtmId is set in the manifest. */
@@ -51,14 +50,32 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="he" dir="rtl" className={rubik.variable}>
+    // rubik.className applies the font directly (not just the --font-rubik variable
+    // globals.css reads) — the documented Next 14 recipe for automatic font preloading.
+    <html lang="he" dir="rtl" className={cn(rubik.variable, rubik.className)}>
       <head>
+        {/* Hand-added preload for the two Rubik faces (hebrew + latin) — Next's own
+            font-manifest preload injection never fires on this toolchain; see lib/fonts.ts
+            for why and how to keep these two hrefs in sync with the build. */}
+        {FONT_PRELOADS.map((font) => (
+          <link
+            key={font.href}
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            href={font.href}
+            crossOrigin="anonymous"
+          />
+        ))}
         {manifest.images?.mediaHost && (
           <link
             rel="preconnect"
             href={`https://${manifest.images.mediaHost}`}
             crossOrigin=""
           />
+        )}
+        {gtmHead && (
+          <script id="gtm-init" dangerouslySetInnerHTML={{ __html: gtmHead }} />
         )}
       </head>
       <body className="flex min-h-screen flex-col font-sans">
@@ -72,9 +89,6 @@ export default function RootLayout({
               title="gtm"
             />
           </noscript>
-        )}
-        {gtmHead && (
-          <script id="gtm-init" dangerouslySetInnerHTML={{ __html: gtmHead }} />
         )}
         <Header />
         <main className="flex-1">{children}</main>

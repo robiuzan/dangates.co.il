@@ -2,15 +2,26 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { locations } from "@/lib/site-config";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
+// Never renamed to the spelled-correctly "אזורי" — this is the live URL (golden rule 3).
+const areasUrl = routeUrl("איזורי-שירות");
+const areasDescription =
+  "תיקון והתקנת שערים חשמליים במרכז הארץ ובפריסה ארצית — עם מענה מהיר וזמינות 24/7 לחירום. בחרו את העיר שלכם.";
+
 export const metadata: Metadata = {
-  alternates: { canonical: "/איזורי-שירות/" },
+  alternates: { canonical: areasUrl },
   title: "אזורי שירות",
-  description:
-    "תיקון והתקנת שערים חשמליים במרכז הארץ ובפריסה ארצית — עם מענה מהיר וזמינות 24/7 לחירום. בחרו את העיר שלכם.",
+  description: areasDescription,
+  openGraph: {
+    ...ogBase,
+    url: areasUrl,
+    title: "אזורי שירות",
+    description: areasDescription,
+  },
 };
 
 export default function AreasPage() {

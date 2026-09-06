@@ -1,15 +1,25 @@
 import type { Metadata } from "next";
 import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { siteConfig, telHref, whatsappHref } from "@/lib/site-config";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { LeadForm } from "@/components/forms/LeadForm";
 
+const contactUrl = routeUrl("צור-קשר");
+const contactDescription =
+  "צרו קשר עם דן שערים חשמליים לתיקון והתקנת שערים חשמליים במרכז הארץ ובפריסה ארצית. טלפון, וואטסאפ או טופס — נחזור אליכם עם הצעת מחיר. זמינות 24/7 לחירום.";
+
 export const metadata: Metadata = {
-  alternates: { canonical: "/צור-קשר/" },
+  alternates: { canonical: contactUrl },
   title: "צור קשר",
-  description:
-    "צרו קשר עם דן שערים חשמליים לתיקון והתקנת שערים חשמליים במרכז הארץ ובפריסה ארצית. טלפון, וואטסאפ או טופס — נחזור אליכם עם הצעת מחיר. זמינות 24/7 לחירום.",
+  description: contactDescription,
+  openGraph: {
+    ...ogBase,
+    url: contactUrl,
+    title: "צור קשר",
+    description: contactDescription,
+  },
 };
 
 export default function ContactPage() {

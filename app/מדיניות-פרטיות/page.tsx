@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/site-config";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 
+const privacyUrl = routeUrl("מדיניות-פרטיות");
+const privacyDescription = "מדיניות הפרטיות של אתר דן שערים חשמליים.";
+
 export const metadata: Metadata = {
-  alternates: { canonical: "/מדיניות-פרטיות/" },
+  alternates: { canonical: privacyUrl },
   title: "מדיניות פרטיות",
-  description: "מדיניות הפרטיות של אתר דן שערים חשמליים.",
+  description: privacyDescription,
+  openGraph: {
+    ...ogBase,
+    url: privacyUrl,
+    title: "מדיניות פרטיות",
+    description: privacyDescription,
+  },
 };
 
 export default function PrivacyPage() {

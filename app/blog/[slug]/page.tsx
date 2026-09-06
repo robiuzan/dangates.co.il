@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { posts, getPost, type PostBlock } from "@/lib/posts";
 import { manifest, siteConfig } from "@/lib/site-config";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { jsonLdScript } from "@ishub/site-kit/seo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
@@ -16,11 +17,18 @@ export function generateStaticParams(): { slug: string }[] {
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const post = getPost(params.slug);
   if (!post) return {};
+  const url = routeUrl(`blog/${post.slug}`);
   return {
-    alternates: { canonical: `/blog/${post.slug}/` },
+    alternates: { canonical: url },
     title: post.title,
     description: post.excerpt,
-    openGraph: { type: "article", title: post.title, description: post.excerpt },
+    openGraph: {
+      ...ogBase,
+      type: "article",
+      url,
+      title: post.title,
+      description: post.excerpt,
+    },
   };
 }
 

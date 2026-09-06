@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { locations, type LocationSlug, siteConfig } from "@/lib/site-config";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { serviceCards } from "@/lib/content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
@@ -22,13 +23,17 @@ function findLocation(param: string) {
 export function generateMetadata({ params }: { params: { city: string } }): Metadata {
   const loc = findLocation(params.city);
   if (!loc) return {};
+  const url = routeUrl(`locations/${loc.slug}`);
+  const title = `תיקון שערים חשמליים ב${loc.name}`;
+  const description = `תיקון והתקנת שערים חשמליים ב${loc.name} — שירות מהיר ואמין, אחריות מלאה וזמינות 24/7 לקריאות חירום. לכל סוגי השערים: נגררים, כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`;
   return {
-    alternates: { canonical: `/locations/${loc.slug}/` },
+    alternates: { canonical: url },
     // Bare subject only — app/layout.tsx already appends "| דן שערים חשמליים" via the
     // title template. Appending it here too is what shipped the doubled suffix on 25 pages.
     // Shortened from "תיקון והתקנת…" so the rendered title stays under ~60 chars.
-    title: `תיקון שערים חשמליים ב${loc.name}`,
-    description: `תיקון והתקנת שערים חשמליים ב${loc.name} — שירות מהיר ואמין, אחריות מלאה וזמינות 24/7 לקריאות חירום. לכל סוגי השערים: נגררים, כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`,
+    title,
+    description,
+    openGraph: { ...ogBase, url, title, description },
   };
 }
 

@@ -4,7 +4,9 @@ import { siteConfig, telHref, services, locations } from "@/lib/site-config";
 import { Container } from "@/components/ui/Container";
 
 export function Footer() {
-  const year = 2026; // static export — keep build deterministic; update yearly.
+  // Derived at build time — a static export never re-renders, so this is fixed until the
+  // next build, which is exactly the cadence a copyright year needs.
+  const year = new Date().getFullYear();
 
   return (
     <footer className="bg-primary text-white/90">

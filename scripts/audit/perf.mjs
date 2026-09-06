@@ -116,6 +116,30 @@ export function run() {
       `${preloadable.length} marked preloadable by next/font (.p.woff2):\n${woff2.map(relOut).join("\n")}`,
       "backlog §10.1",
     );
+  // lib/fonts.ts hand-hardcodes the two preload hrefs (Next's own font-manifest preload
+  // injection never fires on this toolchain, see that file's comment) — guard the two ways
+  // that hardcoding can silently go stale: a hash that no longer exists in out/ (font config
+  // changed, hrefs weren't updated), or preloading more/fewer than the faces next/font itself
+  // marked preloadable for this build.
+  const danglingPreloads = fontPreloads
+    .map((l) => l.attrs.href)
+    .filter((href) => href && !existsSync(path.join(OUT, href.replace(/^\//, ""))));
+  if (danglingPreloads.length)
+    r.fail(
+      `${danglingPreloads.length} <link rel="preload" as="font"> href(s) don't resolve to a file in out/ — the hardcoded hash in lib/fonts.ts is stale`,
+      danglingPreloads.join("\n"),
+      "backlog §10.1",
+    );
+  if (
+    fontPreloads.length &&
+    !danglingPreloads.length &&
+    fontPreloads.length !== preloadable.length
+  )
+    r.fail(
+      `homepage preloads ${fontPreloads.length} font file(s) but next/font marked ${preloadable.length} as preloadable (.p.woff2) this build — update lib/fonts.ts to the current two hashes ("and only those", backlog §10.1)`,
+      `preloaded:\n${fontPreloads.map((l) => l.attrs.href).join("\n")}\npreloadable:\n${preloadable.map(relOut).join("\n")}`,
+      "backlog §10.1",
+    );
 
   // 3. RSC payloads ───────────────────────────────────────────────────────────
   const rsc = walk(OUT, (f) => path.basename(f) === "index.txt");

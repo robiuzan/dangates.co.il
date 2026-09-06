@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/site-config";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 
+const a11yUrl = routeUrl("הצהרת-נגישות");
+const a11yDescription = "הצהרת הנגישות של אתר דן שערים חשמליים בהתאם לתקן הישראלי.";
+
 export const metadata: Metadata = {
-  alternates: { canonical: "/הצהרת-נגישות/" },
+  alternates: { canonical: a11yUrl },
   title: "הצהרת נגישות",
-  description: "הצהרת הנגישות של אתר דן שערים חשמליים בהתאם לתקן הישראלי.",
+  description: a11yDescription,
+  openGraph: {
+    ...ogBase,
+    url: a11yUrl,
+    title: "הצהרת נגישות",
+    description: a11yDescription,
+  },
 };
 
 export default function AccessibilityPage() {

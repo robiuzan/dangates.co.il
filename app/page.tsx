@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { manifest } from "@/lib/site-config";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { faqs } from "@/lib/content";
 import { localBusinessJsonLd, faqJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
 import { Section } from "@/components/ui/Section";
@@ -20,9 +21,12 @@ import { FinalCta } from "@/components/marketing/FinalCta";
  * `description: siteConfig.tagline` — 34 characters on the site's most important page.
  * The title still comes from the layout's `title.default`; only the description is set here.
  */
+const description =
+  "תיקון והתקנת שערים חשמליים לבתים, ועדי בתים ועסקים — שערים נגררים, כנף, מתרוממים ותריסי גלילה. אבחון מהיר, מחיר שקוף מראש ואחריות על העבודה. חייגו 072-2587772.";
+
 export const metadata: Metadata = {
-  description:
-    "תיקון והתקנת שערים חשמליים לבתים, ועדי בתים ועסקים — שערים נגררים, כנף, מתרוממים ותריסי גלילה. אבחון מהיר, מחיר שקוף מראש ואחריות על העבודה. חייגו 072-2587772.",
+  description,
+  openGraph: { ...ogBase, url: routeUrl(""), description },
 };
 
 // Site-wide LocalBusiness + FAQ JSON-LD — from the shared @ishub/site-kit builder (manifest-driven).

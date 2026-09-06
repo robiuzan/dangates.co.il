@@ -11,6 +11,7 @@ import {
   whatsappHref,
 } from "@/lib/site-config";
 import { serviceCards, processSteps } from "@/lib/content";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { serviceJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
@@ -31,12 +32,14 @@ function findCard(param: string) {
 export function generateMetadata({ params }: { params: { service: string } }): Metadata {
   const card = findCard(params.service);
   if (!card) return {};
+  const url = routeUrl(`services/${card.slug}`);
   return {
-    alternates: { canonical: `/services/${card.slug}/` },
+    alternates: { canonical: url },
     // Bare subject only — app/layout.tsx already appends "| דן שערים חשמליים" via the
     // title template. Appending it here too is what shipped the doubled suffix on 25 pages.
     title: card.name,
     description: card.description,
+    openGraph: { ...ogBase, url, title: card.name, description: card.description },
   };
 }
 

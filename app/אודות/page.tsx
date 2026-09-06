@@ -1,18 +1,23 @@
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { aboutSections, aboutValues } from "@/lib/content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { TrustBar } from "@/components/marketing/TrustBar";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
+const aboutUrl = routeUrl("אודות");
+const aboutDescription =
+  "דן שערים חשמליים — מומחים בתיקון והתקנת שערים חשמליים עם ניסיון רב שנים. שירות מהיר ואמין, אחריות מלאה, צוות מומחים וזמינות 24/7 לקריאות חירום.";
+
 export const metadata: Metadata = {
-  alternates: { canonical: "/אודות/" },
+  alternates: { canonical: aboutUrl },
   // The layout title template appends the brand — writing it here too repeats it.
   title: "אודות",
-  description:
-    "דן שערים חשמליים — מומחים בתיקון והתקנת שערים חשמליים עם ניסיון רב שנים. שירות מהיר ואמין, אחריות מלאה, צוות מומחים וזמינות 24/7 לקריאות חירום.",
+  description: aboutDescription,
+  openGraph: { ...ogBase, url: aboutUrl, title: "אודות", description: aboutDescription },
 };
 
 export default function AboutPage() {

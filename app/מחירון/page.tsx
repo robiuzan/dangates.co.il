@@ -1,13 +1,24 @@
 import type { Metadata } from "next";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { PricingTeaser } from "@/components/marketing/PricingTeaser";
 
+const pricingUrl = routeUrl("מחירון");
+const pricingTitle = "מחירון תיקון והתקנת שערים חשמליים";
+const pricingDescription =
+  "מחירון להתרשמות לתיקון והתקנת שערים חשמליים: ביקור טכנאי, תיקון מנוע, החלפת מסילה, תחזוקה והתקנת שער חדש. עלות ביקור טכנאי 150–350 ₪; המחיר הסופי לפי אבחון.";
+
 export const metadata: Metadata = {
-  alternates: { canonical: "/מחירון/" },
-  title: "מחירון תיקון והתקנת שערים חשמליים",
-  description:
-    "מחירון להתרשמות לתיקון והתקנת שערים חשמליים: ביקור טכנאי, תיקון מנוע, החלפת מסילה, תחזוקה והתקנת שער חדש. עלות ביקור טכנאי 150–350 ₪; המחיר הסופי לפי אבחון.",
+  alternates: { canonical: pricingUrl },
+  title: pricingTitle,
+  description: pricingDescription,
+  openGraph: {
+    ...ogBase,
+    url: pricingUrl,
+    title: pricingTitle,
+    description: pricingDescription,
+  },
 };
 
 export default function PricingPage() {

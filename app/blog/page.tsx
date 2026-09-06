@@ -2,15 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { posts } from "@/lib/posts";
+import { ogBase, routeUrl } from "@/lib/seo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
+const blogUrl = routeUrl("blog");
+const blogDescription =
+  "טיפים מקצועיים וחדשות מהתחום — מדריכים על תיקון, תחזוקה, בטיחות ושדרוג של שערים חשמליים, מאת דן שערים חשמליים.";
+
 export const metadata: Metadata = {
-  alternates: { canonical: "/blog/" },
+  alternates: { canonical: blogUrl },
   title: "בלוג",
-  description:
-    "טיפים מקצועיים וחדשות מהתחום — מדריכים על תיקון, תחזוקה, בטיחות ושדרוג של שערים חשמליים, מאת דן שערים חשמליים.",
+  description: blogDescription,
+  openGraph: { ...ogBase, url: blogUrl, title: "בלוג", description: blogDescription },
 };
 
 const DATE_FMT = new Intl.DateTimeFormat("he-IL", {
