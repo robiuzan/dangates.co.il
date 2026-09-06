@@ -117,8 +117,8 @@ decorative, and `SiteImage` refuses an empty `alt` at compile time. Figures get 
 
 `app/globals.css:96` is the global `prefers-reduced-motion` reset. `components/ui/Reveal.tsx`
 initialises **visible** and only hides after mount, so content is never stranded at `opacity: 0`.
-`framer-motion` is a dependency imported nowhere — do not start using it; a JS animation would have to
-be `useReducedMotion()`-gated to honour the reset.
+`framer-motion` was uninstalled on 2026-09-06 (§10.3) — do not reinstall it; a JS animation would
+have to be `useReducedMotion()`-gated to honour the reset.
 
 ## RTL
 

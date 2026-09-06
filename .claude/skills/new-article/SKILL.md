@@ -63,8 +63,9 @@ string and no second mini-model.
 with a 301, **4 plain 301s** to the surviving post on the same topic. Rewriting migrated posts needs
 owner approval (owner-actions 3.8, business-facts §G) — the table is a proposal until it is ticked.
 Redirect mechanics: point the **legacy** WordPress row in `REDIRECTS.md` straight at the final
-destination (one hop), and batch blog moves after Phase 1 replaces the 37 stubs with
-`public/_redirects` (ADR 0004). A post that folds into a guide takes its usable paragraphs with it
+destination (one hop). Since 2026-09-06 a redirect is a line in the generated `public/_redirects`
+(ADR 0004) rather than a stub directory, so a blog move no longer needs batching — edit
+`REDIRECTS.md` and rerun the generator. A post that folds into a guide takes its usable paragraphs with it
 and nothing else — the guide is written to the `/new-guide` bar, not pasted.
 
 ## Operation A — clean a post today (flat model)

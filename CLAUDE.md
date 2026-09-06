@@ -89,7 +89,7 @@
 
 Next.js **14.2** App Router · React **18** · TypeScript strict (**`noUncheckedIndexedAccess` is on**) ·
 Tailwind **v4** (CSS-first `@theme` in `app/globals.css` — there is no `tailwind.config.ts`) ·
-`lucide-react` · `framer-motion` · `clsx` + `tailwind-merge` via `cn()` · `@ishub/site-kit` (vendored
+`lucide-react` · `clsx` + `tailwind-merge` via `cn()` · `@ishub/site-kit` (vendored
 tarball). Flat layout (no `src/`), path alias `@/* -> ./*`. Brand font **Rubik** for both body and
 headings, loaded via `next/font`.
 
@@ -104,8 +104,8 @@ transpilePackages: ["@ishub/site-kit"],
 
 **Static export forbids** `headers()`, `redirects()`, `rewrites()`, middleware, API routes, and ISR.
 
-> The comment in `next.config.mjs` saying the deploy target is "the cPanel (websquadinc) docroot,
-> served by Apache" is **stale and wrong** — see §10 (backlog N7; `edge.mjs` warns on it).
+> `next.config.mjs` names the real deploy target since 2026-09-06 (N7): Cloudflare Pages via a
+> `wrangler` upload of `out/`. It claimed a cPanel/Apache docroot until then — see §10.
 
 ---
 

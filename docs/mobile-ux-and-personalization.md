@@ -157,7 +157,7 @@ physical-utility lint (`hebrew-rtl`), with no effect on `flex-row-reverse`.
 1. **`output: "export"` — there is no server.** `next.config.mjs` sets `output: "export"` and
    `trailingSlash: true`; Next forbids `headers()`, `redirects()`, `rewrites()`, middleware, API
    routes and ISR under it (CLAUDE.md §3). One HTML file per route is built once and served to
-   everyone; there is no request-time hook in this repo. (The config's stale cPanel comment is N7.)
+   everyone; there is no request-time hook in this repo.
 2. **Production is `out/` and nothing else.** `ops/deploy-site.ps1` builds, gates `out/`, preserves
    `out.prev/`, then runs `wrangler pages deploy .\out` against the roster's project on branch
    `main`. Nothing in the repo puts a Function there — but that same command would compile a

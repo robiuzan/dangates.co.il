@@ -22,8 +22,8 @@ Next **14.2** · React **18** · TypeScript strict + **`noUncheckedIndexedAccess
 `rewrites()`, middleware, API routes, ISR and server actions. If a task seems to need one, the answer is at the edge (`public/_headers`,
 `public/_redirects`, a zone rule) — never in Next.
 
-> The comment at `next.config.mjs:6-7` claiming a "cPanel (websquadinc) docroot, served by Apache" is
-> **stale and wrong** (backlog N7; `edge.mjs` warns). Production is Cloudflare Pages — `/deploy-dangates`.
+> `next.config.mjs` names the real target since 2026-09-06 (N7, commit `a0e0fe2`): Cloudflare Pages
+> via a `wrangler` upload of `out/`. It claimed a cPanel/Apache docroot until then — `/deploy-dangates`.
 
 ## Data flow — the thing to internalise
 

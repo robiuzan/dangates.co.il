@@ -138,10 +138,11 @@ shape, `open` on the first item, `name="faq"` for exclusive disclosure where sup
 
 ### 2.3 Dead weight and duplicates
 
-- **`framer-motion`** (`^11.3.31`) is in `package.json` `dependencies` and imported nowhere under
-  `app/`, `components/`, `lib/` or `scripts/`. Not in the bundle; the cost is install time, audit
-  surface and the temptation to animate around the reduced-motion reset. `npm uninstall` (§10.3);
-  if motion is ever wanted, the answer is CSS.
+- **`framer-motion`** (`^11.3.31`) sat in `dependencies` and was imported nowhere under `app/`,
+  `components/`, `lib/` or `scripts/`. It never reached the bundle; the cost was install time, audit
+  surface and the temptation to animate around the reduced-motion reset. **Uninstalled 2026-09-06**
+  (§10.3, commit `13a6bdc`); `perf.mjs` → `unusedDeps: []`. If motion is ever wanted, the answer is
+  CSS — do not reinstall it.
 - **45 RSC `index.txt` payloads**, 1,434,799 bytes as of 2026-08-24 (§1.3) — one beside every
   `index.html` for `next/link` prefetch; not on the JS budget, but crawlable duplicates of every
   page's copy. Decide in the backlog row: strip `out/**/index.txt` as a post-build step in

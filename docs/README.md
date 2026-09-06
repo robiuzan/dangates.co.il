@@ -120,4 +120,5 @@ relaxes them:
   resolves to. Production is `wrangler` direct upload to Cloudflare Pages, and deploying is a
   production mutation — **ask first**, dry run first.
 - **Never edit generated or vendored output** — `node_modules/`, `vendor/`, `.next/`, `out/`,
-  `out.prev/`, and the 37 stubs under `public/` (regenerate them with `node scripts/gen-redirects.mjs`).
+  `out.prev/`, and `public/_redirects` (regenerate it with `node scripts/gen-redirects.mjs`, which
+  `prebuild` runs on every build; edit `REDIRECTS.md`, never the generated file).

@@ -123,9 +123,9 @@ Net: 3 keep + migrate, 4 fold into a guide, 4 plain 301s — `/blog/` shrinks fr
 the hub starts with 4 seeded guides. **Redirect mechanics:** the 11 legacy WordPress URLs already
 map to `/blog/<slug>/` in `REDIRECTS.md` §2. When a post folds, point the **legacy** row straight at
 the final destination (one hop, not a chain through `/blog/`), and add the `/blog/<slug>/` → target
-line alongside. Phase 1 replaces the 37 meta-refresh stubs with `public/_redirects`
-([decisions/0004](decisions/0004-redirects-replace-stubs.md)); until it lands, every new redirect is
-one more stub from `node scripts/gen-redirects.mjs`, so batch the blog moves after Phase 1.
+line alongside. Since 2026-09-06 a redirect is one line in the generated `public/_redirects`
+([decisions/0004](decisions/0004-redirects-replace-stubs.md)) rather than a stub directory, so blog
+moves no longer need batching — edit `REDIRECTS.md` and rerun `node scripts/gen-redirects.mjs`.
 
 ---
 

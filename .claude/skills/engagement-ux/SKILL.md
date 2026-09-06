@@ -23,9 +23,10 @@ node scripts/audit/run-all.mjs --scope cro      # data-cta coverage, pages with 
 node scripts/audit/run-all.mjs --scope perf     # client components, unused deps, JS budget
 ```
 
-As of 2026-08-23: 9 of 10 FAQ answers are `display:none` in the export (`a11y.mjs` → N8); 4
-`"use client"` components (`LeadForm`, `Header`, `Faq`, `Reveal`); `framer-motion` imported nowhere;
-24 CTA page-instances without `data-cta`; no TOC anywhere; no engagement event pushed anywhere.
+As of 2026-09-06: 9 of 10 FAQ answers are still `display:none` in the export (`a11y.mjs` → N8); 4
+`"use client"` components (`LeadForm`, `Header`, `Faq`, `Reveal`); no TOC anywhere; no engagement
+event pushed anywhere. Closed since: every CTA carries `data-cta` (`cta-coverage.mjs` → 0 missing,
+§13.2) and `framer-motion` is uninstalled (§10.3).
 `cro-engagement-auditor` reads the same scripts — cite its report, not these numbers.
 
 ## TOC — build-time, for pages past ~900 words
@@ -162,9 +163,9 @@ collapsed by default. Test at 360 px wide with the bar visible.
   `<Reveal>` `<div>` between `<ol>` and each `<li>`; screen readers stop announcing a list
   (backlog §11.2, `a11y.mjs`). Animate the `<li>` itself or drop the wrapper — never wrap list
   items, table rows or `<details>` in a block element.
-- **`framer-motion` is a dependency imported nowhere** (`perf.mjs` §10.3). Do not "use it since it
-  is there"; uninstall it. `components/ui/Reveal.tsx` already does the one animation the site has
-  with an IntersectionObserver and `prefers-reduced-motion`.
+- **`framer-motion` was a dependency imported nowhere** and was uninstalled on 2026-09-06
+  (`perf.mjs` → `unusedDeps: []`, §10.3). Do not reinstall it: `components/ui/Reveal.tsx` already
+  does the one animation the site has, with an IntersectionObserver and `prefers-reduced-motion`.
 - `toggle` does not bubble — listen on `document` with `{ capture: true }`, or `faq_open` never fires.
 - Two TOC call sites rendering both variants and hiding one with breakpoint classes emitted four
   `nav` landmarks with one name on galbath. One variant per call site.

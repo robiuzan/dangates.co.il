@@ -228,8 +228,9 @@ until the owner confirms the subdomain inventory, the same four other headers as
 
 Two obstacles (§12.2): GTM is injected via `dangerouslySetInnerHTML` and a static export cannot mint
 a per-request nonce, so `script-src` needs `'unsafe-inline'` (do not hash the snippet — the container
-rewrites itself); and **each of the 37 stubs carries an inline `<script>location.replace(...)</script>`**,
-so an enforcing `script-src` breaks every legacy URL until 4.4 removes them. The template's
+rewrites itself). The second obstacle is gone: **the 37 stubs and their inline
+`<script>location.replace(...)</script>` were deleted on 2026-09-06** (4.4), so nothing but the GTM
+snippet now needs `'unsafe-inline'`. The template's
 `Content-Security-Policy-Report-Only` line is the directive set (`api.web3forms.com` must sit in
 **both** `connect-src` and `form-action`); the `web-security-headers` skill carries the tightening
 procedure. No `report-to` endpoint exists, so violations surface only in the browser console.
@@ -237,7 +238,7 @@ Process: report-only → a week of real traffic including one form submission, o
 and one legacy-URL hit → tighten → enforce. **Never enforce before the `_redirects` cutover.** Every
 new third-party origin (an events hook, a photo host, a chat widget) needs a directive in the same change.
 
-### 4.4 The `_redirects` cutover — ADR 0004
+### 4.4 The `_redirects` cutover — ADR 0004 · shipped to the repo 2026-09-06 (`a0e0fe2`)
 
 One commit, per the ADR: emit `public/_redirects` from the `REDIRECTS.md` map, **both columns
 percent-encoded**, `301`; delete the 37 stub directories in the same change (a static file at a path
@@ -246,7 +247,10 @@ the destructive-ops hook — or let the generator stop emitting them); drop the 
 retire `.github/workflows/deploy.yml`, `public/CNAME` and `public/.htaccess` (§12.4, N5) — a second
 origin that ignores `_redirects` is worse once the stubs are gone; ship `_headers` alongside; fix the
 cPanel comment in `next.config.mjs` (N7). A real 301 keeps the query string, so `gclid`/`utm` on
-legacy entries is fixed for free (§13.3); the owner unpublishes GitHub Pages (audit §4). Proof:
+legacy entries is fixed for free (§13.3); the owner unpublishes GitHub Pages (audit §4). **Done in
+the repo on 2026-09-06** — 72 rules for the 37 pairs, since each is emitted in its slashed and bare
+form (Cloudflare matches a source literally and nothing is served at the bare path). Live only after
+the next deploy. Proof:
 `edge.mjs` → `stubs: 0`, `redirectsFile: true`, `headersFile: true`, `deadHostArtifacts: 0`,
 `foreignStubs: 0`; three legacy URLs live return `301` + `Location` with `?utm_source=test` intact
 (today `/חולון/` is a 200 stub). Deploying is a production mutation — dry run, the user's go, then
@@ -277,8 +281,8 @@ legacy entries is fixed for free (§13.3); the owner unpublishes GitHub Pages (a
   `-DryRun` or `-Confirm` + `# APPROVED:`.
 - Run `npm audit --omit=dev` and `npm audit` **separately** — a devDependency advisory on a static
   export is informational. N17: 3 high, the `postcss` source-map family inside `next`'s own tree,
-  build-time only — the next planned major, not a release blocker. `framer-motion` is imported
-  nowhere (§10.3) — uninstall. Six `dangerouslySetInnerHTML` uses (JSON-LD, GTM), no user input
+  build-time only — the next planned major, not a release blocker. `framer-motion` was imported nowhere
+  and was uninstalled on 2026-09-06 (§10.3). Six `dangerouslySetInnerHTML` uses (JSON-LD, GTM), no user input
   reaching them; `sourceMaps: 0`, `devBuildFiles: 0`, `spamHits: 0` (`security-auditor`, 2026-08-24).
 
 ## 5. Explicitly not doing

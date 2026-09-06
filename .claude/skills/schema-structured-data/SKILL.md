@@ -82,7 +82,7 @@ The last crumb keeps its `href` — `BreadcrumbList` needs a resolvable `item` a
 | `/מדריכים/{slug}/` (Phase 4)          | business + `TechArticle`/`Article` + `FAQPage` + breadcrumb                       | route family does not exist                          |
 | `/אודות/` · `/צור-קשר/`               | `AboutPage` / `ContactPage` + breadcrumb — no `Person`                            | breadcrumb only                                      |
 | `/מחירון/`                            | breadcrumb only — `OfferCatalog` is **blocked** (business-facts §D)               | breadcrumb only ✅                                   |
-| 37 stubs · `/404`                     | nothing (`noindex`)                                                               | ✅                                                   |
+| `/404`                                | nothing (`noindex`)                                                               | ✅                                                   |
 
 ## Phase 2 — `lib/jsonld.ts` (does not exist yet)
 
