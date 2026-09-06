@@ -33,6 +33,7 @@ export function Footer() {
               <Mail className="h-4 w-4 text-accent-400" aria-hidden />
               <a
                 href={`mailto:${siteConfig.email}`}
+                data-cta="footer-email"
                 className="hover:text-white"
                 dir="ltr"
               >

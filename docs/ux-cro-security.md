@@ -86,14 +86,16 @@ before the page has delivered value — no exit-intent, no timed modal, no self-
 
 GTM's click triggers read the attribute and no JS ships for them — **an untagged CTA is a click
 nobody will ever count.** Convention `{location}-{action}`, exactly two lower-case tokens
-(`cta-coverage.mjs` warns outside `^[a-z0-9]+-[a-z0-9]+$`). In source today: `header-call`,
+(`cta-coverage.mjs` warns outside `^[a-z0-9]+-[a-z0-9]+$`). In source today (closed 2026-09-06, all
+24 tel/WhatsApp/mailto/submit elements tagged, `cta-coverage.mjs` exit 0): `header-call`,
 `hero-call`, `hero-whatsapp`, `sticky-call`, `sticky-whatsapp`, `finalcta-call`,
-`finalcta-whatsapp`, `footer-call`. To add: `service-call`, `service-whatsapp`, `contact-call`,
-`contact-whatsapp`, `contact-email`, `footer-email`, `form-submit`, `form-whatsapp`,
-`pricing-contact`, then `pricing-*`, `thanks-*`, `article-*`. The container maps the prefix to
-`placement` ([event-taxonomy.md](event-taxonomy.md)) and reads `closest('a[data-cta]')` because
-icons sit inside the anchors. The two `window.open` exits in `LeadForm` push `whatsapp_click`
-explicitly (see 2.2).
+`finalcta-whatsapp`, `footer-call`, `service-call`, `service-whatsapp`, `contact-call`,
+`contact-whatsapp`, `contact-email`, `footer-email`, `form-submit`, `form-whatsapp`, `form-call`,
+`pricing-contact`. Still to add: `pricing-*` beyond `pricing-contact`, `thanks-*`, `article-*`. The
+container maps the prefix to `placement` ([event-taxonomy.md](event-taxonomy.md)) and reads
+`closest('a[data-cta]')` because icons sit inside the anchors. The WhatsApp fallback in `LeadForm`
+(`form-whatsapp`, `placement: "form"`) pushes `whatsapp_click` explicitly since it opens via
+`window.open`, not a plain anchor click (see 2.2).
 
 ### 1.5 What a CTA may not say
 

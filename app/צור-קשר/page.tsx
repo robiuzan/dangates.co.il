@@ -53,7 +53,12 @@ export default function ContactPage() {
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent-50 text-accent-600">
                   <Phone className="h-5 w-5" aria-hidden />
                 </span>
-                <a href={telHref} className="font-medium hover:text-primary" dir="ltr">
+                <a
+                  href={telHref}
+                  data-cta="contact-call"
+                  className="font-medium hover:text-primary"
+                  dir="ltr"
+                >
                   {siteConfig.phone}
                 </a>
               </li>
@@ -63,6 +68,7 @@ export default function ContactPage() {
                 </span>
                 <a
                   href={whatsappHref(defaultWhatsappMessage)}
+                  data-cta="contact-whatsapp"
                   className="font-medium hover:text-primary"
                 >
                   {contactPageCopy.whatsappLabel}
@@ -74,6 +80,7 @@ export default function ContactPage() {
                 </span>
                 <a
                   href={`mailto:${siteConfig.email}`}
+                  data-cta="contact-email"
                   className="font-medium hover:text-primary"
                   dir="ltr"
                 >

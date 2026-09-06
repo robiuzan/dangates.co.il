@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Check, MessageCircle, Send } from "lucide-react";
-import { siteConfig, whatsappHref, services } from "@/lib/site-config";
+import { Check, MessageCircle, Phone, Send } from "lucide-react";
+import { siteConfig, telHref, whatsappHref, services } from "@/lib/site-config";
+import { leadFormErrorCopy } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@ishub/site-kit/analytics";
+
+/** Reasons `lead_error` reports (docs/event-taxonomy.md) — a delivery failure never carries PII. */
+type LeadErrorReason = "network" | "popup_blocked" | `http_${number}`;
 
 /**
  * Primary lead/quote form (brief G1). Low-friction: name + phone required.
@@ -23,6 +27,7 @@ const WEB3FORMS_KEY =
 export function LeadForm({ className }: { className?: string }) {
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [fallbackWhatsapp, setFallbackWhatsapp] = useState<string | null>(null);
 
   function buildWhatsapp(form: HTMLFormElement): string {
     const d = new FormData(form);
@@ -52,6 +57,27 @@ export function LeadForm({ className }: { className?: string }) {
     setError(null);
     setStatus("sending");
 
+    const page = window.location.pathname;
+
+    /** `lead_error` never carries name/phone/message — only the shape of the failure. */
+    function reportDeliveryFailure(reason: LeadErrorReason) {
+      trackEvent("lead_error", { form: "lead", page, reason });
+    }
+
+    /**
+     * Open the WhatsApp fallback and keep a real (non-JS-dependent) link visible in the
+     * role="alert" block below, since a link cannot be popup-blocked the way `window.open` can.
+     * Both call sites push `whatsapp_click` — this open is JS-driven, so no GTM click trigger
+     * ever sees it otherwise — and a blocked popup is its own reportable failure.
+     */
+    function openWhatsappFallback(form: HTMLFormElement) {
+      const href = buildWhatsapp(form);
+      setFallbackWhatsapp(href);
+      const popup = window.open(href, "_blank", "noopener");
+      trackEvent("whatsapp_click", { cta: "form-whatsapp", page, placement: "form" });
+      if (!popup) reportDeliveryFailure("popup_blocked");
+    }
+
     // No access key (local dev only): simulate so `next dev` works. Production builds always
     // ship a provisioned key, so an empty key in production is a misconfig — fall back to
     // WhatsApp rather than silently pretending the lead was sent.
@@ -62,7 +88,8 @@ export function LeadForm({ className }: { className?: string }) {
         return;
       }
       setStatus("error");
-      window.open(buildWhatsapp(form), "_blank", "noopener");
+      reportDeliveryFailure("network");
+      openWhatsappFallback(form);
       return;
     }
 
@@ -81,11 +108,17 @@ export function LeadForm({ className }: { className?: string }) {
         }),
       });
       const result: { success?: boolean } = await res.json();
-      if (!res.ok || !result.success) throw new Error("bad status");
+      if (!res.ok || !result.success) {
+        setStatus("error");
+        reportDeliveryFailure(`http_${res.status}`);
+        openWhatsappFallback(form);
+        return;
+      }
     } catch {
       // Fall back to WhatsApp so the lead is never lost.
       setStatus("error");
-      window.open(buildWhatsapp(form), "_blank", "noopener");
+      reportDeliveryFailure("network");
+      openWhatsappFallback(form);
       return;
     }
 
@@ -206,25 +239,57 @@ export function LeadForm({ className }: { className?: string }) {
 
       <Button
         type="submit"
+        data-cta="form-submit"
         variant="accent"
         size="lg"
         className="w-full"
         disabled={status === "sending"}
       >
         <Send className="h-5 w-5" aria-hidden />
-        {status === "sending" ? "שולח…" : "שליחה וקבלת הצעת מחיר"}
+        {status === "sending"
+          ? "שולח…"
+          : status === "error"
+            ? leadFormErrorCopy.retryLabel
+            : "שליחה וקבלת הצעת מחיר"}
       </Button>
 
       <p className="text-center text-xs text-gray-500">
         מעדיפים וואטסאפ?{" "}
         <a
           href={whatsappHref("היי, אני מעוניין/ת בהצעת מחיר לתיקון/התקנת שער חשמלי")}
-          className="inline-flex items-center gap-1 font-semibold text-[#1da851] hover:underline"
+          data-cta="form-whatsapp"
+          className="inline-flex items-center gap-1 font-semibold text-green-700 hover:underline"
         >
           <MessageCircle className="h-3.5 w-3.5" aria-hidden />
           שלחו לנו הודעה
         </a>
       </p>
+
+      {status === "error" && (
+        <div
+          role="alert"
+          className="space-y-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+        >
+          <p className="font-semibold">{leadFormErrorCopy.heading}</p>
+          <p>{leadFormErrorCopy.body}</p>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button
+              href={fallbackWhatsapp ?? whatsappHref()}
+              data-cta="form-whatsapp"
+              variant="whatsapp"
+              size="md"
+              className="bg-green-700 hover:bg-green-800"
+            >
+              <MessageCircle className="h-4 w-4" aria-hidden />
+              {leadFormErrorCopy.whatsappLabel}
+            </Button>
+            <Button href={telHref} data-cta="form-call" variant="outline" size="md">
+              <Phone className="h-4 w-4" aria-hidden />
+              <span dir="ltr">{leadFormErrorCopy.callLabel}</span>
+            </Button>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

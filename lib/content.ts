@@ -501,3 +501,17 @@ export const contactPageCopy = {
   areaLine: "שירות בפריסה ארצית",
   formSubtitle: "השאירו פרטים ונחזור אליכם בהקדם.",
 } as const;
+
+/**
+ * components/forms/LeadForm.tsx — the delivery-failure fallback (backlog N1, §8.6). Shown when
+ * the Web3Forms POST fails or the WhatsApp popup is blocked; the details were not lost, so the
+ * copy points straight at the two direct channels instead of asking the visitor to try again
+ * blind. No claim, no promised response time.
+ */
+export const leadFormErrorCopy = {
+  heading: "לא הצלחנו לשלוח את הפנייה כרגע",
+  body: "הפרטים שהזנתם לא אבדו — אפשר לפנות ישירות בוואטסאפ או בטלפון, או לנסות לשלוח שוב.",
+  whatsappLabel: "שליחה בוואטסאפ",
+  callLabel: "התקשרו עכשיו",
+  retryLabel: "נסו לשלוח שוב",
+} as const;

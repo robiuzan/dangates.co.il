@@ -121,12 +121,13 @@ export default function ServicePage({ params }: { params: { service: string } })
               </p>
               <p className="mt-1 text-sm text-gray-600">{servicePageCopy.ctaSubtitle}</p>
               <div className="mt-5 flex flex-col gap-3">
-                <Button href={telHref} variant="accent" size="lg">
+                <Button href={telHref} data-cta="service-call" variant="accent" size="lg">
                   <Phone className="h-5 w-5" aria-hidden />
                   <span dir="ltr">{siteConfig.phone}</span>
                 </Button>
                 <Button
                   href={whatsappHref(serviceWhatsappMessage(card.name))}
+                  data-cta="service-whatsapp"
                   variant="whatsapp"
                   size="lg"
                 >
