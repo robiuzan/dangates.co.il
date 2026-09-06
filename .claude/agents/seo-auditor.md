@@ -50,9 +50,7 @@ count below is "as of 2026-08-23" context for reading the output, never a findin
 4. **Canonicals and `og:url`.** One self-referencing `<link rel="canonical">`, trailing slash,
    percent-escaped = byte-identical to the sitemap `<loc>` (holds, §1.8). `og:url` is absent on all
    45 (`titles.mjs` → `ogUrlMissing`, §1.5).
-5. **Sitemap and robots.** `links.mjs` diffs sitemap ↔ emitted tree both ways (45 = 45). `app/sitemap.ts:33`
-   is a hand-maintained `staticPages` array — a new top-level route (`/תודה/`, `/מדריכים/`) builds
-   fine and is silently absent (§1.4). Fetch the **live** `/robots.txt` and compare to `out/robots.txt`;
+5. **Sitemap and robots.** `links.mjs` diffs sitemap ↔ emitted tree both ways (45 = 45). the static routes are the `staticPages` registry in `lib/site-config.ts` and `links.mjs` cross-checks it against the `app/` tree (`staticRoutesRegistered`; §1.4 done 2026-09-06) — an unregistered new route now fails the check instead of going silently absent. Fetch the **live** `/robots.txt` and compare to `out/robots.txt`;
    AI-crawler reachability itself belongs to `aeo-geo-strategist` — do not duplicate it.
 6. **Redirect stubs — the §1.1 finding.** 37 meta-refresh stubs return **200** with `noindex` **and** a
    canonical to the destination — a combination Google says not to use. `public/_redirects` does not

@@ -1,6 +1,6 @@
 ---
 name: dangates-architecture
-description: Start-here orientation for dangates.co.il — the roster → site.config.json → lib/site-config.ts → lib/content.ts / lib/posts.ts → routes data flow, the file map, static-export constraints (no headers, redirects, middleware or API routes), the Hebrew dynamic-route matcher, the meta-refresh redirect stubs and their ADR 0004 replacement, the npm scripts including audit / audit:env / gate, the deploy truth, and the environment map (15 agents, 25 skills, 7 hooks, 4 rules, the audit scripts, the docs, /audit and /improve). Use at the start of any task in this repo, or when unsure where content, routes, metadata or business facts come from. Triggers: "where does X live", "how is this site built", "orient me", "architecture", "why is this not working in production", "איפה זה יושב", "איך האתר בנוי".
+description: Start-here orientation for dangates.co.il — the roster → site.config.json → lib/site-config.ts → lib/content.ts / lib/posts.ts → routes data flow, the file map, static-export constraints (no headers, redirects, middleware or API routes), the Hebrew dynamic-route matcher, the meta-refresh redirect stubs and their ADR 0004 replacement, the npm scripts including audit / audit:env / gate, the deploy truth, and the environment map (15 agents, 27 skills, 7 hooks, 4 rules, the audit scripts, the docs layer map, /audit, /improve and /sprint). Use at the start of any task in this repo, or when unsure where content, routes, metadata or business facts come from. Triggers: "where does X live", "how is this site built", "orient me", "architecture", "why is this not working in production", "איפה זה יושב", "איך האתר בנוי".
 ---
 
 # dangates.co.il architecture
@@ -70,8 +70,7 @@ The taxonomy is mixed — pure Hebrew top-level paths, English container segment
 the three silos. It is the live URL scheme and it stays. `/איזורי-שירות/` would spell correctly as
 `אזורי`; it is the **live** slug (golden rule 3) — not a cleanup task.
 
-`app/sitemap.ts:32-43` is a hand-maintained `staticPages` list (§1.4): Phase 1 derives it from a
-`staticRoutes` const, Phase 4 adds the guides registry, so a new route cannot be silently absent.
+`staticPages` in `lib/site-config.ts` is the registry of the nine static routes (§1.4, done 2026-09-06): `app/sitemap.ts` derives from it, `links.mjs` cross-checks it against the `app/` tree, and Phase 4 adds the guides registry the same way, so a new route cannot be silently absent.
 
 ## The Hebrew dynamic-route trap
 
@@ -134,12 +133,14 @@ reviewer → proof script); `npm run audit:env` checks every name below exists.
   `article-auditor`; docs-only editor: `keyword-researcher`; writers: `hebrew-copywriter`,
   `rtl-frontend-engineer`. Writers hand copy to `hebrew-editor` → `claims-verifier` and markup to
   `ts-react-reviewer`; nobody self-reviews.
-- **Skills (25, `.claude/skills/`)** — commands: `/audit [scope]`, `/improve <id>`, `/new-guide`;
-  gates: `qa-build-gate`, `deploy-dangates`; orientation: this one; page families: `new-city`,
-  `new-service`, `new-article`, `content-hub`, `internal-linking`; SEO/schema: `seo-metadata`,
-  `schema-structured-data`, `local-seo-il`, `aeo-answer-content`, `keyword-research`, `eeat-build`;
-  UX/CRO: `conversion-cro`, `engagement-ux`, `tracking-analytics`, `site-images`; quality:
-  `hebrew-rtl` (mandatory), `responsive-accessibility`, `performance-web-vitals`, `web-security-headers`.
+- **Skills (27, `.claude/skills/`)** — commands: `/audit [scope]`, `/improve <id>`, `/new-guide`,
+  `/sprint <n>`; gates: `qa-build-gate`, `deploy-dangates`; orientation: this one; page families:
+  `new-city`, `new-service`, `new-article`, `content-hub`, `internal-linking`; SEO/schema:
+  `seo-metadata`, `schema-structured-data`, `local-seo-il`, `aeo-answer-content`, `keyword-research`,
+  `eeat-build`; UX/CRO: `conversion-cro`, `engagement-ux`, `tracking-analytics`, `site-images`;
+  quality: `hebrew-rtl` (mandatory), `responsive-accessibility`, `performance-web-vitals`,
+  `web-security-headers`; locale: `i18n-locale-architecture` (why not English yet; the architecture
+  if it ships).
 - **Hooks (7, `.claude/hooks/`)** — PreToolUse: `guard-protected-paths.ps1`, `secret-scan.ps1`
   (Edit/Write), `guard-destructive-ops.ps1` (Bash/PowerShell); PostToolUse: `post-edit-lint.ps1`,
   `audit-logger.ps1`; SessionStart: `session-context.ps1`; Stop: `format-changed.ps1`.
@@ -150,14 +151,20 @@ reviewer → proof script); `npm run audit:env` checks every name below exists.
   `cta-coverage`, `claims-grep`, `spam-grep`, `rtl-lint`, `a11y`, `perf`, `edge`, `env-doctor`,
   `gsc-ingest`; `thresholds.json`, `claims.json`. Roster §4 maps scope → script.
 - **Workflow** — `.claude/workflows/site-audit.js` (`/site-audit`), the deterministic engine behind `/audit`.
-- **Docs** — `optimization-backlog.md` (the work, with statuses) · `agent-roster.md` ·
-  `content-standards.md` · `keyword-map.md` · `schema-graph.md` · `business-facts.md` (the one file
-  an agent may not fill in) · `owner-actions.md` · `event-taxonomy.md` · `rank-tracking.md` ·
-  `content-calendar.md` · `competitors.md` · `growth-roadmap.md` · the Cloudflare and GBP runbooks ·
-  `audits/` (dated `/audit` reports) · `decisions/` (ADRs 0001–0004).
+- **Docs** — `README.md` is the layer map (strategy → standards → state → operations). Strategy:
+  `seo-geo-aeo-strategy.md` · `growth-roadmap.md`. Standards: `content-standards.md` ·
+  `keyword-map.md` · `schema-graph.md` · `event-taxonomy.md` · `eeat-and-trust.md` ·
+  `ux-cro-security.md` · `performance-guidelines.md` · `accessibility-and-i18n.md` ·
+  `mobile-ux-and-personalization.md` · `data-tracking-infrastructure.md`. State:
+  `business-facts.md` (the one file an agent may not fill in) · `optimization-backlog.md` (the work,
+  with statuses) · `audits/` (dated `/audit` reports) · `rank-tracking.md` · `competitors.md`.
+  Operations: `implementation-sprints.md` (the sequenced plan) · `agent-roster.md` (routing; §7 maps
+  each standards doc to its skill, agent and script) · `owner-actions.md` · `content-calendar.md` ·
+  the Cloudflare and GBP runbooks · `decisions/` (ADRs 0001–0004).
 - **Entry points** — `/audit [scope]`: rebuild → `npm run audit` → auditors in parallel → dated
   report → backlog statuses. `/improve <id>`: route via the roster → implement → `npm run gate` →
-  reviewers → backlog row. Neither deploys.
+  reviewers → backlog row. `/sprint <n>`: one sprint of `implementation-sprints.md` → `/improve`
+  per id → gate after every item → `/audit`. None of the three deploys.
 
 ## Protected paths — enforced, not advisory
 

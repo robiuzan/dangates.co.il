@@ -1,14 +1,15 @@
 ---
 name: aeo-answer-content
-description: Answer-engine and LLM-citability layer for dangates — the Cloudflare edge that today answers 403 to every AI-crawler user agent (owner-blocked, the first gate), the per-bot Allow target for app/robots.ts, question-form H2s with a 40–60 word extractable answer first, definition and comparison blocks, templates/llms.txt, and freshness/authorship signals without a named person. Use when optimizing a page to be quoted by AI Overviews, ChatGPT or Perplexity, or when wiring robots.ts / llms.txt. Triggers: "AEO", "GEO", "AI Overviews", "llms.txt", "will an LLM cite this", "answer block", "AI crawlers", "robots.ts", "האם ChatGPT יצטט אותנו", "בלוק תשובה".
+description: Answer-engine and LLM-citability layer for dangates — the Cloudflare edge that refused every AI-crawler user agent until 2026-09 and can do so again without a repo change (Gate 1, re-probe every time), the per-bot Allow target for app/robots.ts, question-form H2s with a 40–60 word extractable answer first, definition and comparison blocks, templates/llms.txt, and freshness/authorship signals without a named person. Use when optimizing a page to be quoted by AI Overviews, ChatGPT or Perplexity, or when wiring robots.ts / llms.txt. Triggers: "AEO", "GEO", "AI Overviews", "llms.txt", "will an LLM cite this", "answer block", "AI crawlers", "robots.ts", "האם ChatGPT יצטט אותנו", "בלוק תשובה".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Answer-engine optimization
 
 The question is not "does this rank" but **"can an assistant reach this page, parse it, and prefer to
-quote it?"** Three gates, in that order. Gate 1 is closed and only the owner can open it; everything
-after it is capped until then — do the work anyway, but say so in every finding.
+quote it?"** Three gates, in that order. Gate 1 was closed until 2026-09-06 and only the owner
+controls it; probe it first, every time — whenever it is closed, everything after it is capped, and
+every finding says so. Do the Gate 2–3 work regardless.
 
 ## Baseline — re-measure first
 
@@ -22,12 +23,16 @@ curl -sS https://dangates.co.il/robots.txt  # what actually serves — never rea
 As of 2026-08-23: **0 of 36** service, location and post pages open with a 40–60-word paragraph
 (services 3–4 words, locations 16–17, posts 1 — the first `<p>` is the `PageHeader` subtitle or a
 date); `edge.mjs` → `llmsTxt: false`; FAQPage on 1 page; `updated` set on 0 of 11 posts. The
-`robots.txt` note in `edge.mjs` still describes the 2026-08-16 managed-`robots.txt` state — it is
-informational; whoever closes backlog §6.1 re-words it.
+`robots.txt` note in `edge.mjs` is informational — it tells you to run the probe below.
 
 ## Gate 1 — reachability. Check this first.
 
-**Status 2026-08-23: CLOSED, and closed harder than before.** Cloudflare's managed `robots.txt` is
+**Status 2026-09-06: OPEN.** Every AI-crawler signature (ClaudeBot, OAI-SearchBot, GPTBot,
+ChatGPT-User, PerplexityBot, Perplexity-User, `CCBot/2.0`) returns **200** on the full-UA probe,
+and the live `robots.txt` carries the per-bot list since the Sprint 0 deploy on 2026-09-06. Backlog §6.1 ✅ · owner-actions 1.1 ✅. The zone can close it again without a repo change —
+re-probe before every claim, and record the result as the first row of every finding.
+
+**History — status 2026-08-23: CLOSED, and closed harder than before.** Cloudflare's managed `robots.txt` was
 **off** — the live file is byte-identical to what `app/robots.ts:6-9` emits (`User-Agent: *` /
 `Allow: /` / `Sitemap:`, 68 bytes). But the edge now answers **403 "Your request was blocked."**
 (`Server: cloudflare`, no origin hit) to page requests whose user agent is a real AI-crawler
@@ -173,7 +178,8 @@ before Gate 1 opens anyway — cheap and harmless.
 ## Checklist
 
 - [ ] Live `robots.txt` fetched **and** a full-UA probe run; the stance recorded as found, not assumed.
-- [ ] Every finding says Gates 2–3 are capped while Gate 1 is closed (owner-actions §1.1).
+- [ ] Every finding opens with the Gate 1 probe result; if any allowed crawler is refused, it says
+      Gates 2–3 are capped until the zone reopens (owner-actions §1.1).
 - [ ] Every service, location, post and guide opens with a 40–60 word answer as the first `<p>` after
       the `<h1>` — `content-depth.mjs` 0 outside range; every number sourced (`claims-grep.mjs`).
 - [ ] Answers ship at first paint, not `display:none` (N8); one comparison table a competitor lacks.

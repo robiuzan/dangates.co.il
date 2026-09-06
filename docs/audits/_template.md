@@ -58,6 +58,16 @@ Grouped by severity. One row per root cause, with a count; every row carries a b
 
 The three items to run `/improve` on next, in order, with the one-line reason.
 
+## 7. AI-citation panel (`full` scope only, monthly)
+
+The ten fixed Hebrew prompts in `docs/seo-geo-aeo-strategy.md` §6.1, run by `aeo-geo-strategist`
+against ChatGPT, Perplexity, Claude and AI Overviews. First row of the section: the gate-1 probe
+result (`docs/cloudflare-runbook.md` step 1) — if any allowed crawler is refused, say so and stop.
+Leave the table empty and say why when the panel was not run.
+
+| Date | Engine | Prompt # | Cited? | URL cited (ours or a competitor's — note its page type) |
+| ---- | ------ | -------- | ------ | ------------------------------------------------------- |
+
 ## Agents run
 
 | Agent | Scope | Turn summary |

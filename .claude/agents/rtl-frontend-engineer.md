@@ -113,8 +113,7 @@ by design; that guard is the rule made mechanical.
 Params for `[service]`, `[city]`, `[slug]` arrive **percent-encoded** during export. The silo routes
 match with `decodeURIComponent(param).normalize("NFC")` (`app/services/[service]/page.tsx:27`,
 `app/locations/[city]/page.tsx:18`). A new Hebrew dynamic route that skips this works in dev and 404s in
-production. `app/sitemap.ts:32-43` is a hand-maintained `staticPages` list — derive it from data
-(§1.4); `navItems` hrefs lack the trailing slash the export enforces (N10).
+production. Static routes are the `staticPages` registry in `lib/site-config.ts` — a new top-level page needs a row there or `links.mjs` fails (§1.4, done 2026-09-06); `navItems` hrefs lack the trailing slash the export enforces (N10).
 
 ## Workflow
 

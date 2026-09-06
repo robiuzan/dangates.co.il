@@ -30,7 +30,8 @@
 > value as fact.** The phrases those claims hide behind are the **claim lexicon**
 > (`scripts/audit/claims.json`) — `node scripts/audit/claims-grep.mjs` and the PostToolUse hook fail
 > on any of them. Ten fabricated review texts under ten real names shipped as `Review` +
-> `AggregateRating` until 2026-08-17 — removed and gated, golden rule 1.
+> `AggregateRating` — removed from the repo and gated on 2026-08-17, off the live domain only with
+> the 2026-09-06 deploy — golden rule 1.
 
 ---
 
@@ -40,8 +41,9 @@
    insurance, ratings, reviews, certifications, customer names. If it is not in the roster manifest,
    `lib/site-config.ts`, or `lib/content.ts`, mark it `// 🔶 confirm` and add a row to
    [docs/business-facts.md](docs/business-facts.md). Fabricated reviews or ratings are a Google policy
-   violation, not merely a style problem. **This site shipped exactly that until 2026-08-17** — ten
-   invented review texts under ten real reviewer names, wired into structured data. It is fixed:
+   violation, not merely a style problem. **This site shipped exactly that until 2026-08-17 in the
+   repo, and until the 2026-09-06 deploy on the live domain** — ten invented review texts under ten
+   real reviewer names, wired into structured data. It is fixed in the code and live since 2026-09-06:
    `lib/content.ts` exports `reviews = []` plus `REVIEW_SOURCE_URL = null`, and
    `components/marketing/Reviews.tsx` returns `null` unless both are populated; `schema.mjs` fails if
    either type reappears. **That guard is the rule made mechanical — do not remove or work around it.**
@@ -130,10 +132,14 @@ scripts/gen-redirects.mjs   # emits the 37 meta-refresh stubs into public/
 scripts/audit/     # ⭐ the measurements (12 checks + thresholds.json + claims.json) — roster §4
 site.config.json   # SiteManifest — SYNCED FROM THE ROSTER, do not edit here
 REDIRECTS.md       # the old→new URL map the stub generator implements
-docs/              # backlog · content-standards · schema-graph · keyword-map · business-facts
+docs/              # README (the layer map — start there) · implementation-sprints (the sequenced plan)
+                   # backlog · content-standards · schema-graph · keyword-map · business-facts
                    # agent-roster (routing) · owner-actions · audits/ · decisions/ (ADRs 0001–0004)
                    # event-taxonomy · rank-tracking · content-calendar · competitors
                    # cloudflare-runbook · gbp-runbook · growth-roadmap
+                   # standards: seo-geo-aeo-strategy · eeat-and-trust · ux-cro-security
+                   #   performance-guidelines · accessibility-and-i18n
+                   #   mobile-ux-and-personalization · data-tracking-infrastructure
 .claude/           # agents/ skills/ hooks/ rules/ workflows/ — see §13
 ```
 
@@ -314,6 +320,11 @@ script decides. Hooks and `.claude/rules/` make golden rules 1, 2, 7 and 9 mecha
 - **Entry points:** `/audit [scope]` (rebuild → `npm run audit` → auditors in parallel →
   `docs/audits/<date>-<scope>.md` → backlog statuses) and `/improve <id>` (route → implement →
   `npm run gate` → reviewers → backlog row). Neither deploys.
+- **[docs/README.md](docs/README.md) is the map of the docs layers** (strategy → standards → state →
+  operations) and **[docs/implementation-sprints.md](docs/implementation-sprints.md) is the sequenced
+  plan** — `/sprint <n>` walks one sprint through `/improve`, gates after every item, and stops at any
+  deploy step for the owner's word. The seven standards docs (roster §7) are the bar a change must
+  clear; when one disagrees with a skill, check the code and fix the skill.
 - **SessionStart** prints the orientation — backlog order, latest audit verdict, tree state, the two
   entry points. Read it before asking where to begin.
 - **Writers hand off to reviewers:** copy → `hebrew-editor` → `claims-verifier`; markup →

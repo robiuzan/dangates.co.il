@@ -123,13 +123,9 @@ trailing slash, `encodeURI`s the Hebrew, and uses **real content dates** for `<l
 (`services[].updated`, `locationsUpdated` at `lib/site-config.ts:112`, `posts[].updated ?? date`).
 Never `new Date()` — bump the dates only for real copy edits.
 
-The one fragility: `staticPages` at `app/sitemap.ts:32-43` is a **hand-maintained array of 9**. Add a
-top-level page and it is silently missing (§1.4). Phase 1: export one `staticRoutes` const (path,
-label, `updated`) that the Hebrew-named pages, `navItems` (whose hrefs also lack the trailing slash —
-N10) and the sitemap all read. Phase 4: the guides registry `lib/guides.ts` (ADR 0002) appends the
-`/מדריכים/` entries the same way. Never hand-maintain a second URL list.
+The registry: `staticPages` in `lib/site-config.ts` (typed `StaticPage`, optional `noindex`) is the one list of the nine static routes; `app/sitemap.ts` derives from it and `links.mjs` cross-checks it against the `app/` tree both ways (§1.4, done 2026-09-06 in `c047d4d`). Add a top-level page → add its row, or `links.mjs` fails naming the route. Still open: `navItems` hrefs lack the trailing slash (N10). Phase 4: the guides registry `lib/guides.ts` (ADR 0002) appends the `/מדריכים/` entries the same way. Never hand-maintain a second URL list.
 
-`links.mjs` asserts sitemap ↔ emitted-tree parity both ways; 45 URLs today.
+`links.mjs` asserts sitemap ↔ emitted-tree parity both ways and every `<lastmod>` as a real, non-future date; 45 URLs today.
 
 ## Robots
 

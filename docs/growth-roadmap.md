@@ -6,11 +6,10 @@ what order, why that order, and what it needs from you. Nothing here is a number
 measured; every figure is "as of 2026-08-23" from `npm run audit`, and the scripts re-measure it.
 
 Written 2026-08-23. Phase 0 — the fabricated reviews removed and gated, the blog spam cleaned, the
-doubled titles fixed, breadcrumb schema on 44 pages — is built and verified on `out/`. **It is not
-live.** Checked against the domain the same day: the homepage still emits ten `Review` nodes under
+doubled titles fixed, breadcrumb schema on 44 pages — is built and verified on `out/`. **It was not live until 2026-09-06** (deployed that day at 11:06 UTC; the checks below describe the 2026-08-23 state). Checked against the domain the same day: the homepage still emits ten `Review` nodes under
 real people's names, every service and location title still doubles the brand, no page carries
 `BreadcrumbList`, one post still contains the injected spam token and all eleven still end in the dead
-"פוסטים קשורים" tail. Production is the pre-Phase-0 build. Deploying it is a production mutation that
+"פוסטים קשורים" tail. Production was the pre-Phase-0 build until 2026-09-06. Deploying is a production mutation that
 needs your go-ahead (`deploy-dangates`) — and it comes before anything else on this page.
 
 ---
@@ -31,10 +30,10 @@ This site has **nothing in tiers 1 and 2**. `schema.sameAs` is empty, no profile
 and the reviews section is empty — deliberately. The homepage carried ten invented review texts
 under ten real people's names, emitted as `Review` + `AggregateRating` schema. In the repo they are
 gone since 2026-08-17 and the component is gated so they cannot come back without a public source
-(business-facts §A). **On the live domain they are still there** — the build that removes them has
-not been deployed. Until it is, the site is one report away from a Google policy action, and every
-other item on this page is secondary to that deploy. The fix itself is right, and it leaves the site
-with **no proof of work at all**:
+(business-facts §A). **On the live domain they stayed until 2026-09-06**, when the build that
+removes them was deployed (11:06 UTC). Until then the site was one report away from a Google policy
+action, and every other item on this page was secondary to that deploy. The fix itself is right,
+and it leaves the site with **no proof of work at all**:
 
 - **Zero photographs.** `grep -rho '<img' out --include=index.html | wc -l` → 0 across 45 pages. No
   gate, no job, no van, no person. The logo is text.
@@ -59,6 +58,10 @@ door. Every AI-visibility item below is capped until you change that zone settin
 ([owner-actions.md](owner-actions.md) §1.1; the exact steps and the decision table are
 [cloudflare-runbook.md](cloudflare-runbook.md) step 1).
 
+**Update 2026-09-06:** you changed it — the zone now answers **200** to every AI-crawler signature
+on the full-UA probe (backlog §6.1 ✅). The cap is lifted. The probe stays the first step of every
+AEO finding because the setting can revert without a repo change.
+
 And the fourth is a set of claims the export makes over 160 times that nobody can back: "אחריות
 מלאה" on 41 pages with no term, "24/7" on 42 pages, "ניסיון רב שנים" with `foundedYear: null`,
 "פריסה ארצית" in the schema (`node scripts/audit/claims-grep.mjs`). You have told us the warranty term, licence,
@@ -73,13 +76,13 @@ Everything below is sequenced accordingly.
 
 Each phase is a follow-up session with its own approval. Phases overlap; this is dependency order.
 
-### Phase 0 — already built, waiting on one word from you
+### Phase 0 — built 2026-08-17, deployed 2026-09-06
 
 **Buys:** the fabricated reviews off the live domain; clean blog bodies; one brand suffix per title;
 breadcrumb schema on 44 pages; a real 404. The build passes lint, typecheck, format and build; what
 `npm run audit` still flags is the Phase 1–3 work below, not a regression. The deploy script dry-runs
 first and keeps the previous build for rollback. **Blocked on you:** the go-ahead. Nothing else in
-this document is worth starting while the live site still carries the reviews.
+this document is worth starting while the live site still carries the reviews. **Deployed 2026-09-06 (11:06 UTC):** the live homepage carries no `Review`; the reviews are off the domain.
 
 ### Phase 1 — Correctness leftovers
 
@@ -183,8 +186,9 @@ this is the summary, in the order it pays off.
 2. **The AI-crawler setting** (§1.1) — Cloudflare → the zone → AI Crawl Control, allow at least
    ClaudeBot, GPTBot, OAI-SearchBot, PerplexityBot, Google-Extended (the runbook recommends "allow
    retrieval, block training"). Read that page's per-crawler counts first; the cross-check is
-   `curl -sS -A "ClaudeBot" -o /dev/null -w "%{http_code}" https://dangates.co.il/` → **200** (today
-   403). The `robots.txt` is already fine — checking it proves nothing.
+   `curl -sS -A "ClaudeBot" -o /dev/null -w "%{http_code}" https://dangates.co.il/` → **200**
+   (**done — verified 2026-09-06**; keep it that way). The `robots.txt` is already fine — checking
+   it proves nothing.
 3. **The Google Business Profile** (§2.1) — as a service-area business, no street address, the cities
    on the site as the area, phone `072-2587772`. Send the public URL. Then reviews accumulate there and
    we quote them verbatim (§2.2) — never paraphrased, never rounded. Setup detail:

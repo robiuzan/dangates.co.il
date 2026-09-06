@@ -21,6 +21,11 @@ Bots**). Sidebar of the zone, or search "AI Crawl".
 
 ### What's happening now — the block moved, it did not go away
 
+> **Update 2026-09-06 — resolved on the zone.** The full-UA probe below returns **200** for
+> ClaudeBot, OAI-SearchBot, GPTBot, ChatGPT-User, PerplexityBot, Perplexity-User and `CCBot/2.0`
+> (Googlebot and bingbot 200). Backlog §6.1 is closed and owner-actions 1.1 is ✅. The setting can
+> revert without a repo change, so this step stays: re-run the probe before every AEO claim. The per-bot list in `app/robots.ts` went live with the Sprint 0 deploy on 2026-09-06 (11:06 UTC). The history below is kept so nobody re-diagnoses it.
+
 Earlier audits (2026-08-16) saw Cloudflare **prepend a managed block** to `/robots.txt` —
 `Disallow: /` for ClaudeBot, GPTBot, Google-Extended, CCBot, Bytespider, Amazonbot, Applebot-Extended,
 meta-externalagent, plus `Content-Signal: ai-train=no`. That is what backlog §6.1, business-facts §H
@@ -290,3 +295,9 @@ Permissions-Policy from the zone, pages.dev without them · legacy URL **200** (
 **404** · obfuscation/rocket markers **0** · gtm **200**. Repo side the same day:
 `node scripts/audit/run-all.mjs --scope security` → `stubs 37 · redirectsFile false · headersFile
 false · deadHostArtifacts 3 · foreignStubs 1 · llmsTxt false`.
+
+Re-run 2026-09-06: AI crawlers **200** on every full-UA probe (incl. `CCBot/2.0`) · www **200** (no
+redirect) · legacy URL **200** (stub) · llms.txt **404** · gtm **200** · apex headers from the zone:
+`Strict-Transport-Security: max-age=15552000`, `X-Frame-Options: SAMEORIGIN`,
+`X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`,
+`Permissions-Policy: geolocation=(), microphone=(), camera=()`. Until 11:06 UTC that day the live site was the 2026-08-03 build (`Israeli services sites/logs/deploys.csv`): ten `Review` nodes and `aggregateRating` on the homepage, doubled location titles, no `BreadcrumbList`. The Sprint 0 deploy replaced it — post-deploy probe: `aggregateRating` 0, titles single-brand, `BreadcrumbList` present, per-bot `robots.txt` live, sitemap 45, headers unchanged, AI crawlers still 200.

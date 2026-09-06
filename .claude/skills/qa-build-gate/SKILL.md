@@ -106,9 +106,7 @@ design (CLAUDE.md §8), so that count is 11, not 0. The invented-byline assertio
 Use `find out -path '*מדריכים*'`-style paths rather than Hebrew globs — Git Bash glob expansion over
 UTF-8 directory names is unreliable on Windows.
 
-If the route count moves, reconcile before shipping: `staticPages` in `app/sitemap.ts` is a
-hand-maintained array (§1.4), so a new top-level page builds fine and is silently absent from the
-sitemap — `links.mjs` sitemap parity is the mechanical catch, this grep is the eyeball.
+If the route count moves, reconcile before shipping: since §1.4 closed (2026-09-06) the nine static routes are the `staticPages` registry in `lib/site-config.ts`, and `links.mjs` fails on any `app/` route missing from it or any registered route with no page — `staticRoutesRegistered` is the mechanical catch, this grep is the eyeball.
 
 PowerShell 5.1 equivalent (no `&&`, no `??`):
 

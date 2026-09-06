@@ -127,9 +127,10 @@ this site already paid for fabricated attribution once.
 ## Gotchas
 
 - `lib/posts.ts` is untrusted input, not a model to imitate — its structure is what the ADR replaces.
-- A clean repo is not a clean site: as of 2026-08-23 the Phase-0 cleanup has not been deployed, so the
-  live domain still serves the injected token and the dead tails (content-calendar §4). Confirm with
-  the post-deploy checks in `/deploy-dangates` before telling anyone the blog is clean.
+- A clean repo is not a clean site: the Phase-0 cleanup reached the live domain only with the Sprint 0
+  deploy on 2026-09-06 (until then the domain served the injected token and the dead tails —
+  content-calendar §4). Confirm with the post-deploy checks in `/deploy-dangates` before telling
+  anyone the blog is clean; the next unshipped edit reopens the gap.
 - A 301 from `/blog/<slug>/` to a guide is only valid once the guide is published to the
   `article-auditor` bar; redirecting to a stub or a thin page trades one problem for another.
 - Two posts share a publish date (12/05/2025); do not "fix" that — it is the real sitemap date.

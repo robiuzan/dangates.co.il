@@ -118,11 +118,10 @@ done
 # expect: 301 → /locations/תל-אביב/ (query kept) · 301 → /blog/שערים-חשמליים-השקעה/ · 301 → /צור-קשר/
 ```
 
-**AI-crawler state and `robots.txt`:** do not restate it here — it moved on 2026-08-23 (the managed
-`robots.txt` is off; the edge now returns 403 to real AI-crawler user agents while search bots get
-200). `docs/cloudflare-runbook.md` step 1 carries the current state, the decision table and the
-full-UA probe loop; reading `robots.txt` alone proves nothing. The `robots.txt` info line printed by
-`scripts/audit/edge.mjs` still describes the older managed-file state — owner-blocked, backlog §6.1.
+**AI-crawler state and `robots.txt`:** do not restate it here — it moved on 2026-08-23 (managed
+`robots.txt` off, edge 403) and again by 2026-09-06 (every AI crawler 200 — backlog §6.1 ✅).
+`docs/cloudflare-runbook.md` step 1 carries the current state, the decision table and the full-UA
+probe loop; reading `robots.txt` alone proves nothing. The per-bot list in `app/robots.ts` (commit `6f4a1a8`) has been live since the Sprint 0 deploy on 2026-09-06 — the post-deploy verification checks it stays.
 
 ## Response headers are not in this repo
 

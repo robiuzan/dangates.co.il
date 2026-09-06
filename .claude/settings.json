@@ -61,7 +61,9 @@
       "Skill(new-guide)",
       "Skill(eeat-build)",
       "Skill(engagement-ux)",
-      "Skill(site-images)"
+      "Skill(site-images)",
+      "Skill(i18n-locale-architecture)",
+      "Skill(sprint)"
     ],
     "deny": [
       "Edit(site.config.json)",

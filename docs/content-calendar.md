@@ -92,9 +92,9 @@ queries → `/מחירון/` pivoted to "what determines the price" (§10), not 
 
 `/blog/` holds 11 posts migrated from the compromised WordPress site (golden rule 7). As of
 2026-08-23 the repo and `out/` are clean of spam (`spam-grep.mjs`: 0 hits, 0 fused words, 0 dead
-tails) — the **live domain is not**, because Phase 0 has not been deployed: one post still serves the
-injected token and all 11 still end in the dead "פוסטים קשורים" tail
-([growth-roadmap.md](growth-roadmap.md) §1). In the clean build, **all 11 are under the 900-word
+tails) — and since the Sprint 0 deploy on 2026-09-06 so is the **live domain** (until then one post
+still served the injected token and all 11 ended in the dead "פוסטים קשורים" tail —
+[growth-roadmap.md](growth-roadmap.md) §1). In the clean build, **all 11 are under the 900-word
 floor** (438–584 unique words), all 11 open with scene-setting instead of an answer block, every
 heading renders `<h2>` (`app/blog/[slug]/page.tsx:55-59`), 42 in-copy link phrases are still plain
 text, 4 Latin curly quotes remain at `lib/posts.ts:848-849`, and 42 emoji (💡 ×33) are used as

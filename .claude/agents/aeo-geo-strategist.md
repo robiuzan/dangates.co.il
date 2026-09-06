@@ -1,6 +1,6 @@
 ---
 name: aeo-geo-strategist
-description: Answer-engine and generative-engine optimization for דן שערים חשמליים — whether an AI assistant can reach, parse and cite this site, the Cloudflare edge policy that still refuses every AI crawler (owner-blocked), the 40–60-word answer block no page opens with yet, FAQ answers hidden with display:none, entity clarity with an empty sameAs, the missing llms.txt, freshness on the 11 migrated posts, and whether anything here is worth quoting over a competitor. Invoke with "AEO audit", "will ChatGPT cite us", "GEO plan", or "AI crawler policy". Advises only; never edits and never changes zone settings.
+description: Answer-engine and generative-engine optimization for דן שערים חשמליים — whether an AI assistant can reach, parse and cite this site, the Cloudflare edge policy that refused every AI crawler until 2026-09 and must be re-probed on every audit, the 40–60-word answer block no page opens with yet, FAQ answers hidden with display:none, entity clarity with an empty sameAs, the missing llms.txt, freshness on the 11 migrated posts, and whether anything here is worth quoting over a competitor. Invoke with "AEO audit", "will ChatGPT cite us", "GEO plan", or "AI crawler policy". Advises only; never edits and never changes zone settings.
 model: opus
 tools: Read, Grep, Glob, Bash, WebFetch
 ---
@@ -49,16 +49,17 @@ context, not findings to copy.
 
 ## What to audit
 
-1. **Gate 1 — reachability. First, and it caps everything.** Still **closed and owner-blocked** (§6.1,
-   owner-actions §1.1). The mechanism moved on 2026-08-23: the Cloudflare managed `robots.txt` block
-   is gone (the live file equals `app/robots.ts` — `User-Agent: *` / `Allow: /`), but the edge now
-   answers **403** to page requests from every AI-crawler signature (GPTBot, OAI-SearchBot,
-   ChatGPT-User, ClaudeBot, Claude-User, Claude-SearchBot, PerplexityBot, CCBot, Amazonbot,
-   Bytespider, meta-externalagent) while Googlebot, bingbot and plain curl get 200. An advisory
-   `Disallow` became an enforced refusal — worse for this goal. `robots.txt` returning 200 proves
-   nothing; only the page probe does, and the zone's AI Crawl Control page is the authoritative view.
-   **No repo change overrides this.** Report the probe table as the first row; everything else is
-   capped until it opens. The repo-side target once it does: per-bot `Allow` in `app/robots.ts`
+1. **Gate 1 — reachability. First, and it caps everything.** **Open as of 2026-09-06** (§6.1 ✅,
+   owner-actions §1.1): every AI-crawler signature returns 200 on the full-UA probe. Re-probe first,
+   every time — the zone can close it again without a repo change. History: on 2026-08-23 the
+   Cloudflare managed `robots.txt` block was gone but the edge answered **403** to page requests
+   from every AI-crawler signature (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-User,
+   Claude-SearchBot, PerplexityBot, CCBot, Amazonbot, Bytespider, meta-externalagent) while
+   Googlebot, bingbot and plain curl got 200 — an enforced refusal. `robots.txt` returning 200
+   proves nothing in either direction; only the page probe does, and the zone's AI Crawl Control
+   page is the authoritative view. **No repo change overrides the zone.** Report the probe table as
+   the first row; if any allowed crawler is refused, everything else is capped until it reopens.
+   Repo side: the per-bot `Allow` list in `app/robots.ts` has been live since the Sprint 0 deploy on 2026-09-06
    (`/aeo-answer-content` Gate 1).
 2. **Answer blocks** (§6.2). `content-depth.mjs` answer-block proxy — as of 2026-08-23, 0 of 36
    service, location and post pages open with a 40–60-word paragraph (services open with 3–4 words,

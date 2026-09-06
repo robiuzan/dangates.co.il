@@ -25,7 +25,7 @@ index and 11 posts. `out/` also holds 37 legacy redirect stubs and `/404`, for 8
 
 ---
 
-## §0. ✅ Phase 0 — DONE 2026-08-17 · ✅ Phase E0 — environment hardened 2026-08-23
+## §0. ✅ Phase 0 — DONE 2026-08-17 · deployed 2026-09-06 · ✅ Phase E0 — environment hardened 2026-08-23
 
 **Phase 0** — the three correctness items, plus three cheap fixes shipped alongside them. All verified
 against a clean `out/`; `lint`, `typecheck`, `format:check` and `build` all pass.
@@ -105,13 +105,9 @@ crawlable URLs, and `robots.txt` allows them.
 **Fix:** disallow `/*/index.txt` in the Cloudflare-side robots policy, or strip them from `out/` as a
 post-build step. Confirm nothing references them first.
 
-### 1.4 — P2 · S · [NOT STARTED] `staticPages` in the sitemap is a hand-maintained array of 9
+### 1.4 — P2 · S · [✅ DONE 2026-09-06] `staticPages` in the sitemap was a hand-maintained array of 9
 
-`app/sitemap.ts:32-43`. Services, locations and blog posts derive from their data arrays; the nine
-top-level pages do not. Add a top-level route (`/תודה/`, `/מדריכים/`) and it builds fine and is
-**silently absent from the sitemap**. `links.mjs` catches the parity break after the fact.
-
-**Fix:** export one `staticRoutes` const the routes themselves reference (`seo-metadata` skill).
+Closed by commit `c047d4d` (session dangates-co-il-f6, branch `sitemap-static-routes-registry`): `staticPages` is a typed registry in `lib/site-config.ts` beside `services` and `locations`, with an optional `noindex` flag for the coming `/תודה/`; `app/sitemap.ts` derives its static entries from it; `links.mjs` cross-checks the registry against the `app/` tree both ways (`staticRoutesRegistered`) and asserts every `<lastmod>` is a real, non-future W3C date. The same commit wires `verification.google` from `analytics.googleSiteVerification` in `app/layout.tsx` (inert while the roster value is null — the repo half of §13.7). Verified 2026-09-06 after a clean rebuild: `node scripts/audit/links.mjs` → ✅ `staticRoutesRegistered 9 · contentPages 45 · sitemapUrls 45 · orphans 0`; `out/sitemap.xml` byte-identical to the previous build (pure refactor; not deployed yet). Phase 4 appends the guides registry the same way (ADR 0002).
 
 ### 1.5 — P2 · S · [NOT STARTED] `og:url` is absent on all 45 pages
 
@@ -132,7 +128,7 @@ Cloudflare → Rules → Redirect Rules → 301 to apex. [owner-actions.md](owne
 
 `app/sitemap.ts` uses real per-content `<lastmod>` dates (never the build clock), `encodeURI`, and
 trailing slashes on all 45 URLs. Every page has exactly one self-referencing canonical
-(`titles.mjs`). `links.mjs` → 0 broken links, 0 links to stubs, 45 = 45 sitemap parity.
+(`titles.mjs`). `links.mjs` → 0 broken links, 0 links to stubs, 45 = 45 sitemap parity — and since `c047d4d` (2026-09-06) every `<lastmod>` asserted as a real, non-future W3C date and the static routes cross-checked against the `staticPages` registry.
 
 ---
 
@@ -427,14 +423,16 @@ intentional (`contact.phoneOverride: true`). **Never add an address; never "corr
 Skill: `aeo-answer-content`. Script: `content-depth.mjs` (answer-block proxy: first paragraph
 40–60 words) · `schema.mjs`.
 
-### 6.1 — P1 · [⏳ BLOCKED · owner] Every major AI crawler is blocked at the Cloudflare edge
+### 6.1 — P1 · [✅ DONE · owner · verified 2026-09-06] Every major AI crawler was blocked at the Cloudflare edge
 
-The live `robots.txt` sends `Disallow: /` to ClaudeBot, GPTBot, Google-Extended, CCBot, Bytespider,
-Amazonbot, Applebot-Extended, meta-externalagent and CloudflareBrowserRenderingCrawler, with
-`Content-Signal: ai-train=no`. `app/robots.ts` emits a blanket allow that never reaches the wire.
+**Resolved on the zone, verified live 2026-09-06** with the full-UA probe loop from
+[cloudflare-runbook.md](cloudflare-runbook.md) step 1: ClaudeBot, OAI-SearchBot, GPTBot, ChatGPT-User,
+PerplexityBot, Perplexity-User and `CCBot/2.0` all return **200** (Googlebot and bingbot 200). The per-bot list in `app/robots.ts` (commit `6f4a1a8`) went live with the Sprint 0 deploy on 2026-09-06.
 
-**No repo change overrides this.** Every other AEO item is capped until the owner changes it —
-[cloudflare-runbook.md](cloudflare-runbook.md) step 1, [owner-actions.md](owner-actions.md) §1.
+History: on 2026-08-16 a Cloudflare managed `robots.txt` sent `Disallow: /`; on 2026-08-23 that file
+was gone but the edge answered **403** to every AI-crawler signature (N18). The zone setting is the
+owner's and can revert without a repo change — **re-probe before every AEO claim; a `robots.txt`
+read proves nothing.** §6.2–§6.5 are no longer capped by this item.
 
 ### 6.2 — P1 · M · [NOT STARTED] No page opens with an extractable answer block
 
@@ -884,16 +882,18 @@ source-map path-traversal family bundled inside `next`'s own tree. `postcss` run
 on a static export: no runtime, no server, no browser exposure. The fix is a semver-major Next.js
 bump; track it for the next planned major rather than as a release blocker.
 
-### N18 — P2 · S · [NOT STARTED] Documentation drift on the AI-crawler mechanism
+### N18 — P2 · S · [✅ DONE 2026-09-06] Documentation drift on the AI-crawler mechanism
 
-§6.1 below, `docs/business-facts.md` §H and the `aeo-answer-content` Gate 1 text all describe the
-2026-08-16 state: a Cloudflare **managed `robots.txt`** sending `Disallow: /`. That file is gone —
-the live `robots.txt` is byte-identical to what `app/robots.ts` emits and returns `200 Allow: /`
-**even to a blocked user agent**. The block moved to an enforced **403** at the edge (verified
-2026-08-24 against 10 published AI-crawler signatures; Googlebot, bingbot and curl get 200).
+The mechanism changed twice: 2026-08-16 a Cloudflare **managed `robots.txt`** sending `Disallow: /`;
+2026-08-23 that file gone but an enforced **403** at the edge for every AI-crawler signature;
+**2026-09-06 every signature returns 200** (§6.1 ✅). Each change left docs describing the previous
+state. Re-worded 2026-09-06: §6.1, `docs/owner-actions.md` 1.1, `docs/cloudflare-runbook.md` step 1,
+`docs/growth-roadmap.md`, the `aeo-answer-content` Gate 1 text, the `aeo-geo-strategist` brief, the
+`deploy-dangates` note and the `edge.mjs` info line.
 
-Consequence: anyone verifying §6.1 by reading `robots.txt` gets a **false pass**. Only
-`docs/cloudflare-runbook.md` step 1 is current — re-anchor the other three to it.
+**Closed 2026-09-06:** the owner delegated the flip; `docs/business-facts.md` §H "Unblock AI crawlers" is ✅ with the verified probe result and the history in its Why cell.
+Standing consequence: anyone verifying the crawler state by reading `robots.txt` gets a **false
+pass** in either direction — the full-UA page probe in the runbook is the only measurement.
 
 ---
 

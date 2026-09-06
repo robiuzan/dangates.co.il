@@ -63,6 +63,8 @@ Read-only agents **report**; they never edit, rebuild or deploy. Writers hand ev
 | `responsive-accessibility`                 | reference                                | WCAG 2.1 AA + IS 5568; contrast, targets, focus, landmarks, the statement's truth                         |
 | `web-security-headers`                     | procedure                                | `templates/_headers`, report-only CSP path, `_redirects` cutover, dead-origin retirement                  |
 | `hebrew-rtl`                               | mandatory                                | logical utilities, LTR islands, Israeli formats, גרש/גרשיים, the encoded-slug trap                        |
+| `i18n-locale-architecture`                 | reference                                | why English is not recommended yet, what evidence would change that, the architecture if it ships         |
+| `sprint`                                   | **command** `/sprint <n>`                | `implementation-sprints.md` row → `/improve` each id → gate after every item → `/audit`; never deploys    |
 
 ---
 
@@ -89,7 +91,9 @@ Read-only agents **report**; they never edit, rebuild or deploy. Writers hand ev
 **Ask → route, when there is no backlog id:** "why don't we rank" → `/audit seo` · "more keywords" →
 `keyword-research` · "write a page about X" → `content-hub` (does it earn a page?) then `new-guide` ·
 "the form is broken" → `conversion-cro` → rtl-frontend-engineer · "is this safe" → security-auditor ·
-"ship it" → `qa-build-gate` then `deploy-dangates` · "what should the owner do" → `docs/owner-actions.md`.
+"ship it" → `qa-build-gate` then `deploy-dangates` · "what should the owner do" → `docs/owner-actions.md` ·
+"what do we do next, in what order" → `docs/implementation-sprints.md` then `/sprint <n>` · "add
+English" → `i18n-locale-architecture` · "is this allowed on the site" → the standards doc in §7 below.
 
 ---
 
@@ -140,8 +144,8 @@ Rules: `protected-files.md` (always) · `rtl-markup.md` (`app/**/*.tsx`, `compon
 - **Agent frontmatter:** `name`, `description`, `model`, `tools` in that order (fleet convention).
   The two writers additionally carry `skills:` (a documented deviation — it preloads the procedures
   they write against). `description` is one long line ending in the invocation phrases.
-- **Skill frontmatter:** `name` + `description`; the three commands add `argument-hint`, and skills
-  that run commands add `allowed-tools`. Supporting files live in `templates/` and `references/`.
+- **Skill frontmatter:** `name` + `description`; the four commands (`audit`, `improve`, `new-guide`,
+  `sprint`) add `argument-hint`, and skills that run commands add `allowed-tools`. Supporting files live in `templates/` and `references/`.
 - **Every skill has a `Skill(<name>)` entry** in `.claude/settings.json`; `env-doctor.mjs` enforces it.
 - **Numbers are not hard-coded in prose.** An agent opens with a `## Baseline — re-measure first`
   block that runs the relevant script; the docs quote the latest `docs/audits/` report.
@@ -149,3 +153,26 @@ Rules: `protected-files.md` (always) · `rtl-markup.md` (`app/**/*.tsx`, `compon
   number would go stale.
 - **Never fabricate.** A business fact not in the roster, `lib/site-config.ts` or a ✅ row of
   `docs/business-facts.md` is marked `🔶` and written around.
+
+---
+
+## 7. Standards and strategy docs — which skill implements, which agent audits, which script proves
+
+The docs layer map is [README.md](README.md) (strategy → standards → state → operations). A
+standards doc sets the bar; the skill in its row is the how-to; the agent audits against it; the
+script decides. Every doc carries its own Enforcement map naming the same three.
+
+| Doc                                                                  | Layer      | How-to skill(s)                                                                             | Audits against it                                       | Proof                                                                |
+| -------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------- |
+| [README.md](README.md)                                               | map        | `dangates-architecture`                                                                     | —                                                       | `env-doctor.mjs`                                                     |
+| [seo-geo-aeo-strategy.md](seo-geo-aeo-strategy.md)                   | strategy   | `seo-metadata` · `local-seo-il` · `aeo-answer-content` · `content-hub` · `keyword-research` | seo-auditor · local-seo-strategist · aeo-geo-strategist | `titles.mjs` `links.mjs` `content-depth.mjs` `schema.mjs` `edge.mjs` |
+| [eeat-and-trust.md](eeat-and-trust.md)                               | standards  | `eeat-build` · `site-images`                                                                | eeat-trust-auditor · claims-verifier                    | `claims-grep.mjs` `schema.mjs`                                       |
+| [ux-cro-security.md](ux-cro-security.md)                             | standards  | `conversion-cro` · `engagement-ux` · `internal-linking` · `web-security-headers`            | cro-engagement-auditor · security-auditor · seo-auditor | `cta-coverage.mjs` `a11y.mjs` `edge.mjs` `links.mjs`                 |
+| [performance-guidelines.md](performance-guidelines.md)               | standards  | `performance-web-vitals` · `site-images`                                                    | perf-a11y-auditor                                       | `perf.mjs`                                                           |
+| [accessibility-and-i18n.md](accessibility-and-i18n.md)               | standards  | `responsive-accessibility` · `hebrew-rtl` · `i18n-locale-architecture`                      | perf-a11y-auditor · ts-react-reviewer                   | `a11y.mjs` `rtl-lint.mjs`                                            |
+| [mobile-ux-and-personalization.md](mobile-ux-and-personalization.md) | standards  | `conversion-cro` · `responsive-accessibility` · `new-city`                                  | cro-engagement-auditor · perf-a11y-auditor              | `cta-coverage.mjs` `a11y.mjs` `rtl-lint.mjs`                         |
+| [data-tracking-infrastructure.md](data-tracking-infrastructure.md)   | standards  | `tracking-analytics` · `engagement-ux`                                                      | cro-engagement-auditor                                  | `cta-coverage.mjs` `gsc-ingest.mjs` + the gtm.js 200-check           |
+| [implementation-sprints.md](implementation-sprints.md)               | operations | `sprint` (→ `improve`) · `qa-build-gate`                                                    | the reviewers §3 names for each sprint's sections       | `env-doctor.mjs` + `npm run gate` + `/audit <scope>`                 |
+
+Where a standards doc and a skill disagree, check the code, then fix the skill in the same change —
+skills drift faster than standards. Where a doc and a script disagree, the script decides.
