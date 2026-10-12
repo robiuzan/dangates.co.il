@@ -1,5 +1,5 @@
 {
-  "_comment": "Normalized per-site manifest. SYNCED FROM THE HUB: 'Israeli services sites'/roster/sites/dangates.json. Edit there (the canonical roster) and sync here. Conforms to @ishub/site-kit SiteManifest.",
+  "_comment": "Normalized per-site manifest. SYNCED FROM THE HUB: 'Israeli services sites'/roster/sites/<domain>.json. Edit there (the canonical roster) and run ops/sync-manifest.ps1. Never edit this file directly. Conforms to @ishub/site-kit SiteManifest.",
   "domain": "dangates.co.il",
   "url": "https://dangates.co.il",
   "brandName": "דן שערים חשמליים",
@@ -13,7 +13,7 @@
   "contact": {
     "phoneDisplay": "072-2587772",
     "phoneE164": "+972722587772",
-    "whatsappE164": "+972722587772",
+    "whatsappE164": "+972556601006",
     "email": "info@dangates.co.il",
     "formAccessKey": "be4c3e4d-5a91-4aef-b980-53244c122201",
     "phoneOverride": true
@@ -46,6 +46,7 @@
   },
   "analytics": {
     "gtmId": "GTM-KWGGH438",
+    "ga4MeasurementId": null,
     "googleSiteVerification": null
   },
   "images": {
