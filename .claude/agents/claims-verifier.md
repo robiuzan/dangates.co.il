@@ -68,7 +68,7 @@ regex for `claims.json` in your report (you do not edit it).
    9-point conformity checklist is indicative, not a requirement, until re-verified. Mark each external
    claim **verified external (URL, fetched dd/mm/yyyy)** or **unverified — do not publish**.
 5. **Schema ↔ visible copy parity** (`schema.mjs`, schema-graph §4): every `FAQPage` question text
-   appears inside `<main>` of that page and is marked up once sitewide (`app/page.tsx:29` builds it
+   appears inside `<main>` of that page and is marked up once sitewide (`app/page.tsx:33` builds it
    from `faqs`, `lib/content.ts:170`); no `author` of `@type: Person` while `lib/authors.ts` does not
    exist (`app/blog/[slug]/page.tsx:88` is the `Organization`, and stays so); no `aggregateRating` /
    `Review` while `REVIEW_SOURCE_URL` is `null`; no `Offer`, `foundingDate` or `address`; a `Service`

@@ -118,6 +118,15 @@ physical-utility lint (`hebrew-rtl`), with no effect on `flex-row-reverse`.
    `conversion-cro`.
 6. **No pop-ups, no interstitials, no self-opening chat.** Nothing may appear between the visitor
    and the number (`engagement-ux`). A future chat or consent widget may not occlude the bar.
+   **Exception — owner decisions 2026-10-11 and 2026-10-12, fleet live-kit** (CLAUDE.md §14): the
+   **seasonal card**, a small native `<dialog>` from `content/live/_campaigns.mjs`, on the
+   3locksmiths pilot's rules, at all hours. It is never an entry interstitial: never on a page
+   reached from a search engine, only on the 2nd page of a visit (after 4 s) or after 20 s **and** a
+   scroll on the first, at most once per 14 days, never on the calm pages (the two legal pages and
+   the 404 page) or the lead-form page `/צור-קשר/` or the page it links to, never while the mobile
+   menu is open or a form field has focus, and never while the fleet status switch is unreadable. On a
+   phone it is a bottom sheet that stops 16px **above** `MobileCtaBar` (measured: the bar is 53px
+   with its border, at 390, 1000 and 1023px wide). Exit-intent and self-opening chat stay banned.
 7. **The answer block above the fold.** Under the H1 on services, locations, posts and — once built —
    guides: 40–60 words answering "do you come here, how fast, what decides the cost"
    (content-standards §5). Today 0 of the 36 service, location and post pages have one (§6.2,
@@ -135,9 +144,13 @@ physical-utility lint (`hebrew-rtl`), with no effect on `flex-row-reverse`.
 ### 4. What NOT to do on mobile
 
 - No interstitial, overlay or pop-up before the content is readable — a mobile-usability signal
-  against the page and a lost call.
+  against the page and a lost call. (The seasonal card is the owner's one exception, 2026-10-11 —
+  rule 6 above; it opens only once the content has been read or a second page reached.)
 - No fixed element that takes more than ~15 % of the viewport height. The bar is ~52 px of a 667 px
-  viewport; the sticky header is 64 px; together they are the ceiling.
+  viewport; the sticky header is 64 px; together they are the ceiling. The live-kit's
+  announcement bar (CLAUDE.md §14) is **not** fixed: it sits above the sticky header in the flow
+  and scrolls away, so the ceiling is untouched; on a phone it shows only while a seasonal or
+  wartime line is live.
 - No `user-scalable=no`, no `maximum-scale` — an accessibility failure and a false line in
   `/הצהרת-נגישות/`.
 - No physical utilities to "fix" RTL geometry (`rtl-lint.mjs`, the `post-edit-lint.ps1` hook), and

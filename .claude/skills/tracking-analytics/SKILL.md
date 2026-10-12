@@ -23,7 +23,11 @@ curl -o /dev/null -w '%{http_code}\n' "https://www.googletagmanager.com/gtm.js?i
 As of 2026-09-06 `cta-coverage.mjs` **passes**: 113 CTA elements on 45 pages, **113 tagged, 0
 missing**, 24 distinct tagged source elements across 17 values seen in the export (18 exist in
 source); `gtm-init` is emitted **inside** `<head>` on all 46 pages; gtm.js → 200. The repo half of
-tracking is done — everything still missing is container-side.
+tracking is done — everything still missing is container-side. With the fleet live-kit (CLAUDE.md
+§14, draft build 2026-10-12): 115 elements, 26 distinct tagged, 19 values — the card's
+`popup-call` / `popup-whatsapp` on every page — plus the card's `surface_view` / `surface_dismiss`
+events (`docs/event-taxonomy.md`), which need the owner to widen the
+one shared fleet trigger `CE - popup events (3locksmiths)` to this hostname.
 
 ## The container is shared — this changes everything
 

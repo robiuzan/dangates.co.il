@@ -32,7 +32,7 @@ field fixes it, and what would be wrong to "fix". Quote today's numbers only as 
   blocked on the owner; `/schema-structured-data` for the recipes an engineer will implement.
 - `site.config.json` `schema.*` / `contact.*` — the values the graph must match. Synced from the
   roster; never propose editing it directly.
-- The emitters: `app/page.tsx:29` (business + FAQ as an array), `app/services/[service]/page.tsx:55`
+- The emitters: `app/page.tsx:33` (business + FAQ as an array), `app/services/[service]/page.tsx:55`
   (`serviceJsonLd`), `app/blog/[slug]/page.tsx:79-94` (inline `BlogPosting`),
   `components/layout/PageHeader.tsx:52-64` (the breadcrumb on every nested route), and
   `components/marketing/Reviews.tsx:41` (the review gate).

@@ -36,6 +36,15 @@ before quoting. Every row describes the repo, which the domain has served since 
 | Locale                                       | one: `he-IL`, `dir: rtl`, set once in `app/layout.tsx`; OG `locale` `he_IL`; `BlogPosting.inLanguage` `he-IL` | `site.config.json`, `app/layout.tsx`                                |
 | `hreflang`, language switcher, English pages | none                                                                                                          | —                                                                   |
 
+**The fleet live-kit's surfaces (2026-10-12, CLAUDE.md §14)** — measured pairs, none failing: the
+bar, white on `#2b3a75` (secondary-700), 10.69:1 at 13px / 500; card text `#172040` on white
+15.94:1; the card's call button `accent-foreground` on `accent` 9.70:1 (the site's own gold CTA
+pair); its WhatsApp button white on `#075e54` 7.67:1 (not the failing `#25D366`); links `#33468f`
+8.70:1 on white, 7.71:1 on the strip's `#eef1fa`. The card is a native `<dialog>` (the browser's
+focus trap, Escape and focus return; focus lands on the title, never the call link); its ✕ and its
+link are 44px tap targets, 8px clear of the buttons, measured at 360, 390, 991–1024 and 1366px.
+`a11y.mjs` reads only the `@theme` pairs, so these are recorded here, not in `contrastPairs`.
+
 ---
 
 ## Part I — Accessibility

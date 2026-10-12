@@ -14,6 +14,14 @@ node scripts/audit/links.mjs          # orphans, chrome reach, related monotony,
 node scripts/audit/links.mjs --json   # metrics: chromeLinks, notInChrome, orphans, relatedServiceTargets, relatedPostTargets
 ```
 
+**The live surfaces are not links (CLAUDE.md §14).** The announcement bar and the seasonal card sit
+on every page, hidden until their season, so `links.mjs` strips both regions before it builds the
+graph: counted, the guide a seasonal line points at would read every page as an inbound link
+(masking a real orphan), and its href would join the chrome set and turn the ten sibling posts into
+`notInChrome` warnings. A hand-rolled in-degree count must strip them too —
+`perl -0777 -pe 's/<div class="live-topbar".*?<\/div><\/div>//gs; s/<div class="live-dialogs".*?<\/dialog><\/div>//gs'`.
+The homepage updates strip is inside `<main>` and counts: it is content on one page.
+
 ## Current state (as of 2026-08-23 — re-run before quoting)
 
 | Finding                                                                                                                                               | Anchor                                                                                      | Metric                                                                                                    |

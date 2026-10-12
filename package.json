@@ -5,8 +5,9 @@
   "description": "דן שערים חשמליים (Dan Electric Gates) — electric gate repair & installation service website. Hebrew, RTL, Next.js App Router.",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/gen-redirects.mjs",
+    "prebuild": "node scripts/gen-redirects.mjs && node scripts/live/check-live-copy.mjs && node scripts/live/check-live-register.mjs && node scripts/live/check-live-schedule.mjs",
     "build": "next build",
+    "postbuild": "node scripts/live/check-live-out.mjs",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
@@ -15,7 +16,8 @@
     "redirects": "node scripts/gen-redirects.mjs",
     "audit": "node scripts/audit/run-all.mjs",
     "audit:env": "node scripts/audit/env-doctor.mjs",
-    "gate": "npm run lint && npm run typecheck && npm run format:check && npm run build && npm run audit"
+    "gate": "npm run lint && npm run typecheck && npm run format:check && npm run build && npm run audit",
+    "live:remind": "node scripts/live/check-reminders.mjs"
   },
   "dependencies": {
     "@ishub/site-kit": "file:vendor/ishub-site-kit-0.0.0.tgz",

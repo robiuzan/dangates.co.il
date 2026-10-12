@@ -91,7 +91,10 @@ nobody will ever count.** Convention `{location}-{action}`, exactly two lower-ca
 `hero-call`, `hero-whatsapp`, `sticky-call`, `sticky-whatsapp`, `finalcta-call`,
 `finalcta-whatsapp`, `footer-call`, `service-call`, `service-whatsapp`, `contact-call`,
 `contact-whatsapp`, `contact-email`, `footer-email`, `form-submit`, `form-whatsapp`, `form-call`,
-`pricing-contact`. Still to add: `pricing-*` beyond `pricing-contact`, `thanks-*`, `article-*`. The
+`pricing-contact`. Since 2026-10-12 the fleet live-kit adds five more in the same convention,
+printed by the locked `lib/live/render.mjs` (CLAUDE.md §14): `popup-call`, `popup-whatsapp` and
+`popup-link` (the seasonal card), `topbar-link` (the bar), `update-link` (the homepage strip) —
+the export then reads 115 elements, 26 distinct tagged, 19 values. Still to add: `pricing-*` beyond `pricing-contact`, `thanks-*`, `article-*`. The
 container maps the prefix to `placement` ([event-taxonomy.md](event-taxonomy.md)) and reads
 `closest('a[data-cta]')` because icons sit inside the anchors. The WhatsApp fallback in `LeadForm`
 (`form-whatsapp`, `placement: "form"`) pushes `whatsapp_click` explicitly since it opens via

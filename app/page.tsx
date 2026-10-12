@@ -15,6 +15,7 @@ import { ServiceAreas } from "@/components/marketing/ServiceAreas";
 import { Reviews } from "@/components/marketing/Reviews";
 import { Faq } from "@/components/marketing/Faq";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { LiveUpdates } from "@/components/live/Live";
 
 /**
  * The homepage previously exported no metadata at all, so it fell back to the layout's
@@ -40,6 +41,10 @@ export default function HomePage() {
       />
       <Hero />
       <TrustBar />
+      {/* The updates strip (fleet live-kit, content/live/_updates.mjs — CLAUDE.md §14).
+          Server-rendered, and hidden before first paint once its newest item is 45 days old —
+          no layout shift. It never moves the sitemap <lastmod>. */}
+      <LiveUpdates />
       <ServicesGrid />
       <WhyUs />
       <Process />

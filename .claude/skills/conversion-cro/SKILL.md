@@ -10,8 +10,9 @@ Three actions, in priority order: **phone call → WhatsApp → lead form.** Rou
 backlog §8): writer **rtl-frontend-engineer** · reviewer **cro-engagement-auditor** (form, CTA per
 page type, event coverage) and **perf-a11y-auditor** (the form's a11y) · proof
 `scripts/audit/cta-coverage.mjs` + `scripts/audit/a11y.mjs`. On-page _engagement_ — TOC, the
-`<details>` FAQ, CTA placement inside long copy, no pop-ups — is `/engagement-ux`; event wiring is
-`/tracking-analytics` against `docs/event-taxonomy.md`.
+`<details>` FAQ, CTA placement inside long copy, no pop-ups (one owner-sanctioned exception since
+2026-10-11: the fleet live-kit's seasonal card, CLAUDE.md §14) — is `/engagement-ux`; event wiring
+is `/tracking-analytics` against `docs/event-taxonomy.md`.
 
 ## Baseline — re-measure first
 

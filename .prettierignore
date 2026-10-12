@@ -13,3 +13,10 @@ yarn.lock
 # whole directory keeps the generated file from drifting off its generator on the next run (CLAUDE.md
 # golden rule 9 forbids editing generated output by hand).
 public
+
+# fleet live-kit copies (byte-locked)
+lib/live/
+scripts/live/
+content/live/_calendar*.json
+public/assets/live.js
+live-kit.lock.json

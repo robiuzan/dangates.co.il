@@ -36,6 +36,26 @@ class — is the click-trigger hook.
 `page_type` ∈ `home | service | location | post | guide | pricing | about | contact | other`
 (same vocabulary as `scripts/audit/lib/pages.mjs routeType()`).
 
+## Live-surface events (fleet live-kit, CLAUDE.md §14)
+
+Pushed by `public/assets/live.js`, a byte-locked kit copy shared by every fleet site, so the names
+and parameters are the fleet's, not this site's — and they carry **no `site` parameter** (the rule
+above): the container tells the sites apart by hostname. No PII; the line's id is the most specific
+string.
+
+| Event             | Fires                                             | Parameters                                                                                         | Trigger (container)                                                                                                                                                                      |
+| ----------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `surface_view`    | the seasonal card opens                           | `surface: "dialog"`, `variant` (the line's id, e.g. `autumn-tracks`)                               | ONE shared trigger for the fleet (owner decision 2026-10-12): `CE - popup events (3locksmiths)`, its hostname condition widened to every fleet site — inert here until the owner does it |
+| `surface_dismiss` | the card closes                                   | `surface`, `variant`, `method` (`button` \| `backdrop` \| `action` \| `esc` \| `expired` \| `nav`) | same trigger                                                                                                                                                                             |
+| (click)           | a link in the bar, the card or the homepage strip | the `data-cta` value                                                                               | the existing `[data-cta]` click triggers — no container change                                                                                                                           |
+
+Their `data-cta` values, printed by `lib/live/render.mjs`: `popup-call`, `popup-whatsapp` and
+`popup-link` (the card, every page), `topbar-link` (a seasonal line's link, and the evergreen
+line's), `update-link` (the homepage strip). `topbar-call` / `topbar-whatsapp` exist in the kit
+but render only for a line that carries `{phone}` / `{whatsapp:…}`, and no line does today. The
+site's GA4 property needs the custom dimensions `surface`, `variant`, `method` and `cta_id` (kit
+README) — and the property itself is still owner-blocked (§13.7).
+
 ## Container-side notes
 
 - GA4 is resolved inside the container by a hostname RegEx table; dangates needs its own

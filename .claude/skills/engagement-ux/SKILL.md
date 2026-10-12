@@ -51,7 +51,7 @@ event pushed anywhere. Closed since: every CTA carries `data-cta` (`cta-coverage
 
 `components/marketing/Faq.tsx` is `"use client"`, holds `useState`, and renders every answer with
 `hidden={!isOpen}` (`Faq.tsx:43-51`). The answers are in the DOM (so `FAQPage` parity holds — the
-kit's `faqJsonLd` on `app/page.tsx:29` and the visible text match) but `display:none` to every reader
+kit's `faqJsonLd` on `app/page.tsx:33` and the visible text match) but `display:none` to every reader
 who does not click, to find-in-page, and to crawlers that honour visibility. It also ships hydration
 JS on every page that renders it, and its button still carries `text-right` (`Faq.tsx:25`).
 
@@ -105,6 +105,18 @@ also adds a script origin the future CSP (`/web-security-headers`) would have to
 helpful", reading-progress bars, share buttons and newsletters are also out — galbath's triage
 applies unchanged: static export, no backend, ~dozens of clicks a month cannot inform a decision.
 
+> **One sanctioned exception — owner decisions 2026-10-11 and 2026-10-12, fleet live-kit**
+> (CLAUDE.md §14): the **seasonal card**, on every fleet site, under the 3locksmiths pilot's rules,
+> at all hours. It keeps what this rule protects: no client component and no third-party origin
+> (`public/assets/live.js` is static, deferred, first-party); a native `<dialog>` — the browser's
+> own focus trap, Escape and focus return, focus on the title rather than the call link — closed
+> in the HTML and opened in the top layer, so it reserves no space and shifts nothing; never on a
+> page reached from search, on the 2nd page of a visit (after 4 s) or after 20 s and a scroll on
+> the first, once per 14 days, never on the calm or no-card pages (`live.config.mjs`), never while
+> the mobile menu is open or a form field has focus; on a phone a bottom sheet that stops 16px
+> above `MobileCtaBar`, never over it. Exit-intent, countdowns, chat widgets and every other
+> interruption stay banned. Flag the card only when it breaks one of its own rules.
+
 ## Exit order
 
 **body → related services → locations → FAQ → more guides → `FinalCta`.** The FAQ sits immediately
@@ -134,7 +146,9 @@ them to the container before `tracking-analytics` has the hostname row.
 ## Mobile
 
 The sticky bar stays (`components/layout/MobileCtaBar.tsx`) — add nothing else fixed, or it
-double-stacks and eats a third of the screen. Tap targets 44 px (house bar, `/responsive-accessibility`);
+double-stacks and eats a third of the screen. (The live-kit's announcement bar is in flow and
+scrolls away, and its card is a short-lived modal above the sticky bar — neither is a second fixed
+element; CLAUDE.md §14.) Tap targets 44 px (house bar, `/responsive-accessibility`);
 the header menu button is a 40 px box at `components/layout/Header.tsx:55`. A mobile TOC is
 collapsed by default. Test at 360 px wide with the bar visible.
 

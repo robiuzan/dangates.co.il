@@ -55,7 +55,7 @@ Read-only agents **report**; they never edit, rebuild or deploy. Writers hand ev
 | `new-guide`                                | **command** `/new-guide <family> <slug>` | one parameterized skill for symptom / component / brand / comparison / safety / committee pages           |
 | `new-city` · `new-service` · `new-article` | procedure                                | data-driven page families (`locations`, `services`, the 11 legacy posts)                                  |
 | `internal-linking`                         | procedure                                | header/footer reach, service↔location mesh, relevance-based related, reverse index, zero orphans          |
-| `engagement-ux`                            | procedure                                | TOC, `<details>` FAQ, readability bar, CTA placement, engagement events, no pop-ups                       |
+| `engagement-ux`                            | procedure                                | TOC, `<details>` FAQ, readability bar, CTA placement, engagement events, no pop-ups except the live card  |
 | `conversion-cro`                           | procedure                                | click-to-call, sticky bar, form validation/consent/thank-you, honest-trust gate                           |
 | `tracking-analytics`                       | procedure                                | GTM head placement, `data-cta`, event taxonomy, the gtm.js 200-check                                      |
 | `performance-web-vitals`                   | reference                                | text-only LCP, preloads, JS budget, the kit image pipeline                                                |

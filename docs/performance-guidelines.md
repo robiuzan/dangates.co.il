@@ -71,6 +71,15 @@ Measured 2026-09-06 with `node` + `zlib` against the `out/` in the tree (built 2
 | Fonts on the critical path (2 `.p.woff2`) | 44,676 raw (9,352 + 35,324) | ≤ 60,000         | proposed — not in thresholds → §10.1 |
 | LCP image                                 | none ships                  | ≤ 120,000        | proposed — not in thresholds → §10.5 |
 
+**The fleet live-kit's weight — measured 2026-10-12 on the draft build (CLAUDE.md §14), against the
+production export deployed the same day.** `outBytes` 5,529,672 → 6,680,621 (+1,150,949 B, inside
+the 12,000,000 `maxOutBytes`); HTML +16.6 KB raw per page across the 47 HTML files (every line,
+the card and the two inline scripts are printed in the markup and again, JSON-escaped, in the
+page's flight data); `rscBytes` 1,473,537 → 1,822,769 (≈7.8 KB per `index.txt`, fetched only on a
+client-side navigation); `assets/live.js` 17,052 B, deferred; `jsTotalBytes` 746,950 → 747,045
+(+95 B — no client component is added). On `/`: 173,786 → 192,149 raw, 23,224 → 28,946 gzip — under the proposed 40,000 gz
+ceiling above. No binding budget is breached, and none of the 26 baseline audit failures moves.
+
 ---
 
 ## 1. Core Web Vitals targets

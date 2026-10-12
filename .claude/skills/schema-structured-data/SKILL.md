@@ -180,7 +180,7 @@ bar; the missing-`address` warning is the documented trade-off.
 
 ## Gotchas
 
-- `jsonLdScript([a, b])` is a JSON array, not a graph — that is exactly what `app/page.tsx:29` does
+- `jsonLdScript([a, b])` is a JSON array, not a graph — that is exactly what `app/page.tsx:33` does
   today and why `schema.mjs` warns on `/`.
 - `prune()` is shallow: an empty nested object (`publisher: {}`) survives and becomes a dangling
   reference. Build nested nodes complete or leave them out.

@@ -136,6 +136,16 @@ The site ships zero images and 751.1 kB of JS in 29 chunks (`perf.mjs`, 2026-08-
 | CLS                             | 0 — no tag may inject visible DOM                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | Client components               | Engagement events come from **one** null-rendering client leaf mounting `useEngagementEvents`, per `engagement-ux`; no second hook, no per-component pushes. `KNOWN_CLIENT` in `rtl-lint.mjs` gains `EngagementEvents` in the same change as the leaf                                                                                                                                                                                                                                                      |
 
+**The fleet live-kit (2026-10-12, CLAUDE.md §14) against these rules.** It is first-party, not a
+tag: no third-party script and no client component (`public/assets/live.js` is static and
+deferred). Its one new origin, with the written reason the table asks for, is `connect-src`
+`https://imgquarry.com` — `live.js` reads the fleet status switch `/status/fleet.json` once per page
+view, credentials omitted, so the owner can silence the live surfaces fleet-wide; it is in the
+report-only CSP in `public/_headers`. CLS stays 0 from it: the bar's line is picked before first
+paint, the card is a closed `<dialog>` opened in the top layer, and the stale updates strip is
+hidden before paint — the one after-paint change is the status switch removing the bar (`off`,
+`quiet` on a phone, or an unreadable switch).
+
 ### 3.1 Banned outright
 
 | Tool class                                       | Why it never ships here                                                                                                                          |
@@ -144,6 +154,14 @@ The site ships zero images and 751.1 kB of JS in 29 chunks (`perf.mjs`, 2026-08-
 | Chat widgets, pop-ups, exit-intent               | `engagement-ux` bans them; `MobileCtaBar` already holds the persistent-prompt role; each adds a script origin the future CSP would have to allow |
 | A/B-testing SDKs                                 | Flicker on a text-only LCP, a long task on every load, and no traffic to power a test                                                            |
 | Client-side CRM / marketing-automation SDKs      | They carry PII into a third-party origin from the browser — see §7 for the server-to-server path                                                 |
+
+> **One exception to the pop-up row — owner decisions 2026-10-11 and 2026-10-12** (CLAUDE.md
+> §14): the fleet live-kit's **seasonal card**, on every fleet site, under the 3locksmiths pilot's
+> rules, at all hours. It adds no script origin (above) and pushes `surface_view` /
+> `surface_dismiss` with the line's id only — no PII ([event-taxonomy.md](event-taxonomy.md)). The
+> owner chose ONE shared GTM trigger for the whole fleet: `CE - popup events (3locksmiths)` in
+> `GTM-KWGGH438`, widened to match every fleet hostname — a container change that is the owner's,
+> not this repo's. Chat widgets, exit-intent and every other pop-up stay banned.
 
 ---
 

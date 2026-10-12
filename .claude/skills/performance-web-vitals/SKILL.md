@@ -50,7 +50,7 @@ explicitly), and `width`/`height` are mandatory under a static export.
 
 ## Fonts — the real LCP lever on this site
 
-Rubik is self-hosted via `next/font/google` (`app/layout.tsx:13-17`: subsets `hebrew` + `latin`,
+Rubik is self-hosted via `next/font/google` (`app/layout.tsx:15-21`: subsets `hebrew` + `latin`,
 `display: "swap"`, exposed as `--font-rubik`). The export ships six `.woff2` files, two of them
 `.p.woff2` — `next/font`'s own preload candidates. With a text-only LCP, every first paint waits on
 the font, which is why this was the highest-value perf change available.

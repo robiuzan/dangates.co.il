@@ -36,7 +36,11 @@
 # one tracked call click and one legacy-URL hit — before tightening this and switching to the
 # enforcing header. Now that the 37 meta-refresh stubs are gone (public/_redirects issues real 301s
 # instead), nothing on the site still relies on an inline location.replace() script.
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://api.web3forms.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://imgquarry.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'self' https://api.web3forms.com; object-src 'none'
+# imgquarry.com is in connect-src too (added 2026-10-12, fleet live-kit — CLAUDE.md §14):
+# public/assets/live.js reads the fleet status switch https://imgquarry.com/status/fleet.json once
+# per page view, credentials omitted. Its two inline scripts (live-calm, live-head) fall under the
+# same 'unsafe-inline' as GTM, and /assets/live.js under 'self'.
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://api.web3forms.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com https://imgquarry.com; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://imgquarry.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'self' https://api.web3forms.com; object-src 'none'
 
 # Hashed build assets are immutable — safe to cache hard. HTML keeps the Pages default
 # (public, max-age=0, must-revalidate), which is what makes a deploy visible immediately.

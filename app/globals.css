@@ -112,3 +112,60 @@
     unicode-bidi: isolate;
   }
 }
+
+/*
+ * Fleet live-kit theme (lib/live/live-core.css owns the behaviour; these are the colours only —
+ * CLAUDE.md §14). Plain custom properties on :root, deliberately OUTSIDE @theme: they are not
+ * Tailwind tokens, and a11y.mjs reads only @theme. Measured contrast (WCAG, 2026-10-12):
+ *   - the bar: secondary-700 #2b3a75 with white text, 10.69:1 (a navy bar, not the brand red —
+ *     the wartime line must not read as an alarm);
+ *   - card and strip text: secondary-900 #172040 — 15.94:1 on the white card, 14.12:1 on the
+ *     strip's secondary-50 #eef1fa; links secondary-600 #33468f — 8.70:1 / 7.71:1;
+ *   - the card's call button is the site's own gold CTA (accent #ffd700 with accent-foreground
+ *     #3d2b00, 9.70:1 — the pair every "חייגו עכשיו" uses); its WhatsApp button keeps the fleet's
+ *     dark green #075e54 with white (7.67:1) — the site's own #25D366 with white is 1.98:1, the
+ *     a11y.mjs baseline failure, and is not repeated here.
+ * --live-sticky-offset: the sticky call bar (components/layout/MobileCtaBar.tsx) is 53px tall
+ * including its 1px top border — measured at 390, 1000 and 1023px wide, 2026-10-12 — plus 16px,
+ * so the card's bottom sheet stops 16px above it.
+ */
+:root {
+  --live-bar-bg: #2b3a75;
+  --live-bar-ink: #ffffff;
+  --live-ink: #172040;
+  --live-accent: #33468f;
+  --live-soft-bg: #eef1fa;
+  --live-call-bg: #ffd700;
+  --live-call-ink: #3d2b00;
+  --live-wa-bg: #075e54;
+  --live-wa-ink: #ffffff;
+  --live-max: 72rem;
+  --live-sticky-offset: 69px;
+}
+
+/*
+ * dangates' mobile layout — the sticky call bar (MobileCtaBar, lg:hidden), the menu toggle and
+ * the footer spacer — runs to 1023px (Tailwind lg = 64rem); the live-kit's phone rules to
+ * 991.98px. In the band between them the bar follows the PHONE rule: open only while a seasonal,
+ * safety or wartime line is live — closed on an evergreen day, with JavaScript off, on the
+ * path-marked calm pages and on the 404 (it marks itself with [data-live-calm-page]) — and the
+ * card is the phone's bottom sheet that stops above the call bar. Unlayered on purpose:
+ * live-core.css is unlayered and loads after this file, and the `html` prefix is what
+ * out-specifies it (kit README step 4). On this site the evergreen line shows from 1024px.
+ */
+@media (min-width: 992px) and (max-width: 1023.98px) {
+  html:not([data-live]) .live-topbar,
+  html[data-live="evergreen"] .live-topbar,
+  html[data-live-calm]:not([data-live^="safety-"]):not([data-live="reduced"])
+    .live-topbar,
+  html:has([data-live-calm-page]):not([data-live^="safety-"]):not([data-live="reduced"])
+    .live-topbar {
+    display: none;
+  }
+  html .live-dialog {
+    margin: auto auto calc(var(--live-sticky-offset, 69px) + env(safe-area-inset-bottom));
+    max-height: calc(
+      100% - var(--live-sticky-offset, 69px) - env(safe-area-inset-bottom) - 16px
+    );
+  }
+}

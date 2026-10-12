@@ -86,7 +86,7 @@ answer are not competing; pretending they are produces thin guides that dodge th
 
 ## The homepage-FAQ contract
 
-Do **not** shrink the homepage FAQ. It is the only `FAQPage` on the site (`app/page.tsx:29`) and it
+Do **not** shrink the homepage FAQ. It is the only `FAQPage` on the site (`app/page.tsx:33`) and it
 makes the homepage convert. Each question with a deep owner gains `moreAt: { href, label }` on its
 `faqs` entry; `Faq.tsx` renders it inside the answer panel **outside the `a` string**, so
 `faqJsonLd([...faqs])` still receives clean text. `lib/guides.ts` throws if a `moreAt` href names a

@@ -21,7 +21,7 @@ node scripts/audit/links.mjs --json                 # related-link concentration
 grep -rn "trackEvent\|dataLayer" components app lib # every event the site pushes today
 ```
 
-Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.mjs` **passes**: 113 CTA elements on 45 pages, **113 tagged, 0 missing**, 24 distinct tagged elements across 17 values in the export, 6 chrome CTAs counted once; `missingByKind` all 0. §13.2 closed 2026-09-06 (commit `fee7f69`) — the last 24 untagged instances were the service-page sticky card ×7, the contact page's three, the form's submit and WhatsApp fallback, the footer `mailto:` and the pricing contact link. Two source values (`form-call` and one `form-whatsapp`) render only in the form's error state, so the export scan sees 17 of the 18 that exist — check `grep -rho 'data-cta="[^"]*"' app components | sort -u` before calling that a gap. Coverage is now a **regression watch**, not a finding: any new CTA without a value moves `missingDataCta` off 0.
+Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.mjs` **passes**: 113 CTA elements on 45 pages, **113 tagged, 0 missing**, 24 distinct tagged elements across 17 values in the export, 6 chrome CTAs counted once; `missingByKind` all 0. §13.2 closed 2026-09-06 (commit `fee7f69`) — the last 24 untagged instances were the service-page sticky card ×7, the contact page's three, the form's submit and WhatsApp fallback, the footer `mailto:` and the pricing contact link. Two source values (`form-call` and one `form-whatsapp`) render only in the form's error state, so the export scan sees 17 of the 18 that exist — check `grep -rho 'data-cta="[^"]*"' app components | sort -u` before calling that a gap. Coverage is now a **regression watch**, not a finding: any new CTA without a value moves `missingDataCta` off 0. With the fleet live-kit (CLAUDE.md §14, measured 2026-10-12 on the draft build) the export reads 115 CTA elements, 115 tagged, 26 distinct tagged elements across 19 values, 8 chrome CTAs: the seasonal card's `popup-call` and `popup-whatsapp` on every page, counted once as chrome. Its values are printed by `lib/live/render.mjs` (a locked kit copy), so the `app components` grep does not see them — grep `out/` for them.
 
 ## Checks
 
@@ -91,6 +91,13 @@ owner-blocked (GA4 property §13.7) and §6 next-up — the three `/improve` ids
   measured yourself is labelled as such with the command.
 - Never propose a pop-up, exit-intent, countdown, fake scarcity or an invented trust signal
   (`/engagement-ux` bans them; `claims-verifier` fails the claim).
+- **Not a finding: the seasonal card** (`content/live/_campaigns.mjs`, `public/assets/live.js`) —
+  owner decisions 2026-10-11 and 2026-10-12, fleet live-kit (CLAUDE.md §14), the one exception to
+  the rule above. Flag it only when it breaks its own rules: it opens on a page reached from
+  search, on the first page view before 20 s and a scroll, more than once per 14 days, on a calm or
+  no-card page (`live.config.mjs`), over the open mobile menu, while a form field has focus, or —
+  on a phone — anywhere but above `MobileCtaBar`. Its CTAs carry `popup-call` / `popup-whatsapp` /
+  `popup-link`; the bar's link `topbar-link`, the homepage strip's `update-link`.
 - Never put PII in a proposed `dataLayer` push (golden rule 10) — `page`, `service`, `city` slugs only.
 - A `data-cta` value follows `{placement}-{action}` and names one element kind (`cta-coverage.mjs`
   warns otherwise); propose values in that form.

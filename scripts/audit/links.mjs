@@ -35,6 +35,20 @@ import { Report, THRESHOLDS, finish, isMain, parseArgs } from "./lib/report.mjs"
 /** An href is "chrome" when this share of content pages carries it. Not in thresholds.json yet. */
 const CHROME_SHARE = THRESHOLDS.links?.chromeShare ?? 0.9;
 
+/**
+ * The fleet live-kit's bar and seasonal cards are sitewide chrome (CLAUDE.md §14): they sit on
+ * every page, hidden until their season, so their links are boilerplate, not context. Counted,
+ * the guide a seasonal line points at would read every page as an inbound link (masking a real
+ * orphan), and its href would join the chrome set and turn every sibling post into a notInChrome
+ * warning. Stripped before the link graph is built — the regions exactly as lib/live/render.mjs
+ * prints them (kit README step 8). The homepage updates strip is in <main> and stays: it is
+ * content on one page.
+ */
+const stripLive = (html) =>
+  html
+    .replace(/<div class="live-topbar"[\s\S]*?<\/div><\/div>/g, " ")
+    .replace(/<div class="live-dialogs"[\s\S]*?<\/dialog><\/div>/g, " ");
+
 /** Raw inner HTML of <main> (pages.mjs exposes only its text and headings). */
 function mainHtml(html) {
   return html.match(/<main[^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? "";
@@ -93,7 +107,7 @@ export function run() {
   const broken = new Map(); // href → source pages (nothing in out/)
   const toStub = new Map(); // href → source pages (a redirect stub or the 404)
   for (const page of pages) {
-    for (const h of new Set(internalLinks(page.html))) {
+    for (const h of new Set(internalLinks(stripLive(page.html)))) {
       hrefFreq.set(h, (hrefFreq.get(h) ?? 0) + 1);
       if (contentSet.has(h)) {
         if (h !== page.path) inbound.get(h).add(page.path);

@@ -35,7 +35,7 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
 
 ## What to audit
 
-1. **Titles.** `app/layout.tsx:28` appends `| דן שערים חשמליים`; the routes write the bare subject
+1. **Titles.** `app/layout.tsx:30` appends `| דן שערים חשמליים`; the routes write the bare subject
    (`app/services/[service]/page.tsx:38` `title: card.name`; `app/locations/[city]/page.tsx:30`).
    `titles.mjs` fails on any title carrying the brand twice. _History:_ 25 pages shipped the doubled
    suffix until 2026-08-17 — report it only if it comes back. Still open: blog titles run 63–72

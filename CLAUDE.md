@@ -128,16 +128,24 @@ components/
   marketing/   Hero TrustBar ServicesGrid WhyUs Process PricingTeaser
                ServiceAreas Reviews Faq FinalCta
   forms/       LeadForm
+  live/        Live.tsx — the fleet live-kit surfaces, server components only (§14)
 lib/
   site-config.ts   # ⭐ NAP, services[7], locations[18], telHref, whatsappHref
   content.ts       # ⭐ all Hebrew marketing copy; reviews = [] (gated)
   posts.ts         # ⭐ 11 migrated blog posts (untrusted — see golden rule 7)
   utils.ts         # cn()
+  live/            # fleet live-kit copies — byte-locked, never edit (§14)
 scripts/gen-redirects.mjs   # emits public/_redirects (72 real 301 rules) from REDIRECTS.md; runs on prebuild
 scripts/audit/     # ⭐ the measurements (12 checks + thresholds.json + claims.json) — roster §4
+scripts/live/      # fleet live-kit gates (prebuild / postbuild) and the weekly reminder — locked (§14)
+content/live/      # ⭐ _campaigns.mjs + _updates.mjs (the live registers) + the synced calendar (§14)
+live.config.mjs    # ⭐ calm / no-card pages, this site's ⛔ claim stems, pageOfSource (§14)
+live-kit.lock.json # the kit commit and the sha256 of every locked copy (§14)
 site.config.json   # SiteManifest — SYNCED FROM THE ROSTER, do not edit here
 public/_redirects  # GENERATED — 72 Cloudflare Pages 301 rules; edit REDIRECTS.md, not this
 public/_headers    # the repo's own security headers + the report-only CSP (ADR 0004)
+public/assets/live.js  # fleet live-kit browser behaviour (the switch, the card, the strip) — locked (§14)
+.github/workflows/remind.yml  # the live-kit's weekly reminder — the repo's only workflow (§14)
 REDIRECTS.md       # the old→new URL map the redirect generator implements
 docs/              # README (the layer map — start there) · implementation-sprints (the sequenced plan)
                    # backlog · content-standards · schema-graph · keyword-map · business-facts
@@ -209,7 +217,9 @@ See the `hebrew-rtl` skill for the full rule set.
   compiler — handle the null case. `noUncheckedIndexedAccess` means indexed reads are
   `T | undefined`; narrow them.
 - **RSC by default.** Add `"use client"` only for state, effects, or browser APIs. Keep client
-  components small and leaf-level. Currently client: `Header`, `Faq`, `LeadForm`, `Reveal`.
+  components small and leaf-level. Currently client: `Header`, `Faq`, `LeadForm`, `Reveal`. (The
+  live surfaces add none: `components/live/Live.tsx` is server-only and their browser behaviour is
+  the static `public/assets/live.js` — §14.)
 - Imports use the `@/*` alias. No `../../..` chains.
 - Compose conditional classes with `cn()` from `@/lib/utils`.
 - Tailwind utilities only, **mobile-first**. Use the `@theme` tokens (`primary` `#B6070C`,
@@ -253,6 +263,11 @@ npm run gate        # lint → typecheck → format:check → build → npm run 
 the failure count. **Known-baseline rule:** until Phase 1 lands the bar is not "zero failures" but
 "no failure absent from the latest `docs/audits/` report" — a change that adds one, or moves a number
 the wrong way, does not ship. The `qa-build-gate` skill adds the auditor sweep and the stop-ship list.
+
+Since 2026-10-12 `npm run build` also runs the fleet live-kit's gates (§14) through npm's `prebuild`
+(after `gen-redirects`) and `postbuild`. They fail on unapproved live wording, so a draft builds
+only as `LIVE_DRAFT=1 npm run build` — a local preview whose `out/` carries `out/.live-draft` and
+must never be deployed (`ops/deploy-site.ps1` refuses it, `-DeployOnly` included).
 
 ---
 
@@ -307,17 +322,19 @@ until the next deploy**; the acceptance test is the three-URL `301` probe in `de
 
 ## 11. Commands
 
-| Task                  | Command                                                          |
-| --------------------- | ---------------------------------------------------------------- |
-| Dev server            | `npm run dev`                                                    |
-| Production build      | `npm run build`                                                  |
-| Lint                  | `npm run lint`                                                   |
-| Type-check            | `npm run typecheck`                                              |
-| Format / check        | `npm run format` · `npm run format:check`                        |
-| Audit the export      | `npm run audit` · `npm run audit -- --scope seo` (`--json`)      |
-| Audit the environment | `npm run audit:env`                                              |
-| Full gate             | `npm run gate` (lint → typecheck → format:check → build → audit) |
-| Regenerate redirects  | `npm run redirects` (also runs on `prebuild`)                    |
+| Task                  | Command                                                               |
+| --------------------- | --------------------------------------------------------------------- |
+| Dev server            | `npm run dev`                                                         |
+| Production build      | `npm run build`                                                       |
+| Lint                  | `npm run lint`                                                        |
+| Type-check            | `npm run typecheck`                                                   |
+| Format / check        | `npm run format` · `npm run format:check`                             |
+| Audit the export      | `npm run audit` · `npm run audit -- --scope seo` (`--json`)           |
+| Audit the environment | `npm run audit:env`                                                   |
+| Full gate             | `npm run gate` (lint → typecheck → format:check → build → audit)      |
+| Regenerate redirects  | `npm run redirects` (also runs on `prebuild`)                         |
+| Live draft build      | `LIVE_DRAFT=1 npm run build` — local preview only, never deploy (§14) |
+| Weekly reminder       | `npm run live:remind` (prints; pushes only with `NTFY_TOPIC`, §14)    |
 
 ---
 
@@ -354,3 +371,77 @@ script decides. Hooks and `.claude/rules/` make golden rules 1, 2, 7 and 9 mecha
   entry points. Read it before asking where to begin.
 - **Writers hand off to reviewers:** copy → `hebrew-editor` → `claims-verifier`; markup →
   `ts-react-reviewer`; guides → `article-auditor`. Never self-review; a live 🔶/⛔ claim is stop-ship.
+
+---
+
+## 14. Live surfaces — the announcement bar, the seasonal card, the updates strip
+
+Fleet live-kit, canonical in `../3locksmiths.co.il/fleet/live-kit/` — read its README. Owner
+decisions: **2026-10-11** every fleet site gets the bar, the card and the strip, the card
+overriding this site's written no-popup rules; **2026-10-12** the card on all ten sites, under the
+3locksmiths pilot's rules, at all hours, and ONE shared GTM trigger for the fleet. Every page
+carries a thin bar above the sticky header (in flow, **not** sticky — it scrolls away) whose line
+is chosen **before first paint** by the Israeli calendar — memorial days and fasts silence it,
+Shabbat and chag silence the seasonal lines — and by the fleet status switch
+(`https://imgquarry.com/status/fleet.json`: quiet / reduced / off; unreadable = fail closed). One
+seasonal card, a native `<dialog>`: never on a page reached from search, on the 2nd page of a visit
+(after 4 s) or after 20 s plus a scroll on the first, once per 14 days, never on calm or no-card
+pages, never while the mobile menu is open or a form field has focus; on a phone a bottom sheet
+that stops 16px above the sticky call bar. The homepage shows an updates strip after the trust bar;
+it hides itself 45 days after the newest item and never moves the sitemap `<lastmod>`.
+
+- **Edit here:** `content/live/_campaigns.mjs` (the lines, their windows, the card) and
+  `content/live/_updates.mjs` — wording only from sentences the site already shows, each quoted in
+  `source` (`check-live-register` checks the quote is still in its file and, through
+  `pageOfSource`, that a tip links to the page carrying it; `check-live-out` proves the built page
+  shows it). Nothing 🔶 from [docs/business-facts.md](docs/business-facts.md): this site's own pages
+  carry many 🔶 claims (24/7, אחריות מלאה, ניסיון רב, פריסה ארצית, שירות מהיר), so the lines quote
+  the blog's maintenance and troubleshooting advice — no price, warranty, speed, hours,
+  availability, coverage, credentials, staff, counts or reviews. Calm / no-card pages and this
+  site's own ⛔ claim stems: `live.config.mjs` (mutation-tested — re-test after any edit). Both
+  registers need the owner's `approved: "YYYY-MM-DD — who, how"`, or the build fails.
+- **The one exception to §5's "wording goes in `lib/content.ts`":** the registers are fleet data
+  checked by their own gates. The number is never typed in them: `{phone}` prints
+  `site.config.json` → `contact`.
+- **Never edit:** `lib/live/**`, `scripts/live/**`, `public/assets/live.js`,
+  `content/live/_calendar*.json`, `live-kit.lock.json` — byte-locked kit copies;
+  `scripts/live/check-live-copy.mjs` fails the build if they change. Fix the kit upstream and
+  re-sync (`node fleet/live-kit/sync.mjs ../dangates.co.il` from 3locksmiths.co.il).
+- **Wiring:** `<LiveHead/>` first in `<head>`, `<LiveTopBar/>` directly before `<Header/>`,
+  `<LiveDialogs/>` last in `<body>`, `<LiveUpdates/>` after `<TrustBar/>`,
+  `suppressHydrationWarning` on `<html>`, `lib/live/live-core.css` imported after `globals.css`; the
+  404 marks itself calm (`<div data-live-calm-page hidden />` in `app/not-found.tsx`); the open
+  mobile menu carries `data-live-block` (`Header.tsx`). The `--live-*` colours and the 992–1023px
+  band override close `app/globals.css`: this site's mobile layout runs to 1023px (Tailwind `lg`),
+  so in that band the bar follows the phone rule (closed on evergreen days, calm pages and the 404)
+  and the card stops above the sticky call bar; the evergreen line shows from 1024px.
+  `https://imgquarry.com` is in the report-only CSP `connect-src` (`public/_headers`).
+- **Gates:** `prebuild` = `gen-redirects` → `check-live-copy` → `check-live-register` →
+  `check-live-schedule`; `postbuild` = `check-live-out` (the built pages must carry exactly what the
+  registers say). `scripts/audit/links.mjs` strips the bar and the card as chrome (they are on every
+  page). The known baseline holds with them: 26 audit failures before and after (2026-10-12). The
+  export grows by about 1.15 MB — ≈16.6 KB per HTML page and ≈7.8 KB per RSC payload, every line
+  printed in both — inside `thresholds.json` → `maxOutBytes` (12 MB).
+- **Reminder:** `.github/workflows/remind.yml` runs `scripts/live/check-reminders.mjs` every Sunday
+  and pushes to the owner's phone only when THIS site needs something; red without the
+  `NTFY_TOPIC` secret; a schedule runs only from the default branch on GitHub.
+- **Analytics:** the card's `surface_view` / `surface_dismiss` events and the live-kit's `data-cta`
+  values are in [docs/event-taxonomy.md](docs/event-taxonomy.md).
+- **Popups:** `engagement-ux`, `conversion-cro`, `cro-engagement-auditor`,
+  [docs/mobile-ux-and-personalization.md](docs/mobile-ux-and-personalization.md) §3–§4,
+  [docs/data-tracking-infrastructure.md](docs/data-tracking-infrastructure.md) §3.1 and
+  [docs/agent-roster.md](docs/agent-roster.md) banned them; each now records the owner's exception
+  for this one card, dated.
+- **Answered 2026-10-12 (owner, fleet wording sign-off page):** the wording is approved as drafted
+  (fingerprint `4d0513a5efd6`; the self-help evergreen line kept); the wartime line "פועלים בכפוף
+  להנחיות פיקוד העורף" is **confirmed** for this business; the card may show at all hours and the
+  fleet keeps ONE shared GTM trigger; the updates strip ships as is (it hides itself 45 days after
+  its newest item); WhatsApp goes to `+972556601006`, the owner's own (072-2587772 is not on
+  WhatsApp) — synced from the roster into `site.config.json` the same day. The kit is committed
+  upstream and re-synced (`live-kit.lock.json` → `cf3a5460aa8b`, clean). **Still open:** the blog
+  posts' flagged claims (OK for now, fixed later — backlog §7.2) and the privacy page, which must
+  mention the status-file read and the browser-storage values when it is rewritten (backlog §8.2).
+- **Before the first deploy (owner, in the kit README's order):** add the three origins (apex, www, `.pages.dev`) to the status switch's CORS list — without it the
+  switch is unreadable here and every seasonal line and the card stay off; widen the one shared GTM
+  trigger `CE - popup events (3locksmiths)` to this hostname; `gh secret set NTFY_TOPIC -R
+robiuzan/dangates.co.il`; then deploy (`deploy-dangates`, dry run first).

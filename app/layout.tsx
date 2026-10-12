@@ -8,7 +8,9 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
 import { gtmHeadSnippet, gtmNoScriptSrc } from "@ishub/site-kit/analytics";
+import { LiveDialogs, LiveHead, LiveTopBar } from "@/components/live/Live";
 import "./globals.css";
+import "@/lib/live/live-core.css";
 
 // Brand font — Rubik (used for both body and headings, matching the live dangates.co.il site).
 // Exposed as a CSS variable consumed by globals.css (@theme font-sans / font-heading).
@@ -53,8 +55,18 @@ export default function RootLayout({
   return (
     // rubik.className applies the font directly (not just the --font-rubik variable
     // globals.css reads) — the documented Next 14 recipe for automatic font preloading.
-    <html lang="he" dir="rtl" className={cn(rubik.variable, rubik.className)}>
+    <html
+      lang="he"
+      dir="rtl"
+      className={cn(rubik.variable, rubik.className)}
+      // The live head script sets data-live* on <html> before hydration (fleet live-kit, §14).
+      suppressHydrationWarning
+    >
       <head>
+        {/* The live surfaces (fleet live-kit, CLAUDE.md §14) decide the line before first
+            paint — first in <head>. They push nothing to dataLayer from here; live.js is
+            deferred. */}
+        <LiveHead />
         {/* Hand-added preload for the two Rubik faces (hebrew + latin) — Next's own
             font-manifest preload injection never fires on this toolchain; see lib/fonts.ts
             for why and how to keep these two hrefs in sync with the build. */}
@@ -91,12 +103,19 @@ export default function RootLayout({
             />
           </noscript>
         )}
+        {/* The announcement bar: directly before the sticky header, NOT inside it — it scrolls
+            away, so the header's h-16 and the service sidebar's top-24 hold once the page is
+            scrolled, and the fixed-height ceiling (docs/mobile-ux-and-personalization.md §4)
+            is untouched. */}
+        <LiveTopBar />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
         {/* Spacer so the fixed mobile CTA bar never overlaps footer content. */}
         <div className="h-16 lg:hidden" aria-hidden />
         <MobileCtaBar />
+        {/* The seasonal card (a closed native <dialog>), last in <body>. */}
+        <LiveDialogs />
       </body>
     </html>
   );

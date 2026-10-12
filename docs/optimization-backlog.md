@@ -174,7 +174,7 @@ Script: `titles.mjs` (unique titles/descriptions, brand token once, length, cano
 
 ### 2.1 — P0 · S · [✅ DONE] Doubled brand suffix on 26 pages
 
-`app/layout.tsx:28` sets `template: "%s | דן שערים חשמליים"`, and three places appended it **again**
+`app/layout.tsx:30` sets `template: "%s | דן שערים חשמליים"`, and three places appended it **again**
 (18 locations, 7 services, `/אודות/`). Fixed 2026-08-17 — the routes now write the bare subject:
 `app/locations/[city]/page.tsx:30`, `app/services/[service]/page.tsx:38`, `app/אודות/page.tsx:13`,
 each with a comment saying why. `titles.mjs` fails on any title carrying the brand token twice.
@@ -380,7 +380,7 @@ manifest and `public/dangates-logo.png` is unreferenced; neither reaches the gra
 ### 4.6 — P2 · S · [PARTIAL] The homepage JSON-LD is one script tag, but an array, not a `@graph`
 
 The reviews block is gone, so the business node is no longer split across two scripts. What remains:
-`app/page.tsx:29` emits `[localBusinessJsonLd(), faqJsonLd()]` — a JSON array of two `@context`
+`app/page.tsx:33` emits `[localBusinessJsonLd(), faqJsonLd()]` — a JSON array of two `@context`
 objects rather than a single `@graph` (`schema.mjs` warns on `/`). The 7 service and 11 post pages
 also split across **two** `<script>` blocks (their own node + the `PageHeader` breadcrumb). Phase 2
 merges each page into one `@graph`.
@@ -535,6 +535,11 @@ The owner has said the warranty term, licence, insurance and founding year are *
 (business-facts §B, §D). So the fix is not to wait: soften "אחריות מלאה" → "אחריות על העבודה" and
 "ניסיון רב שנים" → mechanism depth, sitewide (Phase 6, `eeat-build`). Verify: `claims-grep.mjs` = 0.
 
+**Owner, 2026-10-12 (fleet wording sign-off page):** the blog posts' flagged claims are OK for now
+and get fixed later. Still open — not done; the posts (`lib/posts.ts`) keep their 🔶 claims until
+this item ships. The live surfaces quote the posts' advice, so a rewrite re-checks those quotes
+(CLAUDE.md §14).
+
 ### 7.3 — P1 · M · [⏳ BLOCKED · owner] Eight of nine published prices are authored estimates
 
 `lib/content.ts:152-156` says so in its own comment. They are published on `/מחירון/` as a price list a
@@ -580,6 +585,11 @@ See also N1 — the delivery-failure state renders nothing at all.
 
 The form collects PII while `/מדיניות-פרטיות/` exists and is never referenced from it. The privacy
 policy also never mentions cookies or analytics while GTM loads unconditionally.
+
+**Owner, 2026-10-12 (fleet wording sign-off page):** when the privacy page is rewritten it should
+also mention the live surfaces' status-file read (`https://imgquarry.com/status/fleet.json`) and
+the values they keep in browser storage (`ls-status`, `ls-dlg-*`, `ls-pv`, `ls-t`) — CLAUDE.md
+§14, business-facts §I. Open.
 
 ### 8.3 — P1 · M · [NOT STARTED] No thank-you URL
 

@@ -97,9 +97,17 @@ gate even though the check itself still passes): `links` → `orphans 0`, `broke
 `schema` → `pagesWithJsonLd 45`, `danglingIds ≤ 18`, `rawHebrewUrls ≤ 18` · `perf` →
 `largestJsBytes`, `fontPreloads 2`, `unusedDeps []`, `devBuildFiles 0`, `sourceMaps 0` · `rtl-lint`
 → `bannedUtilities ≤ 3`, `hexLiterals ≤ 7` · `titles` → `ogUrlMissing 0` · `cta-coverage` →
-`missingDataCta 0`, `ctaElements 113`, `distinctTaggedElements 24` · `edge` → `stubs 0`,
-`redirectRules 72`, `redirectsFile true`, `headersFile true`, `deadHostArtifacts 0`,
-`foreignStubs 0`.
+`missingDataCta 0`, `ctaElements 115`, `distinctTaggedElements 26` (113 / 24 before the fleet
+live-kit — its card adds `popup-call` and `popup-whatsapp` to every page, counted once as chrome;
+CLAUDE.md §14) · `edge` → `stubs 0`, `redirectRules 72`, `redirectsFile true`, `headersFile true`,
+`deadHostArtifacts 0`, `foreignStubs 0`.
+
+**Live surfaces (CLAUDE.md §14).** `npm run build` now runs the kit's gates in `prebuild` and
+`postbuild`; a register without the owner's `approved` stamp fails it. A local preview is
+`LIVE_DRAFT=1 npm run build`, and its `out/` carries `out/.live-draft` — **stop-ship**: never
+deploy an `out/` that has it (`test ! -e out/.live-draft`; `ops/deploy-site.ps1` refuses it too).
+The export is ≈1.15 MB larger with them (every line and both inline scripts printed in the HTML
+and again in the RSC payload); `perf` → `outBytes` stays inside `maxOutBytes`.
 
 `fontPreloads` is a two-sided watch: `perf.mjs` also fails if a preloaded href is not a real file in
 `out/`, so a `Rubik({...})` change that re-hashes the faces without updating `lib/fonts.ts` is caught

@@ -226,6 +226,38 @@ section (`:416-418`), and two "הטובה ביותר" superlatives (`:319`, `:55
 | GA4 measurement ID                | GA4 is resolved inside the shared container `GTM-KWGGH438` by a hostname RegEx table; dangates needs its own property                                                                                                                                                                                                                                                        | Roster `analytics` |                                                                                                                               | 🔶     |
 | Search Console verification token | `analytics.googleSiteVerification` is `null`, so the layout emits nothing                                                                                                                                                                                                                                                                                                    | Roster `analytics` |                                                                                                                               | 🔶     |
 
+## I. The live surfaces' wording — fleet live-kit (CLAUDE.md §14)
+
+The announcement bar, the seasonal card and the homepage updates strip print only what
+`content/live/_campaigns.mjs` and `_updates.mjs` say, and every line quotes a sentence the site
+already shows. Nothing in them is a 🔶 row above: the claim stems in `live.config.mjs` turn every
+🔶 / ⛔ row of §B–§E (and the reviews of §A) into a build failure for any line that states it.
+Drafted 2026-10-12 and **approved by the owner the same day** on the fleet wording sign-off page
+(fingerprint `4d0513a5efd6`, the `approved` stamp in both registers).
+
+**Owner decisions, 2026-10-12 (fleet wording sign-off page):**
+
+- The wording is approved as drafted — the self-help evergreen line ("תקלה בשער? פתרונות פשוטים
+  שאפשר ליישם בעצמכם") is kept.
+- The wartime line "פועלים בכפוף להנחיות פיקוד העורף" is **confirmed for this business**.
+- The card may show at all hours (fleet decision), and the fleet keeps ONE shared GTM trigger.
+- The updates strip ships as is: it hides itself 45 days after its newest item.
+- WhatsApp goes to **+972556601006**, the owner's own WhatsApp (as on 3locksmiths), because
+  072-2587772 is not on WhatsApp. The roster sync of 2026-10-12 carries it to `site.config.json`
+  → `contact.whatsappE164`; it also fixes the sticky bar's WhatsApp link, which led nowhere.
+- The flagged claims in the migrated blog posts are OK for now and get fixed later — an **open
+  backlog item, not done** (owner-actions 3.8; the posts still carry their 🔶 claims).
+- When the privacy page (`/מדיניות-פרטיות/`) is rewritten, it should mention the status-file read
+  (`https://imgquarry.com/status/fleet.json`) and the values the live surfaces keep in browser
+  storage — an **open item** (backlog §8.2).
+
+| Field                                                                           | Why it's needed                                                                                                                                                                                                                          | Lands in                                      | Value                                                                                                                                                              | Status |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| The live wording (the evergreen line, six seasonal lines, one card, one update) | Nothing reaches production without it: the build fails until both registers carry the owner's `approved: "YYYY-MM-DD — who, how"`                                                                                                        | `content/live/_campaigns.mjs`, `_updates.mjs` | approved 2026-10-12 as drafted: seasonal lines to 31/10/2027, the card in the autumn window from 18/10/2026; every line quotes the blog's advice in `lib/posts.ts` | ✅     |
+| Does the business keep working under Home Front Command restrictions?           | The fleet's wartime line "פועלים בכפוף להנחיות פיקוד העורף" shows on every page while the status switch says `reduced`                                                                                                                   | `_campaigns.mjs` → `reduced`                  | yes — confirmed by the owner 2026-10-12 (fleet wording sign-off page)                                                                                              | ✅     |
+| Is 072-2587772 reachable on WhatsApp?                                           | The card's WhatsApp button is fixed in the kit and the sticky bar ships one                                                                                                                                                              | Roster `contact.whatsappE164`                 | no — WhatsApp goes to `+972556601006`, the owner's own WhatsApp (owner, 2026-10-12); synced to `site.config.json` the same day                                     | ✅     |
+| Privacy page: the live surfaces' status-file read and browser-storage values    | The page loads `imgquarry.com/status/fleet.json` and remembers the switch's state, the card's last showing and the visit's page count in the browser (`ls-status`, `ls-dlg-*`, `ls-pv`, `ls-t`); `/מדיניות-פרטיות/` mentions neither yet | `/מדיניות-פרטיות/` (backlog §8.2)             | to be added when the privacy page is rewritten (owner, 2026-10-12)                                                                                                 | 🔶     |
+
 ---
 
 ## Verified during the 2026-08-16 audit — no action needed
