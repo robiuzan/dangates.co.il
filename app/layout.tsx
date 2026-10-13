@@ -9,6 +9,7 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
 import { gtmHeadSnippet, gtmNoScriptSrc } from "@ishub/site-kit/analytics";
 import { LiveDialogs, LiveHead, LiveTopBar } from "@/components/live/Live";
+import { NextUrlHeaderFix } from "@/components/NextUrlHeaderFix";
 import "./globals.css";
 import "@/lib/live/live-core.css";
 
@@ -67,6 +68,8 @@ export default function RootLayout({
             paint — first in <head>. They push nothing to dataLayer from here; live.js is
             deferred. */}
         <LiveHead />
+        {/* Hebrew route paths would otherwise turn every link click into a full reload. */}
+        <NextUrlHeaderFix />
         {/* Hand-added preload for the two Rubik faces (hebrew + latin) — Next's own
             font-manifest preload injection never fires on this toolchain; see lib/fonts.ts
             for why and how to keep these two hrefs in sync with the build. */}
