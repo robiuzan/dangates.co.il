@@ -133,7 +133,7 @@ export default function ContactPage() {
             </h2>
             <p className="mt-1 text-sm text-gray-600">{contactPageCopy.formSubtitle}</p>
             <div className="mt-5">
-              <LeadForm />
+              <LeadForm placement="contact" />
             </div>
           </div>
         </div>

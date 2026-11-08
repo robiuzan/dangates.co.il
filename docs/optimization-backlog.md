@@ -588,7 +588,7 @@ at `:201-205`). No per-field state, no `aria-invalid`, no `aria-describedby`, no
 formats must include landlines (this business's own number is `072-`). `a11y.mjs` fails on this.
 See also N1 — the delivery-failure state renders nothing at all.
 
-### 8.2 — P1 · S · [NOT STARTED] No consent affordance
+### 8.2 — P1 · S · [PARTIAL 2026-11-08] No consent affordance
 
 The form collects PII while `/מדיניות-פרטיות/` exists and is never referenced from it. The privacy
 policy also never mentions cookies or analytics while GTM loads unconditionally.
@@ -598,15 +598,30 @@ also mention the live surfaces' status-file read (`https://imgquarry.com/status/
 the values they keep in browser storage (`ls-status`, `ls-dlg-*`, `ls-pv`, `ls-t`) — CLAUDE.md
 §14, business-facts §I. Open.
 
+**State 2026-11-08:** the consent line (`leadFormConsentCopy`) and the rewritten privacy page
+(`privacyPageCopy`, naming Web3Forms, Google Tag Manager, the fields collected, the status-file
+read and the four storage values) are in the tree, and the first `hebrew-editor` / `claims-verifier`
+pass is applied. The row stays partial until both sign off on the fix pass. Left out as unconfirmed
+owner policies, to restore only with a confirmed row in business-facts: the name Google Analytics
+(the open "GA4 measurement ID" row), that the details are never sold, that they are used "only" to
+call back and never for mailing, and access / correction / deletion on request.
+
 ### 8.3 — P1 · M · [NOT STARTED] No thank-you URL
 
 Success is an inline state swap — no URL-based conversion to count, no Google Ads target, no next step.
 The success screen also tells the user to call but gives no clickable number. Phase 5 adds `app/תודה/`
 (`noindex`, listed in `staticRoutes` once §1.4 lands).
 
+**Audit exemption — owner sign-off pending (2026-11-08):** `/תודה/` is exempt from the orphan,
+sitemap-presence, breadcrumb, schema-type and canonical-presence checks by the exact-path list
+`NOINDEX_ALLOWED` in `scripts/audit/lib/pages.mjs` (not by any robots noindex), and `titles.mjs`
+requires it to carry no canonical and no og:url. Title and description checks still run on it. Any
+other page with a stray noindex still gets every check. Because this loosens scripts, the owner
+should confirm the list.
+
 ### 8.4 — P2 · S · [NOT STARTED] The `city` field is declared and never collected
 
-`types/index.d.ts:27` — in a file nothing imports (N3). Free local-intent signal, and dispatch-relevant
+`types/index.d.ts` — in a file nothing imports (N3). Free local-intent signal, and dispatch-relevant
 across 18 areas.
 
 ### 8.5 — P2 · S · [NOT STARTED] `/מחירון/` is the only commercial page with no CTA
@@ -970,7 +985,7 @@ canonical (`schema.mjs` → `rawHebrewUrls` counts 11 here plus 7 `Service.url`)
 ### N3 — P2 · S · [NOT STARTED] `types/index.d.ts` is dead
 
 Nothing under `app/`, `components/`, `lib/` or `scripts/` imports it; the `city` field it declares
-(`types/index.d.ts:27`) was never wired (§8.4). Delete it or make the form use it.
+(`types/index.d.ts`) was never wired (§8.4). Delete it or make the form use it.
 
 ### N4 — P2 · S · [✅ DONE 2026-09-06] A Houston promo stub shipped under `public/`
 

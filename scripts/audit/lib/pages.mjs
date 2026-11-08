@@ -147,6 +147,19 @@ export function routeType(p) {
   return "other";
 }
 
+/**
+ * The content pages that are deliberately outside search, by exact path: staticPages `noindex: true`
+ * (the /תודה/ thank-you route). Only these are exempt from the orphan, sitemap, breadcrumb, schema
+ * and canonical-presence checks — a page that merely carries a robots noindex is NOT exempt, so a
+ * stray noindex on a real page still fails. Adding a path here is an owner decision (backlog §8.3).
+ */
+export const NOINDEX_ALLOWED = new Set(["/תודה/"]);
+
+/** Does the page declare `noindex` in a robots meta tag? */
+export function isNoindex(html) {
+  return /<meta[^>]+name="robots"[^>]+content="[^"]*noindex/i.test(html);
+}
+
 /** content | stub | notfound, from the emitted HTML. */
 export function classify(html, p) {
   if (p === "/404/" || /<title>[^<]*הדף לא נמצא/.test(html)) return "notfound";
@@ -170,6 +183,7 @@ export function emittedPages() {
       path: p,
       file: path.relative(ROOT, file).replace(/\\/g, "/"),
       kind: classify(html, p),
+      noindexAllowed: isNoindex(html) && NOINDEX_ALLOWED.has(p),
       type: routeType(p),
       html,
     };

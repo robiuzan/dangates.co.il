@@ -60,7 +60,7 @@ export function Hero() {
           </h2>
           <p className="mt-1 text-sm text-gray-600">{heroCopy.formSubtitle}</p>
           <div className="mt-5">
-            <LeadForm />
+            <LeadForm placement="hero" />
           </div>
         </div>
       </Container>

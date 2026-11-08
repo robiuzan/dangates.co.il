@@ -82,6 +82,26 @@ export function run() {
         );
     }
 
+    // A noindex page (the /תודה/ thank-you route) must claim no URL of its own, like the 404:
+    // canonical and og:url are required to be ABSENT. The title and description checks above, and the
+    // duplicate checks below, still apply; only the canonical / og:url presence checks are skipped.
+    // Exemption is by the NOINDEX_ALLOWED path list (lib/pages.mjs), not by any robots noindex.
+    if (page.noindexAllowed) {
+      if (c)
+        r.fail(
+          `${page.path}: noindex page declares a canonical — it must claim no URL`,
+          c,
+          "backlog §8.3",
+        );
+      if (og)
+        r.fail(
+          `${page.path}: noindex page declares an og:url — it must claim no URL`,
+          og,
+          "backlog §8.3",
+        );
+      continue;
+    }
+
     // canonical
     const expectedLoc = sitemapLocs.get(page.path);
     if (!c) r.fail(`${page.path}: no canonical`, undefined, "backlog §1.8");

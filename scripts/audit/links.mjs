@@ -116,7 +116,11 @@ export function run() {
     }
   }
 
-  const orphans = pages.filter((p) => inbound.get(p.path).size === 0).map((p) => p.path);
+  // A noindex page (the /תודה/ thank-you route) is reached only by the form navigating to it; an
+  // inbound link would invite search traffic to a conversion page, so it is exempt from this check.
+  const orphans = pages
+    .filter((p) => !p.noindexAllowed && inbound.get(p.path).size === 0)
+    .map((p) => p.path);
   if (orphans.length)
     r.fail(
       `${orphans.length} orphan page(s) — no inbound link from any other content page`,
@@ -178,9 +182,20 @@ export function run() {
       "backlog §1.8",
     );
   const sitemapNotEmitted = [...sitemapPaths].filter((p) => !contentSet.has(p));
+  // noindex pages are meant to be absent (staticPages `noindex: true`) — and must STAY absent.
   const emittedNotInSitemap = pages
+    .filter((p) => !p.noindexAllowed)
     .map((p) => p.path)
     .filter((p) => !sitemapPaths.has(p));
+  const noindexInSitemap = pages
+    .filter((p) => p.noindexAllowed && sitemapPaths.has(p.path))
+    .map((p) => p.path);
+  if (noindexInSitemap.length)
+    r.fail(
+      `${noindexInSitemap.length} noindex page(s) are listed in sitemap.xml`,
+      list(noindexInSitemap),
+      "backlog §8.3",
+    );
   if (sitemapNotEmitted.length)
     r.fail(
       `${sitemapNotEmitted.length} sitemap URL(s) are not emitted content pages (stub, 404 or missing)`,
@@ -301,7 +316,7 @@ export function run() {
     .map((p) => p.path);
   const crumbSet = new Set(crumbPages);
   const missingCrumbs = pages
-    .filter((p) => p.path !== "/" && !crumbSet.has(p.path))
+    .filter((p) => p.path !== "/" && !p.noindexAllowed && !crumbSet.has(p.path))
     .map((p) => p.path);
   if (missingCrumbs.length)
     r.fail(

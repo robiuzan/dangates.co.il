@@ -1,10 +1,16 @@
-import { Calculator } from "lucide-react";
+import { Calculator, MessageCircle, Phone } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
-import { priceRows } from "@/lib/content";
+import { priceRows, pricingCtaCopy, defaultWhatsappMessage } from "@/lib/content";
+import { telHref, whatsappHref } from "@/lib/site-config";
 
-export function PricingTeaser() {
+/**
+ * The price table + quote button. `directCta` adds the call and WhatsApp pair beside it — the
+ * /מחירון/ page sets it (backlog §8.5: the highest-intent page needs a call within reach); the
+ * homepage already carries both in its hero.
+ */
+export function PricingTeaser({ directCta = false }: { directCta?: boolean }) {
   return (
     <Section id="pricing" tone="white">
       <SectionHeading
@@ -45,11 +51,28 @@ export function PricingTeaser() {
         * הטווחים להתרשמות בלבד ועשויים להשתנות לפי סוג השער, מצבו והחלקים הנדרשים.
       </p>
 
-      <div className="mt-8 flex justify-center">
-        <Button href="/צור-קשר" data-cta="pricing-contact" variant="accent" size="lg">
+      <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <Button href="/צור-קשר/" data-cta="pricing-contact" variant="accent" size="lg">
           <Calculator className="h-5 w-5" aria-hidden />
           קבלו הצעת מחיר מדויקת
         </Button>
+        {directCta && (
+          <>
+            <Button href={telHref} data-cta="pricing-call" variant="outline" size="lg">
+              <Phone className="h-5 w-5" aria-hidden />
+              {pricingCtaCopy.callLabel}
+            </Button>
+            <Button
+              href={whatsappHref(defaultWhatsappMessage)}
+              data-cta="pricing-whatsapp"
+              variant="whatsapp"
+              size="lg"
+            >
+              <MessageCircle className="h-5 w-5" aria-hidden />
+              {pricingCtaCopy.whatsappLabel}
+            </Button>
+          </>
+        )}
       </div>
     </Section>
   );

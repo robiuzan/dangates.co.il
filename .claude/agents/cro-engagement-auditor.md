@@ -31,7 +31,7 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
      per-field state, no focus management (`a11y.mjs` fails on it); the tel input `:143-153` has
      `inputMode` but no `pattern` — Israeli formats must include landlines (this business is `072-`).
    - **§8.2 consent.** No link to `/מדיניות-פרטיות/` anywhere in the form while it collects PII.
-   - **§8.4 / N3 city.** `city?: string` is declared at `types/index.d.ts:27` in a file nothing
+   - **§8.4 / N3 city.** `city?: string` is declared at `types/index.d.ts` in a file nothing
      imports; the form collects name, phone, service, message only (`:73-81`) — dispatch across 18
      areas gets no city and `lead_submit` gets no `city` dimension.
    - **§8.3 thank-you.** Success is an inline state swap (`:100-114`); no `app/תודה/` route

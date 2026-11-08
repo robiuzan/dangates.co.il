@@ -95,7 +95,7 @@ cross-check. Keep the inline success block as the fallback if navigation is prev
 
 ### Gap 5 — the `city` field (§8.4)
 
-`types/index.d.ts:27` declares `city?` in a file nothing imports (N3); the form never collects it.
+`types/index.d.ts` declares `city?` in a file nothing imports (N3); the form never collects it.
 Add `<select id="lf-city" name="city">` built from `locations` in `lib/site-config.ts` (value = slug,
 label = name, plus "אחר"). Optional, one row of vertical space, and **dispatch-relevant** across 18
 areas from באר שבע to the קריות — the business learns whether it can take the job before calling

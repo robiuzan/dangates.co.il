@@ -38,7 +38,7 @@ export default function PricingPage() {
           { label: "מחירון", href: "/מחירון/" },
         ]}
       />
-      <PricingTeaser />
+      <PricingTeaser directCta />
       <Section tone="muted">
         <p className="mx-auto max-w-2xl text-center text-sm text-gray-500">
           הטווחים מובאים להתרשמות בלבד ועשויים להשתנות לפי סוג השער, מצבו, סוג המנוע

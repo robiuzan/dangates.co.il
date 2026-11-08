@@ -205,7 +205,8 @@ export function run() {
 
     const c = (census[page.type] ??= {});
     for (const t of types) c[t] = (c[t] ?? 0) + 1;
-    for (const req of requiredTypes(page.type, BUSINESS))
+    // A noindex page (the /תודה/ thank-you route) has no place in the graph: no crumb, no identity.
+    for (const req of page.noindexAllowed ? [] : requiredTypes(page.type, BUSINESS))
       if (!types.has(req)) push(missing, `${page.type}|${req}`, page.path);
     for (const id of referenced) if (!defined.has(id)) push(dangling, id, page.path);
     if (business && business.address)

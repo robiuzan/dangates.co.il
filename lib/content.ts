@@ -558,3 +558,186 @@ export const leadFormErrorCopy = {
   callLabel: "התקשרו עכשיו",
   retryLabel: "נסו לשלוח שוב",
 } as const;
+
+/**
+ * components/forms/LeadForm.tsx — per-field validation messages (backlog §8.1) and the optional
+ * city field (§8.4). Each message names the field and says what to do; none promises anything.
+ */
+export const leadFormValidationCopy = {
+  nameRequired: "נא למלא את השם",
+  phoneRequired: "נא למלא מספר טלפון, כדי שנוכל לחזור אליכם",
+  phoneInvalid: "המספר לא נראה תקין. כתבו מספר ישראלי, למשל 050-1234567 או 03-1234567",
+  citySelect: "העיר או האזור (אופציונלי)",
+  cityPlaceholder: "בחירת עיר או אזור…",
+  /** The last option — for a visitor outside the 18 published locations (ux-cro-security §2.2 row 5). */
+  cityOther: "אחר",
+} as const;
+
+/**
+ * components/forms/LeadForm.tsx — the fragments the form assembles into the WhatsApp fallback
+ * message and the Web3Forms email. Each is a label followed by the visitor's own value.
+ */
+export const leadFormMessageCopy = {
+  greeting: "שלום, אני",
+  service: "מעוניין/ת ב:",
+  city: "אזור:",
+  phone: "טלפון לחזרה:",
+  notSpecified: "לא צוין",
+  emailSubject: "פנייה חדשה מהאתר —",
+} as const;
+
+/** The privacy route — the consent line links it, and its own page uses it as the path. */
+export const privacyPath = "/מדיניות-פרטיות/";
+
+/**
+ * components/forms/LeadForm.tsx — the one-line notice under the submit button (backlog §8.2,
+ * ux-cro-security §2.2 row 4). A notice, not a checkbox. It says only what the code does:
+ * the fields go by email to the business inbox through Web3Forms, and the callback goes to the
+ * number the visitor typed (a call or a WhatsApp message both reach it). The standard's fourth
+ * element, "not used for mailing", is an owner policy no business-facts row confirms, so it is
+ * left out until one does — as is any "only" assurance about later use.
+ * Rendered as `text`, then `moreLead`, then a link to `privacyPath` reading `linkLabel`.
+ */
+export const leadFormConsentCopy = {
+  text: "שליחת הטופס מעבירה את הפרטים אלינו בדוא״ל, דרך שירות הטפסים Web3Forms. הם משמשים כדי לחזור אליכם למספר שהשארתם, בנוגע לפנייה.",
+  moreLead: "פרטים נוספים",
+  linkLabel: "במדיניות הפרטיות",
+} as const;
+
+/**
+ * app/תודה/page.tsx — the thank-you route a confirmed lead lands on (backlog §8.3).
+ *
+ * No response time, no availability, no coverage claim — nothing from docs/business-facts.md that
+ * is unconfirmed. The next step is the photo bridge (ux-cro-security §1.2): a picture of the gate
+ * or the לוח פיקוד sent on WhatsApp, which is claim-free and helps the call that follows.
+ */
+export const thanksPath = "/תודה/";
+
+export const thanksPageCopy = {
+  /** <title> — the root template appends the brand, so it is not repeated here. */
+  metaTitle: "תודה, הפנייה התקבלה",
+  metaDescription:
+    "הפנייה שלכם לדן שערים חשמליים התקבלה. אפשר להוסיף לה תמונה של השער בוואטסאפ, להתקשר אלינו ישירות, או לעבור על השירותים שלנו לתיקון ולהתקנה.",
+  h1: "תודה, הפנייה שלכם התקבלה",
+  lead: "הפרטים הגיעו אלינו בדוא״ל. נחזור אליכם למספר הטלפון שהשארתם.",
+  nextHeading: "רוצים להוסיף פרטים?",
+  nextBody:
+    "תמונה או סרטון קצר של השער, של המנוע או של לוח הפיקוד עוזרים לנו להבין את התקלה עוד לפני השיחה. אפשר לשלוח אותם בוואטסאפ, או להתקשר אלינו ישירות.",
+  callLabel: "התקשרו אלינו",
+  whatsappLabel: "שליחת תמונה בוואטסאפ",
+  whatsappMessage: "היי, השארתי פנייה באתר. מצרף/ת תמונה של השער והתקלה:",
+  servicesLabel: "לכל השירותים שלנו",
+} as const;
+
+/**
+ * app/מדיניות-פרטיות/page.tsx — the privacy policy (backlog §8.2; data-tracking-infrastructure §6;
+ * ux-cro-security §4.5; business-facts §I). Every sentence describes what the code does today:
+ *
+ *  - the form: `LeadForm` posts name, phone, the optional service, city and message, and the page
+ *    path, to Web3Forms, which emails them to `siteConfig.email`;
+ *  - measurement: the GTM loader in app/layout.tsx; the dataLayer pushes carry `form`, `page`,
+ *    `site`, `placement`, the service and city slugs and a failure `reason` — never the text fields
+ *    (docs/event-taxonomy.md) — plus the live card's `surface_view` / `surface_dismiss`;
+ *  - the live-kit (public/assets/live.js, lib/live/head-script.mjs): one read of
+ *    https://imgquarry.com/status/fleet.json with `credentials: "omit"`, and four storage values.
+ *
+ * Deliberately absent, because nothing proves them: a retention period, a claim of compliance
+ * with any named law, a response time for a privacy request. The phone and email come from
+ * `siteConfig` in the route, never typed here. The policy names Google Tag Manager, which the
+ * manifest's `analytics.gtmId` proves loads. It does not name Google Analytics: the manifest's
+ * `ga4MeasurementId` is null and whether GA4 resolves for this hostname inside the shared
+ * container is the open "GA4 measurement ID" row in docs/business-facts.md. Name it once that
+ * row is confirmed. Equally unconfirmed owner policies — "only" for a stated use, no mailing, no
+ * sale of leads, access / correction / deletion on request — are left out until a row covers them.
+ */
+export interface PrivacyListItem {
+  /** A Latin key or name — the route isolates it with dir="ltr". */
+  label: string;
+  text: string;
+}
+
+export interface PrivacySection {
+  heading: string;
+  paragraphs: readonly string[];
+  list?: readonly PrivacyListItem[];
+  /** A paragraph after the list. */
+  after?: string;
+}
+
+export const privacyPageCopy = {
+  metaDescription:
+    "מה קורה לפרטים שאתם משאירים באתר דן שערים חשמליים: מה הטופס שולח ולמי, מה נמדד בכלי Google, מה נשמר בדפדפן, ואיך פונים אלינו בנושא פרטיות.",
+  intro:
+    "בעמוד הזה מוסבר אילו פרטים מגיעים אלינו כשאתם משתמשים באתר, דרך אילו שירותים הם עוברים, ולשם מה. הוא מתאר את מה שהאתר עושה בפועל.",
+  updatedLabel: "עודכן לאחרונה:",
+  sections: [
+    {
+      heading: "מה נשלח כשאתם ממלאים את טופס הפנייה?",
+      paragraphs: [
+        "הטופס שולח אלינו את השם ואת מספר הטלפון שמילאתם. אם בחרתם שירות או עיר מהרשימה, או כתבתם פרטים על התקלה, גם הם נשלחים.",
+        "בנוסף נשלחת כתובת העמוד באתר שממנו שלחתם את הטופס, כדי שנדע על איזה שירות או אזור מדובר.",
+        "את הפרטים מעביר אלינו שירות חיצוני לשליחת טפסים, Web3Forms. השירות שולח אותם כהודעת דוא״ל לתיבת הדואר של העסק.",
+        "הפרטים משמשים אותנו כדי לחזור אליכם בנוגע לפנייה.",
+        "אם השליחה נכשלת, הטופס מציע לשלוח את אותם פרטים בוואטסאפ. ההודעה נפתחת באפליקציה שלכם, ויוצאת רק אם תלחצו בעצמכם על שליחה.",
+      ],
+    },
+    {
+      heading: "מה קורה כשאתם מתקשרים או שולחים הודעה בוואטסאפ?",
+      paragraphs: [
+        "שיחה או הודעה מגיעות אלינו ישירות, עם המספר שממנו פניתם ועם מה שכתבתם או אמרתם. הודעת וואטסאפ עוברת דרך השירות של וואטסאפ עצמה.",
+        "גם הפרטים האלה משמשים אותנו כדי לטפל בפנייה שלכם.",
+      ],
+    },
+    {
+      heading: "מה נמדד באתר, ובאילו כלים?",
+      paragraphs: [
+        "בכל עמוד באתר נטען כלי של Google לניהול קוד מדידה, Google Tag Manager. דרכו נמדדים צפיות בעמודים ואירועים באתר.",
+        "המדידה כוללת צפיות בעמודים, לחיצות על כפתורי החיוג והוואטסאפ, ואירועים של הטופס: שהתחלתם למלא אותו, שניסיתם לשלוח, ושהשליחה הצליחה או נכשלה.",
+        "עם אירועי הטופס נשלחים רק העמוד, שם האתר, מיקום הטופס בעמוד, השירות והעיר שבחרתם מהרשימה, ואם השליחה נכשלה — גם הסיבה הטכנית לכישלון.",
+        "השם, מספר הטלפון והפרטים שכתבתם בטופס לא נשלחים לכלי המדידה, אף פעם.",
+        "אם הוצג לכם כרטיס עונתי, נמדד גם שהוא הוצג ואיך נסגר.",
+        "כלי Google עשויים לשמור בדפדפן קובצי עוגיות, כדי להבחין בין ביקור לביקור. אפשר לחסום או למחוק אותם בהגדרות הדפדפן.",
+      ],
+    },
+    {
+      heading: "מה האתר בודק ושומר בדפדפן שלכם?",
+      paragraphs: [
+        "לפעמים מוצג בראש העמוד פס הודעות קצר, ולפעמים כרטיס עונתי. כדי להחליט אם להציג אותם, כל עמוד קורא קובץ מצב קטן מהכתובת imgquarry.com/status/fleet.json.",
+        "הקובץ אומר רק אם להציג את ההודעות כרגיל, לצמצם אותן או להשתיק אותן. שום דבר ממנו לא מוצג לכם כטקסט.",
+        "הבקשה לקובץ נשלחת בלי קובצי עוגיות ובלי שום פרט מהטופס. כמו בכל בקשה באינטרנט, השרת רואה את כתובת הרשת של המכשיר.",
+        "בנוסף נשמרים בדפדפן שלכם ארבעה ערכים קטנים. הם לא נשלחים לשום מקום ואינם כוללים פרטים אישיים:",
+      ],
+      list: [
+        {
+          label: "ls-status",
+          text: "התשובה של קובץ המצב, כשהיא שונה מהרגיל, יחד עם מועד תפוגה. כך העמוד הבא מציג מיד את ההודעות הנכונות. הערך תקף עד 30 דקות, או עד המועד שנקבע בקובץ אם הוא מוקדם יותר. אחרי קריאה שנכשלה הוא תקף 5 דקות, והוא נמחק כשהמצב חוזר לרגיל.",
+        },
+        {
+          label: "ls-dlg-*",
+          text: "מתי הוצג לכם כרטיס עונתי, לפי שם הכרטיס במקום הכוכבית. כך אותו כרטיס לא מוצג לכם שוב במשך 14 יום.",
+        },
+        {
+          label: "ls-pv",
+          text: "כמה עמודים פתחתם בביקור הנוכחי, כדי לקבוע מתי אפשר להציג כרטיס. הערך נמחק כשסוגרים את הלשונית.",
+        },
+        {
+          label: "ls-t",
+          text: "ערך בדיקה שנכתב ונמחק מיד, רק כדי לבדוק שהדפדפן מאפשר לשמור. אם הוא לא מאפשר, הכרטיס לא מוצג בכלל.",
+        },
+      ],
+      after: "אפשר למחוק את כל הערכים האלה בהגדרות הדפדפן, דרך מחיקת הנתונים של האתר.",
+    },
+  ] satisfies readonly PrivacySection[],
+  request: {
+    heading: "איך פונים אלינו בנושא פרטיות?",
+    body: "לשאלה או לבקשה בנוגע לפרטים שמסרתם, פנו אלינו:",
+    phoneLabel: "בטלפון",
+    emailLabel: "בדוא״ל",
+  },
+} as const;
+
+/** components/marketing/PricingTeaser.tsx — the call / WhatsApp pair beside the quote button (§8.5). */
+export const pricingCtaCopy = {
+  callLabel: "התקשרו לקבלת הצעה",
+  whatsappLabel: "שלחו הודעה בוואטסאפ",
+} as const;

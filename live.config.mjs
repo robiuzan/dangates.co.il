@@ -37,12 +37,13 @@ export default {
 
   /**
    * Calm pages: no seasonal line, no card (a safety or wartime line still shows). Exact paths, or
-   * prefixes ending in "*". The two legal pages. There is no thank-you route (backlog §8.3, the
-   * success state is inline in LeadForm), no noindex page but the 404 (it marks itself —
-   * app/not-found.tsx), no emergency page, and no page tells the reader to call 100/101/102
-   * (checked 2026-10-12: `grep -rn "10[012]" app components lib` finds none).
+   * prefixes ending in "*". The two legal pages, and the thank-you page /תודה/ (backlog §8.3: a
+   * confirmed lead lands there from LeadForm — a seasonal card would compete with the call and
+   * WhatsApp links it exists to show). The one other noindex page is the 404, which marks itself
+   * (app/not-found.tsx). There is no emergency page, and no page tells the reader to call
+   * 100/101/102 (checked 2026-10-12: `grep -rn "10[012]" app components lib` finds none).
    */
-  calm: ["/מדיניות-פרטיות/", "/הצהרת-נגישות/"],
+  calm: ["/מדיניות-פרטיות/", "/הצהרת-נגישות/", "/תודה/"],
   /** No card here, but the bar is normal: the lead-form page — the card would compete with it. */
   noDialog: ["/צור-קשר/"],
 

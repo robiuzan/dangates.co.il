@@ -159,8 +159,11 @@ export const staticPages: readonly StaticPage[] = [
   { path: "blog", updated: "2026-07-13" },
   { path: "אודות", updated: "2026-07-13" },
   { path: "צור-קשר", updated: "2026-07-13" },
-  { path: "מדיניות-פרטיות", updated: "2026-07-13" },
+  { path: "מדיניות-פרטיות", updated: "2026-11-08" },
   { path: "הצהרת-נגישות", updated: "2026-07-13" },
+  // The post-submit page: registered so the parity check knows it is deliberate, kept out of the
+  // sitemap by `noindex`. `updated` is never read for it.
+  { path: "תודה", updated: "2026-11-08", noindex: true },
 ];
 
 // ── Link helpers ───────────────────────────────────────────────────────────
