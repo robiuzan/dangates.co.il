@@ -790,7 +790,7 @@ the whole set — HSTS `max-age=31536000`, the report-only CSP, `X-Frame-Options
 `Referrer-Policy` and the template's wider `Permissions-Policy` — and `/_next/static/*` carries
 `Cache-Control: immutable` on the apex, so the interior blank lines do not orphan the later blocks.
 On the apex the zone rule still wins where both speak (HSTS reads `15552000`, the narrower
-`Permissions-Policy`). **Still open (owner):** delete the zone rule once satisfied, then the apex
+`Permissions-Policy`). **Zone rule disabled 2026-11-08** (the Transform Rule `ishub baseline security headers`; the HSTS setting in SSL/TLS was never enabled, so it was not the HSTS source) and the apex then matched the repo (HSTS `31536000`, wider `Permissions-Policy`, report-only CSP). **Still open (owner):** delete the zone rule once satisfied, then the apex
 shows the repo's values ([owner-actions.md](owner-actions.md) §1.3).
 
 ### 12.2 — P2 · M · [PARTIAL 2026-09-06] Report-only CSP ships; enforcing waits on observation
