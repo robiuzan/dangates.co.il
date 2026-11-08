@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { posts } from "@/lib/posts";
+import { manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
+import { crumbLabels } from "@/lib/content";
+import { itemListJsonLd } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -26,12 +29,21 @@ const DATE_FMT = new Intl.DateTimeFormat("he-IL", {
 
 export default function BlogIndexPage() {
   const sorted = [...posts].sort((a, b) => b.date.localeCompare(a.date));
+  // The full array the grid renders, in the same order.
+  const nodes = [
+    itemListJsonLd(
+      manifest,
+      sorted.map((p) => ({ name: p.title, path: `/blog/${p.slug}/` })),
+      { path: "/blog/", name: crumbLabels.blog, description: blogDescription },
+    ),
+  ];
 
   return (
     <>
       <PageHeader
         title="הבלוג של דן שערים חשמליים"
         subtitle="טיפים מקצועיים וחדשות מהתחום — כל מה שכדאי לדעת על תיקון, תחזוקה ובטיחות של שערים חשמליים."
+        nodes={nodes}
         crumbs={[
           { label: "בית", href: "/" },
           { label: "בלוג", href: "/blog/" },

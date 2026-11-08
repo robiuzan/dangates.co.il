@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import { siteConfig, telHref, whatsappHref } from "@/lib/site-config";
+import { manifest, siteConfig, telHref, whatsappHref } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
+import { businessNode, pageNode } from "@/lib/jsonld";
 import {
   crumbLabels,
   contactMetaDescription,
@@ -29,12 +30,23 @@ export const metadata: Metadata = {
   },
 };
 
+// ContactPage `mainEntity` → the business, so the business node rides along.
+const nodes = [
+  businessNode(manifest),
+  pageNode(manifest, "ContactPage", {
+    path: "/צור-קשר/",
+    name: contactHeroTitle,
+    business: "mainEntity",
+  }),
+];
+
 export default function ContactPage() {
   return (
     <>
       <PageHeader
         title={contactHeroTitle}
         subtitle={contactHeroSubtitle}
+        nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
           { label: crumbLabels.contact, href: "/צור-קשר/" },

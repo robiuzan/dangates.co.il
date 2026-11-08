@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
+import { itemListJsonLd } from "@/lib/jsonld";
 import {
   crumbLabels,
+  serviceCards,
   servicesIndexMetaDescription,
   servicesIndexHeroTitle,
   servicesIndexHeroSubtitle,
@@ -24,12 +27,22 @@ export const metadata: Metadata = {
   },
 };
 
+// The full array the grid renders — an ItemList that disagrees with the visible grid is worse than none.
+const nodes = [
+  itemListJsonLd(
+    manifest,
+    serviceCards.map((s) => ({ name: s.name, path: `/services/${s.slug}/` })),
+    { path: "/שירותים/", name: servicesIndexHeroTitle },
+  ),
+];
+
 export default function ServicesPage() {
   return (
     <>
       <PageHeader
         title={servicesIndexHeroTitle}
         subtitle={servicesIndexHeroSubtitle}
+        nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
           { label: crumbLabels.services, href: "/שירותים/" },

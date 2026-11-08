@@ -376,6 +376,17 @@ export const crumbLabels = {
   contact: "צור קשר",
 } as const;
 
+/** Legal-page names — the `WebPage` name in their graph and their own title / crumb / H1. */
+export const legalPageNames = {
+  privacy: "מדיניות פרטיות",
+  accessibility: "הצהרת נגישות",
+} as const;
+
+/** app/איזורי-שירות/page.tsx — the visible link label for one city, and its `ItemList` name. */
+export function areaLinkLabel(cityName: string): string {
+  return `שערים חשמליים ב${cityName}`;
+}
+
 /** Shared WhatsApp click-to-chat opener, used wherever no service name is interpolated in. */
 export const defaultWhatsappMessage =
   "היי, אני מעוניין/ת בהצעת מחיר לתיקון/התקנת שער חשמלי";
@@ -447,9 +458,15 @@ export function locationMetaDescription(cityName: string): string {
   return `תיקון והתקנת שערים חשמליים ב${cityName} — שירות מהיר ואמין, אחריות מלאה וזמינות 24/7 לקריאות חירום. לכל סוגי השערים: נגררים, כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`;
 }
 
+/**
+ * app/locations/[city]/page.tsx — the service named in every location H1, and the `serviceType`
+ * of that page's `Service` node (lib/jsonld.ts). One string, so the schema cannot drift from the H1.
+ */
+export const locationServiceType = "תיקון והתקנת שערים חשמליים";
+
 /** app/locations/[city]/page.tsx — PageHeader title / subtitle, per city. */
 export function locationHeroTitle(cityName: string): string {
-  return `תיקון והתקנת שערים חשמליים ב${cityName}`;
+  return `${locationServiceType} ב${cityName}`;
 }
 
 export function locationHeroSubtitle(cityName: string): string {
@@ -480,6 +497,18 @@ export const aboutHeroSubtitle =
 export const aboutIntro = `ברוכים הבאים ל${siteConfig.name} — מתמחים בתיקון והתקנת שערים חשמליים. עם ניסיון רב שנים בתחום, אנו מספקים שירות ברמה הגבוהה ביותר, תוך הקפדה על איכות, מקצועיות ובטיחות. המטרה שלנו היא להבטיח שהשערים החשמליים שלכם יתפקדו בצורה מושלמת וישרתו אתכם נאמנה לאורך זמן.`;
 
 export const aboutValuesHeading = "הערכים שלנו";
+
+/**
+ * app/אודות/page.tsx — `knowsAbout` on the business node of that page's graph (lib/jsonld.ts).
+ * Only subjects this site actually covers: the seven service names, then three generic subjects.
+ * No credential, no licence, no standard-compliance claim.
+ */
+export const aboutKnowsAbout: readonly string[] = [
+  ...services.map((s) => s.name),
+  "תיקון שערים חשמליים",
+  "מנועי שערים",
+  "בטיחות שערים חשמליים",
+];
 
 /** app/שירותים/page.tsx — metadata + copy. */
 export const servicesIndexMetaDescription =

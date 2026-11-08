@@ -16,9 +16,10 @@
  * graph — every page that points at `#business` therefore carries `businessNode()`. And a
  * reference must never point at a node the page does not define (`#website` lives on `/` only).
  *
- * Nothing here is promoted into the vendored kit (golden rule 9). No copy lives in this file (the
- * only Hebrew is region slugs used as keys): names and labels arrive from the caller, which takes
- * them from `lib/content.ts`.
+ * Nothing here is promoted into the vendored kit (golden rule 9). No copy is authored in this file
+ * (the only Hebrew is region slugs used as keys): names and labels come from the caller or are read
+ * from `lib/content.ts`; the business node reads `services` and `locations` from
+ * `lib/site-config.ts`, so its catalog and its areaServed can never drift from the published pages.
  */
 import { ogImageMeta, type SiteManifest } from "@ishub/site-kit";
 import {
@@ -27,6 +28,8 @@ import {
   serviceJsonLd,
   type JsonLd,
 } from "@ishub/site-kit/seo";
+import { locations, services } from "@/lib/site-config";
+import { servicesIndexHeroTitle } from "@/lib/content";
 
 export type { JsonLd };
 
@@ -96,16 +99,25 @@ export function placeNode(loc: Place): JsonLd {
 /**
  * The business node — `localBusinessJsonLd` plus the `logo` and `image` the manifest cannot carry on
  * its own. Emit it on EVERY page whose graph references `#business` (`provider`, `publisher`,
- * `author`): `schema.mjs` counts an `@id`-only stub as a reference, so a stub still dangles (§4.4).
+ * `author`, `about`): `schema.mjs` counts an `@id`-only stub as a reference, so a stub still
+ * dangles (§4.4).
  *
  * `description` is the tagline, not the kit's default (`shortPitch`): the roster pitch carries claims
  * `docs/business-facts.md` has not confirmed, and this node now ships on every page.
  *
+ * `areaServed` is the 18 published locations as `City` / `AdministrativeArea` nodes (`placeNode`),
+ * not the roster's marketing phrase, which includes the unconfirmed "פריסה ארצית" (§4.8).
+ * `hasOfferCatalog` names the 7 services as `Service` nodes by `@id` — no `Offer`, no price
+ * (§4.10): `OfferCatalog.itemListElement` accepts any `Thing`. Each entry carries `name` and `url` so it
+ * counts as defined on every page; on a service page it merges by `@id` with `serviceNode`.
+ *
  * NOT here, deliberately: `address` (no premises), `foundingDate` (foundedYear null, not coming),
- * `aggregateRating` / `review` (REVIEW_SOURCE_URL null), `hasOfferCatalog` (needs `Offer`, which
- * `schema.mjs` forbids while prices are unsourced).
+ * `aggregateRating` / `review` (REVIEW_SOURCE_URL null), any `Offer` (prices are authored estimates).
  */
-export function businessNode(m: SiteManifest): JsonLd {
+export function businessNode(
+  m: SiteManifest,
+  extra: { knowsAbout?: readonly string[] } = {},
+): JsonLd {
   const og = ogImageMeta(m.images)?.[0]; // the manifest OG card (1200×630) on the media host
   return prune({
     ...localBusinessJsonLd(m, {
@@ -114,9 +126,16 @@ export function businessNode(m: SiteManifest): JsonLd {
     }),
     description: m.tagline ?? undefined,
     url: `${m.url}/`, // the kit emits the origin without the slash the export enforces
-    // The kit fills areaServed with the roster phrase, which includes the unconfirmed "פריסה ארצית"
-    // (business-facts §E, claims lexicon). Dropped until that row is confirmed; prune() removes it.
-    areaServed: undefined,
+    areaServed: locations.map(placeNode),
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: servicesIndexHeroTitle,
+      itemListElement: services.map((svc) => {
+        const url = pageUrl(m, `/services/${svc.slug}/`);
+        return { "@type": "Service", "@id": `${url}#service`, name: svc.name, url };
+      }),
+    },
+    knowsAbout: extra.knowsAbout ? [...extra.knowsAbout] : undefined,
   });
 }
 
@@ -271,5 +290,38 @@ export function itemListJsonLd(
         url: pageUrl(m, it.path),
       })),
     },
+  });
+}
+
+export type PageNodeType = "WebPage" | "AboutPage" | "ContactPage";
+
+/**
+ * A plain page-type node: `AboutPage`, `ContactPage`, or `WebPage` (pricing, legal). The `@id` is the
+ * page URL, as on `itemListJsonLd`'s `CollectionPage`.
+ *
+ * `business` joins the page to the entity: `about` for an `AboutPage`, `mainEntity` for a
+ * `ContactPage`. Either points at `#business`, so the caller must also emit `businessNode()` in the
+ * same graph or the reference dangles. No `isPartOf → #website` (that node exists on `/` only), and
+ * never an `Offer` or a price — `/מחירון/` is a plain `WebPage`.
+ */
+export function pageNode(
+  m: SiteManifest,
+  type: PageNodeType,
+  page: {
+    path: string;
+    name: string;
+    description?: string;
+    business?: "about" | "mainEntity";
+  },
+): JsonLd {
+  const url = pageUrl(m, page.path);
+  return prune({
+    "@type": type,
+    "@id": url,
+    url,
+    name: page.name,
+    description: page.description ?? undefined,
+    inLanguage: m.locale,
+    ...(page.business ? { [page.business]: { "@id": businessId(m) } } : {}),
   });
 }

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { locations, type LocationSlug } from "@/lib/site-config";
+import { locations, manifest, type LocationSlug } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
 import {
   serviceCards,
@@ -14,7 +14,9 @@ import {
   locationIntroParagraph1,
   locationIntroParagraph2,
   locationServicesHeading,
+  locationServiceType,
 } from "@/lib/content";
+import { businessNode, locationServiceJsonLd } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -51,11 +53,24 @@ export default function LocationPage({ params }: { params: { city: string } }) {
   const loc = findLocation(params.city);
   if (!loc) notFound();
 
+  // Handed to PageHeader, which renders them with the breadcrumb as ONE @graph. The Service's
+  // `provider` points at the business, so the business node rides along (never a LocalBusiness
+  // per city — coverage is `areaServed`).
+  const nodes = [
+    businessNode(manifest),
+    locationServiceJsonLd(
+      manifest,
+      { name: locationHeroTitle(loc.name), serviceType: locationServiceType },
+      loc,
+    ),
+  ];
+
   return (
     <>
       <PageHeader
         title={locationHeroTitle(loc.name)}
         subtitle={locationHeroSubtitle(loc.name)}
+        nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
           { label: crumbLabels.areas, href: "/איזורי-שירות/" },

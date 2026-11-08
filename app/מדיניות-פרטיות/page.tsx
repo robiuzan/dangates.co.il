@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/lib/site-config";
+import { manifest, siteConfig } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
+import { legalPageNames } from "@/lib/content";
+import { pageNode } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 
@@ -9,24 +11,32 @@ const privacyDescription = "מדיניות הפרטיות של אתר דן שע�
 
 export const metadata: Metadata = {
   alternates: { canonical: privacyUrl },
-  title: "מדיניות פרטיות",
+  title: legalPageNames.privacy,
   description: privacyDescription,
   openGraph: {
     ...ogBase,
     url: privacyUrl,
-    title: "מדיניות פרטיות",
+    title: legalPageNames.privacy,
     description: privacyDescription,
   },
 };
+
+const nodes = [
+  pageNode(manifest, "WebPage", {
+    path: "/מדיניות-פרטיות/",
+    name: legalPageNames.privacy,
+  }),
+];
 
 export default function PrivacyPage() {
   return (
     <>
       <PageHeader
-        title="מדיניות פרטיות"
+        title={legalPageNames.privacy}
+        nodes={nodes}
         crumbs={[
           { label: "בית", href: "/" },
-          { label: "מדיניות פרטיות", href: "/מדיניות-פרטיות/" },
+          { label: legalPageNames.privacy, href: "/מדיניות-פרטיות/" },
         ]}
       />
       <Section tone="white">

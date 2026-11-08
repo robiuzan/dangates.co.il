@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
+import { pageNode } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { PricingTeaser } from "@/components/marketing/PricingTeaser";
@@ -21,11 +23,15 @@ export const metadata: Metadata = {
   },
 };
 
+// A plain WebPage: no Offer, no price (prices are authored estimates — backlog §4.10).
+const nodes = [pageNode(manifest, "WebPage", { path: "/מחירון/", name: pricingTitle })];
+
 export default function PricingPage() {
   return (
     <>
       <PageHeader
         title="מחירון תיקון והתקנת שערים חשמליים"
+        nodes={nodes}
         subtitle="מחירים הוגנים ושקופים. הטווחים מובאים להתרשמות; המחיר הסופי נקבע לאחר אבחון בשטח — תמיד ברור מראש."
         crumbs={[
           { label: "בית", href: "/" },

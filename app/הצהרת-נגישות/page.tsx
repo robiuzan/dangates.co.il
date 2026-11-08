@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/lib/site-config";
+import { manifest, siteConfig } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
+import { legalPageNames } from "@/lib/content";
+import { pageNode } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 
@@ -9,24 +11,32 @@ const a11yDescription = "הצהרת הנגישות של אתר דן שערים �
 
 export const metadata: Metadata = {
   alternates: { canonical: a11yUrl },
-  title: "הצהרת נגישות",
+  title: legalPageNames.accessibility,
   description: a11yDescription,
   openGraph: {
     ...ogBase,
     url: a11yUrl,
-    title: "הצהרת נגישות",
+    title: legalPageNames.accessibility,
     description: a11yDescription,
   },
 };
+
+const nodes = [
+  pageNode(manifest, "WebPage", {
+    path: "/הצהרת-נגישות/",
+    name: legalPageNames.accessibility,
+  }),
+];
 
 export default function AccessibilityPage() {
   return (
     <>
       <PageHeader
-        title="הצהרת נגישות"
+        title={legalPageNames.accessibility}
+        nodes={nodes}
         crumbs={[
           { label: "בית", href: "/" },
-          { label: "הצהרת נגישות", href: "/הצהרת-נגישות/" },
+          { label: legalPageNames.accessibility, href: "/הצהרת-נגישות/" },
         ]}
       />
       <Section tone="white">

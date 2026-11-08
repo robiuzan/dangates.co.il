@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
+import { manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
+import { businessNode, pageNode } from "@/lib/jsonld";
 import {
+  aboutKnowsAbout,
   aboutSections,
   aboutValues,
   crumbLabels,
@@ -31,12 +34,24 @@ export const metadata: Metadata = {
   },
 };
 
+// AboutPage `about` → the business; `knowsAbout` sits on the business node (the Organization
+// property), listing only subjects the site covers. No credential, no Person.
+const nodes = [
+  businessNode(manifest, { knowsAbout: aboutKnowsAbout }),
+  pageNode(manifest, "AboutPage", {
+    path: "/אודות/",
+    name: aboutHeroTitle,
+    business: "about",
+  }),
+];
+
 export default function AboutPage() {
   return (
     <>
       <PageHeader
         title={aboutHeroTitle}
         subtitle={aboutHeroSubtitle}
+        nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
           { label: crumbLabels.about, href: "/אודות/" },
