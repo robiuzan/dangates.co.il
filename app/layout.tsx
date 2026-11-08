@@ -4,6 +4,7 @@ import { siteConfig, manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import { FONT_PRELOADS } from "@/lib/fonts";
+import { skipLinkLabel } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
@@ -106,13 +107,23 @@ export default function RootLayout({
             />
           </noscript>
         )}
+        {/* Skip link: the first focusable element on every page, visible only while focused. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-5 focus:py-3 focus:text-base focus:font-semibold focus:text-primary focus:shadow-lg focus:ring-2 focus:ring-primary"
+        >
+          {skipLinkLabel}
+        </a>
         {/* The announcement bar: directly before the sticky header, NOT inside it — it scrolls
             away, so the header's h-16 and the service sidebar's top-24 hold once the page is
             scrolled, and the fixed-height ceiling (docs/mobile-ux-and-personalization.md §4)
             is untouched. */}
         <LiveTopBar />
         <Header />
-        <main className="flex-1">{children}</main>
+        {/* tabIndex -1 so the skip link's fragment jump moves focus into <main> in every browser. */}
+        <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
+          {children}
+        </main>
         <Footer />
         {/* Spacer so the fixed mobile CTA bar never overlaps footer content. */}
         <div className="h-16 lg:hidden" aria-hidden />

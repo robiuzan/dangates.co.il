@@ -218,7 +218,12 @@ function sourceChecks(r, faq) {
     );
 
   // (8) Header.tsx — mobile menu focus management
-  const header = readSrc("components/layout/Header.tsx");
+  // The header is a server shell plus the MobileMenu client leaf; the toggle and the key
+  // handling live in the leaf, so both files are read.
+  const header =
+    readSrc("components/layout/Header.tsx") +
+    "\n" +
+    readSrc("components/layout/MobileMenu.tsx");
   const menu = [];
   for (const m of header.matchAll(/<button\b[\s\S]*?<\/button>/g))
     if (/aria-expanded/.test(m[0]) && !/aria-controls/.test(m[0]))

@@ -362,6 +362,19 @@ export const navItems = [
   { label: "צור קשר", href: "/צור-קשר/" },
 ] as const;
 
+/** components/layout/Header.tsx + MobileMenu.tsx — landmark and control labels (wording unchanged). */
+export const headerCopy = {
+  homeLabel: "דף הבית",
+  navLabel: "ראשי",
+  mobileNavLabel: "ראשי נייד",
+  openMenu: "פתיחת תפריט",
+  closeMenu: "סגירת תפריט",
+  callNow: "חייגו עכשיו:",
+} as const;
+
+/** app/layout.tsx — the skip link, first focusable element on every page; targets <main id="main">. */
+export const skipLinkLabel = "דלג לתוכן הראשי";
+
 // ── Route & component copy (moved out of JSX per backlog N13) ──────────────
 // Verbatim from the route files and the three marketing components named in the sprint row —
 // wording is unchanged; only the location has moved. Sprint 4 is where any of this gets rewritten.
