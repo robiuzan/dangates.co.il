@@ -12,7 +12,7 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 opacity-30"
         style={{
           background:
-            "radial-gradient(60% 60% at 80% 0%, #d21f27 0%, transparent 60%), radial-gradient(50% 50% at 0% 100%, #520406 0%, transparent 70%)",
+            "radial-gradient(60% 60% at 80% 0%, var(--color-primary-400) 0%, transparent 60%), radial-gradient(50% 50% at 0% 100%, var(--color-primary-900) 0%, transparent 70%)",
         }}
         aria-hidden
       />

@@ -52,6 +52,14 @@
   /* Dark text for on-gold surfaces (buttons, badges) — high contrast on gold. */
   --color-accent-foreground: #3d2b00;
 
+  /* WhatsApp surface — a darkened brand green, because white on the stock #25D366 is only
+     1.98:1. Measured (WCAG): white on whatsapp 5.42:1 at rest, white on whatsapp-hover
+     6.63:1 on hover; whatsapp itself is 5.42:1 as text on white. Hover darkens, so the
+     ratio only rises. a11y.mjs resolves these tokens from this block. */
+  --color-whatsapp: #0f7a3d;
+  --color-whatsapp-hover: #0c6b34;
+  --color-whatsapp-foreground: #ffffff;
+
   /* Border radius — reproduce the v3 overrides (rounded-lg stays v4 default 0.5rem). */
   --radius-xl: 0.875rem;
   --radius-2xl: 1.25rem;

@@ -287,17 +287,42 @@ function contrastChecks(r) {
       ),
     ),
   ];
-  const whatsapp = literals.length
-    ? literals.map((l) => ["white", l])
-    : colors.whatsapp
+  // …or @theme tokens: read the text/background/hover tokens from the variant and from the sticky
+  // bar's own anchor, so rest AND hover are measured, and the token as text on white (links, icons).
+  const stickyWa =
+    mobile.match(/<a\b[^>]*data-cta="sticky-whatsapp"[^>]*>/)?.[0] ??
+    mobile.match(/<a\b[^>]*bg-whatsapp[^>]*>/)?.[0] ??
+    "";
+  const waClasses = [
+    button.match(/whatsapp:\s*"([^"]*)"/)?.[1] ?? "",
+    stickyWa.match(/className="([^"]*)"/)?.[1] ?? "",
+  ];
+  const tokenPairs = new Map();
+  for (const cls of waClasses) {
+    const bg = cls.match(/(?:^|\s)bg-([\w-]+)/)?.[1];
+    const hover = cls.match(/hover:bg-([\w-]+)/)?.[1];
+    const fg =
+      [...cls.matchAll(/(?:^|\s)text-([\w-]+)/g)]
+        .map((m) => m[1])
+        .find((n) => colors[n]) ?? "white";
+    for (const b of [bg, hover])
+      if (b && colors[b]) tokenPairs.set(`${fg} on ${b}`, [fg, b]);
+  }
+  if (tokenPairs.size && colors.whatsapp)
+    tokenPairs.set("whatsapp on white", ["whatsapp", "white"]);
+  const whatsapp = [
+    ...literals.map((l) => ["white", l]),
+    ...tokenPairs.values(),
+    ...(!literals.length && !tokenPairs.size && colors.whatsapp
       ? [["white", "whatsapp"]]
-      : [];
+      : []),
+  ];
 
   const groups = [
     { where: "Button.tsx accent variant :hover", pairs: [[accentFg, hoverBg]] },
     {
       where:
-        "WhatsApp buttons — Button.tsx whatsapp variant + MobileCtaBar.tsx (hardcoded literal, not a token)",
+        "WhatsApp surfaces — Button.tsx whatsapp variant (rest + hover) + MobileCtaBar.tsx, and the token as text on white",
       pairs: whatsapp,
     },
     {
@@ -339,7 +364,9 @@ function contrastChecks(r) {
   if (colors["accent-500"] && colors["accent-foreground"])
     r.note(
       `accent-500 (${colors["accent-500"]}) is the AA-safe hover token: accent-foreground on accent-500 = ${contrast(colors["accent-foreground"], colors["accent-500"])}:1`,
-      `swap hover:bg-${hoverBg} → hover:bg-accent-500 in Button.tsx`,
+      hoverBg === "accent-500"
+        ? "Button.tsx accent variant hover uses it"
+        : `swap hover:bg-${hoverBg} → hover:bg-accent-500 in Button.tsx`,
       "backlog N11",
     );
   r.metric("contrastPairs", ratios);

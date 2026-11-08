@@ -56,10 +56,9 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
 5. **TOC on long pages.** The rule (`/engagement-ux`) is a table of contents on any page over 900
    unique words. `content-depth.mjs` medians show no such page exists today — every post is under the
    900 floor — so record "no page qualifies yet; re-check when `/מדריכים/` lands (Phase 4)".
-6. **FAQ answers in the DOM (N8).** `components/marketing/Faq.tsx:47` renders every answer with
-   `hidden={!isOpen}`; `a11y.mjs` counts 9 of 10 answers `display:none` on the export. Present for
-   `FAQPage` parity, invisible to find-in-page and to a reader who does not click; the fix is
-   `<details>/<summary>` (`/engagement-ux`, §10.2).
+6. **FAQ answers in the DOM (N8).** The `Faq` component is native `<details>/<summary>`, so
+   every answer is in the DOM, visible to find-in-page, with zero client JS (`/engagement-ux`, §10.2).
+   Flag any regression to `hidden` answers.
 7. **Event taxonomy coverage — `docs/event-taxonomy.md`.** Exists today: `lead_submit{form}` only.
    Partial: `tel_click`, `whatsapp_click` (they ride on `data-cta`, so the 24 untagged instances are
    invisible; the two JS-driven `window.open` WhatsApp hops at `LeadForm.tsx:65`, `:88` can never fire

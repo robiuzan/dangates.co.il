@@ -181,7 +181,7 @@ export function LeadForm({ className }: { className?: string }) {
           autoComplete="tel"
           required
           dir="ltr"
-          className={cn(fieldClass, "text-right")}
+          className={cn(fieldClass, "text-end")}
           placeholder="050-0000000"
         />
       </div>
@@ -258,7 +258,7 @@ export function LeadForm({ className }: { className?: string }) {
         <a
           href={whatsappHref("היי, אני מעוניין/ת בהצעת מחיר לתיקון/התקנת שער חשמלי")}
           data-cta="form-whatsapp"
-          className="inline-flex items-center gap-1 font-semibold text-green-700 hover:underline"
+          className="inline-flex items-center gap-1 font-semibold text-whatsapp hover:underline"
         >
           <MessageCircle className="h-3.5 w-3.5" aria-hidden />
           שלחו לנו הודעה
@@ -278,7 +278,6 @@ export function LeadForm({ className }: { className?: string }) {
               data-cta="form-whatsapp"
               variant="whatsapp"
               size="md"
-              className="bg-green-700 hover:bg-green-800"
             >
               <MessageCircle className="h-4 w-4" aria-hidden />
               {leadFormErrorCopy.whatsappLabel}

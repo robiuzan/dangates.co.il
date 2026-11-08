@@ -117,9 +117,8 @@ whose first block is the answer (`/new-guide`, ADR 0003). The route must render 
 `<p>` after the `<h1>`** — what `content-depth.mjs` measures; today the `PageHeader` subtitle sits there.
 
 **Rendering rules:** the answer is in the HTML at first paint — not behind a tab, not client-fetched.
-`components/marketing/Faq.tsx:47` keeps every answer in the DOM but `hidden` (`display:none`) except
-the first — an **extraction risk today (N8)**: present for a parser, invisible to a renderer-based
-crawler. `/engagement-ux` moves it to `<details>/<summary>`, keeping FAQPage parity.
+The `Faq` component is native `<details>/<summary>` (N8): every answer is in the DOM at first paint,
+no client JS, FAQPage parity kept. Keep new answer blocks to the same bar.
 
 ## Gate 3 — worth citing
 

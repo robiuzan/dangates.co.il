@@ -116,8 +116,7 @@ These are correctness rules, not preferences. Getting them wrong is worse than e
 2. **Schema must match what the user sees.** A `FAQPage` question that isn't rendered on the page is a
    violation. `Offer` prices must equal the visible `priceRows`. Never mark up hidden content.
 3. **`FAQPage` only where FAQs are visible.** The homepage qualifies today because the answers ship in
-   the DOM (`components/marketing/Faq.tsx:43-51` uses `hidden`, not conditional rendering — N8 moves it
-   to `<details>` without changing this). Service pages qualify only once they render their own FAQs.
+   the DOM (the `Faq` component is native `<details>`, answers always in the DOM — N8). Service pages qualify only once they render their own FAQs.
    One Q/A pair per `FAQPage` sitewide (`content-hub`).
 4. **Don't promote an authored estimate into `Offer`.** The comment at `lib/content.ts:152-156`
    records that the per-gate price ranges are estimates; only the 150–350 ₪ visit fee is sourced, and

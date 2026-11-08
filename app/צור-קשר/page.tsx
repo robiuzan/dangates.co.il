@@ -75,7 +75,7 @@ export default function ContactPage() {
                 </a>
               </li>
               <li className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#25D366]/10 text-[#1da851]">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-whatsapp/10 text-whatsapp">
                   <MessageCircle className="h-5 w-5" aria-hidden />
                 </span>
                 <a

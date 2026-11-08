@@ -78,12 +78,10 @@ follows DOM order — correct in RTL; never reorder visually with CSS.
 
 ## FAQ answers must be in the DOM (N8)
 
-`components/marketing/Faq.tsx:47` hides closed answers with `hidden={!isOpen}` — 9 of 10 answers are
-`display:none` across the export. Find-in-page misses them, an assistant extracting the answer sees
-the question only, and the accordion is client JS for nothing. Replace with `<details>/<summary>`
-(template: `.claude/skills/engagement-ux/templates/Faq.tsx`): native keyboard support, zero JS,
-answers always in the DOM, `FAQPage` parity preserved (`schema.mjs` checks it). Keep `text-right` out
-of the rewrite — `Faq.tsx:25` is one of the three banned utilities (`text-start`).
+The `Faq` component used to hide closed answers with `hidden={!isOpen}` behind a client accordion.
+It is now native `<details>/<summary>` (template: `.claude/skills/engagement-ux/templates/Faq.tsx`):
+native keyboard support, zero JS, answers always in the DOM, `FAQPage` parity preserved
+(`schema.mjs` checks it). Keep physical alignment utilities out of it (`text-start`).
 
 ## Forms (§8.1, N1)
 

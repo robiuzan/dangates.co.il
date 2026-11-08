@@ -91,8 +91,8 @@ Landmarks, one `<h1>`, unbroken heading order (`links.mjs`). Real `<button>`/`<a
   incl. landlines, and a `/תודה/` route are §8.1–§8.3 (`/conversion-cro`).
 - `components/layout/Header.tsx:57` `aria-expanded` without `aria-controls`, no focus trap, no Escape (§11.4).
 - `components/marketing/TrustBar.tsx:11` sr-only `<dt>` repeats the visible label (§11.3).
-- `components/marketing/Faq.tsx:43` answers are `display:none` in the DOM — `<details>/<summary>`
-  (N8, `/engagement-ux`).
+- The `Faq` component is native `<details>/<summary>` (N8 closed) — keep answers in the DOM and
+  stay server-rendered.
 
 ## Schema wiring (`/schema-structured-data`)
 

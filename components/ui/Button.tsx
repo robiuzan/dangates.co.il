@@ -8,9 +8,9 @@ const base =
   "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent disabled:opacity-60 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
-  accent: "bg-accent text-accent-foreground hover:bg-accent-600",
+  accent: "bg-accent text-accent-foreground hover:bg-accent-500",
   primary: "bg-primary text-primary-foreground hover:bg-primary-500",
-  whatsapp: "bg-[#25D366] text-white hover:bg-[#1da851]",
+  whatsapp: "bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp-hover",
   outline: "border-2 border-primary text-primary hover:bg-primary hover:text-white",
 };
 

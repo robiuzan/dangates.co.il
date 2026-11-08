@@ -998,7 +998,7 @@ the first thing an agent reads about deployment. `edge.mjs` no longer warns.
 
 ### N8 — P3 · S · [NOT STARTED] FAQ answers are `display:none` in the DOM
 
-`components/marketing/Faq.tsx:43-51` renders every answer with `hidden={!isOpen}` — present in the
+The `Faq` component rendered every answer with `hidden={!isOpen}` — present in the
 DOM (so `FAQPage` parity holds) but hidden from every reader that doesn't click, and hydration JS on
 every page that renders it. `<details>/<summary>` keeps the answers in the DOM with zero JS
 (`engagement-ux`, §10.2).

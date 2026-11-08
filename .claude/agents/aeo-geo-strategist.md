@@ -66,11 +66,9 @@ context, not findings to copy.
    locations 16–17, posts 1 — an emoji line). Spec: content-standards §5, buyer vocabulary עינית /
    לוח פיקוד. Closed page by page in Phases 3–4, never by a sitewide template paragraph (that is a
    shared block `content-depth.mjs` subtracts).
-3. **Extractability — N8.** `components/marketing/Faq.tsx:47` renders answers with `hidden={!isOpen}`:
-   the text is in the DOM but `display:none` at first paint, so a fetcher that weights visible text
-   — or one that renders — may not quote the only `FAQPage` on the site. Today's extraction risk;
-   fix is a `<details>`-based FAQ (`/engagement-ux`). Check anything new against the same bar: no
-   tabs, no client-side fetch.
+3. **Extractability — N8.** The `Faq` component is native `<details>/<summary>`: every answer is in
+   the DOM and visible to a fetcher with no client JS, which was the extraction risk while it hid
+   closed answers. Check anything new against the same bar: no tabs, no client-side fetch.
 4. **Entity clarity.** Name, phone and service area are consistent across schema and copy, but
    `schema.sameAs` is `[]` — nothing off-site corroborates the entity until the GBP lands
    (business-facts §A ⏳). `schema.mjs`: `#business` is referenced but undefined on 7 services + 11
