@@ -101,8 +101,9 @@ node scripts/audit/edge.mjs   # ✅ redirectRules 72 · stubs 0 · redirectsFile
 node scripts/audit/links.mjs  # ✅ contentPages 45 · sitemapUrls 45 · brokenLinks 0 · linksToStubs 0
 ```
 
-**Still open:** the live 301s. Nothing is served until the next deploy — probe three legacy URLs with
-`curl -sSI` expecting `301` + `Location` with `?utm_source=test` intact (`deploy-dangates`).
+**Live — verified 2026-11-08** (shipped by the 2026-10-12/13 deploys): `/תל-אביב/?utm_source=test` →
+`301` to `/locations/תל-אביב/?utm_source=test`, `/contact?utm_source=test` → `301` to `/צור-קשר/` with the
+query intact, `/en/` → `301` to `/`. The query string survives, so §13.3 is closed in production too.
 
 ### 1.2 — P1 · S · [✅ DONE] The 404 page claimed to be the homepage
 
@@ -784,9 +785,13 @@ directives verbatim — HSTS `max-age=31536000` (deliberately a year rather than
 without `preload` or `includeSubDomains`), `X-Frame-Options: SAMEORIGIN`, `nosniff`,
 `Referrer-Policy: strict-origin-when-cross-origin`, the template's wider `Permissions-Policy`, the
 report-only CSP (§12.2) and `Cache-Control: immutable` for `/_next/static/*`. `edge.mjs` →
-`headersFile: true`. **Still open:** it is not live until the next deploy — then `curl -sSI` the apex
-and confirm the **whole** set appears (not only the first block), and the owner deletes the zone rule
-([owner-actions.md](owner-actions.md) §1.3).
+`headersFile: true`. **Live — verified 2026-11-08:** on `dangates.pages.dev` (no zone rule in front) the file alone emits
+the whole set — HSTS `max-age=31536000`, the report-only CSP, `X-Frame-Options`, `nosniff`,
+`Referrer-Policy` and the template's wider `Permissions-Policy` — and `/_next/static/*` carries
+`Cache-Control: immutable` on the apex, so the interior blank lines do not orphan the later blocks.
+On the apex the zone rule still wins where both speak (HSTS reads `15552000`, the narrower
+`Permissions-Policy`). **Still open (owner):** delete the zone rule once satisfied, then the apex
+shows the repo's values ([owner-actions.md](owner-actions.md) §1.3).
 
 ### 12.2 — P2 · M · [PARTIAL 2026-09-06] Report-only CSP ships; enforcing waits on observation
 
@@ -885,9 +890,9 @@ lists 18 values. The GTM tags and triggers that consume them are container-side 
 
 `location.replace()` to a bare path destroyed `gclid`/`utm` on every legacy entry point — all paid and
 campaign attribution arriving on an old URL. Fixed for free by §1.1 (a 301 preserves the query), in
-the repo since 2026-09-06. Confirm on the live response after the next deploy:
-`curl -sSI "https://dangates.co.il/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/?utm_source=test"` → `301`
-with the query intact in `Location`.
+the repo since 2026-09-06 and live — verified 2026-11-08:
+`curl -sSI "https://dangates.co.il/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/?utm_source=test"` → `301` with
+the query intact in `Location`.
 
 ### 13.4 — P2 · S · [NOT STARTED] `lead_submit` carries no dimension
 
@@ -1151,7 +1156,7 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
 1. ~~§7.1 · §3.6 · §2.1~~ — done.
 2. ~~**§1.1** real 301s via `_redirects` (also fixed §13.3, N4; retired §12.4 + N5, §1.6, §12.3/N6, N7;
    `_headers` for §12.1 and the report-only CSP for §12.2)~~ — shipped in the repo 2026-09-06, ADR 0004;
-   live after the next deploy.
+   live since the 2026-10-12/13 deploys (verified 2026-11-08).
 3. ~~**§10.1** font preloads~~ · ~~**§1.5** `og:url`~~ · ~~**§1.4** sitemap from data~~ ·
    ~~**§12.1** `_headers`~~ · ~~**§3.3** triggers to content~~ · **§3.11–3.12** ·
    ~~**§13.1** GTM to `<head>`~~ · ~~**§13.2** `data-cta`~~ — all struck items shipped in the repo

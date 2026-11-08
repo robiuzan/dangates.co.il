@@ -95,23 +95,24 @@ Repo-side numbers below are as of 2026-08-24 ([audits/2026-08-24-full.md](audits
 | 1.12 | ✅ 2026-09-06 (commit `fee7f69`) — the delivery-failure state renders a `role="alert"` block **after** the submit button, with a real WhatsApp `<a>` (no popup blocker can swallow a link), a `tel:` link and a retry relabel; strings in `leadFormErrorCopy`. `lead_error` fires from four call sites with a `reason`. §8.6 drops to PARTIAL: the container-side tag and a GA4 property to receive it are still missing                                                                                                                                    | N1 §8.6                  | ux-cro-security §2.2 row 1                               |
 | 1.13 | ✅ 2026-09-06 (commits `a0e0fe2` `13a6bdc` `cfff52f`) — `.env.example` both ways (N6/§12.3, `a0e0fe2`, `edge.mjs` → `envDocumented 1 · envUsed 1`); footer year derived at build in the `Footer` RSC (N9, `13a6bdc`); trailing slash on all six `navItems` and on the crumb hrefs, now in `crumbLabels` (N10, `cfff52f`) — 0 un-slashed internal hrefs across all 46 exported pages                                                                                                                                                                         | N6 §12.3 N9 N10          | ux-cro-security §4.6 · seo-metadata                      |
 
-**Exit — repo-side criteria all met 2026-09-06; three live criteria OPEN.** Measured after a clean
+**Exit — all criteria met: repo-side 2026-09-06, live verified 2026-11-08; one owner step OPEN (B7).** Measured after a clean
 rebuild, `npm run audit -- --scope full` exits **26** (was 37 on 2026-08-23):
 
-| Exit criterion                     | Measured 2026-09-06                                                                                                                                                        | State                   |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `edge.mjs` stubs / files / hosts   | `stubs 0` · `redirectsFile true` · `headersFile true` · `deadHostArtifacts 0` · `foreignStubs 0` (+ `redirectRules 72`)                                                    | ✅ met                  |
-| `titles.mjs` → `ogUrlMissing 0`    | `pages 45` · `ogUrlMissing 0` · `uniqueTitles 45` · `uniqueDescriptions 45`                                                                                                | ✅ met                  |
-| `cta-coverage.mjs` 0 missing       | `ctaElements 113` · `withDataCta 113` · `missingDataCta 0` · `missingByKind` all 0                                                                                         | ✅ met                  |
-| `perf.mjs` preloads · `unusedDeps` | `fontPreloads 2` · `woff2Files 6` · `unusedDeps []` · `sourceMaps 0` · `devBuildFiles 0`                                                                                   | ✅ met                  |
-| Gate with no regression            | lint ✅ · typecheck ✅ · `format:check` ✅ · build ✅ (50/50) · audit exit 26 — every per-check count at or below the 2026-08-23 baseline, none worse                      | ✅ met                  |
-| Deploy on the owner's word         | not deployed; `Israeli services sites/logs/deploys.csv` last records `2026-09-06T11:06:20, dangates.co.il, 170` — the Sprint **0** deploy, made before any Sprint 1 commit | **OPEN — owner's word** |
-| Three legacy URLs live → `301`     | unprobed; the repo change is inert until the deploy above                                                                                                                  | **OPEN**                |
-| Owner deletes the zone header rule | B7, [owner-actions.md](owner-actions.md) §1.3 — only after `_headers` is verified live                                                                                     | **OPEN — owner**        |
+| Exit criterion                     | Measured 2026-09-06                                                                                                                                                         | State            |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `edge.mjs` stubs / files / hosts   | `stubs 0` · `redirectsFile true` · `headersFile true` · `deadHostArtifacts 0` · `foreignStubs 0` (+ `redirectRules 72`)                                                     | ✅ met           |
+| `titles.mjs` → `ogUrlMissing 0`    | `pages 45` · `ogUrlMissing 0` · `uniqueTitles 45` · `uniqueDescriptions 45`                                                                                                 | ✅ met           |
+| `cta-coverage.mjs` 0 missing       | `ctaElements 113` · `withDataCta 113` · `missingDataCta 0` · `missingByKind` all 0                                                                                          | ✅ met           |
+| `perf.mjs` preloads · `unusedDeps` | `fontPreloads 2` · `woff2Files 6` · `unusedDeps []` · `sourceMaps 0` · `devBuildFiles 0`                                                                                    | ✅ met           |
+| Gate with no regression            | lint ✅ · typecheck ✅ · `format:check` ✅ · build ✅ (50/50) · audit exit 26 — every per-check count at or below the 2026-08-23 baseline, none worse                       | ✅ met           |
+| Deploy on the owner's word         | shipped: `deploys.csv` records `2026-10-12T01:28:55`, `2026-10-12T10:05:14` and `2026-10-13T09:49:38` for dangates.co.il, all after the Sprint 1 commits                    | ✅ met           |
+| Three legacy URLs live → `301`     | `/תל-אביב/?utm_source=test` → `301` with the query kept · `/contact?utm_source=test` → `301` to `/צור-קשר/` with the query kept · `/en/` → `301` to `/` (probed 2026-11-08) | ✅ met           |
+| Owner deletes the zone header rule | B7, [owner-actions.md](owner-actions.md) §1.3 — `_headers` verified live 2026-11-08, so it is now safe                                                                      | **OPEN — owner** |
 
-The three OPEN rows are one dependency chain: nothing is served until the deploy, the 301 probe
-cannot run before it, and the zone rule must not be deleted until `_headers` is confirmed live on
-`dangates.pages.dev` (which has no zone rules in front of it). Procedure: `deploy-dangates`.
+The one OPEN row is the owner's: `_headers` is now confirmed live on `dangates.pages.dev` (2026-11-08,
+the whole set plus the immutable cache line), so the zone header rule can be deleted at the owner's
+convenience — the apex then shows the repo's values (HSTS a year, the wider `Permissions-Policy`)
+instead of the zone's.
 
 ---
 
