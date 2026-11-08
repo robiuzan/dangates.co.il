@@ -1413,7 +1413,7 @@ state. Re-worded 2026-09-06: §6.1, `docs/owner-actions.md` 1.1, `docs/cloudflar
 Standing consequence: anyone verifying the crawler state by reading `robots.txt` gets a **false
 pass** in either direction — the full-UA page probe in the runbook is the only measurement.
 
-### N19 — P2 · S · [PARTIAL 2026-11-08] No skip link, and phone-first CTAs under 44px
+### N19 — P2 · S · [✅ DONE 2026-11-08] No skip link, and phone-first CTAs under 44px
 
 Filed 2026-11-08 for Sprint 3 row 3.12 (accessibility-and-i18n §2 had no backlog row for either).
 The first focusable element on a page was the header, so a keyboard user tabbed through the whole
@@ -1423,11 +1423,11 @@ chrome to reach the content; the mobile-menu toggle was 40px (`h-10 w-10`).
 a skip link to `<main id="main" tabIndex={-1}>` (label `skipLinkLabel` in `lib/content.ts`) as the
 first focusable element, before the live-kit bar and the header; the menu toggle is `h-11 w-11`
 (44px), and the hero, final-CTA, service, pricing, thank-you and mobile-menu call / WhatsApp
-buttons are `Button size="lg"`. **Still open:** the two buttons in the lead form's
-delivery-failure alert (`form-whatsapp`, `form-call`) are `size="md"` — about 40px from
-`py-2.5` + `text-sm`, derived from the classes; `a11y.mjs` does not measure target size. The header
-call button is also `md` but is hidden below `sm`, so it is never a phone target. Verified after a
-clean rebuild:
+buttons are `Button size="lg"`. **Closed the same day:** the two buttons in the lead form's
+delivery-failure alert (`form-whatsapp`, `form-call`) were `size="md"` — about 40px from
+`py-2.5` + `text-sm` — and are now `size="lg"` (`py-3.5` + `text-base`, about 52px), derived from
+the classes; `a11y.mjs` does not measure target size. The header call button is also `md` but is
+hidden below `sm`, so it is never a phone target. Verified after a clean rebuild:
 
 ```bash
 grep -o 'href="#main"[^>]*>' out/index.html | head -1   # the skip link — the first <a>/<button> in <body>

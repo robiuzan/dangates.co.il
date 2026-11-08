@@ -457,7 +457,7 @@ export function LeadForm({
               href={fallbackWhatsapp ?? whatsappHref()}
               data-cta="form-whatsapp"
               variant="whatsapp"
-              size="md"
+              size="lg"
               onClick={() =>
                 track("whatsapp_click", { cta: "form-whatsapp", placement: "form" })
               }
@@ -465,7 +465,7 @@ export function LeadForm({
               <MessageCircle className="h-4 w-4" aria-hidden />
               {leadFormErrorCopy.whatsappLabel}
             </Button>
-            <Button href={telHref} data-cta="form-call" variant="outline" size="md">
+            <Button href={telHref} data-cta="form-call" variant="outline" size="lg">
               <Phone className="h-4 w-4" aria-hidden />
               <span dir="ltr">{leadFormErrorCopy.callLabel}</span>
             </Button>

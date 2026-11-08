@@ -43,7 +43,7 @@ export default function AccessibilityPage() {
         <div className="mx-auto max-w-3xl space-y-4 text-gray-700">
           <p>
             {siteConfig.name} רואה חשיבות רבה במתן שירות שוויוני לכלל הגולשים, ופועלת
-            להנגשת האתר בהתאם לתקן הישראלי (ת״י 5568) ולהנחיות WCAG 2.0 ברמה AA.
+            להנגשת האתר בהתאם לתקן הישראלי (ת״י 5568) ולהנחיות WCAG 2.1 ברמה AA.
           </p>
           <h2 className="font-heading text-lg font-bold text-primary">מה הונגש באתר</h2>
           <ul className="list-disc space-y-1 ps-5">

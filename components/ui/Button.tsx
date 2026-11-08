@@ -5,7 +5,7 @@ type Variant = "accent" | "primary" | "whatsapp" | "outline";
 type Size = "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent disabled:opacity-60 disabled:pointer-events-none";
+  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-secondary disabled:opacity-60 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
   accent: "bg-accent text-accent-foreground hover:bg-accent-500",

@@ -21,6 +21,8 @@ import { Report, THRESHOLDS, finish, isMain, parseArgs } from "./lib/report.mjs"
 
 /** thresholds.json carries no a11y block yet; 4.5:1 is WCAG 1.4.3 (AA, normal text). */
 const MIN_CONTRAST = THRESHOLDS.a11y?.minContrast ?? 4.5;
+/** WCAG 1.4.11 — non-text contrast (focus indicators, UI component boundaries). */
+const MIN_NON_TEXT_CONTRAST = THRESHOLDS.a11y?.minNonTextContrast ?? 3;
 
 // ── local helpers (candidates for lib/pages.mjs) ─────────────────────────────
 
@@ -315,6 +317,12 @@ function contrastChecks(r) {
   }
   if (tokenPairs.size && colors.whatsapp)
     tokenPairs.set("whatsapp on white", ["whatsapp", "white"]);
+  if (!literals.length && !tokenPairs.size)
+    r.warn(
+      "contrast: no WhatsApp colour classes read from Button.tsx or MobileCtaBar.tsx",
+      "the class parser found nothing (a cn() call or template string?), so the group falls back to white on whatsapp and the hover pair is not measured",
+      "backlog §11.1",
+    );
   const whatsapp = [
     ...literals.map((l) => ["white", l]),
     ...tokenPairs.values(),
@@ -363,6 +371,39 @@ function contrastChecks(r) {
       r.fail(
         `contrast below ${MIN_CONTRAST}:1 on ${g.where}`,
         failing.join("\n"),
+        "backlog §11.1",
+      );
+  }
+  // (c) the focus indicator — SC 1.4.11 asks 3:1 against what it touches. Button draws a white
+  // offset band and then the ring: on a light page the ring meets white; on a primary or dark
+  // surface the white band meets it (with no offset, the ring itself does).
+  const base = button.match(/const base\s*=\s*"([^"]*)"/)?.[1] ?? "";
+  const ringTok = base.match(/focus-visible:ring-(?!offset-|\d)([\w-]+)/)?.[1];
+  const hasOffset = /focus-visible:ring-offset-\d/.test(base);
+  if (!ringTok || !hex(ringTok)) {
+    r.warn(
+      "focus ring: no ring colour token read from Button.tsx `base`",
+      "the 3:1 focus-indicator pair is not measured",
+      "backlog §11.1",
+    );
+  } else {
+    const ringPairs = [
+      [ringTok, "white", "ring on a light page"],
+      hasOffset
+        ? ["white", "primary", "white offset band on a primary surface"]
+        : [ringTok, "primary", "ring on a primary surface"],
+    ];
+    const failingRing = [];
+    for (const [fgName, bgName, label] of ringPairs) {
+      const ratio = contrast(hex(fgName), hex(bgName));
+      ratios[`focus: ${fgName} on ${bgName}`] = ratio;
+      if (ratio < MIN_NON_TEXT_CONTRAST)
+        failingRing.push(`${label}: ${fgName} on ${bgName} = ${ratio}:1`);
+    }
+    if (failingRing.length)
+      r.fail(
+        `focus indicator below ${MIN_NON_TEXT_CONTRAST}:1 (WCAG 1.4.11) in Button.tsx`,
+        failingRing.join("\n"),
         "backlog §11.1",
       );
   }
