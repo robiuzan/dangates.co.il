@@ -371,6 +371,7 @@ export const crumbLabels = {
   home: "בית",
   services: "השירותים שלנו",
   areas: "אזורי שירות",
+  blog: "בלוג",
   about: "אודות",
   contact: "צור קשר",
 } as const;

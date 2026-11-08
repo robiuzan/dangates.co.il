@@ -3,9 +3,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { posts, getPost, type PostBlock } from "@/lib/posts";
-import { manifest, siteConfig } from "@/lib/site-config";
+import { manifest } from "@/lib/site-config";
+import { crumbLabels } from "@/lib/content";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { jsonLdScript } from "@ishub/site-kit/seo";
+import { articleJsonLd, businessNode } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -84,35 +85,30 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
   const others = posts.filter((p) => p.slug !== post.slug).slice(0, 4);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.excerpt,
-    datePublished: post.date,
-    dateModified: post.date,
-    inLanguage: "he-IL",
-    mainEntityOfPage: `${manifest.url}/blog/${post.slug}/`,
-    author: { "@type": "Organization", name: siteConfig.name, url: manifest.url },
-    publisher: {
-      "@type": manifest.schema?.type ?? "Organization",
-      "@id": `${manifest.url}/#business`,
-      name: siteConfig.name,
-    },
-  };
+  // Handed to PageHeader, which renders them with the page's breadcrumb as ONE @graph. The
+  // business node rides along because the article's `author` and `publisher` point at it.
+  const nodes = [
+    businessNode(manifest),
+    articleJsonLd(manifest, {
+      type: "BlogPosting",
+      path: `/blog/${post.slug}/`,
+      headline: post.title,
+      description: post.excerpt,
+      datePublished: post.date,
+      dateModified: post.updated ?? post.date,
+      isPartOf: { path: "/blog/", name: crumbLabels.blog },
+    }),
+  ];
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
-      />
       <PageHeader
         title={post.title}
         subtitle={DATE_FMT.format(new Date(post.date))}
+        nodes={nodes}
         crumbs={[
-          { label: "בית", href: "/" },
-          { label: "בלוג", href: "/blog" },
+          { label: crumbLabels.home, href: "/" },
+          { label: crumbLabels.blog, href: "/blog" },
           { label: post.title, href: `/blog/${post.slug}/` },
         ]}
       />

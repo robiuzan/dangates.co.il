@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { manifest } from "@/lib/site-config";
-import { breadcrumbJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
+import { jsonLdScript } from "@ishub/site-kit/seo";
+import { breadcrumbNode, graph, type JsonLd } from "@/lib/jsonld";
 import { Container } from "@/components/ui/Container";
 
 export interface Crumb {
@@ -16,48 +17,38 @@ export interface Crumb {
 }
 
 /**
- * Normalises a crumb href into the exact string the page's canonical uses, so the
- * `BreadcrumbList` `item` byte-matches it:
- *   - trailing slash, because the export runs with `trailingSlash: true`
- *   - percent-encoded, because canonicals and sitemap <loc> are (app/sitemap.ts does the same)
- */
-function schemaPath(href: string): string {
-  return encodeURI(href.endsWith("/") ? href : `${href}/`);
-}
-
-/**
  * Inner-page hero band: breadcrumb + title + optional subtitle.
  *
- * Also emits the page's `BreadcrumbList` JSON-LD, built from the SAME `crumbs` array it renders.
- * That coupling is deliberate: the visible trail and the structured data cannot drift, and every
- * page using this component gets breadcrumb markup for free (44 routes — all but `/` and `/404`).
- *
- * NOTE the kit's `breadcrumbJsonLd` takes `{ name, path }`, NOT `{ name, url }` and NOT the
- * `Crumb` shape. Passing `Crumb[]` through unmapped throws at build time, and mapping `href` to
- * the wrong key silently emits `https://dangates.co.il/undefined`.
+ * Also emits the page's JSON-LD: ONE script holding ONE `@graph` — the `nodes` the page hands in
+ * (business, Service, BlogPosting …) plus the `BreadcrumbList`, built from the SAME `crumbs` array
+ * this component renders. That coupling is deliberate: the visible trail and the structured data
+ * cannot drift, and a page never builds its own breadcrumb or its own script — so it can never carry
+ * two (44 routes — all but `/` and `/404`). `lib/jsonld.ts` `breadcrumbNode` does the `{ label, href }`
+ * → `{ name, path }` mapping and the trailing-slash / percent-encoding, so the `item` URLs byte-match
+ * the canonical.
  */
 export function PageHeader({
   title,
   subtitle,
   crumbs,
+  nodes = [],
 }: {
   title: string;
   subtitle?: string;
   crumbs?: Crumb[];
+  /** Page-specific JSON-LD nodes. Site-local, so no `@context` of their own. */
+  nodes?: JsonLd[];
 }) {
   const hasCrumbs = crumbs && crumbs.length > 0;
 
   return (
     <div className="bg-primary text-white">
-      {hasCrumbs && (
+      {(hasCrumbs || nodes.length > 0) && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: jsonLdScript(
-              breadcrumbJsonLd(
-                manifest,
-                crumbs.map((c) => ({ name: c.label, path: schemaPath(c.href) })),
-              ),
+              graph(...nodes, hasCrumbs && breadcrumbNode(manifest, crumbs)),
             ),
           }}
         />

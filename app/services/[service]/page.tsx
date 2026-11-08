@@ -20,7 +20,7 @@ import {
   crumbLabels,
 } from "@/lib/content";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { serviceJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
+import { businessNode, serviceNode } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -57,21 +57,23 @@ export default function ServicePage({ params }: { params: { service: string } })
 
   const others = serviceCards.filter((c) => c.slug !== card.slug).slice(0, 4);
   const triggers = serviceTriggers[card.slug];
-  const jsonLd = serviceJsonLd(manifest, {
-    name: card.name,
-    description: card.description,
-    slug: card.slug,
-  });
+  // Handed to PageHeader, which renders them with the page's breadcrumb as ONE @graph. The
+  // business node rides along because the Service's `provider` points at it.
+  const nodes = [
+    businessNode(manifest),
+    serviceNode(manifest, {
+      name: card.name,
+      description: card.description,
+      slug: card.slug,
+    }),
+  ];
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
-      />
       <PageHeader
         title={card.name}
         subtitle={card.tagline}
+        nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
           { label: crumbLabels.services, href: "/שירותים/" },

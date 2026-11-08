@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { faqs, homeMetaDescription, homeFaqHeading } from "@/lib/content";
-import { localBusinessJsonLd, faqJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
+import { faqJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
+import { businessNode, graph, websiteJsonLd } from "@/lib/jsonld";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Hero } from "@/components/marketing/Hero";
@@ -29,8 +30,13 @@ export const metadata: Metadata = {
   openGraph: { ...ogBase, url: routeUrl(""), description },
 };
 
-// Site-wide LocalBusiness + FAQ JSON-LD — from the shared @ishub/site-kit builder (manifest-driven).
-const jsonLd = [localBusinessJsonLd(manifest), faqJsonLd([...faqs])];
+// One @graph: the business, the WebSite that names it as publisher, and the visible FAQ. The
+// homepage has no PageHeader, so it renders the single script itself (lib/jsonld.ts).
+const jsonLd = graph(
+  businessNode(manifest),
+  websiteJsonLd(manifest),
+  faqJsonLd([...faqs]),
+);
 
 export default function HomePage() {
   return (

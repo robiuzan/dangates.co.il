@@ -15,9 +15,13 @@ import {
   whatsappHref as kitWhatsappHref,
   type SiteManifest,
 } from "@ishub/site-kit";
+import { parseManifest } from "@/lib/manifest";
 
-/** Normalized per-site manifest (single source of truth for NAP/identity/schema). */
-export const manifest = siteManifest as unknown as SiteManifest;
+/**
+ * Normalized per-site manifest (single source of truth for NAP/identity/schema). Narrowed from the
+ * synced JSON at the boundary — a missing or mistyped field fails the build (N16), no cast.
+ */
+export const manifest: SiteManifest = parseManifest(siteManifest);
 
 export const siteConfig = {
   name: manifest.brandName ?? "",
@@ -34,8 +38,7 @@ export const siteConfig = {
   whatsapp: manifest.contact.whatsappE164.replace(/\D/g, ""),
   email: manifest.contact.email,
   /** Web3Forms PUBLIC access key (per-site UUID). Delivery inbox = email. null until provisioned. */
-  formAccessKey:
-    (manifest.contact as { formAccessKey?: string | null }).formAccessKey ?? null,
+  formAccessKey: manifest.contact.formAccessKey ?? null,
   serviceArea: manifest.schema.areaServed ?? "",
 
   /** Business hours (live-site audit). */
