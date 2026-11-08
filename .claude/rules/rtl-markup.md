@@ -14,10 +14,11 @@ text-right`. A genuinely direction-agnostic case must carry the literal comment
 - Latin/LTR runs inside Hebrew (phone, email, URL, price) get `dir="ltr"` and the `.ltr` helper.
 - **No hex colour literals in markup.** Use the `@theme` tokens from `app/globals.css`: `primary`,
   `secondary`, `accent`, `accent-foreground`; `accent-500` (`#d9b400`) is the AA-safe hover for
-  gold surfaces and `accent-600+` the AA-safe text-on-white values. WhatsApp green is **not** a
-  token yet — add one in `globals.css` rather than inlining `#25D366`.
+  gold surfaces and `accent-600+` the AA-safe text-on-white values. WhatsApp green is the
+  `whatsapp` / `whatsapp-hover` / `whatsapp-foreground` token set (since Sprint 3, 2026-11-08) —
+  never inline a green literal. `rtl-lint.mjs` reads `hexLiterals 0` today; keep it there.
 - RSC by default. `"use client"` only for state, effects or browser APIs, on the smallest leaf.
-  Currently client: `Header`, `Faq`, `LeadForm`, `Reveal`.
+  Currently client (3, as of 2026-11-08): `LeadForm`, `MobileMenu`, `Reveal`.
 - Every CTA anchor/button (`tel:`, `wa.me`, `mailto:`, submit) carries a `data-cta` attribute
   (`scripts/audit/cta-coverage.mjs` fails otherwise).
 - Copy never lives in JSX — import it from `lib/content.ts`; business facts from `lib/site-config.ts`.

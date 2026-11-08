@@ -1,6 +1,6 @@
 ---
 name: schema-auditor
-description: Read-only validation of the JSON-LD graph in the built HTML against docs/schema-graph.md — the GeneralContractor node for an address-less service-area business, the 18 location and 8 static pages that carry only BreadcrumbList, the #business @id referenced on 18 pages and defined on one, the missing WebSite node, raw-Hebrew Service.url and BlogPosting.mainEntityOfPage values, the array-not-@graph homepage, FAQPage parity with visible FAQs, and the keys that must stay absent until sourced (Review, AggregateRating, Offer, Person author, address, foundingDate). Invoke with "schema audit", "validate the JSON-LD", or "check structured data". Reports only; never edits or fabricates.
+description: Read-only validation of the JSON-LD graph in the built HTML against docs/schema-graph.md — the GeneralContractor node for an address-less service-area business, one @graph per page from lib/jsonld.ts (Sprint 2, 2026-11: schema.mjs 0 — the business node defined wherever referenced, WebSite on /, Service on 7 services and 18 locations, page-type nodes on the statics, every URL percent-encoded) as a regression watch, FAQPage parity with visible FAQs, and the keys that must stay absent until sourced (Review, AggregateRating, Offer, Person author, address, foundingDate). Invoke with "schema audit", "validate the JSON-LD", or "check structured data". Reports only; never edits or fabricates.
 model: sonnet
 tools: Read, Grep, Glob, Bash, WebFetch
 ---
@@ -27,37 +27,35 @@ field fixes it, and what would be wrong to "fix". Quote today's numbers only as 
 
 - `docs/schema-graph.md` is the acceptance bar — §1 `@id` scheme, §2 node per route type, §3 the
   business node, §4 gating rules, §5 location pages, §6 posts and guides, §7 how `PageHeader` emits
-  the breadcrumb, §8 the planned `lib/jsonld.ts`, §9 verification. Cite the section in every finding.
+  the breadcrumb, §8 the `lib/jsonld.ts` builders, §9 verification. Cite the section in every finding.
 - `docs/optimization-backlog.md` §4 for ids and status; `docs/business-facts.md` §A–§D for what is
   blocked on the owner; `/schema-structured-data` for the recipes an engineer will implement.
 - `site.config.json` `schema.*` / `contact.*` — the values the graph must match. Synced from the
   roster; never propose editing it directly.
-- The emitters: `app/page.tsx:33` (business + FAQ as an array), `app/services/[service]/page.tsx:55`
-  (`serviceJsonLd`), `app/blog/[slug]/page.tsx:79-94` (inline `BlogPosting`),
-  `components/layout/PageHeader.tsx:52-64` (the breadcrumb on every nested route), and
-  `components/marketing/Reviews.tsx:41` (the review gate).
+- The emitters (since Sprint 2, 2026-11-08): `lib/jsonld.ts` builds every node; `app/page.tsx`
+  renders the homepage's one `@graph` (business + `WebSite` + `FAQPage`) directly;
+  `components/layout/PageHeader.tsx` renders every other page's one `@graph` from the `nodes` the
+  route hands it plus the breadcrumb; and `components/marketing/Reviews.tsx` is the review gate
+  (renders nothing while `reviews` is empty).
 
-## The graph as it stands (as of 2026-08-23 — re-measure)
+## The graph as it stands (as of 2026-11-08 — re-measure)
 
-Coverage is closed: 45/45 content pages emit JSON-LD, 44 emit `BreadcrumbList`. **Substance is the
-gap.** `schema.mjs` reports, in severity order:
+`schema.mjs` → **0 failures, 0 warnings** after a clean rebuild: `pagesWithJsonLd 45`,
+`danglingIds 0`, `rawHebrewUrls 0`, `faqPages 1`; `links.mjs` → `breadcrumbPages 44`. Sprint 2
+(`02a3144` `d8edb28`, in the repo — not deployed yet) closed the eight gaps the 2026-08-23 run listed:
+locations and statics with only a breadcrumb (§4.2), the dangling `#business` (§4.4), no `WebSite`
+(§4.9), raw-Hebrew URLs (§4.7, N2), no `image`/`logo` (§4.5), the homepage array and the split
+scripts (§4.6), and the marketing-phrase `areaServed` and slash-less business `url` (§4.8, §4.12).
+Your job is now a **regression watch** plus what is still open:
 
-1. **Location pages emit only `BreadcrumbList`** — all 18, plus the 8 static pages (`/שירותים/`,
-   `/איזורי-שירות/`, `/blog/`, `/מחירון/`, `/אודות/`, `/צור-קשר/`, the two legal pages). No `Service`,
-   no `areaServed`, no page-type node (schema-graph §2, §5; backlog §4.2). Largest gap by page count.
-2. **Dangling `#business`** — `provider` on 7 services and `publisher` on 11 posts reference
-   `https://dangates.co.il/#business`, which is defined only on `/` (schema-graph §4.5; backlog §4.4).
-3. **No `WebSite` node** anywhere (schema-graph §1, §8; backlog §4.9).
-4. **Raw Hebrew in URL values** — `Service.url` ×7 (the kit default) and `BlogPosting.mainEntityOfPage`
-   ×11 (`app/blog/[slug]/page.tsx:87`); the canonical and the breadcrumb `item`s are percent-escaped,
-   so these never byte-match (schema-graph §1; backlog §4.7, N2).
-5. **No `image` / `logo`** on the business node — `public/dangates-logo.png` and the manifest OG card
-   exist and are unreferenced (schema-graph §3; backlog §4.5).
-6. **Homepage is a JSON array of two `@context` objects**, not one `@graph`; services and posts split
-   across two `<script>` blocks (schema-graph §4.6; backlog §4.6).
-7. **`areaServed` is the marketing phrase** `מרכז הארץ ופריסה ארצית` typed `AdministrativeArea` on 8
-   nodes; the business `url` lacks the trailing slash (schema-graph §5; backlog §4.8, §4.12).
-8. **`FAQPage` on 1 of 45 pages** — correct today: only the homepage renders FAQs (backlog §4.13).
+1. **One script, one `@graph` per page; `#business` defined wherever referenced; every URL
+   encoded.** Any regression is a `schema.mjs` failure — report it by builder.
+2. **`FAQPage` on 1 of 45 pages** — correct today: only the homepage renders FAQs (backlog §4.13);
+   service and location FAQs come with their copy (Sprints 5–6), one Q/A per `FAQPage` sitewide.
+3. **`sameAs` empty** until the GBP exists (§5.1, B3); `knowsAbout` limited to what the site covers.
+4. **Regions typed by a slug set** in `lib/jsonld.ts` until `locations` gains `kind` (Phase 3) — check
+   קריות, שרון, צפון, דרום still emit `AdministrativeArea`.
+5. **Not yet run:** the Rich Results Test on one URL per route type — it needs the deployed site.
 
 **Correctly absent — verify they stay absent, and never file them as gaps:** `Review` /
 `AggregateRating` (gated in code — `lib/content.ts:242` `reviews = []`, `:248` `REVIEW_SOURCE_URL =
@@ -75,24 +73,26 @@ finding), `Offer` / `OfferCatalog` on `/מחירון/` (8 of 9 prices are author
    `LocalBusiness`, never the inherited `Product` the rebuild corrected. `@id` = `{url}/#business`.
 3. **NAP parity and the missing address.** `name`, `telephone`, `email` match the manifest and the
    visible header/footer. Confirm no `PostalAddress` has been invented; coverage is `areaServed`.
-4. **Breadcrumbs.** `PageHeader.tsx:57-59` maps the visible `crumbs: { label, href }[]` to the kit's
-   `{ name, path }` through `schemaPath()` (`:24-25`, trailing slash + `encodeURI`). Check the `item`
-   URLs byte-match the canonical and the names match the rendered trail. **Never instruct adding a
-   second `BreadcrumbList`** — every nested route already has one; Phase 2 folds it into the page
-   `@graph` and removes the `PageHeader` script in the same change (schema-graph §7).
+4. **Breadcrumbs.** `breadcrumbNode()` in `lib/jsonld.ts` maps the visible `crumbs: { label, href }[]`
+   to the kit's `{ name, path }` through `schemaPath()` (trailing slash + `encodeURI`), and `PageHeader`
+   renders it inside the page's one `@graph`. Check the `item` URLs byte-match the canonical and the
+   names match the rendered trail. **Never instruct adding a second `BreadcrumbList`** or a second
+   script beside `PageHeader` (schema-graph §7).
 5. **Service nodes.** Services: `Service` → `provider #business` (node must exist on the page), encoded
    `url`. Locations: `Service` with a **local** `areaServed` — `City` for cities, `AdministrativeArea`
    for קריות, שרון, צפון, דרום; typing a region as a `City` is a factual error (schema-graph §5).
-   Neither `kind` nor `prefixed` exists on `locations` yet (`{ slug, name }` only — Phase 3).
-6. **BlogPosting.** `dateModified` hardcoded to `post.date` (`app/blog/[slug]/page.tsx:85`, ignores
-   `post.updated`), `author` is the `Organization` (`:88` — stays so), `publisher` `@id` dangling
-   (`:91`), no `@id` / `isPartOf` (schema-graph §6).
-7. **FAQPage parity.** Each Q/A marked up is visible inside `<main>` (`app/layout.tsx:73`) and
-   appears in exactly one `FAQPage` sitewide. The homepage qualifies because `Faq.tsx:43-51` uses
-   `hidden`, not conditional rendering (N8 moves it to `<details>` without changing that).
+   Neither `kind` nor `prefixed` exists on `locations` yet (`{ slug, name }` only — Phase 3), so
+   `placeNode()` names the four region slugs itself; check it still does.
+6. **BlogPosting.** From `articleJsonLd()` since `02a3144`: `@id` `#article`, encoded `url` and
+   `mainEntityOfPage`, `dateModified` from `post.updated ?? post.date`, `isPartOf` a `Blog` node,
+   `author` and `publisher` → `#business` (the `Organization` — stays so), the business node on the
+   page (schema-graph §6). Flag any regression.
+7. **FAQPage parity.** Each Q/A marked up is visible inside `<main>` (`<main id="main">` in `app/layout.tsx`) and
+   appears in exactly one `FAQPage` sitewide. The homepage qualifies because `Faq` renders every answer in the DOM —
+   native `<details>` since `7cfcf4c` (N8 ✅).
 8. **Business fields and what blocks each** — route to `docs/business-facts.md` (§A GBP `sameAs`
-   coming, §B identity, §D prices, §E coverage). Unblocked and missing: `logo`, `image`,
-   `hasOfferCatalog` by `@id` without prices, `knowsAbout` (schema-graph §3).
+   coming, §B identity, §D prices, §E coverage). Present since Sprint 2: `logo`, `image`,
+   `hasOfferCatalog` naming the 7 services with no `Offer`, `knowsAbout` on `/אודות/` (schema-graph §3).
 
 ## Method
 
@@ -100,11 +100,12 @@ finding), `Offer` / `OfferCatalog` on `/מחירון/` (8 of 9 prices are author
 2. Per route type, diff the emitted node set against schema-graph §2 and name what is absent.
 3. Diff values against `site.config.json` and the visible text on the same page.
 4. `grep -rl 'aggregateRating\|"@type": *"Review"' out --include=index.html` must print nothing; also
-   grep `"author"` and `PostalAddress` and `Offer` — all must be absent (schema-graph §9).
+   grep `"@type":"Person"`, `PostalAddress` and `Offer` — all must be absent (schema-graph §9). Do
+   not grep a bare `"author"`: all 11 posts carry `author` → `#business` (the `Organization`) by design.
 5. Name the fix by builder: kit (`localBusinessJsonLd`, `serviceJsonLd`, `faqJsonLd`,
-   `breadcrumbJsonLd`) or the Phase 2 `lib/jsonld.ts` (`businessNode`, `webSiteNode`,
-   `locationServiceJsonLd`, `articleJsonLd`, `itemListJsonLd`, `graph` — schema-graph §8; recipes in
-   `/schema-structured-data`). `lib/jsonld.ts` **does not exist yet**; say so rather than citing it.
+   `breadcrumbJsonLd`) or `lib/jsonld.ts` (`businessNode`, `websiteJsonLd`, `serviceNode`,
+   `locationServiceJsonLd`, `articleJsonLd`, `itemListJsonLd`, `pageNode`, `breadcrumbNode`, `graph` —
+   schema-graph §8; built in Sprint 2, recipes in `/schema-structured-data`).
 6. Recommend a Rich Results Test on one URL per route type; the missing-`address` warning is the
    documented trade-off.
 

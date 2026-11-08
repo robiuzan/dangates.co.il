@@ -23,10 +23,12 @@ node scripts/audit/run-all.mjs --scope cro      # data-cta coverage, pages with 
 node scripts/audit/run-all.mjs --scope perf     # client components, unused deps, JS budget
 ```
 
-As of 2026-09-06: 9 of 10 FAQ answers are still `display:none` in the export (`a11y.mjs` → N8); 4
-`"use client"` components (`LeadForm`, `Header`, `Faq`, `Reveal`); no TOC anywhere; no engagement
-event pushed anywhere. Closed since: every CTA carries `data-cta` (`cta-coverage.mjs` → 0 missing,
-§13.2) and `framer-motion` is uninstalled (§10.3).
+As of 2026-11-08 (clean rebuild, repo): no TOC anywhere; no engagement event pushed anywhere; 3
+`"use client"` components (`LeadForm`, `MobileMenu`, `Reveal`). Closed since: the FAQ is native
+`<details>` with every answer in the DOM (N8, `7cfcf4c`, which took `Faq` out of the client set),
+every CTA carries `data-cta` (`cta-coverage.mjs` → 0 missing, §13.2) and `framer-motion` is
+uninstalled (§10.3). The form events (`form_start`, `form_submit_attempt`, `lead_submit` with
+dimensions) shipped in `68a4a7f`; the six engagement events below did not.
 `cro-engagement-auditor` reads the same scripts — cite its report, not these numbers.
 
 ## TOC — build-time, for pages past ~900 words
@@ -47,19 +49,16 @@ event pushed anywhere. Closed since: every CTA carries `data-cta` (`cta-coverage
 - **RTL:** logical utilities only (`ps-*`, `ms-*`, `start-*`) — `rules/rtl-markup.md` lints the file.
 - Links are `#id` anchors, so `toc_click` is the only event they need (see below).
 
-## FAQ — `<details>`/`<summary>`, not a client accordion
+## FAQ — `<details>`/`<summary>`, not a client accordion (done 2026-11-08)
 
-`components/marketing/Faq.tsx` is `"use client"`, holds `useState`, and renders every answer with
-`hidden={!isOpen}` (`Faq.tsx:43-51`). The answers are in the DOM (so `FAQPage` parity holds — the
-kit's `faqJsonLd` on `app/page.tsx:33` and the visible text match) but `display:none` to every reader
-who does not click, to find-in-page, and to crawlers that honour visibility. It also ships hydration
-JS on every page that renders it, and its button still carries `text-right` (`Faq.tsx:25`).
-
-Replace it with `templates/Faq.tsx`: a server component, one `<details>` per item, the question in
-`<summary>` inside the `<h3>`, the answer as a `<div>` child. `open` on the first item preserves
-today's default-open behaviour. `name="faq"` makes it an exclusive accordion where supported and
-degrades to independent disclosures elsewhere. `a11y.mjs` clears the N8 warning the moment the file
-contains both `<details` and `<summary`; `perf.mjs` drops the client-component count to 3.
+`components/marketing/Faq.tsx` was `"use client"` with `useState`, rendering every answer with
+`hidden={!isOpen}` — in the DOM (so `FAQPage` parity held) but `display:none` to every reader who
+did not click, to find-in-page and to crawlers that honour visibility, plus hydration JS on every page
+that rendered it. Since `7cfcf4c` it follows `templates/Faq.tsx`: a server component, one `<details>`
+per item, the `<h3>` question inside `<summary>`, the answer as a `<div>` child, `open` on the first
+item, `name="faq"` for an exclusive accordion where supported (independent disclosures elsewhere).
+`a11y.mjs` no longer warns (N8) and `perf.mjs` counts 3 client components. Any new FAQ surface uses
+the same shape.
 
 Keep the `FaqItem` shape (`{ q, a }`) — `faqs` in `lib/content.ts` and `faqJsonLd` consume it.
 Per-service FAQs arrive with Phase 3 (`new-service`); one Q/A may appear in exactly one `FAQPage`
@@ -149,7 +148,7 @@ The sticky bar stays (`components/layout/MobileCtaBar.tsx`) — add nothing else
 double-stacks and eats a third of the screen. (The live-kit's announcement bar is in flow and
 scrolls away, and its card is a short-lived modal above the sticky bar — neither is a second fixed
 element; CLAUDE.md §14.) Tap targets 44 px (house bar, `/responsive-accessibility`);
-the header menu button is a 40 px box at `components/layout/Header.tsx:55`. A mobile TOC is
+the header menu button is 44 px (`h-11 w-11` in `MobileMenu`) since `60ce109`. A mobile TOC is
 collapsed by default. Test at 360 px wide with the bar visible.
 
 ## Measure
@@ -173,9 +172,9 @@ collapsed by default. Test at 360 px wide with the bar visible.
 
 ## Gotchas
 
-- **The `Reveal` wrapper breaks list semantics.** `components/marketing/Process.tsx:13` puts a
-  `<Reveal>` `<div>` between `<ol>` and each `<li>`; screen readers stop announcing a list
-  (backlog §11.2, `a11y.mjs`). Animate the `<li>` itself or drop the wrapper — never wrap list
+- **The `Reveal` wrapper breaks list semantics.** `Process` put a `<Reveal>` `<div>` between `<ol>`
+  and each `<li>` until `7cfcf4c` (2026-11-08); screen readers stopped announcing a list (backlog
+  §11.2 ✅, `a11y.mjs` fails on a recurrence). Animate the `<li>` itself or drop the wrapper — never wrap list
   items, table rows or `<details>` in a block element.
 - **`framer-motion` was a dependency imported nowhere** and was uninstalled on 2026-09-06
   (`perf.mjs` → `unusedDeps: []`, §10.3). Do not reinstall it: `components/ui/Reveal.tsx` already

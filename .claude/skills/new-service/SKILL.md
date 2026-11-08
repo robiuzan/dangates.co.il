@@ -96,10 +96,10 @@ not pages. What creates depth (and what a competitor's page usually lacks):
 7. **Metadata** — keyword-map §3: `title: card.name` (`app/services/[service]/page.tsx:38`) is
    already the bare subject; the layout template appends the brand and the doubled suffix is
    **fixed** (0 in `out/`). Keep it bare.
-8. **Schema** — today: `serviceJsonLd` (kit) plus `BreadcrumbList` from `PageHeader` — two scripts,
-   a `Service.url` in raw Hebrew and a `provider` → `#business` that is defined nowhere on the page
-   (backlog §4.4, §4.7). Phase 2 replaces both with one `@graph` from `lib/jsonld.ts` and adds
-   `FAQPage` from `serviceDepth.faqs`. Never add a second `BreadcrumbList`.
+8. **Schema** — since Sprint 2 (2026-11-08) a service page emits one `@graph` through `PageHeader`:
+   the business node, `serviceNode()` from `lib/jsonld.ts` (encoded `url`, `@id` `#service`,
+   `provider` → `#business`) and the breadcrumb (backlog §4.4, §4.7 ✅). Still to add with the depth
+   copy: `FAQPage` from `serviceDepth.faqs`, one Q/A per `FAQPage` sitewide. Never add a second `BreadcrumbList`.
 9. **Gate** — `npm run gate`. Proof: `content-depth.mjs` → `service.belowFloor: 0`, delta ≥ 120,
    no shared-block warning naming this page; `links.mjs` → `relatedServiceTargets` = 7 once all
    seven declare relevance; `schema.mjs`, `claims-grep.mjs` → no new failure.
@@ -108,8 +108,7 @@ not pages. What creates depth (and what a competitor's page usually lacks):
 ## What follows automatically
 
 `generateStaticParams` · `ServicesGrid` on `/` and `/שירותים/` · the footer service column
-(`components/layout/Footer.tsx:59`) · the `LeadForm` service `<select>`
-(`components/forms/LeadForm.tsx:165`) · `app/sitemap.ts` with the entry's own `updated`.
+(`Footer`) · the `LeadForm` service `<select>` · `app/sitemap.ts` with the entry's own `updated`.
 
 ## Checklist
 

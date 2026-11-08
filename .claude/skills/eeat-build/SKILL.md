@@ -85,14 +85,16 @@ them; "yes, in these cities" → the wording lives on those location pages only 
 
 **4. Coverage (row §E "Is פריסה ארצית true?").** Copy names מרכז הארץ and the 18 published areas;
 "פריסה ארצית" comes out of the copy and stays a roster question for `schema.areaServed`
-(`site.config.json:32`). Phase 2's `businessNode` (`/schema-structured-data`) replaces `areaServed`
-with the 18 real places anyway; the phrase then survives only inside `shortPitch` — step 1.
+(`site.config.json:32`). Since `d8edb28` (2026-11-08) `businessNode` (`/schema-structured-data`) emits the 18 real
+places as `areaServed` instead, and uses the tagline as `description`; the phrase survives only in
+the roster and inside `shortPitch` — step 1.
 
 **5. `lib/authors.ts` — an empty registry with a data-only path (§7.4 · row §B).** Copy
 `c:/Users/robiu/antigravity/Projects/galbath.co.il/lib/authors.ts` and retarget its header: brand
 name is not an author (never put "דן שערים חשמליים" in it — the business is already `publisher` →
-`#business`), the row is business-facts §B, the consumer is `articleJsonLd` in `lib/jsonld.ts`
-(Phase 2). The shape:
+`#business`), the row is business-facts §B, the consumer is `articleJsonLd` in `lib/jsonld.ts`.
+**Done 2026-11-08** (`d8edb28`, §7.4): `lib/authors.ts` exists with exactly this shape and an empty
+array. The shape:
 
 ```ts
 export interface Author {
@@ -139,10 +141,10 @@ Schema: `pageNode(m, "AboutPage", …)` + `businessNode(m)` (which carries `know
 types and the standard, **standards, never credentials**) in one `@graph`, via `/schema-structured-data`.
 No `Person`, no `founder`, no `employee`. `schema-auditor` checks it.
 
-**7. `logo` + `image` on `#business` (backlog §4.5).** `public/dangates-logo.png` is unreferenced and
-the header is text (`components/layout/Header.tsx:23`). `businessNode` passes `logo: "/dangates-logo.png"`
-and `image` = the manifest OG card (`ogImageMeta(m.images)?.[0]?.url`); `schema.mjs:217` warns while
-both are missing. The header `<img>` with a Hebrew `alt` is the first `/site-images` task.
+**7. `logo` + `image` on `#business` (backlog §4.5 ✅ 2026-11-08, `02a3144`).** `businessNode` passes
+`logo: "/dangates-logo.png"` and `image` = the manifest OG card (`ogImageMeta(m.images)?.[0]?.url`);
+`schema.mjs` no longer warns. The header is still text (the home `<Link>` in
+`components/layout/Header.tsx`). The header `<img>` with a Hebrew `alt` is the first `/site-images` task.
 
 **8. `sameAs` — roster only (row §A ⏳).** Empty today (`site.config.json:45`). When the GBP URL
 arrives it goes into the roster `schema.sameAs`, then sync; the kit emits it (`index.ts:113`). Never

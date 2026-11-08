@@ -1,7 +1,7 @@
 # Performance guidelines — Core Web Vitals budgets for a text-only static export
 
 > **Layer:** standards. This file decides the byte budgets a build must meet, the Core Web Vitals
-> the live site is held to, and which of the four client components earn their hydration. The
+> the live site is held to, and which of the three client components earn their hydration. The
 > `performance-web-vitals` skill is the how-to (`site-images` for the day photos land); the
 > `perf-a11y-auditor` agent audits against this file; `scripts/audit/perf.mjs` measures it and
 > `edge.mjs` covers output hygiene and the headers file. Reads with:
@@ -91,7 +91,7 @@ an owner toggle nobody has flipped (§6.2 below), so the only numbers are lab ru
 | Metric                            | Target   | Hard fail | Primary lever on this site                                       |
 | --------------------------------- | -------- | --------- | ---------------------------------------------------------------- |
 | **LCP** Largest Contentful Paint  | < 2.0 s  | > 2.5 s   | Rubik on the critical path — the missing preload (§4 below)      |
-| **INP** Interaction to Next Paint | < 150 ms | > 200 ms  | Hydration JS from the four client components (§2 below)          |
+| **INP** Interaction to Next Paint | < 150 ms | > 200 ms  | Hydration JS from the three client components (§2 below)         |
 | **CLS** Cumulative Layout Shift   | < 0.05   | > 0.1     | Font swap; the sticky bar's spacer; image boxes when photos land |
 | **TTFB**                          | < 400 ms | > 800 ms  | Static HTML on Cloudflare's edge — already the case (§5 below)   |
 
@@ -112,16 +112,17 @@ LCP path** and §10.1 is the highest-value performance change available; as of 2
 
 ## 2. JavaScript budget — INP
 
-751 kB across 29 chunks in `out/` as of 2026-08-24; the 11 chunks `/` references weigh 154,682
-bytes gzipped (measured 2026-09-06) — for a site whose interactive surface is a menu toggle, an FAQ
-and a lead form. The four `"use client"` files:
+`perf.mjs` → `jsTotalBytes 756903` across 30 files, largest 172,834 (2026-11-08, clean rebuild); the
+11 chunks `/` referenced weighed 154,682 bytes gzipped on 2026-09-06 — for a site whose interactive
+surface is a menu toggle and a lead form. The three `"use client"` files since Sprint 3 (there were
+four until 2026-11-08: `Faq` became native `<details>` in `7cfcf4c`, and `Header` a server shell
+around the `MobileMenu` leaf in `60ce109` — §10.2 ✅):
 
-| Component                       | Why it is client       | Verdict                                                                                                                                     | Backlog      |
-| ------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| `components/layout/Header.tsx`  | one `useState` boolean | Hydrates the whole nav tree for a mobile toggle. Split: server `Header`, leaf `MobileMenu` client. Fix §11.4 in the same pass.              | §10.2, §11.4 |
-| `components/marketing/Faq.tsx`  | accordion `useState`   | Replace with native `<details>`/`<summary>` — zero JS, answers stay in the DOM. Template: `.claude/skills/engagement-ux/templates/Faq.tsx`. | §10.2, N8    |
-| `components/forms/LeadForm.tsx` | fetch + form state     | Genuinely client. Keep it a leaf; fix its silent error state (N1) without growing it.                                                       | §8.1, N1     |
-| `components/ui/Reveal.tsx`      | `IntersectionObserver` | Correct implementation, wrong shape — §2.1 below.                                                                                           | §10.2, §11.2 |
+| Component                          | Why it is client       | Verdict                                                                                                                          | Backlog      |
+| ---------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `components/layout/MobileMenu.tsx` | open state, focus trap | The leaf that replaced a client `Header`: toggle, panel, Escape, Tab trap, scroll lock. Keep the nav tree out of it.             | §10.2, §11.4 |
+| `components/forms/LeadForm.tsx`    | fetch + form state     | Genuinely client. It grew with the §8.1 validation and the §13.4–§13.5 events; keep it a leaf and keep copy in `lib/content.ts`. | §8.1, §13.4  |
+| `components/ui/Reveal.tsx`         | `IntersectionObserver` | Correct implementation, wrong shape — §2.1 below.                                                                                | §10.2        |
 
 ### 2.1 `Reveal` — the pattern, not the implementation
 
@@ -130,20 +131,20 @@ The component is well built: it starts `"static"` (fully visible), returns early
 `opacity: 0` on a static export. Do not rewrite it for correctness. The cost is structural: it is a
 client component **used as a wrapper around content subtrees** — `Process`, `ServicesGrid`, `WhyUs`
 and `Reviews` all pass their markup through it — so every wrapped subtree crosses the client boundary
-and is hydrated to animate a fade. It also breaks semantics: `Process` renders `<Reveal>` between
-the `<ol>` and each `<li>`, so the five steps are not announced as a list (§11.2, `a11y.mjs`).
+and is hydrated to animate a fade. It broke semantics too until 2026-11-08: `Process` rendered `<Reveal>` between
+the `<ol>` and each `<li>`; since `7cfcf4c` each `<li>` wraps its own `Reveal` (§11.2 ✅).
 **Target:** keep the behaviour, move the boundary — a CSS-only reveal (`animation-timeline: view()`
 under the reduced-motion reset in `app/globals.css`) or one small script toggling a class on
 `[data-reveal]` elements; never a React wrapper around content. The `<li>` fix does not wait for
 that: `Reveal` must never sit between a list and its items.
 
-### 2.2 `Faq` → `<details>`/`<summary>`
+### 2.2 `Faq` → `<details>`/`<summary>` — done 2026-11-08
 
-Every answer renders `hidden={!isOpen}` today: in the DOM (so `FAQPage` parity holds under
-`schema.mjs`) but `display:none` for find-in-page, readers who do not click, and crawlers that
-honour visibility (N8). The engagement-ux template is a server component with the same `FaqItem`
-shape, `open` on the first item, `name="faq"` for exclusive disclosure where supported and
-`min-h-11` for the 44 px tap target — one change removes a client component and closes N8.
+Until `7cfcf4c` every answer rendered `hidden={!isOpen}`: in the DOM (so `FAQPage` parity held) but
+`display:none` for find-in-page, readers who do not click, and crawlers that honour visibility.
+`Faq` is now the engagement-ux shape — a server component, the same `FaqItem` data, `open` on the
+first item, `name="faq"` for exclusive disclosure where supported and `min-h-11` for the 44 px tap
+target. One change removed a client component and closed N8; keep it that way.
 
 ### 2.3 Dead weight and duplicates
 
@@ -162,10 +163,11 @@ shape, `open` on the first item, `name="faq"` for exclusive disclosure where sup
 
 ### 2.4 The `"use client"` ledger and the rules
 
-`scripts/audit/rtl-lint.mjs` carries the known set — `Header`, `Faq`, `LeadForm`, `Reveal` — and
-warns on any file outside it; `perf.mjs` reports the same census as `clientComponentFiles`. **That
-set is the ledger.** A new client component is added to it in the same change with the reason in
-the commit; a removed one (Faq, then Header) comes out so the audit cannot silently accept it back.
+`scripts/audit/rtl-lint.mjs` carries the known set — `LeadForm`, `MobileMenu`, `Reveal` since
+2026-11-08 — and warns on any file outside it; `perf.mjs` reports the same census as
+`clientComponentFiles`. **That set is the ledger.** A new client component is added to it in the
+same change with the reason in the commit; a removed one comes out so the audit cannot silently
+accept it back — as `Faq` and `Header` did in Sprint 3.
 RSC by default; `"use client"` only for state, effects or browser APIs, at the leaf, wrapping the
 control and never the content subtree (CLAUDE.md §7). `lucide-react` icons by name, never as a
 namespace. No dependency that duplicates the platform — no animation, carousel or form library
@@ -316,9 +318,9 @@ Lab scores on a static export flatter the site; INP only shows its cost with rea
 | Two font preloads, no more                                                    | `perf.mjs` fails on 0; nothing caps the count                                                              | §10.1; cap → new                                                                           |
 | RSC `index.txt` payloads                                                      | `perf.mjs` warn                                                                                            | §1.3                                                                                       |
 | No unused dependency; no new one without a reason                             | `perf.mjs` warn (unused); CLAUDE.md §12 + `ts-react-reviewer` (new)                                        | §10.3; new-dep check → new                                                                 |
-| `"use client"` only from the ledger                                           | `rtl-lint.mjs` warn (`KNOWN_CLIENT`); `perf.mjs` census                                                    | Faq/Header removal → §10.2, N8                                                             |
-| `Reveal` never between a list and its items                                   | `a11y.mjs`                                                                                                 | §11.2                                                                                      |
-| FAQ answers in the DOM, not `display:none`                                    | `schema.mjs` (FAQPage parity); visibility itself unmeasured                                                | N8                                                                                         |
+| `"use client"` only from the ledger                                           | `rtl-lint.mjs` warn (`KNOWN_CLIENT`); `perf.mjs` census                                                    | ✅ 3 since 2026-11-08 (§10.2, N8)                                                          |
+| `Reveal` never between a list and its items                                   | `a11y.mjs`                                                                                                 | §11.2 ✅                                                                                   |
+| FAQ answers in the DOM, not `display:none`                                    | `schema.mjs` (FAQPage parity); visibility itself unmeasured                                                | N8 ✅ (native `<details>`)                                                                 |
 | Every `<img>` sized, Hebrew alt, one `priority`                               | `perf.mjs` warn (size); `a11y.mjs` fail (alt); `SiteImage` types; priority unmeasured                      | — (0 images); priority → §10.5                                                             |
 | No dev chunks or source maps in `out/`; never audit a stale export            | `edge.mjs` (`devBuildFiles`, `sourceMaps`); the `qa-build-gate` clean rebuild; `run-all.mjs` refuses (N12) | `deploy-site.ps1` clears `.next/` only when the kit tarball changed → gap stays procedural |
 | Immutable cache on `/_next/static/*`; HTML stays `max-age=0, must-revalidate` | `edge.mjs` → `headersFile`; live `curl` after deploy                                                       | §12.1; live probe in `edge.mjs` → new                                                      |

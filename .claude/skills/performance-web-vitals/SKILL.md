@@ -1,6 +1,6 @@
 ---
 name: performance-web-vitals
-description: Core Web Vitals for a static export on Cloudflare Pages — measured by scripts/audit/perf.mjs, not by hand — a text-only site with no imagery at all, the hand-pinned next/font preloads on the LCP path and why Next cannot emit them on Windows, the INP client-JS budget (Header client for one boolean, Faq → <details>), the 45 crawlable RSC index.txt payloads, the framer-motion dependency removed in 2026-09, CLS reserves, keeping dev-only chunks out of out/, and the kit's SiteImage/mediaUrl/srcsetFor pipeline (/site-images) for when photos finally arrive. Use before shipping or when LCP, CLS or INP regress. Triggers: "perf pass", "Core Web Vitals", "LCP slow", "image optimization", "bundle size", "srcset", "ביצועים", "מהירות האתר".
+description: Core Web Vitals for a static export on Cloudflare Pages — measured by scripts/audit/perf.mjs, not by hand — a text-only site with no imagery at all, the hand-pinned next/font preloads on the LCP path and why Next cannot emit them on Windows, the INP client-JS budget (three client components since 2026-11: LeadForm, MobileMenu, Reveal), the crawlable RSC index.txt payloads, the framer-motion dependency removed in 2026-09, CLS reserves, keeping dev-only chunks out of out/, and the kit's SiteImage/mediaUrl/srcsetFor pipeline (/site-images) for when photos finally arrive. Use before shipping or when LCP, CLS or INP regress. Triggers: "perf pass", "Core Web Vitals", "LCP slow", "image optimization", "bundle size", "srcset", "ביצועים", "מהירות האתר".
 ---
 
 # Core Web Vitals
@@ -18,11 +18,11 @@ node scripts/audit/perf.mjs            # or: npm run audit -- --scope perf   (--
 
 `perf.mjs` owns the numbers: `out/` weight, JS chunks, font preloads, RSC payloads, unused
 dependencies, `"use client"` inventory, `<img>` count. It refuses a stale `out/` via `run-all.mjs`
-— **rebuild before asserting** (backlog N12). As of 2026-09-06 `perf.mjs` **passes** (re-run, do not
-copy): `out/` 5.53 MB in 134 files · JS 747 KB in 30 chunks, largest 173 KB (within the §10.4
-budget) · 6 `.woff2` with **2 font preloads** (§10.1 closed) · `unusedDeps []` (§10.3 closed) ·
-45 `index.txt` RSC payloads, 1.47 MB — the one open perf item (§1.3) · 4 client components (§10.2) ·
-0 `<img>` (§10.5).
+— **rebuild before asserting** (backlog N12). As of 2026-11-08 `perf.mjs` **passes** (re-run, do not
+copy): `out/` 7.8 MB in 137 files (the live-kit surfaces added ≈1.15 MB in 2026-10) · JS 757 KB in
+30 chunks, largest 173 KB (within the §10.4 budget) · 6 `.woff2` with **2 font preloads** (§10.1
+closed) · `unusedDeps []` (§10.3 closed) · 46 `index.txt` RSC payloads, 2.24 MB — the one open perf
+item (§1.3) · **3 client components** (§10.2 closed) · 0 `<img>` (§10.5).
 
 The script reads the artifact; it does not run a browser. For field numbers run Lighthouse / PSI
 against the **live** URL, mobile profile, on a service page, a location page and a blog post (the
@@ -30,8 +30,8 @@ longest documents), and read CrUX in Search Console once it is provisioned (owne
 
 ## Start here: the site ships zero imagery
 
-Across all 45 pages there is **not one `<img>`**. The header logo is text (`components/layout/Header.tsx:23`
-prints `{siteConfig.name}`); `public/dangates-logo.png` is referenced by nothing; the only image in
+Across all 46 pages there is **not one `<img>`**. The header logo is text (`Header` prints
+`{siteConfig.name}`); `public/dangates-logo.png` reaches only the JSON-LD `logo` (since `02a3144`); the only image in
 play is the OG card served from the `imgquarry.com` media host in the manifest.
 
 - **Performance-wise this is excellent.** LCP is a text element on every route; no image payload, no
@@ -78,22 +78,23 @@ CSS file need first.
 
 ## JS budget — INP
 
-747 KB across 30 chunks for a brochure site is more than it needs. The four `"use client"` files
-(`perf.mjs` / `rtl-lint.mjs` `clientComponents`) and what to do with each:
+757 KB across 30 chunks (2026-11-08) for a brochure site is more than it needs. The three
+`"use client"` files (`perf.mjs` / `rtl-lint.mjs` `clientComponents`) and what to do with each — there
+were four until Sprint 3 (`Faq` → `<details>` in `7cfcf4c`, `Header` split into a server shell and the
+`MobileMenu` leaf in `60ce109`; §10.2 ✅):
 
-| Component                       | Why client             | Action                                                                                                                                                                                                                   |
-| ------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `components/layout/Header.tsx`  | one `useState` boolean | Split: server `Header` renders logo, desktop nav, phone button; a leaf `MobileMenu` client component owns the toggle and receives `navItems` + phone as props. Fix §11.4 in the same pass (`/responsive-accessibility`). |
-| `components/marketing/Faq.tsx`  | accordion state        | Replace with `<details>/<summary>` — zero JS, answers stay in the DOM (fixes N8 and keeps `FAQPage` parity, `schema.mjs`). Template: `.claude/skills/engagement-ux/templates/Faq.tsx`.                                   |
-| `components/forms/LeadForm.tsx` | fetch + state          | Genuinely client. Keep it a leaf.                                                                                                                                                                                        |
-| `components/ui/Reveal.tsx`      | IntersectionObserver   | Genuinely client; see Motion below.                                                                                                                                                                                      |
+| Component                          | Why client             | Action                                                                                                           |
+| ---------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `components/layout/MobileMenu.tsx` | open state, focus trap | Keep it the leaf: toggle, panel, Escape, Tab trap, scroll lock. `Header` stays a server component around it.     |
+| `components/forms/LeadForm.tsx`    | fetch + state          | Genuinely client. Keep it a leaf; it grew with §8.1 validation and the §13.4–§13.5 events — do not grow it more. |
+| `components/ui/Reveal.tsx`         | IntersectionObserver   | Genuinely client; see Motion below.                                                                              |
 
 `framer-motion@^11` was a dependency **imported nowhere**; it was uninstalled 2026-09-06 (§10.3, commit `13a6bdc`) and `perf.mjs` now reports `unusedDeps []`. It never reached the bundle — the cost was install time, audit surface and the temptation to animate around the CSS reduced-motion reset. Do not add it back: `Reveal` already covers motion with an `IntersectionObserver` and a CSS transition, and `unusedDeps` will flag anything new that lands installed-but-unimported.
 
 ## RSC payloads — 45 `index.txt` files (§1.3)
 
 Next writes one `index.txt` beside every `index.html`: the RSC payload `next/link` prefetches for
-client-side navigation. They are 1.43 MB of crawlable duplicate copy. Two options, decided in the
+client-side navigation. They are 2.24 MB of crawlable duplicate copy (46 files, 2026-11-08). Two options, decided in the
 backlog row, not as a drive-by: a post-build step in `package.json` that strips `out/**/index.txt`
 (a script step, never a hand delete — `out/` is a protected path), after verifying that navigation
 falls back cleanly to full page loads; or `Disallow: /*/index.txt` in `app/robots.ts`, which keeps
@@ -123,15 +124,15 @@ for every image that `/site-images` eventually places above the fold.
 `app/globals.css:96` carries the global `prefers-reduced-motion` reset. `components/ui/Reveal.tsx`
 starts **visible** and only opts into the hide→show animation after mount with a scroll backstop, so
 nothing is stranded at `opacity: 0` and nothing is hidden from crawlers — preserve both properties.
-Note that `Reveal` is a `<div>`: wrapping an `<li>` with it (`components/marketing/Process.tsx:13`)
-breaks list semantics — an a11y finding (§11.2), handled in `/responsive-accessibility`.
+Note that `Reveal` is a `<div>`: wrapping an `<li>` with it breaks list semantics — `Process` did until
+`7cfcf4c` (§11.2 ✅); each `<li>` now wraps its own `Reveal` (`/responsive-accessibility`).
 
 ## Checklist
 
 - [ ] `node scripts/audit/perf.mjs` run on a **clean** rebuild; the numbers you quote are from it.
 - [ ] `fontPreloads 2` for the two `.p.woff2` faces — no more, and no dangling href (the script asserts each resolves in `out/`); re-check the pinned hashes in `lib/fonts.ts` after any `Rubik({...})` change.
 - [ ] The LCP element per route type is identified (it is text today — confirm it still is).
-- [ ] No new `"use client"` without a stated reason; Header split and Faq → `<details>` tracked (§10.2).
+- [ ] No new `"use client"` without a stated reason and a `KNOWN_CLIENT` entry; `clientComponents` stays 3 (§10.2).
 - [ ] `unusedDeps []` — no dependency installed and imported nowhere.
 - [ ] `out/` has no unreferenced file over 1 MB; total stays near 5.5 MB; `devBuildFiles 0`.
 - [ ] If any image is added: `SiteImage`, Hebrew `alt`, `width`/`height`, box reserved, at most one

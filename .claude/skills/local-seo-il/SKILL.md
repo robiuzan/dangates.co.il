@@ -139,7 +139,7 @@ the `nearby`/`relatedServices` mesh — `/internal-linking`.
 - [ ] No street address invented anywhere; NAP renders from the manifest; gbp-runbook §0 strings match.
 - [ ] Every region entry reads `בצפון הארץ`-style in copy; `kind`/`prefixed` added in Phase 3, not patched.
 - [ ] `content-depth.mjs`: every location clears the 350 floor **and** the 120-token doorway delta.
-- [ ] `schema.mjs`: every location emits `Service` + `areaServed` of the right type (Phase 2).
+- [ ] `schema.mjs`: every location emits `Service` + `areaServed` of the right type (✅ since `d8edb28` — keep it).
 - [ ] `sameAs` populated from the roster once the GBP URL lands; until then the 🔶 row stands.
 - [ ] `links.mjs`: `notInChrome` = 0 for locations.
 

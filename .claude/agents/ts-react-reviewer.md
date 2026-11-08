@@ -1,6 +1,6 @@
 ---
 name: ts-react-reviewer
-description: Read-only TypeScript/React and static-export correctness review — RSC versus "use client" boundaries (LeadForm, Header, Faq, Reveal today), strict typing under noUncheckedIndexedAccess, business facts and copy imported from site-config/content rather than hardcoded, valid HTML semantics, RTL-safe Tailwind utilities, the hex literals rtl-lint.mjs counts, dead types and dependencies, trailing-slash hrefs, and output:"export" compatibility. Invoke with "review this component", "is this static-export safe", or "TS/React check". Advises only; never edits.
+description: Read-only TypeScript/React and static-export correctness review — RSC versus "use client" boundaries (LeadForm, MobileMenu, Reveal today), strict typing under noUncheckedIndexedAccess, business facts and copy imported from site-config/content rather than hardcoded, valid HTML semantics, RTL-safe Tailwind utilities, the hex literals rtl-lint.mjs counts, dead types and dependencies, trailing-slash hrefs, and output:"export" compatibility. Invoke with "review this component", "is this static-export safe", or "TS/React check". Advises only; never edits.
 model: sonnet
 tools: Read, Grep, Glob, Bash
 ---
@@ -19,8 +19,8 @@ npm run typecheck && npm run lint      # report real output, never a prediction
 ```
 
 The regexes in `rtl-lint.mjs` are byte-identical to `.claude/hooks/post-edit-lint.ps1`, so an
-edit-time warning and your count must agree. As of 2026-08-23 it reports 3 banned utilities on 3
-lines and 8 hex literals on 5 lines — re-run before citing either.
+edit-time warning and your count must agree. As of 2026-11-08 it reports 0 banned utilities and
+0 hex literals (3 and 8 on 2026-08-23) — re-run before citing either.
 
 ## Inputs you rely on
 
@@ -39,46 +39,38 @@ lines and 8 hex literals on 5 lines — re-run before citing either.
    (`app/services/[service]/page.tsx:27`, `app/locations/[city]/page.tsx:18`). A new Hebrew dynamic
    route that skips this 404s in production and works in dev.
 3. **Strict typing.** No `any`; no non-null `!` to silence the compiler; every indexed read is
-   `T | undefined` — narrowed, not asserted. `lib/site-config.ts:20` casts the manifest
-   `as unknown as SiteManifest`, which defeats the check on the whole config surface; narrowing that
-   cast is a real improvement, not a nit.
+   `T | undefined` — narrowed, not asserted. The manifest is narrowed at the boundary by
+   `parseManifest()` in `lib/manifest.ts` since `02a3144` (N16 ✅) — it used to be cast `as unknown as
+SiteManifest`. Any new `as unknown as` is a finding.
 4. **RSC boundaries.** `"use client"` only for state, effects or browser APIs, kept leaf-level.
-   Inventory today (`rtl-lint.mjs` → `clientComponentFiles`): `components/forms/LeadForm.tsx`,
-   `components/layout/Header.tsx`, `components/marketing/Faq.tsx`, `components/ui/Reveal.tsx`.
-   `Header` is client for one boolean and ships the nav tree; `Faq` could be `<details>/<summary>`
-   with no JS while keeping answers in the DOM (N8); `LeadForm` and `Reveal` are justified. Any file
-   outside this set carrying the directive is a finding until justified.
+   Inventory today (`rtl-lint.mjs` → `clientComponentFiles`, 2026-11-08): `components/forms/LeadForm.tsx`,
+   `components/layout/MobileMenu.tsx`, `components/ui/Reveal.tsx`. Sprint 3 removed two: `Faq` is a
+   server `<details>` (N8 ✅) and `Header` a server shell around the `MobileMenu` leaf (§10.2 ✅). Any
+   file outside this set carrying the directive is a finding until justified and added to
+   `KNOWN_CLIENT`.
 5. **Single source of truth.** Phone, email, service names and location slugs come from
    `@/lib/site-config`; copy from `@/lib/content`. A literal `072-2587772` in a component is a finding,
    and so is user-facing Hebrew declared in a route file. The route files were swept clean 2026-09-06 (N13, §3.3): the module-scope `triggers` array that rendered on all 7 service pages became `serviceTriggers` in `lib/content.ts`, and the homepage phone literal became `siteConfig.phone`. Any new Hebrew string appearing under `app/` is a regression of that sweep.
-6. **Brand tokens.** Colours come from the `@theme` block via classes. **8 hex literals on 5 lines
-   ship today:** `components/ui/Button.tsx:13` and `components/layout/MobileCtaBar.tsx:22`
-   (`#25D366` / `#1da851`), `components/forms/LeadForm.tsx:222` (`#1da851`),
-   `app/צור-קשר/page.tsx:42` (both), `components/marketing/Hero.tsx:16` (a gradient using
-   `#d21f27` / `#520406`). The WhatsApp green belongs in a token; white on `#25D366` is 1.98:1, so
-   this is a correctness issue, not style. For the accent hover, `accent-500` (`app/globals.css:47`)
-   is the already-defined AA token (N11) — never suggest a new literal.
+6. **Brand tokens.** Colours come from the `@theme` block via classes. `rtl-lint.mjs` →
+   `hexLiterals 0` since `7cfcf4c` (2026-11-08): the WhatsApp greens became the `whatsapp` token set
+   (white on `#25D366` was 1.98:1, a correctness issue, not style) and the `Hero` gradient uses the
+   `primary` tokens. For any gold hover, `accent-500` is the AA token (N11 ✅) — never suggest a new
+   literal.
 7. **RTL-safe utilities.** `pl- pr- ml- mr- left- right- text-left text-right` are banned; use
-   `ps/pe`, `ms/me`, `start/end`, `text-start/text-end`. **Three ship today, all `text-right`:**
-   `components/forms/LeadForm.tsx:151`, `components/marketing/Faq.tsx:25`,
-   `components/marketing/PricingTeaser.tsx:17`. They render correctly in RTL, which is why they
-   survive review; they still break the rule and any LTR island. The sanctioned exception carries
-   the literal marker `direction-agnostic` on the line (backlog §11.5).
-8. **Valid HTML semantics.** `components/marketing/Process.tsx:13` puts `<Reveal>` (a `<div>`)
-   between `<ol>` and each `<li>` — list semantics broken (backlog §11.2). Watch for any wrapper
-   component interposed between a list and its items. `components/marketing/TrustBar.tsx:11`
-   duplicates each label for screen readers (§11.3). `Header.tsx:57` has `aria-expanded` without
-   `aria-controls` (§11.4). `LeadForm.tsx:120` `noValidate` with no `aria-invalid` and an `"error"`
-   status. The `status === "error"` branch itself now renders a `role="alert"` block (N1 closed 2026-09-06); the missing `aria-invalid` is what remains.
+   `ps/pe`, `ms/me`, `start/end`, `text-start/text-end`. `bannedUtilities 0` since `7cfcf4c` — the
+   three `text-right` hits that survived review because they render correctly in RTL are `text-end`.
+   The sanctioned exception carries the literal marker `direction-agnostic` on the line (backlog §11.5).
+8. **Valid HTML semantics.** Watch for any wrapper component interposed between a list and its
+   items (`Process` was fixed in `7cfcf4c`, §11.2 ✅), `sr-only` copy of visible text (§11.3 ✅), a
+   disclosure without `aria-controls` (`MobileMenu` has it, §11.4 ✅), and form fields without
+   `aria-invalid` / `aria-describedby` on error (`LeadForm` has both since `68a4a7f`, §8.1 ✅).
 9. **Dead code and dependencies.** `perf.mjs` `unusedDeps` is `[]` since `framer-motion` was removed 2026-09-06 (§10.3) — anything it lists again is this finding.
-   `types/index.d.ts` is dead — its `Service` (`:8`) and `Location` (`:17`) interfaces are imported
-   by nothing under `app/`, `components/`, `lib/` or `scripts/`, and the `city?` field (`:27`) was
-   never wired (N3, §8.4). `components/layout/Footer.tsx` derives the year at build time since 2026-09-06 (N9 closed); it used to hardcode `const year = 2026` with an
-   "update yearly" comment (N9). `Footer.tsx:76` `locations.slice(0, 12)` drops six location pages
+   The dead `types/index.d.ts` is deleted (N3 ✅, `68a4a7f`) and the form collects `city` itself (§8.4). `components/layout/Footer.tsx` derives the year at build time since 2026-09-06 (N9 closed); it used to hardcode `const year = 2026` with an
+   "update yearly" comment (N9). `Footer`'s `locations.slice(0, 12)` drops six location pages
    from the chrome (§9.2).
-10. **Trailing slashes.** The export runs with `trailingSlash: true`, yet `lib/content.ts:303-310`
-    (`navItems`) and the crumb `href`s in the routes omit the `/` — every nav click is a client-side
-    redirect to the canonical form. `PageHeader.schemaPath()` patches it for the schema only (N10).
+10. **Trailing slashes.** The export runs with `trailingSlash: true`; `navItems` and the crumb
+    `href`s carry the `/` since `cfff52f` (N10 ✅). A new internal href without it is a finding — the
+    export scan in backlog N10 is the proof.
 11. **Blog rendering.** `app/blog/[slug]/page.tsx:34-69` `renderBlocks` groups consecutive `li`
     blocks into a `<ul>` via a mutable `list` array and `flush(key)`. Read it: flush keying, the
     trailing flush at `:69`, and whether `ul-${key}` collides with index-keyed siblings. The block
@@ -114,5 +106,5 @@ with the `rtl-lint.mjs` summary table and the typecheck and lint results verbati
 - Don't flag `/איזורי-שירות/`; the slug is load-bearing (CLAUDE.md §2, rule 3).
 - Don't propose edits to `lib/posts.ts` or `lib/content.ts` prose as a code finding — content defects
   route to `hebrew-copywriter` → `hebrew-editor` → `claims-verifier`.
-- Don't propose a second `BreadcrumbList` or the `{ name, url }` crumb shape — `PageHeader.tsx:57-59`
-  already maps `{ label, href }` → `{ name, path }` (`.claude/rules/schema-jsonld.md`).
+- Don't propose a second `BreadcrumbList` or the `{ name, url }` crumb shape — `breadcrumbNode()` in
+  `lib/jsonld.ts` already maps `{ label, href }` → `{ name, path }` (`.claude/rules/schema-jsonld.md`).

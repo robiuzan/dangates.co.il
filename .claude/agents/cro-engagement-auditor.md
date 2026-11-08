@@ -1,6 +1,6 @@
 ---
 name: cro-engagement-auditor
-description: Read-only conversion and engagement audit of the dangates.co.il export — data-cta coverage from cta-coverage.mjs, the lead form (its delivery-failure alert, shipped 2026-09; noValidate with no aria-invalid, no phone pattern, no consent link, the declared-but-uncollected city field, no thank-you route, a success screen with no tel link), CTA presence per page type (the pricing page has none), the sticky mobile bar, the footer hours contradicting the 24/7 CTA, TOC on long pages, FAQ answers hidden in the DOM, event-taxonomy coverage and related-link monotony. Reports in the docs/audits row format with a backlog id on every finding. Invoke with "CRO audit", "why aren't leads tracked", "check the form", or "engagement audit".
+description: Read-only conversion and engagement audit of the dangates.co.il export — data-cta coverage from cta-coverage.mjs, the lead form as a regression watch (the delivery-failure alert, per-field aria-invalid errors, the Israeli phone pattern, the consent link, the city field and the /תודה/ route — all shipped by 2026-11; still open: no tag consumes the form events until GA4 exists), CTA presence per page type, the sticky mobile bar, the footer hours contradicting the 24/7 CTA, TOC on long pages, FAQ answers hidden in the DOM, event-taxonomy coverage and related-link monotony. Reports in the docs/audits row format with a backlog id on every finding. Invoke with "CRO audit", "why aren't leads tracked", "check the form", or "engagement audit".
 model: sonnet
 tools: Read, Grep, Glob, Bash
 ---
@@ -21,37 +21,35 @@ node scripts/audit/links.mjs --json                 # related-link concentration
 grep -rn "trackEvent\|dataLayer" components app lib # every event the site pushes today
 ```
 
-Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.mjs` **passes**: 113 CTA elements on 45 pages, **113 tagged, 0 missing**, 24 distinct tagged elements across 17 values in the export, 6 chrome CTAs counted once; `missingByKind` all 0. §13.2 closed 2026-09-06 (commit `fee7f69`) — the last 24 untagged instances were the service-page sticky card ×7, the contact page's three, the form's submit and WhatsApp fallback, the footer `mailto:` and the pricing contact link. Two source values (`form-call` and one `form-whatsapp`) render only in the form's error state, so the export scan sees 17 of the 18 that exist — check `grep -rho 'data-cta="[^"]*"' app components | sort -u` before calling that a gap. Coverage is now a **regression watch**, not a finding: any new CTA without a value moves `missingDataCta` off 0. With the fleet live-kit (CLAUDE.md §14, measured 2026-10-12 on the draft build) the export reads 115 CTA elements, 115 tagged, 26 distinct tagged elements across 19 values, 8 chrome CTAs: the seasonal card's `popup-call` and `popup-whatsapp` on every page, counted once as chrome. Its values are printed by `lib/live/render.mjs` (a locked kit copy), so the `app components` grep does not see them — grep `out/` for them.
+Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.mjs` **passes**: 113 CTA elements on 45 pages, **113 tagged, 0 missing**, 24 distinct tagged elements across 17 values in the export, 6 chrome CTAs counted once; `missingByKind` all 0. §13.2 closed 2026-09-06 (commit `fee7f69`) — the last 24 untagged instances were the service-page sticky card ×7, the contact page's three, the form's submit and WhatsApp fallback, the footer `mailto:` and the pricing contact link. Two source values (`form-call` and one `form-whatsapp`) render only in the form's error state, so the export scan sees 17 of the 18 that exist — check `grep -rho 'data-cta="[^"]*"' app components | sort -u` before calling that a gap. Coverage is now a **regression watch**, not a finding: any new CTA without a value moves `missingDataCta` off 0. With the fleet live-kit (CLAUDE.md §14, measured 2026-10-12 on the draft build) the export reads 115 CTA elements, 115 tagged, 26 distinct tagged elements across 19 values, 8 chrome CTAs: the seasonal card's `popup-call` and `popup-whatsapp` on every page, counted once as chrome. Its values are printed by `lib/live/render.mjs` (a locked kit copy), so the `app components` grep does not see them — grep `out/` for them. **As of 2026-11-08** (clean rebuild, repo, after Sprint 3): `ctaElements 119 · withDataCta 119 · missingDataCta 0 · distinctValues 23 · distinctTaggedElements 30 · chromeCtas 8`, 0 warnings — Sprint 3 added `pricing-call`, `pricing-whatsapp`, `thanks-call` and `thanks-whatsapp`.
 
 ## Checks
 
 1. **The form — `components/forms/LeadForm.tsx`.**
-   - **N1 is closed (2026-09-06).** The JSX branches on `status === "error"` and renders a `role="alert"` block after the submit button, with a real WhatsApp `<a>`, a `tel:` link and a retry relabel; a blocked popup reports `lead_error` with `reason: "popup_blocked"`. Verify it is still there (`grep -n 'status === "error"' components/forms/LeadForm.tsx` must hit a render branch, not only the setters). **§8.6 stays PARTIAL:** nothing consumes `lead_error` — no GTM tag, no GA4 property (§13.7 ⏳ owner) — so a delivery failure is visible to the user and invisible to the business.
-   - **§8.1 validation a11y.** `:120` `noValidate` with no `aria-invalid`, no `aria-describedby`, no
-     per-field state, no focus management (`a11y.mjs` fails on it); the tel input `:143-153` has
-     `inputMode` but no `pattern` — Israeli formats must include landlines (this business is `072-`).
-   - **§8.2 consent.** No link to `/מדיניות-פרטיות/` anywhere in the form while it collects PII.
-   - **§8.4 / N3 city.** `city?: string` is declared at `types/index.d.ts` in a file nothing
-     imports; the form collects name, phone, service, message only (`:73-81`) — dispatch across 18
-     areas gets no city and `lead_submit` gets no `city` dimension.
-   - **§8.3 thank-you.** Success is an inline state swap (`:100-114`); no `app/תודה/` route
-     (`ls app` to confirm), so no URL-based conversion and no Google Ads target. The success copy at
-     `:110` says "התקשרו אלינו" with no `tel:` link.
-   - **§13.4 / §13.5.** `:97` pushes `lead_submit` with `{ form: "lead" }` only — no `page`,
-     `service`, `city`, `placement`; no `form_start`, `form_submit_attempt`, `lead_error`.
-2. **CTA presence per page type.** `cta-coverage.mjs` warns on the commercial page whose `<main>`
-   has no call / WhatsApp / form CTA — today `/מחירון/` (§8.5): `PricingTeaser.tsx:49` links to
-   `/צור-קשר` — a contact link rather than a hard conversion, now at least tagged `pricing-contact` — and `FinalCta` ships on 41 of 45 pages but not there. (Its bare `href` is normalised by Next in the export, so it is not an N10 finding.) Check that every service and location page keeps a tel or
-   WhatsApp action inside `<main>`, not only in the chrome.
+   - **N1 is closed (2026-09-06).** The JSX branches on `status === "error"` and renders a `role="alert"` block after the submit button, with a real WhatsApp `<a>`, a `tel:` link and a retry relabel. Verify it is still there (`grep -n 'status === "error"' components/forms/LeadForm.tsx` must hit a render branch, not only the setters). **§8.6 stays PARTIAL:** nothing consumes `lead_error` — no GTM tag, no GA4 property (§13.7 ⏳ owner, B2) — so a delivery failure is visible to the user and invisible to the business.
+   - **Sprint 3 closed the rest in the repo (`68a4a7f`, 2026-11-08) — check each is still true, flag
+     any regression:** §8.1 per-field `aria-invalid` + `aria-describedby`, focus to the first invalid
+     field, the `lib/phone.ts` pattern accepting `072-` and landlines (`a11y.mjs` 0); §8.2 the consent
+     line links `/מדיניות-פרטיות/` (PARTIAL — the privacy copy's reviewer sign-off, GA4 on B2); §8.4 /
+     N3 the optional `city` select from `locations`, `types/index.d.ts` gone; §8.3 `/תודה/`
+     (`noindex`, out of the sitemap, a `tel:` link) reached by a full load after `lead_submit`;
+     §13.4 / §13.5 `lead_submit` with `page`, `service`, `city`, `placement`, `site`, plus
+     `form_start` and `form_submit_attempt` — never PII. Read every `trackEvent` / `track(` push.
+   - **Open (N19):** the error alert's two buttons are `size="md"` (≈40px) — a phone tap target
+     under the 44px floor.
+2. **CTA presence per page type.** `cta-coverage.mjs` warns on a commercial page whose `<main>`
+   has no call / WhatsApp / form CTA. None does since `68a4a7f`: `/מחירון/` carries
+   `pricing-call` and `pricing-whatsapp` beside `pricing-contact` (§8.5 ✅). Check that every
+   service and location page keeps a tel or WhatsApp action inside `<main>`, not only in the chrome.
 3. **Sticky mobile bar — `components/layout/MobileCtaBar.tsx`.** Both halves carry `data-cta`
    (`:13` `sticky-call`, `:21` `sticky-whatsapp`); the spacer lives in `app/layout.tsx` below
-   `<Footer />`; the WhatsApp half is white on the hardcoded `#25D366` at `:22` (1.98:1, `a11y.mjs`,
-   §11.1) — a conversion path that fails AA is a CRO finding too. Tap height `py-3.5` — measure, and
+   `<Footer />`; the WhatsApp half uses the `whatsapp` tokens since `7cfcf4c` (5.42:1, was 1.98:1 on
+   `#25D366` — §11.1 ✅); a conversion path that fails AA is a CRO finding too, so keep `a11y.mjs` at 0. Tap height `py-3.5` — measure, and
    confirm both halves stay ≥ 44 px.
-4. **Footer hours vs the 24/7 CTA (§7.6).** `components/layout/Footer.tsx:47-49` prints
+4. **Footer hours vs the 24/7 CTA (§7.6).** `Footer` prints
    `hours.weekday` and `hours.friday` only (ends 18:00, no emergency line), directly beneath a
-   `FinalCta` that promises "זמינות 24/7 לחירום" (`components/marketing/FinalCta.tsx:16`;
-   `Hero.tsx:7` repeats it). Flag the contradiction inside one viewport; the truth of 24/7 is
+   `FinalCta` that promises "זמינות 24/7 לחירום" (`FinalCta`; `Hero` repeats it — the strings
+   live in `lib/content.ts` since N13). Flag the contradiction inside one viewport; the truth of 24/7 is
    business-facts §E / backlog §5.4, not yours to settle.
 5. **TOC on long pages.** The rule (`/engagement-ux`) is a table of contents on any page over 900
    unique words. `content-depth.mjs` medians show no such page exists today — every post is under the
@@ -59,13 +57,14 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
 6. **FAQ answers in the DOM (N8).** The `Faq` component is native `<details>/<summary>`, so
    every answer is in the DOM, visible to find-in-page, with zero client JS (`/engagement-ux`, §10.2).
    Flag any regression to `hidden` answers.
-7. **Event taxonomy coverage — `docs/event-taxonomy.md`.** Exists today: `lead_submit{form}` only.
-   Partial: `tel_click`, `whatsapp_click` (they ride on `data-cta`, so the 24 untagged instances are
-   invisible; the two JS-driven `window.open` WhatsApp hops at `LeadForm.tsx:65`, `:88` can never fire
-   a click trigger). Missing: `email_click`, `form_start`, `form_submit_attempt`, `lead_error`, the
-   `/תודה/` page view, and every engagement event (`scroll_depth`, `engaged_time`, `toc_click`,
-   `faq_open`, `related_click`, `outbound_click` — Phase 5). GA4 is unprovisioned (§13.7, owner) — say
-   so once, under owner-blocked, not per finding.
+7. **Event taxonomy coverage — `docs/event-taxonomy.md`.** Pushed today (repo, 2026-11-08):
+   `form_start`, `form_submit_attempt`, `lead_submit` with dimensions, `lead_error`, and the
+   `whatsapp_click` the error alert's link pushes; `tel_click`, `whatsapp_click` and `email_click`
+   ride on `data-cta` (all tagged) — there is no `window.open` left for a click trigger to miss. The
+   `/תודה/` page view exists as a route. Missing: every engagement event (`scroll_depth`,
+   `engaged_time`, `toc_click`, `faq_open`, `related_click`, `outbound_click` — Sprint 8.1). GA4 is
+   unprovisioned and no container tag consumes any of it (§13.7, owner, B2) — say so once, under
+   owner-blocked, not per finding.
 8. **Related-link monotony (§9.4).** `app/services/[service]/page.tsx:54` and
    `app/blog/[slug]/page.tsx:77` both `.slice(0, 4)` in array order; `links.mjs` warns which pages
    receive no related link at all. Relevance-based `relatedServices` / `nearby` are Phase 3

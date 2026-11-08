@@ -7,7 +7,7 @@ allowed-tools: Read, Grep, Glob, Bash, PowerShell
 # Site images
 
 The site ships **zero `<img>` tags** (`perf.mjs` → `images: 0`, `a11y.mjs` → `imgCount: 0`, 45
-pages). The header renders the brand as text (`components/layout/Header.tsx:23`) while
+pages). The header renders the brand as text (the home `<Link>` in `components/layout/Header.tsx`) while
 `public/dangates-logo.png` (250×250) sits unreferenced. The only image in production is the OG card,
 served from the manifest's media host (`app/layout.tsx:32` → `ogImageMeta(manifest.images)`). Real
 photos are **coming** (business-facts §F, owner-actions §4.1); this skill is the pipeline they go
@@ -114,14 +114,14 @@ category and no evidence claim. Month only, never a date that implies a record w
 
 ## First image task — the header logo
 
-`public/dangates-logo.png` is 250×250 and unused; `Header.tsx:23` prints `{siteConfig.name}`.
+`public/dangates-logo.png` is 250×250 and unused; `Header`'s home `<Link>` prints `{siteConfig.name}`.
 `Header` is `"use client"`; `SiteImage` carries no directive and is explicitly safe inside a client
 component — do not add `"use client"` to anything under the kit. Ad-hoc form, local path, no
 catalog dependency:
 
 ```tsx
 import { SiteImage } from "@ishub/site-kit/components";
-// inside the <Link href="/"> at Header.tsx:18-24, replacing the bare text:
+// inside the <Link href="/"> in Header.tsx, replacing the bare text:
 <SiteImage src="/dangates-logo.png" alt={siteConfig.name} width={250} height={250} fixed priority className="h-10 w-10" />
 <span className="font-heading text-2xl font-extrabold text-primary">{siteConfig.name}</span>
 ```

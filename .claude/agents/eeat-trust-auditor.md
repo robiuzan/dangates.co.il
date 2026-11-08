@@ -69,7 +69,7 @@ context for reading the output, never a finding to copy.
    any appearance is ⛔. The legitimate expertise anchor is the ת״י 900 חלק 21.03 safety guide
    (keyword-map §12, sourced from sii.org.il) — cite it as the `/eeat-build` path, not as a claim.
 5. **Zero photographs** (§7.5, business-facts §F ⏳). `a11y.mjs` / `perf.mjs` → `images: 0` on 45 pages;
-   the logo renders as text (`components/layout/Header.tsx:23`), `public/dangates-logo.png` is
+   the logo renders as text (the home `<Link>` in `components/layout/Header.tsx`), `public/dangates-logo.png` is
    unreferenced. Photos are coming; the pipeline is `/site-images`. A stock photo presented as our
    work would be a fabrication — say so pre-emptively.
 6. **Footer vs CTA** (§7.6). `components/layout/Footer.tsx:47-49` prints weekday and Friday hours and

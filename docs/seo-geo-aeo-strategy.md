@@ -219,27 +219,28 @@ in build order ([content-calendar.md](content-calendar.md) §2):
 §6.5): NAP from the manifest, the 7 services and 18 areas with percent-encoded canonicals, and a
 "notes for AI assistants" block naming what must **not** be attributed — no warranty term, years,
 rating, licence or response-time promise. `edge.mjs` → `llmsTxt: false`; live 404 as of 2026-09-06.
-**No author → `Organization`:** no person is coming (owner-actions §3.3); `lib/authors.ts` (Phase 6)
-stays empty and `schema.mjs` forbids a `Person` author while it is. Expertise is mechanism depth.
+**No author → `Organization`:** no person is coming (owner-actions §3.3); `lib/authors.ts` (an empty registry
+since `d8edb28`, 2026-11-08) stays empty and `schema.mjs` forbids a `Person` author while it is. Expertise is mechanism depth.
 
 ---
 
 ## 5. Entity strategy
 
-The business must resolve as an **entity**, not a domain. Today it does not: `sameAs` is `[]`,
-`#business` is defined only on the homepage, there is no `WebSite` node, nothing off-site
-corroborates the name. Target graph — [schema-graph.md](schema-graph.md) §1–§3, in this order:
+The business must resolve as an **entity**, not a domain. In the graph it now does — Sprint 2
+(2026-11-08, `02a3144` `d8edb28`, not deployed yet) defined `#business` on every page that
+references it and added the `WebSite` node; what is still missing is off-site: `sameAs` is `[]` and
+nothing off-site corroborates the name. Target graph — [schema-graph.md](schema-graph.md) §1–§3, in this order:
 
-1. **One `GeneralContractor` `#business` node defined on every page** that references it — dangling
-   on 7 services and 11 posts today (backlog §4.4). Never a `Product`, never a per-city `LocalBusiness`.
-2. **A `WebSite` `#website` node** on the homepage, `publisher → #business` (backlog §4.9); every
-   `url` / `@id` / `mainEntityOfPage` percent-escaped (18 raw-Hebrew values today; backlog §4.7, N2).
+1. **One `GeneralContractor` `#business` node defined on every page** that references it — ✅ since
+   `02a3144`, `danglingIds 0` (backlog §4.4). Never a `Product`, never a per-city `LocalBusiness`.
+2. **A `WebSite` `#website` node** on the homepage, `publisher → #business` (backlog §4.9 ✅); every
+   `url` / `@id` / `mainEntityOfPage` percent-escaped (`rawHebrewUrls 0` since `02a3144`; §4.7, N2 ✅).
 3. **`sameAs` populated only with confirmed profiles**, GBP first, then each citation — in the
    roster, synced down, emitted by `localBusinessJsonLd`. 🔶 on every entry until its URL exists.
-4. **`logo` and `image`** — the manifest OG card (wired) and `public/dangates-logo.png` (unreferenced),
-   reaching the graph on no page (backlog §4.5).
-5. **`AboutPage` with `knowsAbout`** — the standard and the gate types — on `/אודות/` (Phase 6,
-   `eeat-build`). Brand strings byte-identical everywhere (§3.1). Absent on purpose: `Offer`,
+4. **`logo` and `image`** — `public/dangates-logo.png` and the manifest OG card, on the business node
+   since `02a3144` (backlog §4.5 ✅).
+5. **`AboutPage` with `knowsAbout`** — the standard and the gate types — on `/אודות/` — ✅ since
+   `d8edb28`, limited to what the site covers; the standard joins it with its guide (Sprint 7.2). Brand strings byte-identical everywhere (§3.1). Absent on purpose: `Offer`,
    `Review` / `AggregateRating` (until quoted verbatim from the profile), `Person`, `foundingDate`,
    `PostalAddress`, `GeoCoordinates` around an invented midpoint.
 

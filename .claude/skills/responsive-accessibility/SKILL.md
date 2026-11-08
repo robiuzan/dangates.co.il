@@ -1,6 +1,6 @@
 ---
 name: responsive-accessibility
-description: WCAG 2.1 AA and Israeli IS 5568 compliance for dangates, measured by scripts/audit/a11y.mjs and rtl-lint.mjs — the accent-button hover (2.76:1) and WhatsApp-surface (1.98:1) contrast failures and the accent-500 token that already fixes the first, 44px tap targets, keyboard and focus order, the mobile menu's missing aria-controls/focus trap/Escape, semantic landmarks and one H1, the Process list broken by an interposed Reveal wrapper, the TrustBar's doubled screen-reader text, FAQ answers hidden with display:none, programmatic form errors with aria-invalid and aria-describedby, reduced motion, and keeping /הצהרת-נגישות/ truthful. Use before shipping or when auditing accessibility. Triggers: "accessibility pass", "WCAG", "contrast check", "tap targets", "keyboard navigation", "נגישות", "IS 5568", "ת״י 5568".
+description: WCAG 2.1 AA and Israeli IS 5568 compliance for dangates, measured by scripts/audit/a11y.mjs and rtl-lint.mjs — both scripts at 0 since Sprint 3 (2026-11): contrast in every state (the accent-500 hover and the whatsapp tokens that fixed 2.76:1 and 1.98:1), 44px tap targets (two md buttons left in the form's error alert), keyboard and focus order with the skip link and the MobileMenu focus trap/Escape, semantic landmarks and one H1, lists never broken by a Reveal wrapper, no doubled screen-reader text, FAQ answers in the DOM via details, per-field form errors with aria-invalid and aria-describedby, reduced motion, and keeping /הצהרת-נגישות/ truthful. Use before shipping or when auditing accessibility. Triggers: "accessibility pass", "WCAG", "contrast check", "tap targets", "keyboard navigation", "נגישות", "IS 5568", "ת״י 5568".
 ---
 
 # Accessibility — WCAG 2.1 AA + IS 5568
@@ -19,84 +19,74 @@ npm run audit -- --scope a11y          # both, exit code = failures
 ```
 
 `a11y.mjs` computes the contrast ratios itself and checks the named components at source. As of
-2026-08-23 (re-run, do not copy): **4 failures** — `Process.tsx` interposed wrapper (§11.2),
-`LeadForm.tsx` `noValidate` with no `aria-invalid` (§8.1), accent hover **2.76:1** and the WhatsApp
-surfaces **1.98:1** (§11.1) — plus **4 warnings**: `Faq.tsx` answers `display:none` (N8), `Header.tsx`
-focus management (§11.4), the `tel` input has no `pattern` (§8.1), `TrustBar.tsx` duplicate SR text
-(§11.3). `rtl-lint.mjs`: 3 `text-right`, 8 hex literals on 5 lines (§11.5).
+2026-11-08 (clean rebuild, re-run, do not copy): **0 failures, 0 warnings**; `rtl-lint.mjs`
+`bannedUtilities 0 · hexLiterals 0`. Sprint 3 closed the 2026-08-23 set — 4 failures (`Process`
+wrapper §11.2, `LeadForm` `aria-invalid` §8.1, accent hover 2.76:1 and WhatsApp 1.98:1 §11.1) and
+4 warnings (`Faq` `display:none` N8, menu focus §11.4, tel `pattern` §8.1, `TrustBar` SR text §11.3)
+— in commits `7cfcf4c`, `60ce109` and `68a4a7f`. The job now is keeping it at 0.
 
-## Contrast — the palette is good, two states are not
+## Contrast — every measured state passes
 
-| Pair (from `a11y.mjs` `contrastPairs`)                    | Ratio    | Verdict    |
-| --------------------------------------------------------- | -------- | ---------- |
-| white on `primary` `#B6070C`                              | **6.94** | ✅         |
-| `accent-foreground` `#3d2b00` on `accent` `#ffd700`       | **9.70** | ✅         |
-| `accent-foreground` on `accent-600` `#8a6d00` — **hover** | **2.76** | ❌         |
-| white on `#25D366` — WhatsApp rest                        | **1.98** | ❌         |
-| white on `#1da851` — WhatsApp hover                       | **3.10** | ❌         |
-| `accent-foreground` on `accent-500` `#d9b400`             | **6.79** | ✅ the fix |
+| Pair (from `a11y.mjs` `contrastPairs`, 2026-11-08) | Ratio    | Verdict |
+| -------------------------------------------------- | -------- | ------- |
+| white on `primary` `#B6070C`                       | **6.94** | ✅      |
+| `accent-foreground` `#3d2b00` on `accent`          | **9.70** | ✅      |
+| `accent-foreground` on `accent-500` — **hover**    | **6.79** | ✅      |
+| `whatsapp-foreground` on `whatsapp` — rest         | **5.42** | ✅      |
+| `whatsapp-foreground` on `whatsapp-hover`          | **6.63** | ✅      |
+| `whatsapp` as text on white                        | **5.42** | ✅      |
 
-1. **Accent button hover (§11.1 / N11).** `components/ui/Button.tsx:11` is
-   `bg-accent text-accent-foreground hover:bg-accent-600`. The AA-safe hover token **already exists**:
-   `--color-accent-500: #d9b400` at `app/globals.css:47`. The fix is one word —
-   `hover:bg-accent-600` → `hover:bg-accent-500` — on the primary CTA of every page.
-2. **WhatsApp surfaces (§11.1).** `Button.tsx:13` (`bg-[#25D366] text-white hover:bg-[#1da851]`) and
-   `components/layout/MobileCtaBar.tsx:22` repeat the pairing on the sticky bar — the phone
-   conversion path; `components/forms/LeadForm.tsx:222` and `app/צור-קשר/page.tsx:42` use the greens
-   as text. The hex is inlined in four files, which `.claude/rules/rtl-markup.md` forbids. Fix once:
-   add a `whatsapp` token pair to the `@theme` block in `app/globals.css` (dark text on the brand green,
-   or a darkened surface that clears 4.5:1 with white — compute it, `a11y.mjs` will), swap the four
-   literals for `bg-whatsapp text-whatsapp-foreground`, and watch `rtl-lint.mjs` `hexLiterals` drop.
-
-Rest-state contrast is not enough — both failures live in `hover:` variants and a hardcoded literal.
-A checker that samples the default state passes them. Flag any visible brand change before shipping.
+Until `7cfcf4c` (2026-11-08) the accent hover was `accent-600` at 2.76:1 and the WhatsApp surface the
+literal `#25D366` at 1.98:1 (hover `#1da851` 3.10:1), inlined in four files. Both failures lived in a
+`hover:` variant and a hardcoded literal — a checker that samples only the default state passed them.
+The rule that keeps them fixed: every new colour pair is a `@theme` token that `a11y.mjs` can read,
+computed in every state; never a hex in JSX. Flag any visible brand change before shipping.
 
 ## Semantics
 
 - **One `<h1>` per page** (`links.mjs` asserts it); heading order unbroken; `header` / `nav` /
   `main` / `footer` present.
-- **Interposed wrappers break lists (§11.2).** `components/marketing/Process.tsx:13` puts `<Reveal>`
-  (a `<div>`) between `<ol>` and each `<li>`, so the five steps are not announced as a list. The
-  wrapper goes **inside** the `<li>` — or give `Reveal` an `as="li"` prop — never between a list and
-  its items. Same rule for the `Reveal` pattern anywhere else.
-- **Duplicated screen-reader text (§11.3).** `components/marketing/TrustBar.tsx:11` renders
-  `<dt class="sr-only">{stat.label}</dt>` and then repeats the label visibly inside the `<dd>`.
-  Make the visible label the `<dt>` and the value the `<dd>` (a real definition list), and drop the
-  `sr-only` copy. The values it shows are also claim-lexicon territory — `/eeat-build`, §7.2.
+- **Interposed wrappers break lists (§11.2 ✅).** A `<Reveal>` (a `<div>`) between `<ol>` and `<li>`
+  hides the list from screen readers. Since `7cfcf4c` each `Process` `<li>` wraps its own `Reveal`;
+  `a11y.mjs` fails on a recurrence. Same rule for the `Reveal` pattern anywhere else.
+- **Duplicated screen-reader text (§11.3 ✅).** `TrustBar` once rendered an `sr-only` `<dt>` and then
+  repeated the label visibly; it is now a real definition list — visible label `<dt>`, value `<dd>`.
+  The values it shows are also claim-lexicon territory — `/eeat-build`, §7.2.
 - Real `<button>` / `<a>`; never a clickable `div`. Every CTA carries `data-cta` (`cta-coverage.mjs`).
 
-## Keyboard and the mobile menu (§11.4)
+## Keyboard, the skip link and the mobile menu (§11.4 ✅, N19)
 
-`focus-visible:ring-2` on `Button` — good, keep it. The mobile menu in `components/layout/Header.tsx`
-sets `aria-expanded` at `:57` but has **no `aria-controls`** (the menu `<div>` at `:66-68` has no
-`id`), **no Escape handler, no focus trap, no scroll lock**, and closes only through each link's
-`onClick`. Fix when the Header is split into a server shell + a `MobileMenu` client leaf
-(`/performance-web-vitals`): `id` on the panel, `aria-controls` on the toggle, `Escape` closes and
-returns focus to the toggle, focus stays inside while open, body scroll locked. Do **not** copy the
-current pattern into the services/locations mega-menu that `/internal-linking` calls for. Tab order
-follows DOM order — correct in RTL; never reorder visually with CSS.
+`focus-visible` rings on `Button` — keep them. Since `60ce109` (2026-11-08):
 
-## FAQ answers must be in the DOM (N8)
+- **Skip link.** The first focusable element on every page (`app/layout.tsx`, label `skipLinkLabel`)
+  jumps to `<main id="main" tabIndex={-1}>`, ahead of the live-kit bar and the header.
+- **`MobileMenu`** is the client leaf inside a server `Header`: `id="mobile-menu"` on the panel,
+  `aria-controls` + `aria-expanded` on the 44px toggle, Escape closes and returns focus to the toggle,
+  Tab and Shift+Tab cycle inside while open, page scroll locked, and `data-live-block` on the open
+  panel so the live-kit card cannot cover it.
+
+Reuse this pattern — do not invent another — for the services/locations disclosure that
+`/internal-linking` calls for (Sprint 6.5). Tab order follows DOM order — correct in RTL; never
+reorder visually with CSS.
+
+## FAQ answers must be in the DOM (N8 ✅)
 
 The `Faq` component used to hide closed answers with `hidden={!isOpen}` behind a client accordion.
-It is now native `<details>/<summary>` (template: `.claude/skills/engagement-ux/templates/Faq.tsx`):
-native keyboard support, zero JS, answers always in the DOM, `FAQPage` parity preserved
-(`schema.mjs` checks it). Keep physical alignment utilities out of it (`text-start`).
+Since `7cfcf4c` it is a server component on native `<details>/<summary>` (template:
+`.claude/skills/engagement-ux/templates/Faq.tsx`): native keyboard support, zero JS, answers always in
+the DOM, `FAQPage` parity preserved (`schema.mjs` checks it). Keep physical alignment utilities out of
+it (`text-start`).
 
-## Forms (§8.1, N1)
+## Forms (§8.1 ✅, N1 ✅)
 
-Every `LeadForm` field has a `<label htmlFor>` — good. Missing: `components/forms/LeadForm.tsx:120`
-sets `noValidate` and nothing sets `aria-invalid`; the only error is one generic string
-(`LeadForm.tsx:49`, "נא למלא שם וטלפון") in a single `<p role="alert">` at `:201-205` that never says
-**which** field; the `tel` input at `:143-153` has no `pattern`; and the network-error branch at
-`:85-90` sets `status("error")` with **no JSX branch that renders it** (N1 — the user sees nothing).
-
-Recipe: per-field `errors` state → each invalid input gets `aria-invalid` and
-`aria-describedby="lf-<field>-error"` pointing at a visible message; focus moves to the first invalid
-field on submit; keep a summary `role="alert"`. Phone pattern must accept Israeli landlines as well as
-mobiles — this business answers on `072-…` — start from `^0(5\d|7\d|[2-4]|[89])-?\d{7}$` and have
-the reviewer confirm. The full form design (consent, `/תודה/` route, city field, pricing-page CTA) is
-`/conversion-cro`; `cro-engagement-auditor` reviews it.
+Every `LeadForm` field has a `<label htmlFor>`. Since `68a4a7f` (2026-11-08) each invalid field gets
+`aria-invalid` and `aria-describedby="lf-<field>-error"` pointing at a visible message, the wiring
+renders before focus moves to the first invalid field, and the phone check is `lib/phone.ts` — one
+expression for the `pattern` attribute and the JS check, accepting mobiles, `07X` lines (this business
+answers on `072-…`) and landlines. The delivery-failure branch renders a `role="alert"` block (N1,
+`fee7f69`). Before: `noValidate` with one generic string that never said which field, and no pattern.
+The full form design (consent, `/תודה/`, city field, pricing-page CTA) is `/conversion-cro`;
+`cro-engagement-auditor` reviews it.
 
 ## Images and figures
 
@@ -107,22 +97,24 @@ decorative, and `SiteImage` refuses an empty `alt` at compile time. Figures get 
 ## Tap targets and mobile
 
 - 44×44 px minimum for anything tappable, with spacing. The `MobileCtaBar` halves are `py-3.5`
-  full-width anchors — verify the rendered height, not the class.
-- The `h-16 lg:hidden` spacer at `app/layout.tsx:76` keeps the fixed bar off the footer — keep it.
+  full-width anchors and the phone-first CTAs are `Button size="lg"` — verify the rendered height,
+  not the class. **Open (N19):** the two buttons in `LeadForm`'s delivery-failure alert are
+  `size="md"` (≈40px). No script measures target size.
+- The `h-16 lg:hidden` spacer in `app/layout.tsx` keeps the fixed bar off the footer — keep it.
 - Test at 360 px; text reflows to 320 px without horizontal scroll; 200 % zoom loses nothing.
 
 ## Motion
 
-`app/globals.css:96` is the global `prefers-reduced-motion` reset. `components/ui/Reveal.tsx`
+`app/globals.css` carries the global `prefers-reduced-motion` reset. `components/ui/Reveal.tsx`
 initialises **visible** and only hides after mount, so content is never stranded at `opacity: 0`.
 `framer-motion` was uninstalled on 2026-09-06 (§10.3) — do not reinstall it; a JS animation would
 have to be `useReducedMotion()`-gated to honour the reset.
 
 ## RTL
 
-`<html lang="he" dir="rtl">`; LTR islands for phone, email, price, URL. The three live `text-right`
-hits (`LeadForm.tsx:151`, `Faq.tsx:25`, `PricingTeaser.tsx:17`) are a one-word swap each to
-`text-start`. Full rule set and the `direction-agnostic` exception: `/hebrew-rtl`.
+`<html lang="he" dir="rtl">`; LTR islands for phone, email, price, URL. The three `text-right` hits
+that survived review (`LeadForm`, `Faq`, `PricingTeaser`) became `text-end` in `7cfcf4c`;
+`rtl-lint.mjs` → `bannedUtilities 0`. Full rule set and the `direction-agnostic` exception: `/hebrew-rtl`.
 
 ## Checklist
 
@@ -136,7 +128,9 @@ hits (`LeadForm.tsx:151`, `Faq.tsx:25`, `PricingTeaser.tsx:17`) are a one-word s
       state actually renders (N1).
 - [ ] FAQ answers present in the DOM (`<details>`), `FAQPage` parity intact.
 - [ ] Meaningful `alt`; 44 px targets; 360 px clean; 200 % zoom usable.
-- [ ] `/הצהרת-נגישות/` still describes reality — update it in the same change if it does not.
+- [ ] `/הצהרת-נגישות/` still describes reality — update it in the same change if it does not. It
+      names WCAG 2.1 AA since 2026-11-08 (was 2.0); it still has no date or coordinator
+      (`docs/accessibility-and-i18n.md` §2).
 
 ## Gotchas
 
@@ -145,6 +139,6 @@ hits (`LeadForm.tsx:151`, `Faq.tsx:25`, `PricingTeaser.tsx:17`) are a one-word s
 - **A hex in JSX fails lint** (`rtl-lint.mjs`, `post-edit-lint.ps1`). Tokens live in the `@theme` block
   of `app/globals.css`; brand changes go upstream to the roster's brand block, then into `@theme`.
 - **`hidden` is not "collapsed".** Anything a reader or crawler should be able to find has to be in the
-  rendered DOM — that is why the FAQ moves to `<details>` rather than to a nicer accordion.
+  rendered DOM — that is why the FAQ moved to `<details>` rather than to a nicer accordion.
 - **The statement is a claim.** Fixing a contrast failure and leaving the statement's "conforms" line
   unchanged is fine; shipping a new failure without amending it is not.

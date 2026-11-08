@@ -146,7 +146,7 @@ per-city data (`cityContent`, Phase 3, `new-city`), never in JSX; the `photoEvid
 No person is named anywhere, and none is coming (business-facts §B, owner-actions §3.3). So every
 `BlogPosting` / `Article` carries the **`Organization` as author** (or omits `author`) — never a
 `Person`, never "צוות" as a pseudo-person, never a first name; no byline, no "מאת" line, no author box,
-no stock team grid. `lib/authors.ts` is **planned, not built** (Phase 6, backlog §7.4): an empty
+no stock team grid. `lib/authors.ts` exists since `d8edb28` (2026-11-08, backlog §7.4 ✅): an empty
 registry with a data-only path. `schema.mjs` already reads it — absent or empty keeps the gate closed
 and fails any `Person` author in `out/`. Omitting a signal is legitimate; inventing one is not.
 
@@ -221,18 +221,18 @@ than no listing. Quarterly check: gbp-runbook §13.
 
 ### 5.1 Trust surfaces the site must carry
 
-| Surface                                     | Status | Standard                                                                                                                                                                                                                                                                   |
-| ------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Phone                                       | ✅     | `072-2587772` (`phoneOverride: true` — never "corrected" to the fleet number), click-to-call on every page, `dir="ltr"`                                                                                                                                                    |
-| No street address                           | ✅     | Correct for a service-area business (backlog §5.6 HOLDS). Never invent one — on the site, in schema, or on a directory                                                                                                                                                     |
-| WhatsApp                                    | 🔶     | Same number, unconfirmed as a chat channel (owner-actions §3.7). The CTA stays or goes on that answer                                                                                                                                                                      |
-| Hours, consistent everywhere                | ❌     | Footer, `/צור-קשר/`, `FinalCta`, `TrustBar`, `openingHoursSpecification` and the GBP must agree. Today the footer ends at 18:00 under a CTA promising 24/7 — **fix §7.6** by bounding the promise to §E                                                                    |
-| Privacy policy                              | 🟡     | `/מדיניות-פרטיות/` exists but names no processor. It must name **Web3Forms** (the form endpoint) and **GTM / GA4** (analytics), and the form must link to it with a consent line (backlog §8.2, which this row extends: the processor must be named)                       |
-| Accessibility statement                     | ❌     | `/הצהרת-נגישות/` claims "ניגודיות צבעים תקינה" while `a11y.mjs` measures 2.76:1 and 1.98:1 on the conversion buttons (§11.1), and names WCAG 2.0 where the site's bar is 2.1 AA (CLAUDE.md, backlog §11). **Both particulars are corrected or the statement is re-worded** |
-| HTTPS + HSTS                                | ✅     | Served live from Cloudflare zone rules the repo does not own (owner-actions §1.3, backlog §12.1); `edge.mjs` measures. Verified 2026-09-06: `max-age=15552000`, no CSP                                                                                                     |
-| Transparency beyond a phone number          | ❌     | No legal entity name, no ח״פ / ע״מ, no complaints route, no cancellation path (**N15**). The complaints and cancellation channel needs no owner fact; the ח״פ stays 🔶 (business-facts §B)                                                                                 |
-| Pricing page as "what determines the price" | ❌     | **N14** — fault type, gate weight and width, motor class, reuse of the existing motor, access and cabling, whether the visit fee is credited. The 150–350 ₪ band stays (currency 🔶); no `Offer` (§4.10)                                                                   |
-| Named human · photos · reviews · warranty   | ❌     | §3, §2, §4, §5.3                                                                                                                                                                                                                                                           |
+| Surface                                     | Status | Standard                                                                                                                                                                                                                                                                                                                |
+| ------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phone                                       | ✅     | `072-2587772` (`phoneOverride: true` — never "corrected" to the fleet number), click-to-call on every page, `dir="ltr"`                                                                                                                                                                                                 |
+| No street address                           | ✅     | Correct for a service-area business (backlog §5.6 HOLDS). Never invent one — on the site, in schema, or on a directory                                                                                                                                                                                                  |
+| WhatsApp                                    | 🔶     | Same number, unconfirmed as a chat channel (owner-actions §3.7). The CTA stays or goes on that answer                                                                                                                                                                                                                   |
+| Hours, consistent everywhere                | ❌     | Footer, `/צור-קשר/`, `FinalCta`, `TrustBar`, `openingHoursSpecification` and the GBP must agree. Today the footer ends at 18:00 under a CTA promising 24/7 — **fix §7.6** by bounding the promise to §E                                                                                                                 |
+| Privacy policy                              | 🟡     | Since `68a4a7f` (2026-11-08, repo) it names **Web3Forms** and **Google Tag Manager**, and the form links it with a consent line. **GA4** is named once the property exists (B2); backlog §8.2 stays PARTIAL until the reviewers sign off on the fix pass                                                                |
+| Accessibility statement                     | ✅     | Both particulars corrected 2026-11-08 (repo): the contrast failures (2.76:1, 1.98:1) are fixed — `a11y.mjs` 0, every pair ≥ 5.42:1 (§11.1 ✅) — and the statement names WCAG 2.1 AA instead of 2.0. Mechanically true; no manual pass recorded, and it still carries no date or coordinator (accessibility-and-i18n §2) |
+| HTTPS + HSTS                                | ✅     | Served live from Cloudflare zone rules the repo does not own (owner-actions §1.3, backlog §12.1); `edge.mjs` measures. Verified 2026-09-06: `max-age=15552000`, no CSP                                                                                                                                                  |
+| Transparency beyond a phone number          | ❌     | No legal entity name, no ח״פ / ע״מ, no complaints route, no cancellation path (**N15**). The complaints and cancellation channel needs no owner fact; the ח״פ stays 🔶 (business-facts §B)                                                                                                                              |
+| Pricing page as "what determines the price" | ❌     | **N14** — fault type, gate weight and width, motor class, reuse of the existing motor, access and cabling, whether the visit fee is credited. The 150–350 ₪ band stays (currency 🔶); no `Offer` (§4.10)                                                                                                                |
+| Named human · photos · reviews · warranty   | ❌     | §3, §2, §4, §5.3                                                                                                                                                                                                                                                                                                        |
 
 ### 5.2 On security badges
 
@@ -261,7 +261,8 @@ correctness fix, decided in CLAUDE.md §1, needing no owner input.
 Doctrine: [seo-geo-aeo-strategy.md §4](seo-geo-aeo-strategy.md), not repeated here. The trust signals an assistant weights, and their state:
 
 - **Attribution** — absent by design (§3.1). The substitute is the `Organization` with `knowsAbout`,
-  `logo`, `image` and `sameAs` on `#business` (Phase 2), and a real `dateModified`.
+  `logo` and `image` on `#business` (since `02a3144`, 2026-11-08), `knowsAbout` on `/אודות/` (since
+  `d8edb28`), `sameAs` once the GBP exists (B3), and a real `dateModified` once a post is genuinely revised.
 - **Balance** — the 230V boundary and a "when repair is the wrong choice" block are trust assets,
   not conversion leaks; pages that say when not to buy get cited.
 - **Specificity with units** — only where sourced: the 150–350 ₪ band, the standard's clause, the
@@ -320,7 +321,7 @@ Doctrine: [seo-geo-aeo-strategy.md §4](seo-geo-aeo-strategy.md), not repeated h
 ## 10. Acceptance checklist
 
 - [ ] `node scripts/audit/claims-grep.mjs` exits 0; `licence`, `insurance`, `certification`, `founded`, `named-person` are 0 in source and in `out/`.
-- [ ] `node scripts/audit/schema.mjs` reports no `Review`, `AggregateRating`, `Person` author, `Offer`, `foundingDate` or `address`; `image` and `logo` on `#business` (Phase 2); no byline anywhere and `lib/authors.ts` empty.
+- [ ] `node scripts/audit/schema.mjs` reports no `Review`, `AggregateRating`, `Person` author, `Offer`, `foundingDate` or `address`; `image` and `logo` on `#business` (✅ since `02a3144`); no byline anywhere and `lib/authors.ts` empty.
 - [ ] `grep -rl 'aggregateRating' out --include=index.html | wc -l` → 0 until §4.2 is done — then exactly the pages that render the reviews section; after Sprint 0 the same on the live homepage.
 - [ ] `reviews`, when populated, are verbatim with name · rating · date, `REVIEW_SOURCE_URL` set, the same URL in the roster `sameAs`; `claims-verifier` confirmed count and rating against the profile.
 - [ ] Every `<img>` is a real photograph through `SiteImage` with Hebrew `alt`, `width`/`height`, and city · gate type · month in data — `a11y.mjs` no-alt 0, `perf.mjs` unsized 0, `eeat-trust-auditor` passed provenance; every case note is city · gate type · fault · outcome, no price, permission on record.

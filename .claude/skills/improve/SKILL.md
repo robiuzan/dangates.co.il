@@ -119,15 +119,14 @@ found); do not reorder "Suggested order of work" — strike a finished item thro
 Never deploy from here. End with the status line, the proof command and its output, the reviewers'
 verdicts, and: **"run `/qa-build-gate` then `/deploy-dangates` when the owner says go."**
 
-## Worked example A — `§11.5` three banned RTL utilities
+## Worked example A — `§11.5` three banned RTL utilities (closed 2026-11-08 by `7cfcf4c`; kept as the worked shape)
 
-1. `grep -n '^### 11.5 ' docs/optimization-backlog.md` → P2 · S · NOT STARTED; script `rtl-lint.mjs`.
+1. `grep -n '^### 11.5 ' docs/optimization-backlog.md` → P2 · S · then NOT STARTED; script `rtl-lint.mjs`.
 2. Route: §11 → `/hebrew-rtl` + `/responsive-accessibility` → rtl-frontend-engineer → ts-react-reviewer
-   → `rtl-lint.mjs`. `node scripts/audit/rtl-lint.mjs` now: `bannedUtilities: 3` at
-   `components/forms/LeadForm.tsx:151`, `components/marketing/Faq.tsx:25`,
-   `components/marketing/PricingTeaser.tsx:17` (all `text-right`), plus 8 hex literals on 5 lines.
+   → `rtl-lint.mjs`. `node scripts/audit/rtl-lint.mjs` then read `bannedUtilities: 3` in
+   `LeadForm`, `Faq` and `PricingTeaser` (all `text-right`), plus 8 hex literals on 5 lines.
 3. Small and mechanical: `text-right` → `text-start` in the three files (RTL renders the same; the
-   lint stops flagging). Hex literals in the same pass → `@theme` tokens; `#25D366` needs a new
+   lint stops flagging). Hex literals in the same pass → `@theme` tokens; `#25D366` needed a new
    WhatsApp token in `app/globals.css` first (`.claude/rules/rtl-markup.md`).
 4. `npm run gate`; `node scripts/audit/rtl-lint.mjs` → `bannedUtilities: 0`.
 5. `ts-react-reviewer` on the diff.

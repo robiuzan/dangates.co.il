@@ -23,13 +23,13 @@ node scripts/audit/run-all.mjs --scope cro       # cta-coverage.mjs — data-cta
 node scripts/audit/links.mjs                     # chrome reach, orphans, one H1, heading order, breadcrumbs
 ```
 
-As of 2026-08-23, for context only: the full audit exits **37**. On your axes: 3 banned utilities
-(`components/forms/LeadForm.tsx:151`, `components/marketing/Faq.tsx:25`,
-`components/marketing/PricingTeaser.tsx:17` — all `text-right`); 8 hex literals on 5 lines; 4 a11y
-failures (below); 24 CTA instances without `data-cta` (9 elements carry it); 18 location pages emit no
-`Service`; `#business` dangling on 7 services + 11 posts; no `WebSite`; raw Hebrew in 7 `Service.url`
-and 11 `mainEntityOfPage`; 0 orphans but 6 locations outside the chrome
-(`components/layout/Footer.tsx:76` slices to 12).
+As of 2026-11-08, for context only (clean rebuild): the full audit exits **15** — `content-depth` 10
+and `claims-grep` 5, both copy work. On your axes everything reads 0: `rtl-lint.mjs`
+`bannedUtilities 0 · hexLiterals 0`, `a11y.mjs` 0, `cta-coverage.mjs` `missingDataCta 0`, `schema.mjs`
+0 (`danglingIds 0`, `rawHebrewUrls 0`). Still open on yours: 6 locations outside the chrome
+(`links.mjs` `notInChrome 6` — the footer slices to 12, §9.2), related links by array order (§9.4),
+and two `size="md"` buttons in the form's error alert (N19). Sprints 2–3 cleared the rest
+(2026-08-23: exit 37).
 
 ## Stack and constraints
 
@@ -51,18 +51,17 @@ you never deploy; that is `/deploy-dangates`, and it asks.
 
 - **No `any`. No non-null `!`.** An indexed read is `T | undefined` — narrow it.
 - **RSC by default.** `"use client"` only for state, effects or browser APIs, kept leaf-level. Client
-  today: `Header`, `Faq`, `LeadForm`, `Reveal` (`rtl-lint.mjs` inventories them). Don't grow that set.
+  today (since 2026-11-08): `LeadForm`, `MobileMenu`, `Reveal` (`rtl-lint.mjs` inventories them in
+  `KNOWN_CLIENT`). Don't grow that set without adding to the ledger in the same change.
 - **Single source of truth.** `siteConfig`, `services`, `locations`, `telHref`, `whatsappHref()` from
   `@/lib/site-config`; strings from `@/lib/content`. Never hardcode the phone, a service name or a slug.
 - **Copy never lives in JSX.** Any Hebrew you need goes to `lib/content.ts` via `hebrew-copywriter`,
   to the bar in `docs/content-standards.md` §3–§5. The module-scope `triggers` array at
-  `app/services/[service]/page.tsx:43-48` (rendered on all 7 service pages, shutters included) is the
-  bug §3.3 fixes, not a precedent — the target is per-service `triggers` in `serviceDepth`.
-- **Never hardcode a hex.** Use `@theme` tokens. `accent-500` (`#d9b400`, `app/globals.css:47`) is the
-  ready AA hover token (N11). WhatsApp green has **no token yet** — add one to `@theme`, then retire the
-  literals at `components/ui/Button.tsx:13`, `components/layout/MobileCtaBar.tsx:22`,
-  `components/forms/LeadForm.tsx:222`, `app/צור-קשר/page.tsx:42`; `components/marketing/Hero.tsx:16`
-  holds the other two (gradient stops).
+  the old module-scope `triggers` array in the service route (rendered on all 7 pages, shutters
+  included) was the bug §3.3 fixed (`cfff52f`), not a precedent — the target is per-service `triggers` in `serviceDepth`.
+- **Never hardcode a hex.** Use `@theme` tokens. `accent-500` (`#d9b400`) is the AA hover token
+  (N11 ✅); WhatsApp is the `whatsapp` / `whatsapp-hover` / `whatsapp-foreground` set; the `Hero`
+  gradient uses the `primary` tokens. `rtl-lint.mjs` → `hexLiterals 0` since `7cfcf4c` — keep it there.
 - **Every CTA carries `data-cta`** with a value from `docs/event-taxonomy.md` (`tel_click`,
   `whatsapp_click`, `email_click`, `lead_submit` placements). `cta-coverage.mjs` must exit 0.
 - **No PII in `dataLayer`.** `lead_submit` carries `page`, `service`, `city` — nothing else.
@@ -79,29 +78,31 @@ and the `.ltr` helper.
 ## Accessibility — WCAG 2.1 AA + IS 5568 (`/responsive-accessibility`)
 
 Landmarks, one `<h1>`, unbroken heading order (`links.mjs`). Real `<button>`/`<a>`, never a clickable
-`div`. Visible focus; `aria-label` on icon-only controls; Hebrew `alt`; any motion must honour the global reduced-motion reset, as `Reveal` already does. The open findings `a11y.mjs` measures — fix the token or pattern, never extend it:
+`div`. Visible focus; `aria-label` on icon-only controls; Hebrew `alt`; any motion must honour the global reduced-motion reset, as `Reveal` already does. `a11y.mjs` reads 0 since Sprint 3 (2026-11-08) — keep it there, and reuse the patterns that got it
+there rather than inventing new ones:
 
-- `components/ui/Button.tsx:11` accent hover: `accent-foreground` on `accent-600` = **2.76:1** →
-  `hover:bg-accent-500`. `:13` + `MobileCtaBar.tsx:22` WhatsApp: white on `#25D366` = **1.98:1**.
-- `components/marketing/Process.tsx:13` — `<Reveal>` (a `<div>`) sits between `<ol>` and `<li>`; the
-  wrapper goes inside the `<li>` (§11.2).
-- `components/forms/LeadForm.tsx:120` `noValidate` with one generic string (`:49`, rendered
-  `:201-205`) — no `aria-invalid`, no `aria-describedby`, no `pattern` on the tel input (`:143-153`),
-  and on delivery failure **no UI renders at all** (N1). Per-field errors, an Israeli phone pattern
-  incl. landlines, and a `/תודה/` route are §8.1–§8.3 (`/conversion-cro`).
-- `components/layout/Header.tsx:57` `aria-expanded` without `aria-controls`, no focus trap, no Escape (§11.4).
-- `components/marketing/TrustBar.tsx:11` sr-only `<dt>` repeats the visible label (§11.3).
-- The `Faq` component is native `<details>/<summary>` (N8 closed) — keep answers in the DOM and
-  stay server-rendered.
+- Colour only from `@theme` tokens: the accent hover is `accent-500` (6.79:1), WhatsApp is
+  `bg-whatsapp text-whatsapp-foreground` (5.42:1) — the 2.76:1 and 1.98:1 failures were a `hover:`
+  variant and a hex literal (§11.1, N11 ✅).
+- Nothing between `<ol>` and `<li>` — `Process` wraps `Reveal` inside each `<li>` (§11.2 ✅).
+- Forms: per-field `aria-invalid` + `aria-describedby`, focus to the first invalid field, the
+  `lib/phone.ts` pattern, a rendered failure branch (§8.1, N1 ✅ — `/conversion-cro`).
+- Disclosure menus: copy `MobileMenu` — `aria-controls`, Escape back to the toggle, Tab trap, scroll
+  lock, `data-live-block` while open (§11.4 ✅). The §9.1 header disclosure reuses it.
+- No `sr-only` copy of visible text (§11.3 ✅); `Faq` stays native `<details>/<summary>`,
+  server-rendered (N8 ✅).
+- Tap targets: `Button size="lg"` for any tap-first action on a phone. Open: the two `md` buttons in
+  `LeadForm`'s error alert (N19).
 
 ## Schema wiring (`/schema-structured-data`)
 
 `components/layout/PageHeader.tsx` **already emits `BreadcrumbList`** on all 44 nested routes — never
 add a second. Crumbs are `{label, href}`; the kit's `breadcrumbJsonLd` takes `{name, path}`, not
 `{name, url}`. Every `url`/`@id`/`mainEntityOfPage` must be percent-encoded like the canonical
-(`schema.mjs` fails raw Hebrew). Phase 2 adds `lib/jsonld.ts` (location `Service` + local `areaServed`,
-one `@graph`, `WebSite`, a defined `#business` wherever it is referenced, `logo`/`image`).
-`Review`/`AggregateRating`/`author`/`Offer` stay absent until sourced — `Reviews.tsx` returns `null`
+(`schema.mjs` fails raw Hebrew). Since Sprint 2 (2026-11-08) every page renders one `@graph` through
+`lib/jsonld.ts` — hand `PageHeader` your page's `nodes` and render no script of your own; emit
+`businessNode()` on any page whose nodes reference `#business`; build every URL with `pageUrl()`.
+`Review`/`AggregateRating`/a `Person` author/`Offer` stay absent until sourced — `Reviews.tsx` returns `null`
 by design; that guard is the rule made mechanical.
 
 ## Hebrew dynamic routes — the production-only trap
@@ -109,13 +110,14 @@ by design; that guard is the rule made mechanical.
 Params for `[service]`, `[city]`, `[slug]` arrive **percent-encoded** during export. The silo routes
 match with `decodeURIComponent(param).normalize("NFC")` (`app/services/[service]/page.tsx:27`,
 `app/locations/[city]/page.tsx:18`). A new Hebrew dynamic route that skips this works in dev and 404s in
-production. Static routes are the `staticPages` registry in `lib/site-config.ts` — a new top-level page needs a row there or `links.mjs` fails (§1.4, done 2026-09-06); `navItems` hrefs lack the trailing slash the export enforces (N10).
+production. Static routes are the `staticPages` registry in `lib/site-config.ts` — a new top-level page needs a row there or `links.mjs` fails (§1.4, done 2026-09-06); `navItems` hrefs carry the trailing slash the export enforces (N10, closed 2026-09-06). `/תודה/` is the
+one `noindex` row — it stays out of the sitemap.
 
 ## Workflow
 
 1. Read a sibling component first — match its patterns, not generic best practice. If the task needs a
    data-model field that does not exist yet (`cityContent`, `serviceDepth`, `kind`/`prefixed`,
-   `lib/jsonld.ts`, `content/guides/`), build it to the owning skill's spec and name the phase.
+   `content/guides/`), build it to the owning skill's spec and name the phase.
 2. Make the change. New strings → `hebrew-copywriter`; never type Hebrew into JSX yourself.
 3. Touched `REDIRECTS.md` or `scripts/gen-redirects.mjs`? Run `npm run redirects`, commit the regenerated `public/_redirects`, and say how many rules it now carries (`git status --porcelain public/` must end clean).
 4. Run **`npm run gate`** (lint → typecheck → format:check → build → audit). Report the real output

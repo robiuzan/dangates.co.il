@@ -71,10 +71,10 @@ number below is "as of 2026-08-23" context for reading the output, not a finding
    CTA (§7.6). Route to business-facts §E / owner-actions §3.5; recommend bounding, never deleting
    coverage you have not verified.
 7. **Geo signals** (§5.5). No `GeoCoordinates`, `hasMap`, map embed or landmark in any copy.
-   `schema.mjs`: all 18 location pages emit **only `BreadcrumbList`** — no `Service`, no `areaServed`.
-   The right shape is one business node plus a per-page `Service` with `areaServed: City` (or
-   `AdministrativeArea` for the four regions) — `docs/schema-graph.md` §5, built in Phase 2 as
-   `locationServiceJsonLd` in `lib/jsonld.ts`. **Never** a `LocalBusiness` per city, never a
+   `schema.mjs` (2026-11-08): all 18 location pages emit one business node plus a per-page `Service`
+   with `areaServed: City` (or `AdministrativeArea` for the four regions) — `docs/schema-graph.md` §5,
+   built in Sprint 2 as `locationServiceJsonLd` in `lib/jsonld.ts` (§4.2 ✅, not deployed yet). Check
+   it holds. **Never** a `LocalBusiness` per city, never a
    `PostalAddress`.
 8. **Internal equity** (§9.2, §9.3). `components/layout/Footer.tsx:76` renders `locations.slice(0, 12)`
    → `links.mjs` `notInChrome: 6` (אשקלון, באר שבע, דרום, צפון, קריות, שרון); no service page links

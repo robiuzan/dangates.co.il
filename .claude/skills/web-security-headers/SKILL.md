@@ -84,7 +84,7 @@ must be present or something breaks:
 - `www.googletagmanager.com` — `script-src`, `connect-src` (`*.googletagmanager.com`), `frame-src` for
   the `<noscript>` iframe (`app/layout.tsx:58-68`); `google-analytics.com` + regional
   `*.google-analytics.com` for GA4 beacons once the property exists (owner-actions §2.4).
-- `api.web3forms.com` — the lead-form POST (`components/forms/LeadForm.tsx:19`), in `connect-src` **and** `form-action`.
+- `api.web3forms.com` — the lead-form POST (`WEB3FORMS_ENDPOINT` in `components/forms/LeadForm.tsx`), in `connect-src` **and** `form-action`.
 - `imgquarry.com` — the manifest media host (OG card; photos via `/site-images`); `/cdn-cgi/image/…` is same-origin.
 - `font-src 'self' data:` (Rubik is self-hosted by `next/font`) · `style-src 'unsafe-inline'` (Next inline styles).
 
@@ -145,13 +145,14 @@ concluding it failed. `/deploy-dangates` carries the same checks post-deploy.
 
 ## The lead form
 
-- POSTs to `https://api.web3forms.com/submit` (`LeadForm.tsx:19`) with a **public-by-design** access
+- POSTs to `https://api.web3forms.com/submit` (`WEB3FORMS_ENDPOINT`) with a **public-by-design** access
   key from the manifest — not a leaked secret (§12.5); `secret-scan.ps1` allow-lists it.
-- Honeypot `company` (`LeadForm.tsx:45`); no client rate limiting — fine at this volume. The WhatsApp
-  fallback carries the user's own data to the user's own app — fine; don't extend the pattern.
-- **Consent:** PII collected, `/מדיניות-פרטיות/` never linked (§8.2) — still open, via `/conversion-cro`, reviewed by `cro-engagement-auditor`. **Silent failure is fixed** (N1 ✅ 2026-09-06): the error state renders a `role="alert"` block with a real WhatsApp link and a `tel:` link, and reports `lead_error` with a `reason`. §8.6 stays PARTIAL only because nothing consumes that event yet.
-- **No PII in `dataLayer`** — `trackEvent("lead_submit", { form: "lead" })` (`LeadForm.tsx:97`) sends
-  none; still none when §13.4 adds page/service/city (golden rule 10, `docs/event-taxonomy.md`).
+- Honeypot: the hidden `company` field; no client rate limiting — fine at this volume. The WhatsApp
+  link in the error alert carries the user's own data to the user's own app — fine; don't extend the pattern.
+- **Consent:** since `68a4a7f` (2026-11-08, repo) a consent line beside the submit button links `/מדיניות-פרטיות/`, which names Web3Forms and Google Tag Manager; §8.2 stays PARTIAL (reviewer sign-off, GA4 on B2, any consent UI on B10) — `/conversion-cro`, reviewed by `cro-engagement-auditor`. **Silent failure is fixed** (N1 ✅ 2026-09-06): the error state renders a `role="alert"` block with a real WhatsApp link and a `tel:` link, and reports `lead_error` with a `reason`. §8.6 stays PARTIAL only because nothing consumes that event yet.
+- **No PII in `dataLayer`** — since `68a4a7f` every form push goes through `LeadForm`'s `track()`:
+  `form`, `page`, `site`, plus slugs, a placement or a reason — never the name, phone or message
+  (§13.4 ✅, golden rule 10, `docs/event-taxonomy.md`).
 
 ## Secret hygiene and `.env.example`
 

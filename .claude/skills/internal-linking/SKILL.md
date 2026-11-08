@@ -40,10 +40,10 @@ pages (`breadcrumbPages: 44`) — §7 is about keeping that parity, not creating
 Add a disclosure (desktop: two-column panel; mobile: nested inside the existing menu) listing every
 service and every location from `services` / `locations` — never a hand-typed subset. Constraints:
 
-- `Header.tsx` is already `"use client"` for the toggle; keep the new state in the same leaf.
-- Keyboard-operable: `aria-expanded` (present on the toggle at `components/layout/Header.tsx:57`), **plus**
-  `aria-controls`, Escape closes, focus returns to the trigger — the mobile menu has none of the last
-  three (`/responsive-accessibility`). Fix it in the same pass rather than copying it.
+- `Header` is a server component since `60ce109` (2026-11-08); the client state lives in the
+  `MobileMenu` leaf. Put the disclosure's state in that leaf (or a sibling leaf), never back in `Header`.
+- Keyboard-operable: reuse `MobileMenu`'s pattern — `aria-expanded` + `aria-controls`, Escape closes
+  and returns focus to the trigger, a Tab trap while open (§11.4 ✅, `/responsive-accessibility`).
 - `navItems` hrefs lack the trailing slash (`/שירותים`, not `/שירותים/` — N10). Next normalises on
   export, but write the canonical form in new entries.
 

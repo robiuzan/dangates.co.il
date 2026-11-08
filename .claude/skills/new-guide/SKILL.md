@@ -27,7 +27,7 @@ step 2** and route to `/improve` — never park a guide in `lib/posts.ts` or inv
 | `content/guides/<slug>.ts`                 | `templates/<family>.ts`                                      | one guide, `as const satisfies Guide`                              |
 | `components/article/*`                     | galbath `components/article/*`                               | `ArticleBody` (block renderer), TOC, meta                          |
 | `app/מדריכים/page.tsx`, `[slug]/`          | galbath `app/מדריכים/**`                                     | index (`ItemList`) + detail; Hebrew-param decode + NFC             |
-| `lib/jsonld.ts` `articleJsonLd`            | schema-graph §8 (Phase 2 builds it first)                    | `TechArticle`/`Article` in one `@graph`                            |
+| `lib/jsonld.ts` `articleJsonLd`            | schema-graph §8 (built 2026-11-08; takes `type`)             | `TechArticle`/`Article` in one `@graph`                            |
 | `scripts/audit/schema.mjs` `requiredTypes` | `schema.mjs:57-62` returns only `BreadcrumbList` for `guide` | Phase 4 extends it to the article type + `FAQPage`                 |
 
 Already in place: `scripts/audit/lib/pages.mjs:138-139` classifies `/מדריכים/` as `guides-index` /

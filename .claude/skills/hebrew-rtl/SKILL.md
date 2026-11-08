@@ -17,10 +17,10 @@ npm run audit -- --scope a11y          # the same, plus a11y.mjs
 The script is the one copy of the regexes; `.claude/hooks/post-edit-lint.ps1` runs the same
 patterns on every `Edit`/`Write` to `app/**/*.tsx` and `components/**/*.tsx` and feeds the hits
 back as a warning, and `.claude/rules/rtl-markup.md` loads the short form whenever one of those
-files is open. As of 2026-08-23 the lint reports **3 banned utilities** — all `text-right`, at
-`components/forms/LeadForm.tsx:151`, `components/marketing/Faq.tsx:25`,
-`components/marketing/PricingTeaser.tsx:17` — and **8 hex literals on 5 lines** (backlog §11.5).
-Re-run the script before quoting either number.
+files is open. As of 2026-11-08 the lint reports **0 banned utilities and 0 hex literals** — Sprint 3 (`7cfcf4c`)
+turned the three `text-right` hits in `LeadForm`, `Faq` and `PricingTeaser` into `text-end` and the
+literals into tokens (backlog §11.5 ✅; it was 3 and 8 on 2026-08-23). Re-run the script before
+quoting either number.
 
 ## Logical utilities only — the ban list
 
@@ -53,15 +53,13 @@ if the order looks wrong, the DOM order is wrong. Vertical utilities (`pt`, `pb`
 
 Colour comes from the `@theme` tokens in `app/globals.css` — `primary`, `secondary`, `accent`,
 `accent-foreground`, and the `-50…-900` scales. The lint flags every `#rrggbb` in a `className` or
-inline `style`. The live hits and their fixes:
+inline `style`. `rtl-lint.mjs` → `hexLiterals 0` since `7cfcf4c` (2026-11-08); the last hits were
+fixed like this, and a new one gets the same treatment:
 
-- `components/ui/Button.tsx:13`, `components/layout/MobileCtaBar.tsx:22`,
-  `components/forms/LeadForm.tsx:222`, `app/צור-קשר/page.tsx:42` — WhatsApp green `#25D366` /
-  `#1da851`. WhatsApp is **not a token yet**: add `--color-whatsapp` (and a hover shade) in
-  `globals.css` once, then use `bg-whatsapp`. White on `#25D366` is 1.98:1 — see
-  `/responsive-accessibility` before picking the text colour.
-- `components/marketing/Hero.tsx:16` — gradient stops `#d21f27` / `#520406` are exactly
-  `primary-400` / `primary-900`; write `var(--color-primary-400)` inside the inline gradient.
+- The WhatsApp greens (`#25D366` / `#1da851`, white on it 1.98:1) became the `whatsapp`,
+  `whatsapp-hover` and `whatsapp-foreground` tokens in `globals.css` — use `bg-whatsapp`
+  `text-whatsapp-foreground`, never a literal. See `/responsive-accessibility` before any new pair.
+- The `Hero` gradient stops were exactly `primary-400` / `primary-900` — write the token, never the hex.
 
 ## LTR islands
 
@@ -146,7 +144,7 @@ correctly, the URL does not. Renaming it without a 301 throws away ranking signa
 
 - The hook only warns (PostToolUse cannot block) — the edit has already landed. Fix it in the same
   turn; `npm run gate` fails on what the hook warned about.
-- `text-right` on a `<table>` (`PricingTeaser.tsx:17`) looks harmless because the site is RTL-only.
+- `text-right` on a `<table>` (as `PricingTeaser` had until `7cfcf4c`) looks harmless because the site is RTL-only.
   It is still a finding: the rule is mechanical so that the next LTR island or mirrored component
   does not inherit a physical alignment.
 - Don't "fix" encoded slugs by decoding them in `sitemap.ts` — Cloudflare Pages 404s raw UTF-8 paths.

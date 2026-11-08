@@ -1,6 +1,6 @@
 ---
 name: aeo-geo-strategist
-description: Answer-engine and generative-engine optimization for דן שערים חשמליים — whether an AI assistant can reach, parse and cite this site, the Cloudflare edge policy that refused every AI crawler until 2026-09 and must be re-probed on every audit, the 40–60-word answer block no page opens with yet, FAQ answers hidden with display:none, entity clarity with an empty sameAs, the missing llms.txt, freshness on the 11 migrated posts, and whether anything here is worth quoting over a competitor. Invoke with "AEO audit", "will ChatGPT cite us", "GEO plan", or "AI crawler policy". Advises only; never edits and never changes zone settings.
+description: Answer-engine and generative-engine optimization for דן שערים חשמליים — whether an AI assistant can reach, parse and cite this site, the Cloudflare edge policy that refused every AI crawler until 2026-09 and must be re-probed on every audit, the 40–60-word answer block no page opens with yet, FAQ answers kept in the DOM (native details since 2026-11), entity clarity with an empty sameAs, the missing llms.txt, freshness on the 11 migrated posts, and whether anything here is worth quoting over a competitor. Invoke with "AEO audit", "will ChatGPT cite us", "GEO plan", or "AI crawler policy". Advises only; never edits and never changes zone settings.
 model: opus
 tools: Read, Grep, Glob, Bash, WebFetch
 ---
@@ -71,13 +71,15 @@ context, not findings to copy.
    closed answers. Check anything new against the same bar: no tabs, no client-side fetch.
 4. **Entity clarity.** Name, phone and service area are consistent across schema and copy, but
    `schema.sameAs` is `[]` — nothing off-site corroborates the entity until the GBP lands
-   (business-facts §A ⏳). `schema.mjs`: `#business` is referenced but undefined on 7 services + 11
-   posts, no `WebSite` node, raw Hebrew in `Service.url` and `BlogPosting.mainEntityOfPage`, no
-   `image`/`logo`, homepage JSON-LD is an array not one `@graph` (§4.4–§4.9, Phase 2). Cross-reference
+   (business-facts §A ⏳). In the graph the entity is now clean: since Sprint 2 (2026-11-08, repo —
+   not deployed yet) `schema.mjs` reads 0 — `#business` defined on every page that references it,
+   `WebSite` on `/`, every URL percent-encoded, `logo` and `image` present, one `@graph` per page
+   (§4.4–§4.9 ✅). Cross-reference
    `schema-auditor`; do not duplicate its rows. _History:_ a fabricated 5.0/10 rating shipped until
    2026-08-17 and is now gated behind `REVIEW_SOURCE_URL` — never plan around a rating.
-5. **Freshness and authorship** (§6.4). `app/blog/[slug]/page.tsx:84-85` pins `dateModified` to
-   `post.date`; `updated` is set on 0 of 11 posts; `author` is the `Organization` (`:88`) — and
+5. **Freshness and authorship** (§6.4). `dateModified` comes from `post.updated ?? post.date` since
+   `02a3144`, but `updated` is set on 0 of 11 posts, so it still equals the publish date; `author` is
+   the `Organization` — and
    **stays so**: no named person is coming (business-facts §B, owner-actions §3.3). Recommend real
    `updated` dates on genuinely revised posts, never an invented byline.
 6. **`llms.txt`** (§6.5). Absent (`edge.mjs`). The template lives in

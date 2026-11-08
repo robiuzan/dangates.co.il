@@ -84,43 +84,45 @@ grep -rho 'data-cta="[^"]*"' app components | sort | uniq -c | sort -rn
 | `sticky-`   | `sticky-call` · `sticky-whatsapp`                           |
 | `service-`  | `service-call` · `service-whatsapp` (sticky card, ×7 pages) |
 | `contact-`  | `contact-call` · `contact-whatsapp` · `contact-email`       |
-| `pricing-`  | `pricing-contact`                                           |
+| `pricing-`  | `pricing-contact` · `pricing-call` · `pricing-whatsapp`     |
+| `thanks-`   | `thanks-call` · `thanks-whatsapp` (`/תודה/`)                |
 | `form-`     | `form-submit` · `form-whatsapp` (×2) · `form-call`          |
 
 `Button` spreads its props, so `data-cta` on a `<Button>` reaches the anchor. Adding a CTA without a
 value is the only way `missingDataCta` moves off 0 — re-run the script after touching any of them.
 
-**Why the script reports 17 values, not 18:** `form-call` and one of the two `form-whatsapp` elements
+**Why the script and the source grep disagree:** `form-call` and the error alert's `form-whatsapp`
 render only when the form is in its `status === "error"` state, so a scan of the static export never
-sees them. That gap is expected and is not a coverage failure; the source grep above is the full list.
+sees them; the live-kit's values (`popup-*`, `topbar-link`, `update-link`) come from `lib/live/`, not
+from `app/` or `components/`. As of 2026-11-08 `cta-coverage.mjs` reports `distinctValues 23` and
+`grep -rho 'data-cta="[^"]*"' app components | sort -u` lists 22. That gap is expected and is not a
+coverage failure.
 
 **Container side:** icons render _inside_ the anchors, so the click variable must read
-`closest('a[data-cta]')`, not the event target. The WhatsApp fallback open is **JS-driven** (`window.open` in `openWhatsappFallback`) and no click trigger can ever see it — so since `fee7f69` that function pushes `whatsapp_click` itself, with `cta: "form-whatsapp"`, `page` and `placement: "form"`. A blocked popup reports `lead_error` with `reason: "popup_blocked"`. Any new JS-driven open must push its own event the same way, and add the value to the taxonomy table in the same change.
+`closest('a[data-cta]')`, not the event target. Since `68a4a7f` (2026-11-08) there is **no JS-driven open left**: the form's WhatsApp exits are real `<a>` elements an `href` trigger can see, and the error alert's link also pushes `whatsapp_click` itself (`cta: "form-whatsapp"`, `placement: "form"`) — count one or the other in GTM, not both. `popup_blocked` retired with `window.open`. Never reintroduce a `window.open`; if a JS-driven open is ever unavoidable it must push its own event and add the value to the taxonomy table in the same change.
 
 ## Events — wire against `docs/event-taxonomy.md`
 
 The contract, summarised (names, parameters and triggers live in the doc — read it before editing):
 `tel_click` · `whatsapp_click` · `email_click` (click triggers off `data-cta`) · `form_start` ·
 `form_submit_attempt` · `lead_submit` · `lead_error` (pushed from `LeadForm`) · a page view on
-`/תודה/` (Phase 5). Parameters are flat snake_case strings; every push carries `site: "dangates"`;
+`/תודה/`. Parameters are flat snake_case strings; every push carries `site: "dangates"`;
 **no PII, ever** (golden rule 10) — not name, phone, email or message text. `trackEvent` from
-`@ishub/site-kit/analytics` is the push helper (`components/forms/LeadForm.tsx:8`); it is a safe
-no-op without `dataLayer`.
+`@ishub/site-kit/analytics` is the push helper, wrapped in `LeadForm` by a `track()` that adds
+`form`, `page` and `site`; it is a safe no-op without `dataLayer`.
 
-- **`lead_submit`** fires at `components/forms/LeadForm.tsx:97` **only on confirmed Web3Forms
-  success**, deliberately outside the `try` so delivery and analytics never share a failure path.
-  Keep that. It must gain dimensions (backlog §13.4): `{ form: "lead", site: "dangates", page:
-window.location.pathname, service, city, placement }`. The service `<option>` value is the display
-  name (`:166`) because it doubles as the email body — derive the slug for the event with
-  `services.find((s) => s.name === value)?.slug ?? ""`. `city` comes from the select `/conversion-cro`
-  §8.4 adds (slug or `""`).
-- **`form_start`** (§13.5): once per mount, on the first `focusin` inside the form, guarded by a
-  `useRef` flag — `{ form: "lead", site, page }`. **`form_submit_attempt`**: at the top of
-  `handleSubmit`, before validation.
-- **`lead_error`** (§8.6, N1): in the catch at `:85-90` and the missing-key branch at `:64-66` —
-  `reason` is `network` (fetch threw), `http_<code>` (`!res.ok`), or `popup_blocked`
-  (`window.open` returned `null`). The visible error UI is the other half of N1 — `/conversion-cro`.
-- **Thank-you page view** (§8.3): a Page View trigger on `/תודה/` is the cleanest GA4 key event and
+- **`lead_submit`** (§13.4 ✅ `68a4a7f`) fires **only on confirmed Web3Forms success**, deliberately
+  outside the `try` so delivery and analytics never share a failure path, and before the navigation
+  to `/תודה/`. It carries `{ form: "lead", site: "dangates", page, service, city, placement }` —
+  `service` is the slug (the `<option>` value is the display name, because it doubles as the email
+  body), `city` the select's slug, `"other"` or `""`, `placement` `hero` | `contact` | `form`. Keep all
+  of it.
+- **`form_start`** (§13.5 ✅): once per page load, on the first focus or input of a real field (never
+  the honeypot). **`form_submit_attempt`**: at the top of the submit handler, before validation.
+- **`lead_error`** (§8.6, N1): from the three failure paths — `reason` is `network` (fetch threw or
+  the key is missing) or `http_<code>` (`!res.ok`). The visible error UI is the other half of N1 —
+  `/conversion-cro`. Nothing consumes it until a tag and a GA4 property exist (B2).
+- **Thank-you page view** (§8.3 ✅ route shipped `68a4a7f`): a Page View trigger on `/תודה/` is the cleanest GA4 key event and
   Google Ads target. Keep the `lead_submit` push as well — a push immediately before navigation can
   be lost, and the two signals cross-check each other.
 - A static export does full page loads: **no History Change trigger** — it will never fire.

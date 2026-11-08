@@ -59,12 +59,14 @@ microphone=(), camera=()` — all from **Cloudflare zone rules**, so a zone chan
    exists.
 3. **The lead form.** `LeadForm` POSTs JSON to `https://api.web3forms.com/submit` with a key that is
    **public by design** (`siteConfig.formAccessKey ?? process.env.NEXT_PUBLIC_WEB3FORMS_KEY`,
-   `LeadForm.tsx:21`; backlog §12.5 — never report it as leaked). Check the honeypot (`company`,
-   `:45`), HTTPS-only, no client-side rate limiting, and the WhatsApp fallback that opens a deep link containing the user's own submitted data — the user's data to the user's own app, fine as-is; do not extend the pattern. Delivery failure now renders a `role="alert"` block with a real WhatsApp link and a `tel:` link (N1 closed 2026-09-06), so the old silent-failure finding is history.
-4. **PII and consent.** The form collects name, phone, optional message. `/מדיניות-פרטיות/` exists but
-   the form never references it and there is no consent affordance (backlog §8.2). Verify no PII
-   reaches `dataLayer` — `trackEvent("lead_submit", { form: "lead" })` (`LeadForm.tsx:97`) sends none
-   and must stay that way (CLAUDE.md golden rule 10).
+   `WEB3FORMS_KEY` in `LeadForm`; backlog §12.5 — never report it as leaked). Check the honeypot (the hidden `company`
+   field), HTTPS-only, no client-side rate limiting, and the WhatsApp fallback that opens a deep link containing the user's own submitted data — the user's data to the user's own app, fine as-is; do not extend the pattern. Delivery failure now renders a `role="alert"` block with a real WhatsApp link and a `tel:` link (N1 closed 2026-09-06), so the old silent-failure finding is history.
+4. **PII and consent.** The form collects name, phone, optional message. Since `68a4a7f` (2026-11-08,
+   repo) a consent line beside the submit button links `/מדיניות-פרטיות/`, and the policy names
+   Web3Forms and Google Tag Manager (backlog §8.2 PARTIAL — reviewer sign-off; GA4 on B2; any consent
+   UI on B10). Verify no PII reaches `dataLayer` — every form push goes through `LeadForm`'s `track()`
+   with `form`, `page`, `site` and only slugs, a placement or a reason on top; it must stay that way
+   (CLAUDE.md golden rule 10).
 5. **Secret hygiene and `.env.example`.** Grep for tokens, keys and credentials across the repo and the export. The inverse drift (N6, §12.3) is fixed — `edge.mjs` reads `envDocumented 1 / envUsed 1` since 2026-09-06. It used to document four variables nothing read (`NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_PHONE`, `NEXT_PUBLIC_WHATSAPP`, and `LEAD_EMAIL_TO` for a dead `public/lead.php` path annotated "not used on GitHub Pages" — a stale premise twice over) while omitting the one the app does read. Watch that it stays at 1/1: a dead path invites someone to wire a real secret into one.
 6. **Dependencies.** `npm audit --omit=dev` and `npm audit`, reported **separately** — a static export
    ships no server code, so a devDependency advisory is usually informational. Say which is which.

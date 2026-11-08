@@ -11,7 +11,9 @@ writes the verifying output into its row. The inline one-liners that survive bel
 checks; where a script exists it is the measurement.
 
 **Compiled 2026-08-16/17.** Statuses re-verified 2026-08-23 against a fresh `out/`
-(`npm run audit` → 37 failures across 10 checks; `npm run audit:env` → 0 dead citations).
+(`npm run audit` → 37 failures across 10 checks; `npm run audit:env` → 0 dead citations), and again
+2026-11-08 after Sprints 2 and 3 on a clean rebuild: `npm run audit -- --scope full` → **15**
+failures across 2 checks (`content-depth` 10, `claims-grep` 5).
 
 **Severity:** P0 = shipping something wrong or harmful · P1 = material ranking/conversion loss ·
 P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half a day · L = multi-day.
@@ -20,8 +22,10 @@ P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half 
 (moves only when [business-facts.md](business-facts.md) / [owner-actions.md](owner-actions.md) moves) ·
 `✅ HOLDS` (sound today — don't regress) · `NOT STARTED`.
 
-**Scope reminder:** 45 content pages — 1 home, 7 Hebrew statics, 7 services, 18 locations, the blog
-index and 11 posts. `out/` also holds 37 legacy redirect stubs and `/404`, for 83 `index.html` files.
+**Scope reminder:** 45 indexable content pages — 1 home, 7 Hebrew statics, 7 services, 18 locations,
+the blog index and 11 posts — plus the `noindex` `/תודה/` (since 2026-11-08) and `/404`, for 47
+`index.html` files in `out/`. The 37 legacy redirect stubs that once made it 83 are gone since
+2026-09-06 (ADR 0004).
 
 ---
 
@@ -55,7 +59,8 @@ Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region p
 | 5   | **Routing + owner docs.** Agent roster, owner actions, Cloudflare + GBP runbooks, content calendar, event taxonomy, rank tracking, competitors, growth roadmap                                                                                                                                  | `docs/agent-roster.md`, `docs/owner-actions.md`, `docs/*-runbook.md`, `docs/content-calendar.md`, … |
 | 6   | **De-stale pass + new assets** per the roster: 15 agents, 25 skills (and the saved `site-audit` workflow where workflows are available); every `file:line` re-anchored; scripts cited instead of numbers                                                                                        | `.claude/agents/`, `.claude/skills/`, `.claude/workflows/`                                          |
 
-**Next up: Phase 1** = suggested order 2–4 below **+ N1** (the form's invisible error state).
+**Next up** (as of 2026-11-08): Phases 1, 2 and 5's repo work have shipped in the repo — Sprints 1–3.
+What comes next is Sprint 4, the truth pass — see "Suggested order of work" below.
 
 ---
 
@@ -357,66 +362,140 @@ dangling `@id`, raw Hebrew URLs, forbidden-until-sourced keys, FAQ parity). Phas
 See §7.1. Removed 2026-08-17 and gated: `schema.mjs` fails if either type appears while
 `REVIEW_SOURCE_URL` is null.
 
-### 4.2 — P1 · M · [✅ DONE coverage · PARTIAL substance] 26 of 45 pages emitted no JSON-LD
+### 4.2 — P1 · M · [✅ DONE 2026-11-08] 26 of 45 pages emitted no JSON-LD
 
-`schema.mjs` → `pagesWithJsonLd: 45`. But the 18 location pages and 8 static pages carry **only** the
-`BreadcrumbList` from `PageHeader` — no `Service`, no `areaServed`, no `CollectionPage`/`AboutPage`/
-`ContactPage`. Coverage is closed; the per-route substance in schema-graph §2 is Phase 2.
+`schema.mjs` → `pagesWithJsonLd: 45`. Coverage closed first; until 2026-11-08 the 18 location pages
+and 8 static pages still carried **only** the `BreadcrumbList` from `PageHeader` — no `Service`, no
+`areaServed`, no `CollectionPage`/`AboutPage`/`ContactPage`.
+
+**Substance closed 2026-11-08** by commit `d8edb28` (Sprint 2 change set B, row 2.8). Each location
+page emits a `Service` from `locationServiceJsonLd` with its place as `City` or
+`AdministrativeArea` (the four regions), `provider` → `#business`; `/שירותים/`, `/איזורי-שירות/`
+and `/blog/` emit `CollectionPage` + `ItemList` over the full array they render; `/אודות/` is an
+`AboutPage`, `/צור-קשר/` a `ContactPage`, `/מחירון/` and the two legal pages a plain `WebPage`.
+Verified after a clean rebuild:
+
+```bash
+node scripts/audit/schema.mjs   # ✅ 0 failures · pages 46 · pagesWithJsonLd 45 · danglingIds 0 · rawHebrewUrls 0
+# typeCensus: location Service 18 · services-index / areas-index / blog-index CollectionPage + ItemList 1 each
+#             about AboutPage 1 · contact ContactPage 1 · pricing WebPage 1 · legal WebPage 2 · thanks {} (noindex)
+```
 
 ### 4.3 — P1 · M · [✅ DONE] `BreadcrumbList` on zero pages while 44 render visible breadcrumbs
 
-`components/layout/PageHeader.tsx:57-59` now feeds the same `crumbs` array to `breadcrumbJsonLd()`;
-`links.mjs` → `breadcrumbPages: 44`. The trap is documented in the component: the kit takes
-`{ name, path }`, **not** `{ name, url }` and not the `Crumb` shape — `PageHeader` maps
-`{ label, href }` → `{ name, path: schemaPath(href) }` with the trailing slash and `encodeURI`.
+`components/layout/PageHeader.tsx` feeds the same `crumbs` array to the breadcrumb builder;
+`links.mjs` → `breadcrumbPages: 44`. The kit takes `{ name, path }`, **not** `{ name, url }` and not
+the `Crumb` shape — since `02a3144` (2026-11-08) the mapping `{ label, href }` →
+`{ name, path: schemaPath(href) }` lives in `breadcrumbNode()` in `lib/jsonld.ts`, and `PageHeader`
+renders it inside the page's one `@graph`.
 **Never add a second `BreadcrumbList` on a page** (`.claude/rules/schema-jsonld.md`).
 
-### 4.4 — P1 · M · [NOT STARTED] 18 pages reference an `@id` that resolves to nothing
+### 4.4 — P1 · M · [✅ DONE 2026-11-08] 18 pages reference an `@id` that resolves to nothing
 
-`schema.mjs` → `danglingIds: 18`: `provider: { "@id": ".../#business" }` on 7 service pages and
-`publisher` on 11 blog posts — but the `#business` node itself is defined **only on the homepage**.
+`schema.mjs` → `danglingIds: 18` until 2026-11-08: `provider: { "@id": ".../#business" }` on 7
+service pages and `publisher` on 11 blog posts, while the `#business` node was defined **only on the
+homepage**.
 
-**Fix (Phase 2):** emit the business node (or a minimal `@id` stub) wherever it is referenced, per
-schema-graph §1.
+**Closed 2026-11-08** by commit `02a3144` (Sprint 2 change set A, row 2.2). `businessNode()` in
+`lib/jsonld.ts` is emitted in the same `@graph` on every page that references `#business` — an
+`@id`-only stub would still count as a reference, so the full node ships. Verified after a clean
+rebuild:
 
-### 4.5 — P1 · S · [NOT STARTED] No `image` or `logo` on any JSON-LD node
+```bash
+node scripts/audit/schema.mjs   # ✅ danglingIds 0 · GeneralContractor on home 1, service 7, post 11, location 18, about 1, contact 1
+```
 
-`schema.mjs` warns: business node carries no image/logo. A 1200×630 OG card is already wired in the
-manifest and `public/dangates-logo.png` is unreferenced; neither reaches the graph.
+### 4.5 — P1 · S · [✅ DONE 2026-11-08] No `image` or `logo` on any JSON-LD node
 
-### 4.6 — P2 · S · [PARTIAL] The homepage JSON-LD is one script tag, but an array, not a `@graph`
+Until 2026-11-08 `schema.mjs` warned that the business node carried no image/logo, while the
+manifest OG card and `public/dangates-logo.png` were both available.
 
-The reviews block is gone, so the business node is no longer split across two scripts. What remains:
-`app/page.tsx:33` emits `[localBusinessJsonLd(), faqJsonLd()]` — a JSON array of two `@context`
-objects rather than a single `@graph` (`schema.mjs` warns on `/`). The 7 service and 11 post pages
-also split across **two** `<script>` blocks (their own node + the `PageHeader` breadcrumb). Phase 2
-merges each page into one `@graph`.
+**Closed 2026-11-08** by commit `02a3144` (Sprint 2 change set A, row 2.6). `businessNode()` adds
+`logo` (`public/dangates-logo.png`) and `image` (the manifest OG card on the media host). The
+header still renders the logo as text — that is §7.5, not this row. Verified after a clean rebuild:
 
-### 4.7 — P2 · S · [PARTIAL] Schema URLs use raw Hebrew; canonicals use percent-encoding
+```bash
+node scripts/audit/schema.mjs   # ✅ 0 warnings — the "business node carries no image/logo" warning is gone
+# out/index.html #business: logo https://dangates.co.il/dangates-logo.png · image https://imgquarry.com/…/dangates/og.jpg
+```
 
-Breadcrumb `item` URLs are now encoded (`PageHeader.tsx:24-25`). Still raw: `Service.url` on all 7
-service pages and `BlogPosting.mainEntityOfPage` on all 11 posts (`app/blog/[slug]/page.tsx:87`) —
-`schema.mjs` → `rawHebrewUrls: 18`. Neither byte-matches the page's own canonical. See N2.
+### 4.6 — P2 · S · [✅ DONE 2026-11-08] The homepage JSON-LD is one script tag, but an array, not a `@graph`
 
-### 4.8 — P2 · S · [NOT STARTED] `areaServed` is a marketing phrase typed as `AdministrativeArea`
+Until 2026-11-08 `app/page.tsx` emitted a JSON array of two `@context` objects rather than one
+`@graph`, and the 7 service and 11 post pages split across **two** `<script>` blocks (their own node
+plus the `PageHeader` breadcrumb).
 
-`{"@type":"AdministrativeArea","name":"מרכז הארץ ופריסה ארצית"}` on 8 nodes (`schema.mjs` warns) —
-that is not an area name. Model coverage as a list of `City`/`AdministrativeArea` nodes, or a
-`GeoCircle` service area. The manifest value is owner-gated (business-facts §E).
+**Closed 2026-11-08** by commit `02a3144` (Sprint 2 change set A, row 2.1). `graph()` in
+`lib/jsonld.ts` builds one `{ "@context", "@graph" }` per page; pages with a `PageHeader` hand it
+their `nodes` and it appends the one breadcrumb, so the breadcrumb is never emitted twice. Verified
+after a clean rebuild by counting `application/ld+json` scripts in every exported `index.html`:
 
-### 4.9 — P2 · S · [NOT STARTED] No `WebSite` node
+```bash
+# 47 index.html files: 45 carry exactly 1 script, every one an @graph (0 arrays, 0 bare objects);
+# 2 carry none — /404/ and /תודה/, both noindex
+node scripts/audit/schema.mjs   # ✅ pagesWithJsonLd 45 · 0 failures · 0 warnings
+```
 
-`schema.mjs` fails on `/`. Google has no declared site name for the SERP header.
+### 4.7 — P2 · S · [✅ DONE 2026-11-08] Schema URLs use raw Hebrew; canonicals use percent-encoding
 
-### 4.10 — P2 · M · [⏳ BLOCKED · owner] `/מחירון/` publishes 9 price ranges and emits no `Offer`
+Until 2026-11-08 breadcrumb `item` URLs were encoded but `Service.url` on all 7 service pages and
+`BlogPosting.mainEntityOfPage` on all 11 posts were raw — `schema.mjs` → `rawHebrewUrls: 18`.
+
+**Closed 2026-11-08** by commit `02a3144` (Sprint 2 change set A, row 2.4), with N2. Every `url`,
+`@id` and `mainEntityOfPage` goes through `pageUrl()` in `lib/jsonld.ts` (trailing slash +
+`encodeURI`), the same form as the canonical. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/schema.mjs   # ✅ rawHebrewUrls 0
+```
+
+### 4.8 — P2 · S · [✅ DONE 2026-11-08] `areaServed` is a marketing phrase typed as `AdministrativeArea`
+
+Until 2026-11-08 `{"@type":"AdministrativeArea","name":"מרכז הארץ ופריסה ארצית"}` sat on 8 nodes
+(`schema.mjs` warned) — not an area name.
+
+**Closed 2026-11-08** by commits `02a3144` (the phrase dropped from every node) and `d8edb28`
+(Sprint 2 change set B, row 2.5). The business node's `areaServed` is the 18 published locations as
+`placeNode()` entries — `City` ×14 and `AdministrativeArea` ×4 for קריות, שרון, צפון and דרום — so
+it can never drift from the location pages. The manifest phrase itself is untouched and still
+owner-gated (§5.4, business-facts §E, Track B B5); only the graph stopped repeating it. Verified
+after a clean rebuild:
+
+```bash
+node scripts/audit/schema.mjs   # ✅ 0 warnings — the phrase-areaServed warning is gone
+# out/index.html #business areaServed: 18 nodes · City 14 · AdministrativeArea 4
+# grep -c 'פריסה ארצית' inside the JSON-LD of all 45 pages → 0
+```
+
+### 4.9 — P2 · S · [✅ DONE 2026-11-08] No `WebSite` node
+
+Until 2026-11-08 `schema.mjs` failed on `/`: Google had no declared site name for the SERP header.
+
+**Closed 2026-11-08** by commit `02a3144` (Sprint 2 change set A, row 2.3). `websiteJsonLd()` emits
+`WebSite` `#website` on the homepage only, `publisher` → `#business`, `inLanguage` from the
+manifest; no other page references `#website`, so nothing dangles. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/schema.mjs   # ✅ typeCensus home: WebSite 1 · FAQPage 1 · GeneralContractor 1
+```
+
+### 4.10 — P2 · M · [⏳ BLOCKED · owner — `Offer` half · ✅ DONE 2026-11-08 — catalog half] `/מחירון/` publishes 9 price ranges and emits no `Offer`
 
 **Blocked, not merely unimplemented.** Eight of the nine ranges are authored estimates — the comment
-above `priceRows` (`lib/content.ts:152-156`; the array starts at `:157`) says so. Marking an invented
-number as a structured `Offer` makes a soft problem machine-readable, and the owner has said real
-prices are **not coming** (business-facts §D). `schema.mjs` treats `Offer` as forbidden until sourced.
+above `priceRows` in `lib/content.ts` says so. Marking an invented number as a structured `Offer`
+makes a soft problem machine-readable, and the owner has said real prices are **not coming**
+(business-facts §D). `schema.mjs` treats `Offer` as forbidden until sourced. The way out is the
+N14 pivot (Sprint 4.2), not prices.
 
-The business node also never references its own 7 services (`hasOfferCatalog` / `makesOffer`) —
-that half is unblocked and belongs to Phase 2.
+**The unblocked half closed 2026-11-08** by commit `d8edb28` (Sprint 2 change set B, row 2.9): the
+business node carries `hasOfferCatalog`, an `OfferCatalog` whose 7 `itemListElement` entries are
+`Service` nodes with an encoded `@id` (`{service url}#service`), `name` and `url` — **no `Offer`,
+no price**. `/מחירון/` itself is a plain `WebPage`. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/schema.mjs   # ✅ 0 forbidden findings · danglingIds 0
+# out/index.html #business hasOfferCatalog: OfferCatalog · 7 Service entries · "Offer" in any exported page → 0
+```
 
 ### 4.11 — P2 · S · [✅ HOLDS] The `LocalBusiness` node has no `address`
 
@@ -424,12 +503,24 @@ This is **correct for the business model** — a service-area business with no p
 must never be invented. But it does mean the Rich Results Test flags a hard error and the page is
 ineligible for the local-business rich result. Record the trade-off; don't "fix" it with a fake address.
 
-### 4.12 — P3 · S · [NOT STARTED] `BlogPosting` polish
+### 4.12 — P3 · S · [✅ DONE 2026-11-08] `BlogPosting` polish
 
-`dateModified` hardcoded to `post.date` (`app/blog/[slug]/page.tsx:85`), ignoring the `updated` field
-the data model declares · `author` is the `Organization` with no visible byline (a `Person` is **not**
-coming — business-facts §B) · no `@id` or `isPartOf` link to a `Blog` entity · the business node's
-`url` omits the trailing slash the export enforces (`schema.mjs` warns ×12).
+Until 2026-11-08: `dateModified` was hardcoded to `post.date`, ignoring the `updated` field the data
+model declares · no `@id` or `isPartOf` link to a `Blog` entity · the business node's `url` omitted
+the trailing slash the export enforces (`schema.mjs` warned ×12). `author` stays the
+`Organization` with no visible byline — a `Person` is **not** coming (business-facts §B).
+
+**Closed 2026-11-08** by commit `02a3144` (Sprint 2 change set A, row 2.7). `articleJsonLd()` takes
+`dateModified` from `post.updated ?? post.date` (as `app/sitemap.ts` already did), gives the post
+`@id` `{pageUrl}#article` and `isPartOf` a full `Blog` node for `/blog/`, and the business `url`
+carries the trailing slash. No post has an `updated` value yet, so `dateModified` equals
+`datePublished` on all 11 — correct, not a miss. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/schema.mjs   # ✅ 0 warnings · post: BlogPosting 11 · Blog 11
+# a built post: @id …/#article · url and mainEntityOfPage percent-encoded with the slash
+#               isPartOf {Blog, …/blog/} · author and publisher → #business · business url https://dangates.co.il/
+```
 
 ### 4.13 — P3 · M · [NOT STARTED] `FAQPage` exists on 1 of 45 pages
 
@@ -525,11 +616,11 @@ Skill: `eeat-build` (authority without a named person). Script: `claims-grep.mjs
 
 ### 7.1 — P0 · M · [✅ DONE] Fabricated reviews — the widest problem the site had
 
-Removed 2026-08-17. `lib/content.ts:213-221` records what was wrong (ten review texts authored and
+Removed 2026-08-17. the comment above `reviews` in `lib/content.ts` records what was wrong (ten review texts authored and
 attributed to ten real named reviewers, invented cities, a hardcoded 5-star display, a hand-set
 `"5.0"`, and `AggregateRating` + ten `Review` nodes with an empty `sameAs`). Today
-`lib/content.ts:242` exports `reviews = []`, `:248` `REVIEW_SOURCE_URL = null`, and
-`components/marketing/Reviews.tsx:41` returns `null` unless reviews **and** a source URL exist —
+`lib/content.ts` exports `reviews = []` and `REVIEW_SOURCE_URL = null`, and
+`components/marketing/Reviews.tsx` returns `null` unless reviews **and** a source URL exist —
 the guard is the rule made mechanical. Restore path: business-facts §A, verbatim only.
 
 ### 7.2 — P1 · M · [NOT STARTED] Four load-bearing claims appear on nearly every page with nothing behind them
@@ -549,11 +640,11 @@ this item ships. The live surfaces quote the posts' advice, so a rewrite re-chec
 
 ### 7.3 — P1 · M · [⏳ BLOCKED · owner] Eight of nine published prices are authored estimates
 
-`lib/content.ts:152-156` says so in its own comment. They are published on `/מחירון/` as a price list a
+The comment above `priceRows` in `lib/content.ts` says so. They are published on `/מחירון/` as a price list a
 customer will quote back. Real prices are **not coming** → pivot the page to what drives the price
 ([keyword-map.md](keyword-map.md) §10) rather than waiting. Business-facts §D.
 
-### 7.4 — P2 · M · [NOT STARTED] No person entity anywhere
+### 7.4 — P2 · M · [✅ DONE 2026-11-08 · registry + AboutPage] No person entity anywhere
 
 No author byline, no founder, no team, no credentials. `BlogPosting` attributes all 11 articles to the
 `Organization`. A named person is **not coming** (business-facts §B) — so `eeat-build` builds the
@@ -561,10 +652,29 @@ No author byline, no founder, no team, no credentials. `BlogPosting` attributes 
 registry with the data-only path for when a name arrives. `schema.mjs` forbids a `Person` author
 while that registry is empty.
 
+**The repo half closed 2026-11-08** by commit `d8edb28` (Sprint 2 change set B, row 2.10), with the
+`logo`/`image` from `02a3144` (§4.5). `lib/authors.ts` exports the `Author` type and
+`authors: readonly Author[] = []`; `/אודות/` emits an `AboutPage` with `about` → `#business`, and the
+business node on that page carries `knowsAbout` — the 7 service names plus תיקון שערים חשמליים,
+מנועי שערים and בטיחות שערים חשמליים, nothing the site does not cover. What stays absent on purpose:
+the person. One registry entry with permission opens the gate (Sprint 9.5). Verified after a clean
+rebuild:
+
+```bash
+node scripts/audit/schema.mjs
+# ✅ about: AboutPage 1 · GeneralContractor 1
+# info: lib/authors.ts absent or empty — Organization author tolerated, a Person author is forbidden
+# '"Person"' in any exported page → 0
+```
+
+`/אודות/` is still under its 500-word floor (`content-depth.mjs`, §3.13) — the schema is in, the
+copy is Sprint 6.8.
+
 ### 7.5 — P1 · L · [NOT STARTED] The site has no photographs at all
 
-`perf.mjs` / `a11y.mjs` → `images: 0` across 45 pages. The logo renders as text
-(`components/layout/Header.tsx:23`); `public/dangates-logo.png` is unreferenced. Photos are **coming**
+`perf.mjs` / `a11y.mjs` → `images: 0` across 46 pages (2026-11-08). The logo renders as text in the
+header; `public/dangates-logo.png` reaches only the JSON-LD `logo` since `02a3144` (§4.5), never the
+page. Photos are **coming**
 (business-facts §F ⏳); the pipeline is the `site-images` skill. Cloudflare Image Transformations are
 enabled on this zone, so `SiteImage` works the day they land.
 
@@ -580,13 +690,24 @@ availability — visible together on all `FinalCta` pages. Resolves with §5.4 /
 Skills: `conversion-cro`, `engagement-ux`. Script: `cta-coverage.mjs` · `a11y.mjs` (form checks).
 Reviewer: `cro-engagement-auditor`.
 
-### 8.1 — P1 · M · [NOT STARTED] Lead form validation and a11y
+### 8.1 — P1 · M · [✅ DONE 2026-11-08] Lead form validation and a11y
 
-`components/forms/LeadForm.tsx:120` sets `noValidate` with a single generic string (`:49`, rendered
-at `:201-205`). No per-field state, no `aria-invalid`, no `aria-describedby`, no focus management, and
-**no phone-format validation** — the field (`:143-153`) is `type="tel"` with no pattern. Israeli
-formats must include landlines (this business's own number is `072-`). `a11y.mjs` fails on this.
-See also N1 — the delivery-failure state renders nothing at all.
+Until 2026-11-08 `LeadForm` set `noValidate` with a single generic string: no per-field state, no
+`aria-invalid`, no `aria-describedby`, no focus management, and **no phone-format validation** — a
+`type="tel"` field with no pattern. Israeli formats must include landlines (this business's own
+number is `072-`). `a11y.mjs` failed on this.
+
+**Closed 2026-11-08** by commit `68a4a7f` (Sprint 3 change set C, row 3.5). Each invalid field
+carries `aria-invalid` and `aria-describedby` to its own `lf-<field>-error` message; the wiring
+renders before focus moves to the first invalid field. `lib/phone.ts` is the one source for the
+`pattern` attribute and the JS check (`ISRAELI_PHONE_PATTERN`, `isIsraeliPhone()`): mobiles, 07X
+lines like this business's own `072-`, 02/03/04/08/09 landlines, with or without `+972`.
+`noValidate` stays so the messages are Hebrew. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/a11y.mjs   # ✅ 0 failures · 0 warnings · unlabeledControls 0 — the noValidate/aria-invalid
+                              #    failure and the "tel input has no pattern" warning are both gone
+```
 
 ### 8.2 — P1 · S · [PARTIAL 2026-11-08] No consent affordance
 
@@ -598,19 +719,33 @@ also mention the live surfaces' status-file read (`https://imgquarry.com/status/
 the values they keep in browser storage (`ls-status`, `ls-dlg-*`, `ls-pv`, `ls-t`) — CLAUDE.md
 §14, business-facts §I. Open.
 
-**State 2026-11-08:** the consent line (`leadFormConsentCopy`) and the rewritten privacy page
-(`privacyPageCopy`, naming Web3Forms, Google Tag Manager, the fields collected, the status-file
-read and the four storage values) are in the tree, and the first `hebrew-editor` / `claims-verifier`
-pass is applied. The row stays partial until both sign off on the fix pass. Left out as unconfirmed
-owner policies, to restore only with a confirmed row in business-facts: the name Google Analytics
-(the open "GA4 measurement ID" row), that the details are never sold, that they are used "only" to
-call back and never for mailing, and access / correction / deletion on request.
+**State 2026-11-08** (commit `68a4a7f`, Sprint 3 change set C, row 3.6): the consent line
+(`leadFormConsentCopy`, beside the submit button, linking `/מדיניות-פרטיות/`) and the rewritten
+privacy page (`privacyPageCopy`) are in the tree. The built privacy page names Web3Forms, Google Tag
+Manager, the fields collected, the status-file read (`imgquarry.com`) and the four storage values
+(`ls-status`, `ls-dlg-*`, `ls-pv`, `ls-t`) — the owner's 2026-10-12 request above is met. The first
+`hebrew-editor` / `claims-verifier` pass is applied; **the row stays PARTIAL until both sign off on
+the fix pass.** Left out as unconfirmed owner policies, to restore only with a confirmed row in
+business-facts: the name Google Analytics (the open "GA4 measurement ID" row, Track B B2), that the
+details are never sold, that they are used "only" to call back and never for mailing, and access /
+correction / deletion on request. Whether a consent UI is needed at all is B10.
 
-### 8.3 — P1 · M · [NOT STARTED] No thank-you URL
+### 8.3 — P1 · M · [✅ DONE 2026-11-08] No thank-you URL
 
-Success is an inline state swap — no URL-based conversion to count, no Google Ads target, no next step.
-The success screen also tells the user to call but gives no clickable number. Phase 5 adds `app/תודה/`
-(`noindex`, listed in `staticRoutes` once §1.4 lands).
+Until 2026-11-08 success was an inline state swap — no URL-based conversion to count, no Google Ads
+target, no next step, and the success screen told the user to call with no clickable number.
+
+**Closed 2026-11-08** by commit `68a4a7f` (Sprint 3 change set C, row 3.8). `app/תודה/` is
+registered in `staticPages` with `noindex`, kept out of the sitemap, listed `calm` for the live
+surfaces, and carries a `tel:` link and the `thanks-call` / `thanks-whatsapp` CTAs. After a
+confirmed send the form pushes `lead_submit`, then navigates there; the inline success block stays
+as the fallback if navigation is blocked. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/links.mjs   # ✅ staticRoutesRegistered 10 · contentPages 46 · sitemapUrls 45 · orphans 0
+# out/תודה/index.html: robots "noindex, nofollow" · 1 tel: link · data-cta thanks-call, thanks-whatsapp
+# grep -c תודה out/sitemap.xml → 0
+```
 
 **Audit exemption — owner sign-off pending (2026-11-08):** `/תודה/` is exempt from the orphan,
 sitemap-presence, breadcrumb, schema-type and canonical-presence checks by the exact-path list
@@ -619,32 +754,49 @@ requires it to carry no canonical and no og:url. Title and description checks st
 other page with a stray noindex still gets every check. Because this loosens scripts, the owner
 should confirm the list.
 
-### 8.4 — P2 · S · [NOT STARTED] The `city` field is declared and never collected
+### 8.4 — P2 · S · [✅ DONE 2026-11-08] The `city` field is declared and never collected
 
-`types/index.d.ts` — in a file nothing imports (N3). Free local-intent signal, and dispatch-relevant
-across 18 areas.
+Until 2026-11-08 `city?` was declared only in `types/index.d.ts`, a file nothing imported (N3) —
+free local-intent signal, dispatch-relevant across 18 areas, never collected.
 
-### 8.5 — P2 · S · [NOT STARTED] `/מחירון/` is the only commercial page with no CTA
+**Closed 2026-11-08** by commit `68a4a7f` (Sprint 3 change set C, row 3.7), with N3. The form
+carries an optional `<select id="lf-city" name="city">` built from `locations` (slug values, plus
+`אחר` → `"other"`); the value goes into the Web3Forms body and onto `lead_submit` as `city`.
+Verified after a clean rebuild:
 
-`cta-coverage.mjs` warns: `/מחירון/` has no call/WhatsApp/form CTA inside `<main>`. `FinalCta` ships
-on 41 of 45 pages; the four without it are `/צור-קשר/` (has the form), the two legal pages, and
-`/מחירון/` — the highest-purchase-intent page on the site.
+```bash
+grep -c 'lf-city' out/צור-קשר/index.html   # ≥ 1 — the select renders in the export
+ls types                                  # No such file or directory (N3)
+```
 
-### 8.6 — P2 · M · [PARTIAL 2026-09-06] Lead-delivery failure is silent
+### 8.5 — P2 · S · [✅ DONE 2026-11-08] `/מחירון/` is the only commercial page with no CTA
 
-`LeadForm.tsx:64` and `:87` set `status` to `"error"` and open a WhatsApp window that a popup blocker
-can swallow with no notice to the user. N1 is the UI half of this item.
+Until 2026-11-08 `cta-coverage.mjs` warned that `/מחירון/` had no call/WhatsApp/form CTA inside
+`<main>` — the highest-purchase-intent page on the site, and one of the four without `FinalCta`.
+
+**Closed 2026-11-08** by commit `68a4a7f` (Sprint 3 change set C, row 3.10). `PricingTeaser` renders
+a call and a WhatsApp button beside the contact link. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/cta-coverage.mjs   # ✅ 0 warnings · ctaElements 119 · withDataCta 119 · missingDataCta 0
+# <main> of out/מחירון/index.html: 1 tel: · 1 WhatsApp · data-cta pricing-call, pricing-whatsapp, pricing-contact
+```
+
+### 8.6 — P2 · M · [PARTIAL 2026-11-08 · measurement half owner-blocked (B2)] Lead-delivery failure is silent
+
+Until 2026-09-06 a failed POST set `status` to `"error"` and opened a WhatsApp window that a popup
+blocker could swallow with no notice to the user. N1 is the UI half of this item.
 
 **The UI half landed 2026-09-06** by commit `fee7f69` (Sprint 1 change set D, row 1.12) — see N1 for
-the detail. The user now sees a `role="alert"` block with a real WhatsApp `<a>` (which no popup
-blocker can swallow), a `tel:` link and a retry button; a blocked popup reports itself as
-`lead_error` with `reason: "popup_blocked"`.
+the detail. The user sees a `role="alert"` block with a real WhatsApp `<a>`, a `tel:` link and a
+retry button. Since `68a4a7f` (2026-11-08, row 3.12) no `window.open` is left at all, so the
+`popup_blocked` reason is retired.
 
 **Still open — the measurement half, none of it in this repo:**
 
-- **No tag or trigger consumes `lead_error`.** The event is pushed from the four call sites in
-  `LeadForm.tsx` (no-key misconfig, fetch `catch`, non-ok response, blocked popup) and lands in
-  `dataLayer` where nothing reads it. The GTM container work is manual, in `GTM-KWGGH438`
+- **No tag or trigger consumes `lead_error`.** The event is pushed from the three failure paths in
+  `LeadForm.tsx` (no-key misconfig, fetch `catch`, non-ok response) with `placement` and `site`, and
+  lands in `dataLayer` where nothing reads it. The GTM container work is manual, in `GTM-KWGGH438`
   ([event-taxonomy.md](event-taxonomy.md) row `lead_error`).
 - **No GA4 property exists to receive it** — `analytics.ga4MeasurementId` is `null`, §13.7
   ⏳ BLOCKED · owner ([owner-actions.md](owner-actions.md) §2). Until both move, a delivery failure
@@ -715,10 +867,25 @@ never all six. Verified after a clean rebuild:
 node scripts/audit/perf.mjs   # ✅ fontPreloads 2 · woff2Files 6 · unusedDeps [] · devBuildFiles 0 · sourceMaps 0
 ```
 
-### 10.2 — P2 · M · [NOT STARTED] JS budget
+### 10.2 — P2 · M · [✅ DONE 2026-11-08] JS budget
 
-`perf.mjs`: ~751 kB across 29 chunks, 4 `"use client"` components. `Header` is client for one
-boolean; `Faq` could be `<details>/<summary>` with zero JS while keeping answers in the DOM (N8).
+Until 2026-11-08 `perf.mjs` counted 4 `"use client"` components: `Header` was client for one boolean,
+and `Faq` hydrated an accordion `<details>/<summary>` could do with zero JS (N8).
+
+**Closed 2026-11-08** by commits `7cfcf4c` (Sprint 3 change set A, row 3.11 — `Faq` is a server
+component on native `<details>`) and `60ce109` (change set B, row 3.3 — `Header` is a server shell
+again; the menu is the `MobileMenu` client leaf). **`clientComponents` is 3: `LeadForm`,
+`MobileMenu`, `Reveal`.** Total JS did not shrink — `LeadForm` grew with the §8.1 validation and the
+§13.4/§13.5 events, so the shipped bytes moved from 746,950 (2026-09-06) to 756,903; the win is the
+hydration count, not the byte total. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/perf.mjs       # ✅ clientComponents 3 · jsFiles 30 · jsTotalBytes 756903 · largestJsBytes 172834
+node scripts/audit/rtl-lint.mjs   # ✅ clientComponentFiles LeadForm.tsx, MobileMenu.tsx, Reveal.tsx
+```
+
+Sprint 8.1's engagement-events leaf, when it lands, is the fourth and must be added to the ledger in
+the same change.
 
 ### 10.3 — P2 · S · [✅ DONE 2026-09-06] `framer-motion` was a dependency imported nowhere
 
@@ -749,45 +916,83 @@ Zero images ship (§7.5). Do not file srcset/LCP-image findings against this sit
 
 ## §11. Accessibility (WCAG 2.1 AA + IS 5568)
 
-The site **publishes a conformance statement** at `/הצהרת-נגישות/`, so each failure below also makes a
-published claim false. Skill: `responsive-accessibility`. Scripts: `a11y.mjs` · `rtl-lint.mjs`.
+The site **publishes a conformance statement** at `/הצהרת-נגישות/`, so each failure below also made a
+published claim false. As of 2026-11-08 every row here is ✅ and both scripts read 0, so the
+statement's WCAG reference was corrected from 2.0 to 2.1 AA the same day; its other wording is
+unchanged. The scripts are mechanical — no manual keyboard or screen-reader pass has been recorded.
+Skill: `responsive-accessibility`. Scripts: `a11y.mjs` · `rtl-lint.mjs`.
 
-### 11.1 — P1 · S · [NOT STARTED] Two contrast failures, both on conversion paths
+### 11.1 — P1 · S · [✅ DONE 2026-11-08] Two contrast failures, both on conversion paths
 
-The base palette is fine (white on `#B6070C` = 6.94:1; `accent-foreground` on gold = 9.70:1;
-`accent-600` on white = 4.92:1). The failures are in **interaction states and a hardcoded literal**
-(`a11y.mjs` computes the ratios):
+The base palette was always fine (white on `#B6070C` = 6.94:1; `accent-foreground` on gold =
+9.70:1). Until 2026-11-08 the failures were in **interaction states and a hardcoded literal**: the
+accent **hover** (`accent-foreground` on `accent-600`) at **2.76:1**, and white on the `#25D366`
+WhatsApp surface at **1.98:1** in `Button` and `MobileCtaBar` — the primary phone conversion path.
 
-| Where                                                          | Pair                   | Ratio    |
-| -------------------------------------------------------------- | ---------------------- | -------- |
-| `components/ui/Button.tsx:11` accent **hover**                 | `#3d2b00` on `#8a6d00` | **2.76** |
-| `components/ui/Button.tsx:13` + `MobileCtaBar.tsx:22` WhatsApp | white on `#25D366`     | **1.98** |
+**Closed 2026-11-08** by commit `7cfcf4c` (Sprint 3 change set A, row 3.1), with N11. The accent
+hover is `accent-500`; the WhatsApp surface is a `@theme` token set (`--color-whatsapp`,
+`--color-whatsapp-hover`, `--color-whatsapp-foreground`) used everywhere the green rendered.
+Verified after a clean rebuild:
 
-`MobileCtaBar` is the primary phone conversion path. A rest-state-only checker passes both. The hover
-fix is a one-token change — see N11 (`accent-500` already exists and passes).
+```bash
+node scripts/audit/a11y.mjs   # ✅ 0 failures · contrastPairs: accent-foreground on accent-500 6.79
+                              #    whatsapp-foreground on whatsapp 5.42 · on whatsapp-hover 6.63
+                              #    whatsapp on white 5.42 · white on primary 6.94 · accent-foreground on accent 9.7
+```
 
-### 11.2 — P2 · S · [NOT STARTED] `Reveal` interposed between `<ol>` and its `<li>`s
+### 11.2 — P2 · S · [✅ DONE 2026-11-08] `Reveal` interposed between `<ol>` and its `<li>`s
 
-`components/marketing/Process.tsx:13` — `<ol>` → `<Reveal>` (a `<div>`) → `<li>`; the process steps
-are not announced as a list. `a11y.mjs` fails on it.
+Until 2026-11-08 `Process` rendered `<ol>` → `<Reveal>` (a `<div>`) → `<li>`, so the process steps
+were not announced as a list; `a11y.mjs` failed on it.
 
-### 11.3 — P2 · S · [NOT STARTED] Duplicated screen-reader text
+**Closed 2026-11-08** by commit `7cfcf4c` (Sprint 3 change set A, row 3.2): each `<li>` is the direct
+child of the `<ol>` and wraps its own `Reveal`. Verified after a clean rebuild:
 
-`components/marketing/TrustBar.tsx:11` — an `sr-only` `<dt>` repeating the visible label inside `<dd>`.
-Every stat is announced twice.
+```bash
+node scripts/audit/a11y.mjs   # ✅ 0 failures — the interposed-wrapper failure is gone
+```
 
-### 11.4 — P2 · M · [NOT STARTED] Mobile menu has no focus management
+### 11.3 — P2 · S · [✅ DONE 2026-11-08] Duplicated screen-reader text
 
-`components/layout/Header.tsx:57` sets `aria-expanded` but there is no `aria-controls`, no focus trap,
-no Escape handler and no scroll lock. Don't copy the pattern into the dropdown §9.1 calls for.
+Until 2026-11-08 `TrustBar` carried an `sr-only` `<dt>` repeating the visible label, so every stat
+was announced twice.
 
-### 11.5 — P2 · S · [NOT STARTED] Three banned RTL utilities ship
+**Closed 2026-11-08** by commit `7cfcf4c` (Sprint 3 change set A, row 3.2): one visible `<dt>` label,
+one `<dd>` value, no `sr-only` copy. Verified after a clean rebuild:
 
-`rtl-lint.mjs` → `bannedUtilities: 3`: `components/forms/LeadForm.tsx:151`,
-`components/marketing/Faq.tsx:25`, `components/marketing/PricingTeaser.tsx:17` — all `text-right`.
-They render correctly in RTL today, which is exactly why they survive review. The same script counts
-**8 hex literals on 5 lines** (`Button.tsx:13`, `MobileCtaBar.tsx:22`, `LeadForm.tsx:222`,
-`Hero.tsx:16`, `app/צור-קשר/page.tsx:42`) — fix them in the same pass with `@theme` tokens.
+```bash
+node scripts/audit/a11y.mjs   # ✅ 0 warnings — the TrustBar sr-only warning is gone
+```
+
+### 11.4 — P2 · M · [✅ DONE 2026-11-08] Mobile menu has no focus management
+
+Until 2026-11-08 the `Header` toggle set `aria-expanded` with no `aria-controls`, no focus trap, no
+Escape handler and no scroll lock.
+
+**Closed 2026-11-08** by commit `60ce109` (Sprint 3 change set B, row 3.3). `Header` is a server
+shell; `MobileMenu` is the client leaf: panel `id="mobile-menu"` + `aria-controls` on the 44px
+toggle, Escape closes and returns focus to the toggle, Tab and Shift+Tab cycle inside the open
+panel, the page scroll is locked while open, and the open panel keeps the live-kit's
+`data-live-block` so the seasonal card cannot cover it. This is the pattern the §9.1 dropdown
+reuses (Sprint 6.5). Verified after a clean rebuild:
+
+```bash
+node scripts/audit/a11y.mjs   # ✅ 0 warnings — "mobile menu has no focus management" is gone
+# out/index.html: id="mobile-menu" on the panel · aria-controls="mobile-menu" on the toggle
+```
+
+### 11.5 — P2 · S · [✅ DONE 2026-11-08] Three banned RTL utilities ship
+
+Until 2026-11-08 `rtl-lint.mjs` counted `bannedUtilities: 3` (`text-right` in `LeadForm`, `Faq` and
+`PricingTeaser` — correct in RTL, which is why they survived review) and **8 hex literals** (7 by
+2026-09-06) in `Button`, `MobileCtaBar`, `LeadForm`, `Hero` and `/צור-קשר/`.
+
+**Closed 2026-11-08** by commit `7cfcf4c` (Sprint 3 change set A, row 3.4): `text-end` for the three
+utilities, `@theme` tokens for every literal. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/rtl-lint.mjs   # ✅ bannedUtilities 0 · hexLiterals 0 · directionAgnosticExemptions 0
+```
 
 ---
 
@@ -844,7 +1049,7 @@ anywhere — production is only the wrangler upload.
 ### 12.5 — [✅ HOLDS] The Web3Forms key is public by design
 
 Do not report it as a leaked credential (`secret-scan.ps1` allow-lists it). Honeypot present
-(`components/forms/LeadForm.tsx:45`); no PII in `dataLayer`.
+(the hidden `company` field in `LeadForm`); no PII in `dataLayer`.
 
 ---
 
@@ -905,7 +1110,14 @@ node scripts/audit/cta-coverage.mjs
 `status === "error"`, so the static export scan sees `form-whatsapp` once (from the always-visible
 "מעדיפים וואטסאפ?" link) and never sees `form-call`. Both exist in source — `grep -rho 'data-cta="[^"]*"' app components | sort -u`
 lists 18 values. The GTM tags and triggers that consume them are container-side and still to do
-(§13.4, §13.5, §8.6).
+(§8.6; owner B2).
+
+**The last of it — 2026-11-08**, commit `68a4a7f` (Sprint 3 row 3.12): both `window.open` WhatsApp
+paths are now real links, so every WhatsApp exit is visible to a click trigger. With the pricing,
+thank-you and live-kit CTAs added since, the scan reads `ctaElements 119 · withDataCta 119 ·
+missingDataCta 0 · distinctValues 23 · distinctTaggedElements 30 · chromeCtas 8`
+(`node scripts/audit/cta-coverage.mjs`, after a clean rebuild); `grep -rn window.open components app lib`
+→ no matches.
 
 ### 13.3 — P1 · S · [✅ DONE 2026-09-06 · repo] The 37 stubs stripped the query string
 
@@ -915,15 +1127,35 @@ the repo since 2026-09-06 and live — verified 2026-11-08:
 `curl -sSI "https://dangates.co.il/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/?utm_source=test"` → `301` with
 the query intact in `Location`.
 
-### 13.4 — P2 · S · [NOT STARTED] `lead_submit` carries no dimension
+### 13.4 — P2 · S · [✅ DONE 2026-11-08 · repo] `lead_submit` carries no dimension
 
-No site, page, service or city field, on a container shared across ~10 fleet domains. The lead email
-likewise carries no page/city/campaign attribution, so the business cannot tell which page produced a
-lead. Target parameters: [event-taxonomy.md](event-taxonomy.md).
+Until 2026-11-08 `lead_submit` pushed `{ form: "lead" }` only — no site, page, service or city, on a
+container shared across ~10 fleet domains. Target parameters: [event-taxonomy.md](event-taxonomy.md).
 
-### 13.5 — P2 · S · [NOT STARTED] No form-start or submit-attempt event
+**Closed in the repo 2026-11-08** by commit `68a4a7f` (Sprint 3 change set C, row 3.9). Every form
+event goes through one `track()` helper that adds `form`, `page` and `site: "dangates"`;
+`lead_submit` adds `service` (slug or `""`), `city` (slug, `"other"` or `""`) and `placement`
+(`hero` | `contact` | `form`), and is pushed only on a confirmed send, before the navigation to
+`/תודה/`. Never the name, phone or message (golden rule 10). Nothing counts it until GA4 exists and
+the container has a tag for it — owner B2, §13.7. The static export cannot see a runtime push, so the
+proof is the source:
 
-Abandonment and validation friction are unmeasurable.
+```bash
+grep -n 'track("lead_submit"' -A4 components/forms/LeadForm.tsx   # service · city · placement (+ form, page, site from track())
+```
+
+### 13.5 — P2 · S · [✅ DONE 2026-11-08 · repo] No form-start or submit-attempt event
+
+Until 2026-11-08 abandonment and validation friction were unmeasurable.
+
+**Closed in the repo 2026-11-08** by commit `68a4a7f` (Sprint 3 change set C, row 3.9).
+`form_start` fires on the first focus or input of a real field, once per page load (never the
+honeypot); `form_submit_attempt` fires when submit is pressed, before validation. Both carry
+`placement` plus the `track()` defaults and no PII. Same owner dependency as §13.4 (B2). Proof:
+
+```bash
+grep -n 'track("form_start"\|track("form_submit_attempt"' components/forms/LeadForm.tsx   # 2 call sites
+```
 
 ### 13.6 — P1 · S · [✅ HOLDS · standing rule] The container id must be 200-checked on every change
 
@@ -977,15 +1209,25 @@ npm run audit -- --scope full   # exit 26 · a11y 4 (unchanged) · cta-coverage 
 The measurement half of §8.6 (a GTM tag consuming `lead_error`, a GA4 property to receive it) stays
 open there.
 
-### N2 — P1 · S · [NOT STARTED] `BlogPosting.mainEntityOfPage` carries raw Hebrew
+### N2 — P1 · S · [✅ DONE 2026-11-08] `BlogPosting.mainEntityOfPage` carries raw Hebrew
 
-`app/blog/[slug]/page.tsx:87` interpolates `post.slug` unencoded, so the value never byte-matches the
-canonical (`schema.mjs` → `rawHebrewUrls` counts 11 here plus 7 `Service.url`). Parent: §4.7.
+Until 2026-11-08 the post route interpolated `post.slug` unencoded, so the value never byte-matched
+the canonical (`schema.mjs` → `rawHebrewUrls` counted 11 here plus 7 `Service.url`). Parent: §4.7.
 
-### N3 — P2 · S · [NOT STARTED] `types/index.d.ts` is dead
+**Closed 2026-11-08** by commit `02a3144` (Sprint 2 change set A, row 2.4): `articleJsonLd()` builds
+`mainEntityOfPage` through `pageUrl()`. Verified after a clean rebuild:
 
-Nothing under `app/`, `components/`, `lib/` or `scripts/` imports it; the `city` field it declares
-(`types/index.d.ts`) was never wired (§8.4). Delete it or make the form use it.
+```bash
+node scripts/audit/schema.mjs   # ✅ rawHebrewUrls 0
+```
+
+### N3 — P2 · S · [✅ DONE 2026-11-08] `types/index.d.ts` is dead
+
+Until 2026-11-08 nothing imported it, and the `city` field it declared was never wired (§8.4).
+
+**Closed 2026-11-08** by commit `68a4a7f` (Sprint 3 change set C, row 3.7): the file is deleted and
+the form collects `city` itself (§8.4). Verified: `ls types` → No such file or directory;
+`npm run typecheck` clean.
 
 ### N4 — P2 · S · [✅ DONE 2026-09-06] A Houston promo stub shipped under `public/`
 
@@ -1011,12 +1253,22 @@ An Apache rule file on a Cloudflare Pages site. Deleted 2026-09-06 with `deploy.
 Production is Cloudflare Pages (CLAUDE.md §10). The comment now says so — corrected 2026-09-06; it is
 the first thing an agent reads about deployment. `edge.mjs` no longer warns.
 
-### N8 — P3 · S · [NOT STARTED] FAQ answers are `display:none` in the DOM
+### N8 — P3 · S · [✅ DONE 2026-11-08] FAQ answers are `display:none` in the DOM
 
-The `Faq` component rendered every answer with `hidden={!isOpen}` — present in the
-DOM (so `FAQPage` parity holds) but hidden from every reader that doesn't click, and hydration JS on
-every page that renders it. `<details>/<summary>` keeps the answers in the DOM with zero JS
-(`engagement-ux`, §10.2).
+Until 2026-11-08 the `Faq` component rendered every answer with `hidden={!isOpen}` — present in the
+DOM (so `FAQPage` parity held) but hidden from every reader that didn't click, and hydration JS on
+every page that rendered it.
+
+**Closed 2026-11-08** by commit `7cfcf4c` (Sprint 3 change set A, row 3.11). `Faq` is a server
+component on native `<details name="faq">` / `<summary>`, the first item open, the `<h3>` inside the
+summary; every answer is in the page at first paint with zero client JS. Verified after a clean
+rebuild:
+
+```bash
+grep -o '<details' out/index.html | wc -l   # 10 — one per question; 0 faq-panel
+node scripts/audit/schema.mjs               # ✅ faqPages 1 · FAQPage parity holds
+node scripts/audit/perf.mjs                 # ✅ clientComponents 3 — Faq is not one of them
+```
 
 ### N9 — P3 · S · [✅ DONE 2026-09-06] The footer year is hand-maintained
 
@@ -1034,7 +1286,7 @@ grep -o '.\{0,12\}2026.\{0,20\}' out/index.html          # >© <!-- -->2026<!-- 
 
 ### N10 — P3 · S · [✅ DONE 2026-09-06] `navItems` and crumb hrefs lack the trailing slash the export enforces
 
-`lib/content.ts:303-310` (`/שירותים`, `/מחירון`, …) and the crumb `href`s in the routes omit the `/`,
+`navItems` in `lib/content.ts` (`/שירותים`, `/מחירון`, …) and the crumb `href`s in the routes omit the `/`,
 so every nav click is a client-side redirect to the canonical form. `PageHeader.schemaPath()` patches
 it for the schema; the links themselves should carry it.
 
@@ -1054,11 +1306,17 @@ under `trailingSlash: true`, and `PageHeader.schemaPath()` normalises the crumb 
 independently — which is why the export scan is clean. Tidy them the next time either file is
 touched; the shipped-output assertion above is the one that matters.
 
-### N11 — P2 · S · [NOT STARTED] `accent-500` is the AA hover token, already defined
+### N11 — P2 · S · [✅ DONE 2026-11-08] `accent-500` is the AA hover token, already defined
 
-`app/globals.css:47` defines `--color-accent-500: #d9b400`; `accent-foreground` (`#3d2b00`) on it
-passes 4.5:1, where the current `hover:bg-accent-600` (`components/ui/Button.tsx:11`) scores 2.76.
-§11.1's first half is a one-token change. `.claude/rules/rtl-markup.md` names it.
+`app/globals.css` defines `--color-accent-500: #d9b400`; `accent-foreground` (`#3d2b00`) on it
+passes 4.5:1, where the old `hover:bg-accent-600` scored 2.76.
+
+**Closed 2026-11-08** by commit `7cfcf4c` (Sprint 3 change set A, row 3.1): the `Button` accent
+variant hovers to `accent-500`. Verified after a clean rebuild:
+
+```bash
+node scripts/audit/a11y.mjs   # ✅ contrastPairs "accent-foreground on accent-500" 6.79
+```
 
 ### N12 — P2 · — · [✅ HOLDS · standing rule] Rebuild before asserting
 
@@ -1117,11 +1375,23 @@ correct** for a service-area business (§5.6) and is not part of this item. A co
 cancellation channel needs no owner fact beyond the phone, WhatsApp and email that already exist —
 it is the cheapest trust gain on the list. The ח.פ. itself stays 🔶 (business-facts §B).
 
-### N16 — P2 · S · [NOT STARTED] The manifest is cast rather than narrowed
+### N16 — P2 · S · [✅ DONE 2026-11-08] The manifest is cast rather than narrowed
 
-`lib/site-config.ts:20` — `siteManifest as unknown as SiteManifest` defeats strict-mode narrowing on
-every field downstream (`manifest.contact`, `manifest.schema`, `manifest.analytics`), so a missing or
-renamed roster key becomes a runtime `undefined` instead of a type error. Narrow at the boundary.
+Until 2026-11-08 `lib/site-config.ts` read `siteManifest as unknown as SiteManifest`, which defeated
+strict-mode narrowing on every field downstream (`manifest.contact`, `manifest.schema`,
+`manifest.analytics`), so a missing or renamed roster key became a runtime `undefined` instead of an
+error.
+
+**Closed 2026-11-08** by commit `02a3144` (Sprint 2 change set A, row 2.11). `lib/manifest.ts`
+exports `parseManifest(raw: unknown): SiteManifest`, which narrows every field and throws with the
+JSON path of the offending one, so a broken roster sync fails the build under `output: "export"`.
+Verified:
+
+```bash
+grep -rn 'as unknown as' app components lib   # (no matches)
+grep -n 'parseManifest' lib/site-config.ts    # manifest = parseManifest(siteManifest)
+npm run typecheck                             # clean
+```
 
 ### N17 — P3 · M · [NOT STARTED] Three high `npm audit` advisories, build-time only
 
@@ -1142,6 +1412,28 @@ state. Re-worded 2026-09-06: §6.1, `docs/owner-actions.md` 1.1, `docs/cloudflar
 **Closed 2026-09-06:** the owner delegated the flip; `docs/business-facts.md` §H "Unblock AI crawlers" is ✅ with the verified probe result and the history in its Why cell.
 Standing consequence: anyone verifying the crawler state by reading `robots.txt` gets a **false
 pass** in either direction — the full-UA page probe in the runbook is the only measurement.
+
+### N19 — P2 · S · [PARTIAL 2026-11-08] No skip link, and phone-first CTAs under 44px
+
+Filed 2026-11-08 for Sprint 3 row 3.12 (accessibility-and-i18n §2 had no backlog row for either).
+The first focusable element on a page was the header, so a keyboard user tabbed through the whole
+chrome to reach the content; the mobile-menu toggle was 40px (`h-10 w-10`).
+
+**Mostly closed 2026-11-08** by commit `60ce109` (Sprint 3 change set B, row 3.12). `app/layout.tsx` renders
+a skip link to `<main id="main" tabIndex={-1}>` (label `skipLinkLabel` in `lib/content.ts`) as the
+first focusable element, before the live-kit bar and the header; the menu toggle is `h-11 w-11`
+(44px), and the hero, final-CTA, service, pricing, thank-you and mobile-menu call / WhatsApp
+buttons are `Button size="lg"`. **Still open:** the two buttons in the lead form's
+delivery-failure alert (`form-whatsapp`, `form-call`) are `size="md"` — about 40px from
+`py-2.5` + `text-sm`, derived from the classes; `a11y.mjs` does not measure target size. The header
+call button is also `md` but is hidden below `sm`, so it is never a phone target. Verified after a
+clean rebuild:
+
+```bash
+grep -o 'href="#main"[^>]*>' out/index.html | head -1   # the skip link — the first <a>/<button> in <body>
+grep -rn 'size="lg"' components app | wc -l             # 13
+node scripts/audit/a11y.mjs                             # ✅ 0 failures · 0 warnings
+```
 
 ---
 
@@ -1183,18 +1475,29 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    ~~**§13.1** GTM to `<head>`~~ · ~~**§13.2** `data-cta`~~ — all struck items shipped in the repo
    2026-09-06 (Sprint 1, commits `a0e0fe2` `13a6bdc` `cfff52f` `fee7f69`); also ~~§10.3~~, ~~N1~~,
    ~~N9~~, ~~N10~~, ~~N13~~. §3.11–3.12 are the blog-cleanup remainder and did not ship.
-4. **§11.1** contrast (via N11) · **§11.2–11.5** · ~~**N6 · N7**~~ (shipped 2026-09-06 with §1.1).
-   → **Phase 1 = 2–4 + N1.** Acceptance: `npm run gate` = 0 for these checks; 45 routes, 0 stubs.
-   As of 2026-09-06 the audit exits **26** (was 37): `edge`, `perf`, `titles`, `cta-coverage`,
-   `links`, `export` and `spam-grep` all pass. What is left of Phase 1 is §11.1 (2 of the 4 `a11y`
-   failures), §11.2 (1), §11.5 + N11 (`rtl-lint` 2) and §3.11–3.12. The fourth `a11y` failure is
-   §8.1's `aria-invalid`, which is Phase 5.
-5. **Phase 2 — schema:** §4.4 · §4.5 · §4.6 · §4.7/N2 · §4.8 · §4.9 · §4.12 via `lib/jsonld.ts`
-   and one `@graph` per page. Acceptance: `schema.mjs` = 0.
-6. **Phase 3 — depth + navigation:** §3.1 / §3.2 (the decision on whether this domain ranks) ·
-   §2.3 · §5.2 · §9.1–9.4. Acceptance: `content-depth.mjs` floors + delta, `links.mjs` 0 orphans.
-7. **Phase 4 — guides hub + block model:** §6.3 · §3.8 · §3.10 · §9.5 · §6.2 (ADR 0002, 0003).
-8. **Phase 5 — engagement + CRO:** §8.1–8.6 · N8 · §13.4–13.5 · §10.2.
-9. **Phase 6 — E-E-A-T + AEO:** §7.2 · §7.4 · §7.6 · §6.5 · §4.5 (when photos land).
-10. **Phase 7 — measurement:** §13.7 · §15.2 · §15.3 (when the GSC token lands).
-11. Everything tagged `⏳ BLOCKED · owner` moves when [owner-actions.md](owner-actions.md) moves.
+4. ~~**§11.1** contrast (via N11)~~ · ~~**§11.2–11.5**~~ · ~~**N6 · N7**~~ — §11.1–11.5 and N11
+   shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109`); N6 · N7 on 2026-09-06
+   with §1.1. → **Phase 1 = 2–4 + N1**, done except §3.11–3.12, the blog-cleanup remainder (now
+   Sprint 4.8).
+5. ~~**Phase 2 — schema:** §4.2 substance · §4.4 · §4.5 · §4.6 · §4.7/N2 · §4.8 · §4.9 · §4.10
+   catalog half · §4.12 · §7.4 registry + `AboutPage` · N16~~ — shipped in the repo 2026-11-08
+   (Sprint 2, commits `02a3144` `d8edb28`); `schema.mjs` → 0 failures, 0 warnings. §4.10's `Offer`
+   half stays ⏳ (business-facts §D) and is resolved by the N14 pivot, not by prices.
+6. **Sprint 4 — the truth pass (next):** §7.2 claims (`claims-grep` 5 is now half of what the audit
+   still fails) · N14 / §3.13 pricing pivot · §3.5 / §4.13 homepage FAQ · §6.2 homepage answer
+   block · N15 · §7.6 (bounded by B5) · §2.4–2.6 descriptions and titles · §3.11–3.12 blog debris.
+   Acceptance: `claims-grep.mjs` 0, home ≥ 800 words, `titles.mjs` description warnings 0.
+7. **Phase 3 — depth + navigation:** §3.1 / §3.2 (the decision on whether this domain ranks) ·
+   §2.3 · §5.2 · §9.1–9.4. Acceptance: `content-depth.mjs` floors + delta (the other 10 failures),
+   `links.mjs` 0 orphans and `notInChrome 0`.
+8. **Phase 4 — guides hub + block model:** §6.3 · §3.8 · §3.10 · §9.5 · §6.2 (ADR 0002, 0003) ·
+   §6.5 `llms.txt`.
+9. ~~**Phase 5 — engagement + CRO:** §8.1 · §8.3 · §8.4/N3 · §8.5 · N8 · §13.4–13.5 · §10.2 · N19~~
+   — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 PARTIAL —
+   two `md` buttons in the form's error alert); `a11y.mjs`,
+   `rtl-lint.mjs` and `cta-coverage.mjs` 0, `clientComponents` 3. Left: §8.2 (PARTIAL — the reviewer
+   sign-off on the privacy copy, and B2 / B10), §8.6 (PARTIAL — the GTM tag and B2), and the
+   engagement events (Sprint 8.1).
+10. **Phase 6 — E-E-A-T + AEO:** §7.2 · §7.6 · §6.5 · §7.5 photos (B4).
+11. **Phase 7 — measurement:** §13.7 · §15.2 cadence · §15.3 (after B1, B2).
+12. Everything tagged `⏳ BLOCKED · owner` moves when [owner-actions.md](owner-actions.md) moves.

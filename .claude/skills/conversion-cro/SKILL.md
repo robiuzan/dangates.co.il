@@ -1,6 +1,6 @@
 ---
 name: conversion-cro
-description: Lead conversion on dangates — click-to-call above the fold, the sticky mobile bar, the Web3Forms lead form (its delivery-failure alert, shipped 2026-09; the still-missing per-field errors with aria-invalid, Israeli phone validation that accepts landlines, a consent line, the city field, a real /תודה/ route with a tel link), the pricing page that ends without a CTA, data-cta now on every CTA, and the honest-trust gate now that the fabricated reviews are gone. Use when conversions are weak, a page is missing its CTAs, or the form needs work. Triggers: "improve conversions", "CRO pass", "form validation", "thank you page", "add click-to-call", "why aren't leads tracked", "הטופס לא עובד", "דף תודה".
+description: Lead conversion on dangates — click-to-call above the fold, the sticky mobile bar, the Web3Forms lead form and what keeps it honest (the delivery-failure alert, per-field errors with aria-invalid, Israeli phone validation that accepts landlines, the consent line, the city field and the /תודה/ route — all shipped by 2026-11; what is left is the GTM tags that count them), call and WhatsApp on the pricing page, data-cta on every CTA, and the honest-trust gate now that the fabricated reviews are gone. Use when conversions are weak, a page is missing its CTAs, or the form needs work. Triggers: "improve conversions", "CRO pass", "form validation", "thank you page", "add click-to-call", "why aren't leads tracked", "הטופס לא עובד", "דף תודה".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -19,108 +19,93 @@ is `/tracking-analytics` against `docs/event-taxonomy.md`.
 ```bash
 npm run build                                  # N12
 node scripts/audit/run-all.mjs --scope cro     # data-cta coverage, pages with no CTA in <main>
-node scripts/audit/a11y.mjs                    # LeadForm / Faq / Header / Process source checks
+node scripts/audit/a11y.mjs                    # LeadForm / Process / MobileMenu source checks
 ```
 
-As of 2026-09-06: `cta-coverage.mjs` **passes** — `missingDataCta 0` across 113 CTA elements (§13.2
-closed by `fee7f69`). `/מחירון/` is still the one commercial page whose `<main>` has no
-call/WhatsApp/form CTA (§8.5, a warning not a failure); `a11y.mjs` still fails on the form (no
-`aria-invalid`, no pattern — §8.1).
+As of 2026-11-08 (clean rebuild, repo — not deployed yet): `cta-coverage.mjs` **passes with 0
+warnings** — `ctaElements 119 · withDataCta 119 · missingDataCta 0 · distinctValues 23`; `a11y.mjs`
+**0 failures, 0 warnings**. Sprint 3 (`68a4a7f`) closed every repo-side gap below; what is left is
+container and owner work (B2) and the privacy-copy sign-off (§8.2).
 
 ## What already works — don't regress it
 
 - `MobileCtaBar` is fixed-bottom, 50/50 call/WhatsApp, `lg:hidden`, with the `h-16 lg:hidden` spacer
-  in `app/layout.tsx:76` so it never covers the footer.
-- Click-to-call above the fold on every page (header + hero); `FinalCta` on 41 of 45 pages.
-- `LeadForm` falls back to a **prefilled WhatsApp deep link** when the Web3Forms POST fails, and
-  since 2026-09-06 also renders it as a visible `role="alert"` block with a real link and a `tel:`
-  link (Gap 1) — lead-loss insurance that survives a popup blocker. Keep both halves.
-- `trackEvent("lead_submit")` (`:97`) fires only on **confirmed** success, outside the `try`. Keep it.
-- Every field has a `<label htmlFor>`; honeypot `company` (`:45`); public-by-design Web3Forms key
-  (backlog §12.5).
+  in `app/layout.tsx` so it never covers the footer; its WhatsApp half uses the `whatsapp` tokens
+  (5.42:1) since `7cfcf4c`.
+- Click-to-call above the fold on every page (header + hero, the bar on phones); `FinalCta` on the
+  commercial pages; call and WhatsApp in `<main>` on `/מחירון/` since `68a4a7f`.
+- `LeadForm`'s delivery-failure state renders a visible `role="alert"` block with a real WhatsApp
+  link and a `tel:` link (Gap 1) — lead-loss insurance no popup blocker can swallow. There is no
+  `window.open` anywhere since `68a4a7f`.
+- `lead_submit` fires only on a **confirmed** send, outside the `try`, then the form navigates to
+  `/תודה/`. Keep that order.
+- Every field has a `<label htmlFor>`; the honeypot is the hidden `company` field; the Web3Forms key
+  is public by design (backlog §12.5).
 
-## The six gaps — each with its fix design
+## The six gaps — all closed in the repo; the specs stay the bar
 
 ### Gap 1 — delivery failure ~~is silent~~ (N1 ✅ 2026-09-06 · §8.6 PARTIAL)
 
 **The UI half shipped** in commit `fee7f69`. `LeadForm` branches on `status === "error"` and renders
-a `role="alert"` block **after** the submit button and the WhatsApp line — deliberately after, so it
-reads in source order rather than above the control the user just pressed. It carries the same
-`buildWhatsapp(form)` href as a real `<a data-cta="form-whatsapp">` (a link cannot be popup-blocked),
-a `tel:` link (`data-cta="form-call"`), and relabels the submit button to
-`leadFormErrorCopy.retryLabel` so retrying is one press. Its four strings live in `leadFormErrorCopy`
-in `lib/content.ts`, not in the JSX. A blocked popup (`window.open` returning `null`) pushes
-`lead_error` with `reason: "popup_blocked"`; the other three call sites push `network` or
-`http_<code>`.
-
-Before this, `status` was set to `"error"` and a WhatsApp window opened, but nothing in the JSX
-branched on it — the only visible error was the client-side validation string, which delivery
-failure never set. A user whose POST failed and whose popup was blocked saw the form sit there,
-submit button enabled, no message.
+a `role="alert"` block **after** the submit button — deliberately after, so it reads in source order
+rather than above the control the user just pressed. It carries a real `<a data-cta="form-whatsapp">`
+to the prefilled message, a `tel:` link (`data-cta="form-call"`), and relabels the submit button to
+`leadFormErrorCopy.retryLabel` so retrying is one press. Its strings live in `leadFormErrorCopy` in
+`lib/content.ts`. The three failure paths (no-key misconfig, fetch `catch`, non-ok response) push
+`lead_error` with `reason` `network` or `http_<code>`; `popup_blocked` retired with `window.open`.
+Its two buttons are `size="md"` (≈40px) — the one tap-target gap left (backlog N19).
 
 **Still open under §8.6:** nothing consumes `lead_error`. No GTM tag or trigger reads it, and no GA4
-property exists to receive it (§13.7 ⏳ owner). The failure is visible to the user and invisible to
-the business until both land — that is container work, not a repo change.
+property exists to receive it (§13.7 ⏳ owner, B2). That is container work, not a repo change.
 
-### Gap 2 — validation and a11y (§8.1)
+### Gap 2 — validation and a11y (§8.1 ✅ 2026-11-08)
 
-`noValidate` (`:120`) with one generic string; no per-field state, no `aria-invalid`, no
-`aria-describedby`, no focus management; the phone input (`:143-153`) is `type="tel"` with **no
-pattern**, so anything passes. Fix: an `errors` record keyed by field; each message in a `<p
-id="lf-<field>-error">` bound by `aria-describedby`, `aria-invalid={!!errors.field}`; on submit, focus
-the first invalid input. Phone: strip spaces and dashes, accept `^0\d{8,9}$` (landlines are 9 digits,
-mobiles and `072`/`073`/`077` VoIP lines 10 — this business's own number is `072-2587772`) or
-`^\+972\d{8,9}$`; reject nothing a real customer would type. Keep `noValidate` — Hebrew messages beat
-browser defaults, but only if they are per-field. While there, `text-right` on `:151` is one of the
-three banned utilities (`rtl-lint.mjs`): `text-end` renders identically inside that `dir="ltr"` island.
+Shipped in `68a4a7f`: an `errors` record keyed by field; each message in `<p id="lf-<field>-error">`
+bound by `aria-describedby`, `aria-invalid` on the field; the wiring renders before focus moves to
+the first invalid input. The phone check is `lib/phone.ts` — one expression for both the `pattern`
+attribute and the JS check: mobiles, `07X` lines (this business is `072-`), 02/03/04/08/09
+landlines, with or without `+972`, dashes or spaces. `noValidate` stays, because Hebrew per-field
+messages beat browser defaults. Before: one generic string and no pattern. Do not regress either.
 
-### Gap 3 — consent (§8.2)
+### Gap 3 — consent (§8.2 PARTIAL)
 
-The form collects name, phone and free text; `/מדיניות-פרטיות/` exists and the form never links it.
-Add one line above the button linking the policy — an inline statement, not a checkbox, unless the
-owner asks for opt-in. The policy must also mention analytics, because GTM loads unconditionally
-(`docs/event-taxonomy.md` "Container-side notes"); that copy is `hebrew-copywriter`'s.
+Shipped in `68a4a7f`: one line beside the button (`leadFormConsentCopy`) linking
+`/מדיניות-פרטיות/` — an inline statement, not a checkbox, unless the owner asks for opt-in. The
+policy (`privacyPageCopy`) names Web3Forms, Google Tag Manager, the fields collected, the live-kit's
+status-file read and its storage values. **Open:** the `hebrew-editor` / `claims-verifier` sign-off
+on the fix pass; naming GA4 once the property exists (B2); whether any consent UI is needed (B10).
 
-### Gap 4 — no thank-you URL (§8.3)
+### Gap 4 — the thank-you URL (§8.3 ✅ 2026-11-08)
 
-Success is an inline state swap (`:100-114`): no URL-based conversion, no Google Ads target, and the
-success copy says "התקשרו אלינו" with **no clickable number**. Build `app/תודה/page.tsx` (Phase 5;
-`output: "export"` + `trailingSlash` serve it at `/תודה/`): `robots: { index: false }`, left out of
-the sitemap;
-states what happens next and when; a `tel:` link (`data-cta="thanks-call"`) and a WhatsApp link
-(`thanks-whatsapp`) as the immediate second touch; a link back to `/שירותים/`. `LeadForm` navigates
-there with `window.location.assign("/%D7%AA%D7%95%D7%93%D7%94/")` after the `trackEvent` push — full
-page load, so the `/תודה/` Page View trigger is the reliable conversion and `lead_submit` the
-cross-check. Keep the inline success block as the fallback if navigation is prevented.
+Shipped in `68a4a7f`: `app/תודה/page.tsx`, `noindex`, registered in `staticPages` and left out of
+the sitemap, calm for the live surfaces; it says what happens next, carries `thanks-call` (`tel:`)
+and `thanks-whatsapp`, and links back to `/שירותים/`. `LeadForm` pushes `lead_submit` and then
+navigates there with a full page load, so the `/תודה/` Page View trigger is the reliable conversion
+and `lead_submit` the cross-check. The inline success block stays as the fallback. The audit's
+`NOINDEX_ALLOWED` exemption for it awaits the owner's confirmation (backlog §8.3).
 
-### Gap 5 — the `city` field (§8.4)
+### Gap 5 — the `city` field (§8.4 ✅ 2026-11-08)
 
-`types/index.d.ts` declares `city?` in a file nothing imports (N3); the form never collects it.
-Add `<select id="lf-city" name="city">` built from `locations` in `lib/site-config.ts` (value = slug,
-label = name, plus "אחר"). Optional, one row of vertical space, and **dispatch-relevant** across 18
-areas from באר שבע to the קריות — the business learns whether it can take the job before calling
-back. Send it in the Web3Forms body and as the `city` dimension on `lead_submit`.
+Shipped in `68a4a7f`: an optional `<select id="lf-city" name="city">` built from `locations` (value
+= slug, label = name, plus `אחר` → `"other"`), sent in the Web3Forms body and as `city` on
+`lead_submit` — dispatch-relevant across 18 areas from באר שבע to the קריות. The dead
+`types/index.d.ts` is deleted (N3).
 
-### Gap 6 — the pricing page ends without a CTA (§8.5)
+### Gap 6 — the pricing page's CTA (§8.5 ✅ 2026-11-08)
 
-`/מחירון/` is reached with active buying intent and is the only commercial page whose `<main>` has no
-call/WhatsApp/form action (`cta-coverage.mjs` warns). The `PricingTeaser` button now carries
-`data-cta="pricing-contact"` (§13.2, `fee7f69`), so the click is countable — but a link to the
-contact page is not a call. Fix: add `pricing-call` and `pricing-whatsapp` buttons beside it, or
-render `FinalCta` on the route. Its `href` is still the bare `/צור-קשר`; Next normalises it in the
-export (N10 closed on the shipped output), so write `/צור-קשר/` while you are in the file rather
-than as its own task. The page's _copy_ problem — eight of nine prices are
-authored estimates and real ones are not coming — is backlog §4.10/§7.3, not a CRO change.
+Shipped in `68a4a7f`: `pricing-call` and `pricing-whatsapp` beside `pricing-contact` in
+`PricingTeaser`, so `/מחירון/` has a call and a WhatsApp action inside `<main>`. The page's _copy_
+problem — eight of nine prices are authored estimates and real ones are not coming — is backlog
+N14 / §7.3 (Sprint 4.2), not a CRO change.
 
 ## `data-cta` coverage
 
 GTM click triggers read `data-cta`, and **every CTA carries one since 2026-09-06** (§13.2, commit
-`fee7f69`): `cta-coverage.mjs` → `ctaElements 113 · withDataCta 113 · missingDataCta 0`. The last 24
-untagged instances were the service-page sidebar (×7), the contact page's call/WhatsApp/email, the
-form's submit and WhatsApp fallback, the pricing link and the footer email. The full value list is in
-`/tracking-analytics`; the convention is `{location}-{action}` and the script enforces it. Any new
-CTA needs its own value in the same edit — a missing attribute makes the click permanently invisible,
-and it is the only way that 0 moves.
+`fee7f69`). As of 2026-11-08: `cta-coverage.mjs` → `ctaElements 119 · withDataCta 119 ·
+missingDataCta 0 · distinctValues 23 · distinctTaggedElements 30 · chromeCtas 8`. The full value
+list is in `/tracking-analytics`; the convention is `{location}-{action}` and the script enforces
+it. Any new CTA needs its own value in the same edit — a missing attribute makes the click
+permanently invisible, and it is the only way that 0 moves.
 
 ## The honest-trust gate — read before adding any trust signal
 
@@ -129,8 +114,8 @@ Conversion work that adds pressure without adding proof makes the page worse.
 - **No invented testimonials, ratings, "X customers this month", badges or countdowns.** A fabricated
   trust signal is a Google policy violation and a lie to the customer. This site shipped exactly that
   until 2026-08-17 — ten reconstructed reviews under real names as `Review` + `AggregateRating`. It is
-  gone: `lib/content.ts:242` exports `reviews = []`, `:248` `REVIEW_SOURCE_URL = null`, and
-  `components/marketing/Reviews.tsx:41` returns `null` unless both are set. **That guard is the rule
+  gone: `lib/content.ts` exports `reviews = []` and `REVIEW_SOURCE_URL = null`, and
+  `components/marketing/Reviews.tsx` returns `null` unless both are set. **That guard is the rule
   made mechanical — never bypass it** (`schema.mjs` fails on any `Review`/`AggregateRating`).
 - Real reviews arrive one way: the Google Business Profile (`docs/owner-actions.md` §2.1–2.2, ⏳),
   quoted **verbatim** with name, rating and date into `reviews` — `docs/gbp-runbook.md`. Escalate to
@@ -139,11 +124,12 @@ Conversion work that adds pressure without adding proof makes the page worse.
   process, the hours, "אחריות על העבודה" (not a term). Not: years in business, a warranty term,
   licence, insurance, "פריסה ארצית" — `docs/business-facts.md` §B–§E; `claims-grep.mjs` fails a
   live 🔶 claim and `claims-verifier` reviews every copy change.
-- The footer hours (`components/layout/Footer.tsx:47-49`) end at 18:00 directly beneath a `FinalCta`
+- The footer hours (`Footer`) end at 18:00 directly beneath a `FinalCta`
   promising 24/7 (§7.6) — one viewport, two stories. Bound the promise to what the owner confirms
   (§5.4) rather than deleting the hours.
-- The accent CTA's **hover** and the WhatsApp button fail AA contrast (`/responsive-accessibility`;
-  `accent-500` is the ready AA hover token, N11). A CTA a person can't read is a conversion bug.
+- The accent CTA's **hover** and the WhatsApp button failed AA contrast until 2026-11-08; they pass
+  now (`accent-500` 6.79:1, `whatsapp` 5.42:1 — §11.1, N11 ✅). A CTA a person can't read is a
+  conversion bug — keep `a11y.mjs` at 0.
 
 ## Checklist
 

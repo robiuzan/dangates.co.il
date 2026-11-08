@@ -34,12 +34,15 @@ Israeli services sites/roster/sites/dangates.json   ← EDIT HERE for NAP, brand
 site.config.json          SiteManifest             ← NEVER edit directly (deny list + guard hook)
         │
         ▼
-lib/site-config.ts        manifest · siteConfig · services[7] · locations[18] (slug, name only today)
-        │                 telHref · whatsappHref() · locationsUpdated (:112 — one shared date)
+lib/site-config.ts        manifest (= parseManifest() from lib/manifest.ts) · siteConfig · services[7]
+        │                 locations[18] (slug, name only today) · staticPages (10, /תודה/ noindex)
+        │                 telHref · whatsappHref() · locationsUpdated (one shared date)
         ├─► lib/content.ts   serviceCards · serviceMeta · differentiators · processSteps · trustStats
-        │                    priceRows · faqs · reviews = [] + REVIEW_SOURCE_URL = null (gated, :242-248)
+        │                    priceRows · faqs · reviews = [] + REVIEW_SOURCE_URL = null (gated)
         │                    aboutValues · aboutSections · navItems
-        ├─► lib/posts.ts     posts[11] on the flat PostBlock {type:"h"|"p"|"li"; text} (:9) — untrusted
+        ├─► lib/posts.ts     posts[11] on the flat PostBlock {type:"h"|"p"|"li"; text} — untrusted
+        ├─► lib/jsonld.ts    the JSON-LD builders: one @graph per page (since Sprint 2, 2026-11-08)
+        ├─► lib/authors.ts   empty Author registry — no person is coming
         ▼
 app/**/page.tsx  →  components/{ui,layout,marketing,forms}/**
 ```
@@ -47,13 +50,15 @@ app/**/page.tsx  →  components/{ui,layout,marketing,forms}/**
 **Identity and NAP go up to the roster. Wording goes in `lib/content.ts`. Article bodies go in
 `lib/posts.ts`. Layout goes in components.** A phone number, city or service name typed into JSX is a
 bug (`.claude/rules/content-data.md`, `rtl-markup.md`). The site has **no street address** — the
-manifest carries none and `schema.areaServed` is `"מרכז הארץ ופריסה ארצית"`; do not invent one.
+manifest carries none; do not invent one. The manifest's `schema.areaServed` is still the phrase
+`"מרכז הארץ ופריסה ארצית"` (owner-gated, B5), but since Sprint 2 the graph emits the 18 published
+locations instead.
 
 **The richer data model does not exist yet:** `kind` / `prefixed` / per-entry `updated` on locations,
 `cityContent`, `serviceDepth` (Phase 3 — `/new-city`, `/new-service` are the spec); the typed block
-model, `lib/guides.ts` + `content/guides/*.ts` (Phase 4 — ADR 0002/0003, `/new-guide`);
-`lib/jsonld.ts` (Phase 2); `lib/authors.ts` (Phase 6). `env-doctor.mjs` tracks them as "planned";
-never cite a line number in them.
+model, `lib/guides.ts` + `content/guides/*.ts` (Phase 4 — ADR 0002/0003, `/new-guide`).
+`env-doctor.mjs` tracks them as "planned"; never cite a line number in them. (`lib/jsonld.ts` and
+`lib/authors.ts` left this list when Sprint 2 built them, 2026-11-08.)
 
 ## Routes — 45 URLs in the sitemap
 
@@ -64,7 +69,8 @@ never cite a line number in them.
 | `/services/{slug}/`                                                                               | `app/services/[service]/page.tsx` | 7     |
 | `/locations/{slug}/`                                                                              | `app/locations/[city]/page.tsx`   | 18    |
 | `/blog/` · `/blog/{slug}/`                                                                        | `app/blog/page.tsx` · `[slug]/`   | 1+11  |
-| **Planned:** `/מדריכים/` + `/מדריכים/[slug]/` (Phase 4, ADR 0002) · `/תודה/` (Phase 5, §8.3)      | not built                         | —     |
+| `/תודה/` — `noindex`, **not** in the sitemap (since 2026-11-08, §8.3)                             | `app/תודה/page.tsx`               | +1    |
+| **Planned:** `/מדריכים/` + `/מדריכים/[slug]/` (Phase 4, ADR 0002)                                 | not built                         | —     |
 
 The taxonomy is mixed — pure Hebrew top-level paths, English container segments with Hebrew slugs for
 the three silos. It is the live URL scheme and it stays. `/איזורי-שירות/` would spell correctly as
@@ -100,18 +106,19 @@ headersFile true · deadHostArtifacts 0`. None of it is live until the next depl
 
 ## What `@ishub/site-kit` gives you
 
-| Subpath        | Symbols                                                                                 | Used here                                                                                                                                     |
-| -------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `./contact`    | `telHref`, `whatsappHref`, `phoneDisplay`                                               | yes                                                                                                                                           |
-| `./seo`        | `localBusinessJsonLd`, `serviceJsonLd`, `faqJsonLd`, `breadcrumbJsonLd`, `jsonLdScript` | yes — `PageHeader` maps `{label, href}` → the kit's `{name, path}` and emits `BreadcrumbList` on all 44 nested routes; never add a second one |
-| `./analytics`  | `gtmHeadSnippet`, `gtmNoScriptSrc`, `trackEvent`                                        | yes — rendered in `<body>` at `app/layout.tsx:69-70` (§13.1 open)                                                                             |
-| `./media`      | `mediaUrl`, `srcsetFor`, `ogImageMeta`, `preloadPropsFor`                               | only `ogImageMeta`                                                                                                                            |
-| `./components` | `SiteImage` (Cloudflare `/cdn-cgi/image` srcset, compile-time `alt`)                    | **unused** — zero `<img>` sitewide; `/site-images` when photos land                                                                           |
+| Subpath        | Symbols                                                                                 | Used here                                                                                                                                      |
+| -------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `./contact`    | `telHref`, `whatsappHref`, `phoneDisplay`                                               | yes                                                                                                                                            |
+| `./seo`        | `localBusinessJsonLd`, `serviceJsonLd`, `faqJsonLd`, `breadcrumbJsonLd`, `jsonLdScript` | yes — wrapped by `lib/jsonld.ts`; `PageHeader` emits each page's one `@graph` with its `BreadcrumbList` (44 nested routes); never add a second |
+| `./analytics`  | `gtmHeadSnippet`, `gtmNoScriptSrc`, `trackEvent`                                        | yes — the init script in `<head>`, the `<noscript>` iframe in `<body>` (`app/layout.tsx`, §13.1 ✅)                                            |
+| `./media`      | `mediaUrl`, `srcsetFor`, `ogImageMeta`, `preloadPropsFor`                               | only `ogImageMeta`                                                                                                                             |
+| `./components` | `SiteImage` (Cloudflare `/cdn-cgi/image` srcset, compile-time `alt`)                    | **unused** — zero `<img>` sitewide; `/site-images` when photos land                                                                            |
 
-Schema reality (`node scripts/audit/schema.mjs`): all 45 content pages emit JSON-LD, but 18 locations
-and 8 static pages carry **only** the breadcrumb, `#business` dangles on 7 services + 11 posts, there
-is no `WebSite`, and `Service.url` / `mainEntityOfPage` carry raw Hebrew. Blog posts build
-`BlogPosting` inline in `app/blog/[slug]/page.tsx`. Target graph: `docs/schema-graph.md`.
+Schema reality (`node scripts/audit/schema.mjs`, 2026-11-08): 0 failures, 0 warnings. Every content
+page emits one `@graph` built by `lib/jsonld.ts`; the business node is on every page that references
+it; `WebSite` on `/`; `Service` on the 7 services and 18 locations; `CollectionPage` / `AboutPage` /
+`ContactPage` / `WebPage` on the statics; `BlogPosting` via `articleJsonLd`; every schema URL
+percent-encoded (Sprint 2, `02a3144` `d8edb28` — not deployed yet). Target graph: `docs/schema-graph.md`.
 
 ## Commands
 

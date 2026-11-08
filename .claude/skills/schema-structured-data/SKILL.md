@@ -16,14 +16,13 @@ node scripts/audit/schema.mjs            # type census per route, dangling @id, 
 node scripts/audit/schema.mjs --json     # exit code = failures
 ```
 
-As of 2026-08-23 (`pagesWithJsonLd: 45`, `breadcrumbPages: 44`): **coverage is closed — every content
-page emits JSON-LD and every nested route emits `BreadcrumbList`.** What remains is substance, and it
-is all Phase 2 (backlog §4): all 18 location pages and 8 static pages carry **only** `BreadcrumbList`
-(no `Service`/`areaServed`, no page-type node); `#business` is referenced on 7 services + 11 posts but
-defined only on `/` (18 dangling `@id`s); no `WebSite` node; `Service.url` ×7 and
-`BlogPosting.mainEntityOfPage` ×11 carry raw Hebrew (N2); no `image`/`logo`; the homepage is a JSON
-array of two `@context` objects rather than one `@graph`; `FAQPage` on 1 page. Five failures, five
-warnings — the numbers move, the script is the truth.
+As of 2026-11-08 (clean rebuild): **`schema.mjs` → 0 failures, 0 warnings** — `pagesWithJsonLd 45`,
+`danglingIds 0`, `rawHebrewUrls 0`, `faqPages 1`; `links.mjs` → `breadcrumbPages 44`. Sprint 2
+(`02a3144` `d8edb28`, in the repo, not deployed yet) closed the substance gap the 2026-08-23 run
+recorded — five failures and five warnings: locations and statics with only a breadcrumb, 18 dangling
+`#business` references, no `WebSite`, 18 raw-Hebrew URLs, no `image`/`logo`, a homepage array
+instead of one `@graph`. What is left: `FAQPage` on 1 page (§4.13), `sameAs` empty (B3), the Rich
+Results Test after the deploy. The numbers move; the script is the truth.
 
 ## The kit builders — and their limits
 
@@ -52,8 +51,8 @@ once had to be removed; this business sells a service). Limits, from
 ## Breadcrumbs — already done; never add a second one
 
 `components/layout/PageHeader.tsx` emits `BreadcrumbList` from the **same `crumbs` array it renders**
-(`PageHeader.tsx:57-59` maps `{ label, href }` → `{ name, path: schemaPath(href) }`; `schemaPath()` at
-`:24-26` adds the trailing slash and `encodeURI`s). A page only passes crumbs:
+(`breadcrumbNode()` in `lib/jsonld.ts` maps `{ label, href }` → `{ name, path: schemaPath(href) }`;
+`schemaPath()` adds the trailing slash and `encodeURI`s). A page only passes crumbs (and its `nodes`):
 
 ```tsx
 <PageHeader
@@ -70,33 +69,34 @@ No manual `<script>`, no `breadcrumbJsonLd` call in a page. Passing `{ name, url
 `https://dangates.co.il/undefined`; a second call double-emits (`.claude/rules/schema-jsonld.md`).
 The last crumb keeps its `href` — `BreadcrumbList` needs a resolvable `item` at every position.
 
-## Per route type — target vs today
+## Per route type — target vs today (2026-11-08)
 
-| Route                                 | Target (one `@graph`)                                                             | Today                                                |
-| ------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| `/`                                   | business + `WebSite` + `FAQPage`                                                  | array of two `@context` objects; no `WebSite`        |
-| `/services/{slug}/` ×7                | business + `Service` (`#service`, encoded `url`) + breadcrumb (+ `FAQPage` later) | `Service` raw `url`; `#business` dangling; 2 scripts |
-| `/locations/{slug}/` ×18              | business + `Service` with local `areaServed` + breadcrumb                         | breadcrumb only                                      |
-| `/שירותים/` `/איזורי-שירות/` `/blog/` | `CollectionPage` + `ItemList` + breadcrumb                                        | breadcrumb only                                      |
-| `/blog/{slug}/` ×11                   | business + `BlogPosting` (`#article`, `isPartOf`) + breadcrumb                    | raw `mainEntityOfPage`; dangling; 2 scripts          |
-| `/מדריכים/{slug}/` (Phase 4)          | business + `TechArticle`/`Article` + `FAQPage` + breadcrumb                       | route family does not exist                          |
-| `/אודות/` · `/צור-קשר/`               | `AboutPage` / `ContactPage` + breadcrumb — no `Person`                            | breadcrumb only                                      |
-| `/מחירון/`                            | breadcrumb only — `OfferCatalog` is **blocked** (business-facts §D)               | breadcrumb only ✅                                   |
-| `/404`                                | nothing (`noindex`)                                                               | ✅                                                   |
+| Route                                 | Target (one `@graph`)                                                             | Today (repo)                   |
+| ------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------ |
+| `/`                                   | business + `WebSite` + `FAQPage`                                                  | ✅                             |
+| `/services/{slug}/` ×7                | business + `Service` (`#service`, encoded `url`) + breadcrumb (+ `FAQPage` later) | ✅ (no FAQ yet)                |
+| `/locations/{slug}/` ×18              | business + `Service` with local `areaServed` + breadcrumb                         | ✅                             |
+| `/שירותים/` `/איזורי-שירות/` `/blog/` | `CollectionPage` + `ItemList` + breadcrumb                                        | ✅ (ItemLists of 7, 18 and 11) |
+| `/blog/{slug}/` ×11                   | business + `BlogPosting` (`#article`, `isPartOf`) + breadcrumb                    | ✅                             |
+| `/מדריכים/{slug}/` (Phase 4)          | business + `TechArticle`/`Article` + `FAQPage` + breadcrumb                       | route family does not exist    |
+| `/אודות/` · `/צור-קשר/`               | business + `AboutPage` (`knowsAbout`) / `ContactPage` + breadcrumb — no `Person`  | ✅                             |
+| `/מחירון/` · legal                    | `WebPage` + breadcrumb — `Offer` is **blocked** (business-facts §D)               | ✅                             |
+| `/תודה/` · `/404`                     | nothing (`noindex`)                                                               | ✅                             |
 
-## Phase 2 — `lib/jsonld.ts` (does not exist yet)
+## `lib/jsonld.ts` — built 2026-11-08 (Sprint 2)
 
-The recipe is `templates/jsonld.ts` in this skill — it typechecks against the repo today. It holds
+`lib/jsonld.ts` is the live implementation; `templates/jsonld.ts` in this skill was its recipe and
+differs in the places noted below — **the repo file wins**. It holds
 `graph()`, `pageUrl()`, `businessNode(m)`, `websiteJsonLd(m)`, `serviceNode(m, svc)`,
 `locationServiceJsonLd(m, svc, loc)`, `articleJsonLd(m, input)`, `itemListJsonLd(m, items, page)`,
 `pageNode(m, type, page)`, `breadcrumbNode(m, crumbs)`. Rules the recipe encodes:
 
 1. **One `<script>`, one `@graph` per page.** Site-local nodes carry no `@context`; `graph()` strips
-   the kit's. Wiring that keeps the invariant mechanical: `PageHeader` gains `nodes?: JsonLd[]` and
-   emits `graph(...nodes, breadcrumbNode(manifest, crumbs))` — pages hand it nodes and stop rendering
-   their own script. `app/page.tsx` (no `PageHeader`) calls `graph()` directly. After the change,
-   `grep -rl 'application/ld+json' app components` lists exactly `app/page.tsx` and
-   `components/layout/PageHeader.tsx`. Never leave a page with both (schema-graph §7).
+   the kit's. The wiring that keeps the invariant mechanical: `PageHeader` takes `nodes?: JsonLd[]` and
+   emits `graph(...nodes, breadcrumbNode(manifest, crumbs))` — pages hand it nodes and render no
+   script of their own; `app/page.tsx` (no `PageHeader`) calls `graph()` directly.
+   `grep -rl 'application/ld+json' app components` lists those two plus the gated `components/marketing/Reviews.tsx`,
+   which renders nothing while `reviews` is empty. Never leave a page with both (schema-graph §7).
 2. **Emit `businessNode(m)` on every page whose graph references `#business`** (`provider`,
    `publisher`, `about`). An `@id`-only stub does not count — `schema.mjs` treats a node with fewer
    than two data keys as a reference, so it still dangles.
@@ -104,10 +104,13 @@ The recipe is `templates/jsonld.ts` in this skill — it typechecks against the 
    `encodeURI` — byte-identical to the canonical and the sitemap `<loc>`. Pass raw Hebrew paths in;
    never pre-encode (double-encoding turns `%` into `%25`).
 4. **`logo` = `/dangates-logo.png`, `image` = the manifest OG card** via `ogImageMeta(m.images)` —
-   the same helper `app/layout.tsx:32` uses for `og:image`. No other image exists (business-facts §F).
-5. `businessNode` also sets `url` with the trailing slash, `areaServed` as the 18 real places and
-   `knowsAbout`. It does **not** set `hasOfferCatalog`: that needs `Offer` items and `schema.mjs`
-   forbids the `Offer` type outright while prices are unsourced (backlog §4.10) — the script decides.
+   the same helper `app/layout.tsx` uses for `og:image`. No other image exists (business-facts §F).
+5. `businessNode` also sets `url` with the trailing slash, `areaServed` as the 18 published places,
+   `description` as the tagline (the roster pitch carries unconfirmed claims), and `knowsAbout` when
+   the caller passes it (`/אודות/` only). Unlike the template it **does** set `hasOfferCatalog` — an
+   `OfferCatalog` whose `itemListElement` entries are the 7 services as `Service` nodes (`@id`, `name`,
+   `url`), which schema.org allows — with **no `Offer` and no price**, which `schema.mjs` forbids while
+   prices are unsourced (backlog §4.10).
 
 ### Location pages
 
@@ -115,21 +118,22 @@ The recipe is `templates/jsonld.ts` in this skill — it typechecks against the 
 `{pageUrl}#service`, encoded `url`, `provider` → `#business`, `areaServed: placeNode(loc)`.
 `placeNode` types קריות, שרון, צפון, דרום as `AdministrativeArea` and everything else as `City`;
 typing a region as a city is a factual error in the graph. **`kind` and `prefixed` do not exist on
-`locations` yet** — today an entry is `{ slug, name }` (`lib/site-config.ts:82-101`); the recipe
+`locations` yet** — an entry is `{ slug, name }` (`locations` in `lib/site-config.ts`); the builder
 carries an interim `REGION_SLUGS` set and switches to `loc.kind` / `loc.prefixed` when Phase 3
 (`/new-city`) adds them. **Never a `LocalBusiness` per city** — no premises exist, and 18 business
 nodes is a recognised local-spam pattern. Coverage is `areaServed`, always.
 
 ### Articles
 
-`app/blog/[slug]/page.tsx:79-94` builds `BlogPosting` inline today: raw `mainEntityOfPage` (`:87`),
-`dateModified` pinned to `post.date` (`:85`), `publisher` → dangling `#business`, an `Organization`
-`author`. `articleJsonLd(m, { type: "BlogPosting", path: `/blog/${post.slug}/`, headline, description,
-datePublished: post.date, dateModified: post.updated ?? post.date })` fixes all four: encoded `@id`
-`{url}#article`, `mainEntityOfPage` as a `WebPage` reference, `isPartOf` → `#website`, and **no
-`author` key** — `prune()` drops it when `authorName` is absent, and it is absent because no person is
-coming (business-facts §B). `schema.mjs` tolerates an `Organization` author and forbids a `Person`
-while `lib/authors.ts` (Phase 6) is empty; either is fine, inventing one is not. Guides (Phase 4)
+Since `02a3144` the post route calls `articleJsonLd(m, { type: "BlogPosting", path: `/blog/${post.slug}/`,
+headline, description, datePublished: post.date, dateModified: post.updated ?? post.date, isPartOf })`:
+encoded `@id` `{url}#article`, `url` and `mainEntityOfPage` as the encoded page URL (a plain string,
+so no undefined `@id`), `isPartOf` a full `Blog` node for `/blog/` (not `#website`, which exists on `/`
+only), and `author` + `publisher` → `#business` — the `Organization`, because no person is coming
+(business-facts §B). Until then it was built inline with a raw `mainEntityOfPage`, `dateModified`
+pinned to `post.date` and a dangling `publisher`. `schema.mjs` tolerates the `Organization` author
+and forbids a `Person` while `lib/authors.ts` is empty (it exists, empty, since `d8edb28`); inventing
+one is never fine. Guides (Phase 4)
 use `TechArticle` for the safety/component families, `Article` otherwise, plus a `FAQPage` derived
 from the guide's own FAQ blocks so rule 2 below cannot drift.
 
@@ -139,15 +143,15 @@ from the guide's own FAQ blocks so rule 2 below cannot drift.
 
 1. **`Review` / `AggregateRating`** — only with a verifiable public source. History, not a live
    finding: the site shipped ten authored review texts under ten real names until 2026-08-17.
-   `lib/content.ts:242` `reviews = []`, `:248` `REVIEW_SOURCE_URL = null`,
-   `components/marketing/Reviews.tsx:41` returns `null` unless both are set. Restore path:
+   `lib/content.ts` exports `reviews = []` and `REVIEW_SOURCE_URL = null`;
+   `components/marketing/Reviews.tsx` returns `null` unless both are set. Restore path:
    business-facts §A, verbatim text only. **Do not remove or work around the guard.**
 2. **Schema matches what the user sees.** A `FAQPage` question not rendered inside `<main>` is a
    violation; each Q/A string appears in exactly one `FAQPage` sitewide. The homepage qualifies because
-   `Faq.tsx:47` ships answers in the DOM (`hidden={!isOpen}`, not conditional rendering — N8 moves this to
-   `<details>` without changing it).
+   `Faq` ships every answer in the DOM — native `<details>` since `7cfcf4c` (N8 ✅); it used
+   `hidden={!isOpen}` before, which kept parity but hid the text.
 3. **`Offer` / `priceSpecification` / `offers`** — 8 of the 9 `priceRows` are authored estimates
-   (comment above `lib/content.ts:157`) and real prices are **not coming** (business-facts §D).
+   (the comment above `priceRows` in `lib/content.ts`) and real prices are **not coming** (business-facts §D).
 4. **`address`** — a service-area business with no premises; absent is correct. The Rich Results Test
    will flag it; record the trade-off (backlog §4.11), never invent a `PostalAddress`.
 5. **`foundingDate`** follows `foundedYear` (`null`, not coming) — the kit already omits it.
@@ -158,7 +162,7 @@ from the guide's own FAQ blocks so rule 2 below cannot drift.
 ## Verify
 
 ```bash
-node scripts/audit/schema.mjs                                              # must reach 0 failures in Phase 2
+node scripts/audit/schema.mjs                                              # 0 failures since 2026-11-08 — keep it there
 grep -rl 'BreadcrumbList' out --include=index.html | wc -l                 # 44 — every route but / and /404
 grep -rl 'aggregateRating\|"@type":"Review"' out --include=index.html      # must print nothing
 ```

@@ -149,9 +149,9 @@ and `updated` is set on 0 of 11 (backlog §6.4) — a freshness signal that says
 only for a real copy change (`/new-article`).
 
 **Authorship: no person, by design** — the owner intake says no name is coming (owner-actions §3.3).
-`BlogPosting.author` is the `Organization` (`app/blog/[slug]/page.tsx:88`) and stays so; the planned
-`articleJsonLd` prunes `author` while `lib/authors.ts` (Phase 6, empty registry — `/eeat-build`) has
-no entry, and `schema.mjs` forbids a `Person` author until it does (schema-graph §4 rule 8). **Never
+`BlogPosting.author` is the `Organization` (`#business`, from `articleJsonLd` in `lib/jsonld.ts`
+since `02a3144`) and stays so while `lib/authors.ts` (an empty registry since `d8edb28` —
+`/eeat-build`) has no entry, and `schema.mjs` forbids a `Person` author until it does (schema-graph §4 rule 8). **Never
 invent an author** — a fabricated byline is worse than none, and this site has already paid once for
 fabricated attribution (golden rule 1). Expertise is shown through mechanism depth, not a name.
 

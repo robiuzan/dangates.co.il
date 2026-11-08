@@ -122,9 +122,10 @@ app/
   blog/ blog/[slug]/      # index + 11 posts
   שירותים/ איזורי-שירות/ מחירון/ אודות/ צור-קשר/
   מדיניות-פרטיות/ הצהרת-נגישות/
+  תודה/                   # thank-you page after a confirmed lead — noindex, outside the sitemap
 components/
   ui/          Button Container Section SectionHeading Reveal
-  layout/      Header Footer PageHeader MobileCtaBar
+  layout/      Header (server shell) MobileMenu (client leaf) Footer PageHeader MobileCtaBar
   marketing/   Hero TrustBar ServicesGrid WhyUs Process PricingTeaser
                ServiceAreas Reviews Faq FinalCta
   forms/       LeadForm
@@ -133,6 +134,11 @@ lib/
   site-config.ts   # ⭐ NAP, services[7], locations[18], telHref, whatsappHref
   content.ts       # ⭐ all Hebrew marketing copy; reviews = [] (gated)
   posts.ts         # ⭐ 11 migrated blog posts (untrusted — see golden rule 7)
+  jsonld.ts        # site-local JSON-LD builders — one @graph per page (§8)
+  manifest.ts      # parseManifest(): narrows site.config.json at the boundary, throws on a bad key
+  authors.ts       # empty Author registry — no person is coming; a Person author is forbidden while empty
+  phone.ts         # the Israeli phone pattern the lead form validates with (mobiles, 07X, landlines)
+  seo.ts           # routeUrl() + ogBase — canonical and og:url from one place
   utils.ts         # cn()
   live/            # fleet live-kit copies — byte-locked, never edit (§14)
 scripts/gen-redirects.mjs   # emits public/_redirects (72 real 301 rules) from REDIRECTS.md; runs on prebuild
@@ -159,9 +165,9 @@ docs/              # README (the layer map — start there) · implementation-sp
 ```
 
 **Planned, not built:** `lib/guides.ts` + `content/guides/*.ts` + `app/מדריכים/` (Phase 4,
-[ADR 0002](docs/decisions/0002-guides-hub-route.md)); `lib/jsonld.ts` (Phase 2); `lib/authors.ts`
-(Phase 6, an empty registry — no person is coming). `env-doctor.mjs` tracks them as "planned"; never
-cite a line number in them.
+[ADR 0002](docs/decisions/0002-guides-hub-route.md)) and `public/llms.txt` (§6.5). `env-doctor.mjs`
+tracks them as "planned"; never cite a line number in them. (`lib/jsonld.ts` and `lib/authors.ts`
+were on this list until Sprint 2 built them on 2026-11-08.)
 
 Place by responsibility: reusable presentation primitive → `ui/`; page section → `marketing/`;
 structural chrome → `layout/`.
@@ -217,7 +223,9 @@ See the `hebrew-rtl` skill for the full rule set.
   compiler — handle the null case. `noUncheckedIndexedAccess` means indexed reads are
   `T | undefined`; narrow them.
 - **RSC by default.** Add `"use client"` only for state, effects, or browser APIs. Keep client
-  components small and leaf-level. Currently client: `Header`, `Faq`, `LeadForm`, `Reveal`. (The
+  components small and leaf-level. Currently client (3, `perf.mjs` → `clientComponents`, as of
+  2026-11-08): `LeadForm`, `MobileMenu`, `Reveal` — `Faq` became native `<details>` and `Header` a
+  server shell around the `MobileMenu` leaf in Sprint 3. (The
   live surfaces add none: `components/live/Live.tsx` is server-only and their browser behaviour is
   the static `public/assets/live.js` — §14.)
 - Imports use the `@/*` alias. No `../../..` chains.
@@ -238,14 +246,21 @@ See the `hebrew-rtl` skill for the full rule set.
   pages was fixed 2026-08-17; `titles.mjs` fails on a recurrence). See the `seo-metadata` skill.
 - **Canonicals:** self-referencing, trailing slash, percent-escaped so they are byte-identical to the
   `sitemap.xml` `<loc>`.
-- **JSON-LD** is built with `@ishub/site-kit/seo` — `localBusinessJsonLd`, `serviceJsonLd`,
-  `faqJsonLd`, `breadcrumbJsonLd`, `jsonLdScript`; target graph [docs/schema-graph.md](docs/schema-graph.md).
-  Blog posts emit `BlogPosting` inline with an `Organization` author and `dateModified` pinned to
-  `date`. All 45 content pages emit JSON-LD and `PageHeader` emits `BreadcrumbList` on all 44 nested
-  routes (mapping `{label, href}` → the kit's `{name, path}` — never add a second one); the remaining
-  gap is substance: 18 locations + 8 statics carry **only** the breadcrumb, `#business` dangles on 18
-  pages, no `WebSite`, raw Hebrew in `Service.url` / `mainEntityOfPage` (`node scripts/audit/schema.mjs`).
-  `Review`/`AggregateRating` ship **only** when sourced, which today they are not.
+- **JSON-LD** is built with `@ishub/site-kit/seo` (`localBusinessJsonLd`, `serviceJsonLd`,
+  `faqJsonLd`, `breadcrumbJsonLd`, `jsonLdScript`) wrapped by the site-local builders in
+  `lib/jsonld.ts` — `businessNode`, `websiteJsonLd`, `serviceNode`, `locationServiceJsonLd`,
+  `articleJsonLd`, `itemListJsonLd`, `pageNode`, `breadcrumbNode`, `graph`; target graph
+  [docs/schema-graph.md](docs/schema-graph.md). Since Sprint 2 (2026-11-08, `02a3144` `d8edb28`) every
+  content page emits **one** script holding **one** `@graph`: pages hand `PageHeader` their `nodes`
+  and it appends the one `BreadcrumbList` (44 nested routes — never add a second). The business node
+  ships on every page that references `#business`, with `logo`, `image`, `areaServed` as the 18
+  published locations and `hasOfferCatalog` naming the 7 services (no `Offer`, no price); `WebSite`
+  is on `/` only; the 18 locations emit a `Service`, the indexes `CollectionPage` + `ItemList`,
+  `/אודות/` an `AboutPage` with `knowsAbout`, `/צור-קשר/` a `ContactPage`. Blog posts emit
+  `BlogPosting` with an `Organization` author, `dateModified` from `updated ?? date` and `isPartOf`
+  the `Blog`; every schema URL is percent-encoded. `node scripts/audit/schema.mjs` → 0 failures,
+  0 warnings, `danglingIds 0`, `rawHebrewUrls 0` as of 2026-11-08. `Review`/`AggregateRating`,
+  `Offer` and a `Person` author ship **only** when sourced, which today they are not.
 - **Images:** there is **no `assets/` directory and no `image:optimize` script** on this site. Images
   ship pre-optimized in `public/`; the OG card comes from the `imgquarry.com` media host in the
   manifest. Every meaningful image needs a Hebrew `alt`; decorative gets `alt=""`.
@@ -411,7 +426,7 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   `<LiveDialogs/>` last in `<body>`, `<LiveUpdates/>` after `<TrustBar/>`,
   `suppressHydrationWarning` on `<html>`, `lib/live/live-core.css` imported after `globals.css`; the
   404 marks itself calm (`<div data-live-calm-page hidden />` in `app/not-found.tsx`); the open
-  mobile menu carries `data-live-block` (`Header.tsx`). The `--live-*` colours and the 992–1023px
+  mobile menu carries `data-live-block` (`MobileMenu.tsx`, since Sprint 3 split it out of `Header`). The `--live-*` colours and the 992–1023px
   band override close `app/globals.css`: this site's mobile layout runs to 1023px (Tailwind `lg`),
   so in that band the bar follows the phone rule (closed on evergreen days, calm pages and the 404)
   and the card stops above the sticky call bar; the evergreen line shows from 1024px.
@@ -439,8 +454,9 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   its newest item); WhatsApp goes to `+972556601006`, the owner's own (072-2587772 is not on
   WhatsApp) — synced from the roster into `site.config.json` the same day. The kit is committed
   upstream and re-synced (`live-kit.lock.json` → `cf3a5460aa8b`, clean). **Still open:** the blog
-  posts' flagged claims (OK for now, fixed later — backlog §7.2) and the privacy page, which must
-  mention the status-file read and the browser-storage values when it is rewritten (backlog §8.2).
+  posts' flagged claims (OK for now, fixed later — backlog §7.2) and the privacy page — rewritten
+  2026-11-08 (`68a4a7f`) to name the status-file read and the four browser-storage values; backlog
+  §8.2 stays PARTIAL until the reviewers sign off on its fix pass.
 - **Before the first deploy (owner, in the kit README's order):** add the three origins (apex, www, `.pages.dev`) to the status switch's CORS list — without it the
   switch is unreadable here and every seasonal line and the card stay off; widen the one shared GTM
   trigger `CE - popup events (3locksmiths)` to this hostname; `gh secret set NTFY_TOPIC -R

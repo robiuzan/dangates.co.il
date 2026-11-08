@@ -118,11 +118,12 @@ Google's doorway policy names, and the penalty lands on the domain.
 6. **Metadata** — keyword-map §3: `title: \`תיקון שערים חשמליים ${loc.prefixed}\``, bare subject.
 The `app/layout.tsx`template appends the brand; the doubled suffix is **fixed** (0 in`out/`),
    so never re-add it. Description 120–160 chars, unique per city, no 🔶 claim (backlog §2.3).
-7. **Schema** — today every location page emits **only** `BreadcrumbList`, from
-   `components/layout/PageHeader.tsx:57-59` (never add a second one). Phase 2 adds
-   `locationServiceJsonLd` in `lib/jsonld.ts` — `Service` + `areaServed` as `City` or
-   `AdministrativeArea` by `kind`, percent-encoded `url`, the business node on the page — and
-   `FAQPage` derived from `cityContent.faqs`. `/schema-structured-data` has the recipes.
+7. **Schema** — since Sprint 2 (2026-11-08) every location page emits, in one `@graph` through
+   `PageHeader` (never add a second `BreadcrumbList`), the business node, a `Service` from
+   `locationServiceJsonLd` in `lib/jsonld.ts` — `areaServed` as `City` or `AdministrativeArea`
+   (today by a region-slug set; switch it to `kind` when this skill adds the field), percent-encoded
+   `url` — and the breadcrumb. Still to add with `cityContent`: a `FAQPage` derived from
+   `cityContent.faqs`. `/schema-structured-data` has the recipes.
 8. **Gate** — `npm run gate`. Proof lines: `content-depth.mjs` → `location.belowFloor: 0` and no
    doorway failure for this page; `links.mjs` → `orphans: 0`, this page in `nearby` targets both ways;
    `schema.mjs` → no new failure; `claims-grep.mjs` → no new 🔶 hit.
