@@ -156,10 +156,16 @@ changes, so a rebuild cannot bump the file's mtime and trip the audit's stalenes
 Verify: `node scripts/gen-redirects.mjs` twice — the second run prints "is current … nothing
 written" — then `git status --porcelain public/` is clean.
 
-### 1.7 — P3 · S · [⏳ BLOCKED · owner] `www.dangates.co.il` returns 200 with a full duplicate
+### 1.7 — P3 · S · [✅ DONE 2026-11-08 · owner] `www.dangates.co.il` returned 200 with a full duplicate
 
 Mitigated by the canonical and the sitemap (both apex-only), so this is cleanup, not a defect.
 Cloudflare → Rules → Redirect Rules → 301 to apex. [owner-actions.md](owner-actions.md) §1.
+
+**Closed 2026-11-08:** the owner created the "Redirect from WWW to root" template rule (wildcard
+`https://www.*` → `https://${1}`, 301, preserve query string on). Probed: `www/?utm_source=test` →
+`301` to `dangates.co.il/?utm_source=test`; a service URL with `?a=1&b=2` keeps both parameters, once;
+`http://www` first upgrades to `https://www`, then redirects. A legacy URL on `www` takes two 301s
+(to the apex, then to its new page) — acceptable, one hop each.
 
 ### 1.8 — [✅ HOLDS] Already sound, don't regress
 
