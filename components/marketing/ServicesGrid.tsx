@@ -13,7 +13,7 @@ import {
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
-import { serviceCards, type IconName } from "@/lib/content";
+import { serviceCards, servicesGridCopy, type IconName } from "@/lib/content";
 
 const iconMap: Record<IconName, LucideIcon> = {
   MoveHorizontal,
@@ -29,9 +29,9 @@ export function ServicesGrid() {
   return (
     <Section id="services" tone="muted">
       <SectionHeading
-        eyebrow="השירותים שלנו"
-        title="תיקון והתקנת שערים חשמליים"
-        subtitle="פתרון לכל סוג שער — משערים נגררים וכנף ועד תריסי גלילה, עם התקנה ותיקון מקצועיים ואחריות מלאה."
+        eyebrow={servicesGridCopy.eyebrow}
+        title={servicesGridCopy.title}
+        subtitle={servicesGridCopy.subtitle}
       />
 
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -54,7 +54,7 @@ export function ServicesGrid() {
                 </p>
                 <p className="mt-2 flex-1 text-sm text-gray-600">{card.description}</p>
                 <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-secondary group-hover:gap-2">
-                  למידע נוסף
+                  {servicesGridCopy.moreLabel}
                   <ChevronLeft className="h-4 w-4" aria-hidden />
                 </span>
               </Link>

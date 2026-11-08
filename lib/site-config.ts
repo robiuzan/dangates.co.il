@@ -23,6 +23,45 @@ import { parseManifest } from "@/lib/manifest";
  */
 export const manifest: SiteManifest = parseManifest(siteManifest);
 
+const HEBREW_DAYS: Record<string, string> = {
+  su: "ראשון",
+  mo: "שני",
+  tu: "שלישי",
+  we: "רביעי",
+  th: "חמישי",
+  fr: "שישי",
+  sa: "שבת",
+};
+const DAY_ORDER = ["su", "mo", "tu", "we", "th", "fr", "sa"];
+
+/**
+ * One manifest `openingHours` row rendered as a display line ("ראשון–חמישי 08:00–18:00"). The row
+ * is found by a day it must contain, so the visible hours and the `openingHoursSpecification` in
+ * the JSON-LD graph read the same manifest rows. A manifest that drops the row or changes its
+ * shape fails the build here, rather than printing a blank line.
+ */
+function hoursLine(anchorDay: string): string {
+  for (const row of manifest.schema.openingHours ?? []) {
+    const { days, opens, closes } = row;
+    if (!Array.isArray(days) || typeof opens !== "string" || typeof closes !== "string") {
+      continue;
+    }
+    const codes = days.filter((d): d is string => typeof d === "string");
+    if (!codes.includes(anchorDay)) continue;
+    const names = DAY_ORDER.filter((code) => codes.includes(code)).map(
+      (code) => HEBREW_DAYS[code],
+    );
+    const first = names[0];
+    const last = names[names.length - 1];
+    if (first === undefined || last === undefined) continue;
+    const dayText = names.length === 1 ? first : `${first}–${last}`;
+    return `${dayText} ${opens}–${closes}`;
+  }
+  throw new Error(
+    `site.config.json: schema.openingHours has no usable row for "${anchorDay}"`,
+  );
+}
+
 export const siteConfig = {
   name: manifest.brandName ?? "",
   nameEn: manifest.brandNameEn ?? "",
@@ -39,13 +78,15 @@ export const siteConfig = {
   email: manifest.contact.email,
   /** Web3Forms PUBLIC access key (per-site UUID). Delivery inbox = email. null until provisioned. */
   formAccessKey: manifest.contact.formAccessKey ?? null,
-  serviceArea: manifest.schema.areaServed ?? "",
-
-  /** Business hours (live-site audit). */
+  /**
+   * Business hours, built from the manifest `schema.openingHours` — the same rows the
+   * `openingHoursSpecification` in the JSON-LD graph is built from. Every surface that shows
+   * hours reads these two lines; none types a time. The emergency line is copy, not a schedule:
+   * it lives in lib/content.ts (`contactPageCopy.emergencyLine`).
+   */
   hours: {
-    weekday: "ראשון–חמישי 08:00–18:00",
-    friday: "שישי 08:00–15:00",
-    emergency: "שירות חירום 24/7", // round-the-clock emergency line
+    weekday: hoursLine("su"),
+    friday: hoursLine("fr"),
   },
 
   // ── Social / listings — fill when available ──────────────────────────────

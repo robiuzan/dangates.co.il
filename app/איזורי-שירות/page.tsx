@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { locations, manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { areaLinkLabel, crumbLabels } from "@/lib/content";
+import { areaLinkLabel, areasPageCopy, crumbLabels } from "@/lib/content";
 import { itemListJsonLd } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
@@ -11,18 +11,16 @@ import { FinalCta } from "@/components/marketing/FinalCta";
 
 // Never renamed to the spelled-correctly "אזורי" — this is the live URL (golden rule 3).
 const areasUrl = routeUrl("איזורי-שירות");
-const areasDescription =
-  "תיקון והתקנת שערים חשמליים במרכז הארץ ובפריסה ארצית — עם מענה מהיר וזמינות 24/7 לחירום. בחרו את העיר שלכם.";
 
 export const metadata: Metadata = {
   alternates: { canonical: areasUrl },
-  title: "אזורי שירות",
-  description: areasDescription,
+  title: areasPageCopy.title,
+  description: areasPageCopy.metaDescription,
   openGraph: {
     ...ogBase,
     url: areasUrl,
-    title: "אזורי שירות",
-    description: areasDescription,
+    title: areasPageCopy.title,
+    description: areasPageCopy.metaDescription,
   },
 };
 
@@ -42,12 +40,12 @@ export default function AreasPage() {
   return (
     <>
       <PageHeader
-        title="אזורי שירות"
+        title={areasPageCopy.title}
         nodes={nodes}
-        subtitle="נותנים שירות במרכז הארץ ובפריסה ארצית — עם מענה מהיר וזמינות 24/7 לחירום. בחרו את העיר שלכם."
+        subtitle={areasPageCopy.subtitle}
         crumbs={[
-          { label: "בית", href: "/" },
-          { label: "אזורי שירות", href: "/איזורי-שירות/" },
+          { label: crumbLabels.home, href: "/" },
+          { label: crumbLabels.areas, href: "/איזורי-שירות/" },
         ]}
       />
 

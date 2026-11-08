@@ -1,5 +1,6 @@
 import { MessageCircle, Phone } from "lucide-react";
 import { siteConfig, telHref, whatsappHref } from "@/lib/site-config";
+import { defaultWhatsappMessage, mobileCtaCopy } from "@/lib/content";
 
 /**
  * Sticky click-to-call + WhatsApp bar, mobile only (brief E4 conversion element).
@@ -14,16 +15,16 @@ export function MobileCtaBar() {
         className="flex items-center justify-center gap-2 bg-accent py-3.5 font-semibold text-accent-foreground"
       >
         <Phone className="h-5 w-5" aria-hidden />
-        חייגו עכשיו
+        {mobileCtaCopy.callLabel}
       </a>
       <a
-        href={whatsappHref("היי, אני מעוניין/ת בהצעת מחיר לתיקון/התקנת שער חשמלי")}
+        href={whatsappHref(defaultWhatsappMessage)}
         data-cta="sticky-whatsapp"
         className="flex items-center justify-center gap-2 bg-whatsapp py-3.5 font-semibold text-whatsapp-foreground"
-        aria-label={`וואטסאפ ${siteConfig.name}`}
+        aria-label={`${mobileCtaCopy.whatsappLabel} ${siteConfig.name}`}
       >
         <MessageCircle className="h-5 w-5" aria-hidden />
-        וואטסאפ
+        {mobileCtaCopy.whatsappLabel}
       </a>
     </div>
   );

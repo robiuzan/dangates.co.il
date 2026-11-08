@@ -11,6 +11,7 @@ import {
   contactPageCopy,
   defaultWhatsappMessage,
   leadFormHeading,
+  serviceAreaLine,
 } from "@/lib/content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
@@ -106,7 +107,7 @@ export default function ContactPage() {
                 <span>
                   {contactPageCopy.areaLine}
                   <br />
-                  <span className="text-sm text-gray-500">{siteConfig.serviceArea}</span>
+                  <span className="text-sm text-gray-500">{serviceAreaLine}</span>
                 </span>
               </li>
               <li className="flex items-start gap-3">
@@ -119,7 +120,7 @@ export default function ContactPage() {
                   {siteConfig.hours.friday}
                   <br />
                   <span className="text-sm text-accent-600">
-                    {siteConfig.hours.emergency}
+                    {contactPageCopy.emergencyLine}
                   </span>
                 </span>
               </li>

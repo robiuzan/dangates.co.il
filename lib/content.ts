@@ -4,7 +4,7 @@
  * holds the Hebrew marketing copy and per-section content. Faithful to the live site; no
  * invented facts (indicative price ranges are flagged as estimates in the pricing UI).
  */
-import { services, siteConfig, type ServiceSlug } from "@/lib/site-config";
+import { locations, services, siteConfig, type ServiceSlug } from "@/lib/site-config";
 
 /** Lucide icon names used by the service cards. */
 export type IconName =
@@ -33,7 +33,7 @@ const serviceMeta: Record<ServiceSlug, ServiceMeta> = {
   "שערי-כנף": {
     tagline: "פתרון אלגנטי וחזק",
     description:
-      "שערי כנף משלבים בטיחות, נוחות ואסתטיקה — פתרון עמיד ויעיל המאפשר שליטה מרחוק ותחזוקה מינימלית, לבתים פרטיים, מתחמים מסחריים ומוסדות. אנו מספקים ייצור, התקנה ותיקון של שערי כנף ברמה הגבוהה ביותר.",
+      "שערי כנף משלבים בטיחות, נוחות ואסתטיקה — פתרון עמיד ויעיל המאפשר שליטה מרחוק ותחזוקה מינימלית, לבתים פרטיים, מתחמים מסחריים ומוסדות. אנו מספקים ייצור, התקנה ותיקון של שערי כנף, כולל כיוון הצירים.",
     icon: "DoorOpen",
   },
   "שערים-מתרוממים": {
@@ -43,21 +43,21 @@ const serviceMeta: Record<ServiceSlug, ServiceMeta> = {
     icon: "ArrowUpDown",
   },
   "שערים-לחניה": {
-    tagline: "שקט נפשי ובטיחות מקסימלית",
+    tagline: "שליטה נוחה בכניסה לחניה",
     description:
-      "שערים לחניה מעניקים שליטה נוחה, בטיחות מרבית ושקט נפשי בכניסה לבית או לעסק. אנו מספקים שירות אמין, מקצועי ומהיר — מהתכנון וההתקנה ועד לתחזוקה השוטפת ולתיקון תקלות.",
+      "שערים לחניה לבית, לבניין או לעסק — תכנון, התקנה, תחזוקה ותיקון של השלט, העינית, המנוע ולוח הפיקוד, כדי שהכניסה לחניה תיפתח ותיסגר בלי עיכוב.",
     icon: "Car",
   },
   "שער-זרוע": {
-    tagline: "פתרונות מהירים לכל תקלה",
+    tagline: "מחסומים וזרועות הפעלה",
     description:
-      "שירותי התקנה ותיקון לשערי זרוע וזרועות הפעלה — פתרונות מקצועיים ומהירים לכל סוגי התקלות, עם דגש על איכות, בטיחות ותיקונים עמידים לאורך זמן.",
+      "התקנה ותיקון של שערי זרוע ומחסומים לחניה — אבחון המנוע, קפיץ האיזון, לוח הפיקוד והשלטים, עם דגש על בטיחות ותיקונים עמידים לאורך זמן.",
     icon: "DoorClosed",
   },
   "תריסי-גלילה-חשמליים": {
     tagline: "ביטחון ונוחות לבית ולעסק",
     description:
-      "תריסי גלילה חשמליים הם פתרון חכם ויעיל לביטחון ולנוחות בכל בית או משרד. אנו מבטיחים התקנה מקצועית ושירות אחרי מכירה מוביל, לצד תיקון ותחזוקה של תריסי גלילה קיימים.",
+      "תריסי גלילה חשמליים הם פתרון חכם ויעיל לביטחון ולנוחות בכל בית או משרד. אנו מספקים התקנה מקצועית ושירות גם אחרי ההתקנה, לצד תיקון ותחזוקה של תריסי גלילה קיימים.",
     icon: "Blinds",
   },
   "שערים-לדירה": {
@@ -140,23 +140,23 @@ export const serviceTriggers: Record<ServiceSlug, readonly string[]> = {
 export const differentiators = [
   {
     icon: "Award",
-    title: "ניסיון רב שנים",
-    body: "שנות ניסיון רבות בתחום השערים החשמליים מבטיחות שירות איכותי ופתרונות מתקדמים לכל סוג של שער.",
+    title: "אבחון לפני תיקון",
+    body: "בודקים את המנוע, את לוח הפיקוד, את העיניות, את השלט והמקלט שלו ואת אספקת החשמל. רק אחרי שברור מה התקלה, מסבירים מה העלות.",
   },
   {
     icon: "Timer",
-    title: "שירות מהיר",
-    body: "מגיעים במהירות, מאבחנים ומטפלים ביעילות — כדי שהשער שלכם יחזור לעבוד בהקדם האפשרי.",
+    title: "תיאום מועד מראש",
+    body: "מתאמים איתכם מועד להגעה בשעות הפעילות. בשיחה הראשונה מבררים את סוג השער ומה בדיוק קורה לו, כדי שהביקור יתחיל מהמקום הנכון.",
   },
   {
     icon: "ShieldCheck",
-    title: "אחריות מלאה",
-    body: "אחריות מלאה על כל שירותי התיקון וההתקנה, לראש שקט לאורך זמן.",
+    title: "אחריות על העבודה",
+    body: "אנחנו נותנים אחריות על העבודה בתיקונים ובהתקנות שביצענו. לפני שמסיימים, בודקים שהשער נפתח ונסגר עד הסוף ועוצר כשהעינית מזהה מכשול.",
   },
   {
     icon: "Users",
-    title: "צוות מומחים",
-    body: "צוות טכנאים מנוסה ומקצועי שמכיר כל סוג של שער ומנגנון, ופותר גם תקלות מורכבות.",
+    title: "כל סוגי השערים והמנגנונים",
+    body: "לכל שער מנגנון אחר, ואנחנו מאבחנים לפי המנגנון: מסילה וגלגלים בשער נגרר, צירים ובוכנות בשער כנף, קפיצי איזון בשער מתרומם ובשער זרוע, ציר גלילה בתריס.",
   },
   {
     icon: "Wrench",
@@ -182,7 +182,7 @@ export const processSteps = [
   },
   {
     title: "אישור ותיאום",
-    body: "מאשרים את העבודה ומתאמים מועד נוח — כולל מענה מהיר למקרי חירום 24/7.",
+    body: "מאשרים את העבודה ומתאמים מועד נוח בשעות הפעילות. תקלה דחופה? אמרו זאת בשיחה, ונבדוק יחד מתי אפשר להגיע.",
   },
   {
     title: "ביצוע מקצועי",
@@ -190,17 +190,43 @@ export const processSteps = [
   },
   {
     title: "בדיקה ואחריות",
-    body: "בודקים את פעולת השער מקצה לקצה ומעניקים אחריות מלאה על העבודה.",
+    body: "בודקים את השער מקצה לקצה — פתיחה, סגירה, עצירה כשהעינית מזהה מכשול ותגובה לשלט — ונותנים אחריות על העבודה.",
   },
 ] as const;
 
-/** Trust stats for the trust bar. */
-export const trustStats = [
-  { value: "ניסיון רב שנים", label: "בתחום השערים החשמליים" },
-  { value: "זמינות 24/7", label: "לקריאות חירום" },
-  { value: "אחריות מלאה", label: "על כל עבודה" },
-  { value: "פריסה ארצית", label: "מרכז הארץ וארצי" },
-] as const;
+/**
+ * Counts taken from the data, for any copy that states one ("7 סוגי שערים", "18 אזורים"). A number
+ * in copy is built from these, never typed — adding a service or a location moves it for free.
+ */
+export const publishedCounts = {
+  services: services.length,
+  locations: locations.length,
+} as const;
+
+/** One cell of the trust bar. `value` may be a template built from `publishedCounts` or `siteConfig`. */
+export interface TrustStat {
+  value: string;
+  label: string;
+}
+
+/**
+ * Trust stats for the trust bar — each one true from the data or a confirmed fact: the service
+ * count from `services`, the hours from the manifest rows behind `siteConfig.hours`, the warranty
+ * in the only wording business-facts §D allows, and the diagnose-before-quoting step the process
+ * section already states. No experience, availability or coverage claim, and no count of areas.
+ */
+export const trustStats: readonly TrustStat[] = [
+  {
+    value: `${publishedCounts.services} סוגי שירות`,
+    label: "שערים חשמליים ותריסי גלילה",
+  },
+  {
+    value: "שעות פעילות",
+    label: `${siteConfig.hours.weekday} · ${siteConfig.hours.friday}`,
+  },
+  { value: "אחריות על העבודה", label: "על התיקון ועל ההתקנה" },
+  { value: "אבחון לפני מחיר", label: "מסבירים מה העלות לפני שמתחילים" },
+];
 
 /**
  * Indicative price ranges. The technician visit fee (150–350 ₪) is from the live-site FAQ;
@@ -227,11 +253,11 @@ export const faqs = [
   },
   {
     q: "האם יש אחריות על התיקון?",
-    a: "כן, אנו מספקים אחריות מלאה על כל שירותי התיקון וההתקנה שלנו.",
+    a: "כן. אנחנו נותנים אחריות על העבודה בתיקונים ובהתקנות שלנו. לפני שמסיימים, בודקים את השער מקצה לקצה כדי לוודא שהתקלה נפתרה.",
   },
   {
     q: "מה כוללת תחזוקה שוטפת לשער?",
-    a: "התחזוקה כוללת בדיקת מנוע, ניקוי מסילות, בדיקת חיישנים ושימון חלקים נעים.",
+    a: "התחזוקה כוללת בדיקת המנוע ולוח הפיקוד, ניקוי המסילות, ניקוי ויישור העיניות ושימון החלקים הנעים.",
   },
   {
     q: "איך לבחור שער חשמלי חדש?",
@@ -255,7 +281,7 @@ export const faqs = [
   },
   {
     q: "האם אתם מציעים שירותי חירום?",
-    a: "כן, אנו זמינים למקרי חירום.",
+    a: `בשעות הפעילות (${siteConfig.hours.weekday}, ${siteConfig.hours.friday}) מטפלים גם בתקלות דחופות, כמו שער שנתקע פתוח. התקשרו, ונבדוק יחד מתי אפשר להגיע.`,
   },
   {
     q: "כמה זמן לוקחת התקנה?",
@@ -323,8 +349,8 @@ export const aboutValues = [
     body: "מחיר הוגן והצעה שקופה מראש, בלי הפתעות ובלי עבודות מיותרות.",
   },
   {
-    title: "מומחיות וניסיון",
-    body: "ניסיון רב שנים בעבודה עם כל סוגי השערים החשמליים והמנגנונים.",
+    title: "אבחון לפי המנגנון",
+    body: "בכל סוג שער התקלות מגיעות ממקום אחר: גלגלים ומסילה בשער נגרר, צירים ובוכנה בשער כנף, קפיצים בשער מתרומם. מאבחנים לפי המנגנון, לא לפי ניחוש.",
   },
   {
     title: "שירות אישי",
@@ -344,7 +370,7 @@ export const aboutSections = [
   },
   {
     title: "תחומי ההתמחות",
-    body: "יש לנו היסטוריה עשירה של מתן פתרונות מתקדמים לכל סוגי השערים החשמליים. לאורך השנים צברנו ניסיון רב בעבודה עם לקוחות פרטיים, עסקים, מפעלים וארגונים מוסדיים.",
+    body: "מטפלים בשערים נגררים, בשערי כנף, בשערים מתרוממים, בשערי זרוע ומחסומי חניה ובתריסי גלילה חשמליים. אנחנו עובדים עם לקוחות פרטיים, ועדי בתים, עסקים, מפעלים וארגונים מוסדיים.",
   },
   {
     title: "המחויבות ללקוחות",
@@ -414,10 +440,10 @@ export const leadFormHeading = "קבלו הצעת מחיר חינם";
 
 /** components/marketing/Hero.tsx — homepage hero copy. */
 export const heroCopy = {
-  eyebrow: "ניסיון רב שנים · מרכז הארץ ופריסה ארצית · זמינות 24/7",
+  eyebrow: "אבחון במקום · מחיר לפני העבודה · מרכז הארץ",
   h1: "דן שערים חשמליים – תיקון והתקנה מקצועית",
-  lead: "מתמחים בתיקון והתקנת שערים חשמליים בהתאמה אישית לשירות מהיר ואמין — עם אחריות מלאה וזמינות 24/7 לקריאות חירום.",
-  points: ["שירות מהיר ואמין", "אחריות מלאה", "זמינות 24/7 לחירום"],
+  lead: "השער נתקע או לא נסגר עד הסוף? טכנאי מגיע לאבחון, בודק את המנוע, את לוח הפיקוד ואת העיניות, ומסביר מה התקלה ומה העלות לפני שמתחילים — עם אחריות על העבודה.",
+  points: ["מחיר ברור לפני העבודה", "אחריות על העבודה", "תיאום מועד בשעות הפעילות"],
   callLabel: "חייגו עכשיו:",
   whatsappLabel: "וואטסאפ",
   formSubtitle: "השאירו פרטים ונחזור אליכם עם פתרון — ללא התחייבות.",
@@ -426,7 +452,7 @@ export const heroCopy = {
 /** components/marketing/FinalCta.tsx — sitewide closing CTA copy. */
 export const finalCtaCopy = {
   title: "השער תקוע או לא נסגר? דברו איתנו עוד היום.",
-  body: "ייעוץ והצעת מחיר שקופה — ללא התחייבות. תיקון והתקנת שערים חשמליים במהירות, עם אחריות מלאה וזמינות 24/7 לחירום.",
+  body: `ייעוץ והצעת מחיר שקופה — ללא התחייבות. מאבחנים את התקלה, מסבירים מה העלות לפני שמתחילים ונותנים אחריות על העבודה. שעות הפעילות: ${siteConfig.hours.weekday}, ${siteConfig.hours.friday}.`,
   callLabel: "חייגו עכשיו:",
   whatsappLabel: "שלחו וואטסאפ",
 } as const;
@@ -434,13 +460,13 @@ export const finalCtaCopy = {
 /** components/marketing/ServiceAreas.tsx — homepage service-area teaser copy. */
 export const serviceAreasCopy = {
   eyebrow: "אזורי שירות",
-  title: "נותנים שירות במרכז הארץ ובפריסה ארצית",
+  title: "נותנים שירות במרכז הארץ ובאזורים שברשימה",
   subtitle:
-    "לא בטוחים שאתם בטווח? התקשרו ונבדוק — עם מענה מהיר וזמינות 24/7 לקריאות חירום.",
+    "לא בטוחים שאתם בטווח? התקשרו בשעות הפעילות, ספרו לנו איפה השער ומה התקלה, ונבדוק יחד אם ומתי אפשר להגיע.",
 } as const;
 
 /** app/page.tsx — homepage <meta name="description">. */
-export const homeMetaDescription = `תיקון והתקנת שערים חשמליים לבתים, ועדי בתים ועסקים — שערים נגררים, כנף, מתרוממים ותריסי גלילה. אבחון מהיר, מחיר שקוף מראש ואחריות על העבודה. חייגו ${siteConfig.phone}.`;
+export const homeMetaDescription = `תיקון והתקנת שערים חשמליים לבתים, ועדי בתים ועסקים — שערים נגררים, כנף, מתרוממים ותריסי גלילה. אבחון במקום, מחיר שקוף מראש ואחריות על העבודה. חייגו ${siteConfig.phone}.`;
 
 /** app/page.tsx — the homepage FAQ section heading. */
 export const homeFaqHeading = {
@@ -468,7 +494,7 @@ export function locationPageTitle(cityName: string): string {
 }
 
 export function locationMetaDescription(cityName: string): string {
-  return `תיקון והתקנת שערים חשמליים ב${cityName} — שירות מהיר ואמין, אחריות מלאה וזמינות 24/7 לקריאות חירום. לכל סוגי השערים: נגררים, כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`;
+  return `תיקון והתקנת שערים חשמליים ב${cityName} — אבחון במקום, מחיר לפני העבודה ואחריות על העבודה. לכל סוגי השערים: נגררים, כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`;
 }
 
 /**
@@ -483,7 +509,7 @@ export function locationHeroTitle(cityName: string): string {
 }
 
 export function locationHeroSubtitle(cityName: string): string {
-  return `שירות מקצועי לתיקון והתקנת שערים חשמליים ב${cityName} והסביבה — מענה מהיר, אחריות מלאה וזמינות 24/7 לקריאות חירום.`;
+  return `שירות מקצועי לתיקון והתקנת שערים חשמליים ב${cityName} והסביבה — אבחון התקלה במקום, הסבר על העלות לפני שמתחילים ואחריות על העבודה.`;
 }
 
 /** app/locations/[city]/page.tsx — the two intro paragraphs, per city. */
@@ -492,7 +518,7 @@ export function locationIntroParagraph1(cityName: string): string {
 }
 
 export function locationIntroParagraph2(cityName: string): string {
-  return `אנחנו נותנים שירות ללקוחות פרטיים, ועדי בתים ועסקים ב${cityName} והסביבה, עם מענה מהיר וזמינות לקריאות חירום. השער תקוע, לא נסגר או שהמנוע לא מגיב? התקשרו ונגיע לבדוק ולתקן.`;
+  return `אנחנו נותנים שירות ללקוחות פרטיים, ועדי בתים ועסקים ב${cityName} והסביבה, ומתאמים איתם מועד בשעות הפעילות. השער תקוע, לא נסגר או שהמנוע לא מגיב? התקשרו, תארו את התקלה, ונבדוק יחד מתי אפשר להגיע לבדיקה ולתיקון.`;
 }
 
 export function locationServicesHeading(cityName: string): string {
@@ -501,13 +527,13 @@ export function locationServicesHeading(cityName: string): string {
 
 /** app/אודות/page.tsx — metadata + copy. */
 export const aboutMetaDescription =
-  "דן שערים חשמליים — מומחים בתיקון והתקנת שערים חשמליים עם ניסיון רב שנים. שירות מהיר ואמין, אחריות מלאה, צוות מומחים וזמינות 24/7 לקריאות חירום.";
+  "דן שערים חשמליים — תיקון, תחזוקה והתקנה של שערים חשמליים ותריסי גלילה. אבחון המנוע, לוח הפיקוד והעיניות, מחיר לפני העבודה ואחריות על העבודה.";
 
 export const aboutHeroTitle = "אודות דן שערים חשמליים";
 export const aboutHeroSubtitle =
-  "מומחים בתיקון והתקנת שערים חשמליים — פתרון מותאם אישית לכל שער, עם דגש על איכות, מקצועיות ובטיחות.";
+  "תיקון והתקנת שערים חשמליים — פתרון מותאם אישית לכל שער, עם דגש על איכות, מקצועיות ובטיחות.";
 
-export const aboutIntro = `ברוכים הבאים ל${siteConfig.name} — מתמחים בתיקון והתקנת שערים חשמליים. עם ניסיון רב שנים בתחום, אנו מספקים שירות ברמה הגבוהה ביותר, תוך הקפדה על איכות, מקצועיות ובטיחות. המטרה שלנו היא להבטיח שהשערים החשמליים שלכם יתפקדו בצורה מושלמת וישרתו אתכם נאמנה לאורך זמן.`;
+export const aboutIntro = `ברוכים הבאים ל${siteConfig.name} — תיקון, תחזוקה והתקנה של שערים חשמליים ותריסי גלילה חשמליים. כל ביקור מתחיל באבחון: בודקים את המנוע, את לוח הפיקוד, את העיניות, את השלט והמקלט שלו, את המסילות או הצירים ואת אספקת החשמל. רק אחרי שברור מה התקלה, מסבירים מה העלות ומתחילים בעבודה. בסיום בודקים את השער מקצה לקצה — פתיחה, סגירה ועצירה כשהעינית מזהה מכשול — ונותנים אחריות על העבודה.`;
 
 export const aboutValuesHeading = "הערכים שלנו";
 
@@ -525,24 +551,74 @@ export const aboutKnowsAbout: readonly string[] = [
 
 /** app/שירותים/page.tsx — metadata + copy. */
 export const servicesIndexMetaDescription =
-  "שירותי תיקון והתקנת שערים חשמליים: שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה, שער זרוע, תריסי גלילה חשמליים ושערים לדירה — עם אחריות מלאה ושירות מהיר.";
+  "שירותי תיקון והתקנת שערים חשמליים: שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה, שער זרוע, תריסי גלילה חשמליים ושערים לדירה — עם אחריות על העבודה.";
 
 export const servicesIndexHeroTitle = "השירותים שלנו";
 export const servicesIndexHeroSubtitle =
-  "פתרון לכל סוג שער חשמלי — מתיקון תקלות ומנועים ועד התקנת שער חדש, עם שירות מהיר ואחריות מלאה.";
+  "פתרון לכל סוג שער חשמלי — מתיקון תקלות ומנועים ועד התקנת שער חדש, עם אבחון לפני תיקון ואחריות על העבודה.";
 
 /** app/צור-קשר/page.tsx — metadata + copy. */
 export const contactMetaDescription =
-  "צרו קשר עם דן שערים חשמליים לתיקון והתקנת שערים חשמליים במרכז הארץ ובפריסה ארצית. טלפון, וואטסאפ או טופס — נחזור אליכם עם הצעת מחיר. זמינות 24/7 לחירום.";
+  "צרו קשר עם דן שערים חשמליים לתיקון והתקנת שערים חשמליים במרכז הארץ. טלפון, וואטסאפ או טופס — נחזור אליכם בשעות הפעילות עם ייעוץ והצעת מחיר.";
 
 export const contactHeroTitle = "צור קשר";
-export const contactHeroSubtitle = "מענה מהיר, ייעוץ ראשוני והצעת מחיר ללא התחייבות.";
+export const contactHeroSubtitle =
+  "ייעוץ ראשוני בטלפון ללא התחייבות. אבחון במקום בתיאום מראש, ולפני שמתחילים מסבירים מה העלות.";
+
+/**
+ * The visible service-area line (Footer, /צור-קשר/) — copy, so it lives here, not in site-config.
+ * Deliberately NOT the manifest `schema.areaServed` phrase: its national-coverage half is
+ * unconfirmed (business-facts §E; the roster value is owner item B5), and so is whether the
+ * regional pages are served. It names מרכז הארץ and points at the published location pages —
+ * nothing wider, no count. The JSON-LD never read it: `businessNode` builds `areaServed` from
+ * `locations`.
+ */
+export const serviceAreaLine = "מרכז הארץ והאזורים שמופיעים באתר";
 
 export const contactPageCopy = {
   detailsHeading: "פרטי התקשרות",
   whatsappLabel: "וואטסאפ",
-  areaLine: "שירות בפריסה ארצית",
-  formSubtitle: "השאירו פרטים ונחזור אליכם בהקדם.",
+  /** The label above `serviceAreaLine` — a label only, so it promises no coverage. */
+  areaLine: "אזור השירות",
+  /**
+   * The line under the opening hours (was `siteConfig.hours.emergency`) — copy, not a schedule.
+   * It promises no availability outside the hours above it (business-facts §E, owner-actions 3.5).
+   */
+  emergencyLine: "תקלה דחופה? התקשרו ונבדוק יחד מתי אפשר להגיע.",
+  formSubtitle: "השאירו פרטים ונחזור אליכם בשעות הפעילות.",
+} as const;
+
+/**
+ * app/איזורי-שירות/page.tsx — <meta name="description">, title and PageHeader subtitle.
+ * Names מרכז הארץ and the published list, never a wider coverage or availability promise
+ * (business-facts §E — the manifest `areaServed` phrase is a roster question).
+ */
+export const areasPageCopy = {
+  title: "אזורי שירות",
+  metaDescription:
+    "תיקון והתקנת שערים חשמליים במרכז הארץ ובאזורים שברשימה. בחרו את העיר או האזור שלכם, ותאמו איתנו ביקור לאבחון בשעות הפעילות.",
+  subtitle:
+    "נותנים שירות במרכז הארץ ובאזורים שברשימה למטה. בחרו את העיר או האזור שלכם, או התקשרו ונבדוק יחד אם ומתי אפשר להגיע.",
+} as const;
+
+/** components/marketing/ServicesGrid.tsx — homepage services section heading. */
+export const servicesGridCopy = {
+  eyebrow: "השירותים שלנו",
+  title: "תיקון והתקנת שערים חשמליים",
+  subtitle:
+    "פתרון לכל סוג שער — משערים נגררים וכנף ועד תריסי גלילה, עם התקנה ותיקון מקצועיים ואחריות על העבודה.",
+  moreLabel: "למידע נוסף",
+} as const;
+
+/** components/layout/Footer.tsx — the tagline paragraph in the bottom strip. */
+export const footerCopy = {
+  tagline: "תיקון, תחזוקה והתקנה של שערים חשמליים ותריסי גלילה חשמליים",
+} as const;
+
+/** components/layout/MobileCtaBar.tsx — the two sticky labels (the WhatsApp opener is `defaultWhatsappMessage`). */
+export const mobileCtaCopy = {
+  callLabel: "חייגו עכשיו",
+  whatsappLabel: "וואטסאפ",
 } as const;
 
 /**

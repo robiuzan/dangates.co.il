@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { siteConfig, telHref, services, locations } from "@/lib/site-config";
+import { footerCopy, serviceAreaLine } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 
 export function Footer() {
@@ -42,7 +43,7 @@ export function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-accent-400" aria-hidden />
-              <span>{siteConfig.serviceArea}</span>
+              <span>{serviceAreaLine}</span>
             </li>
             <li className="flex items-start gap-2">
               <Clock className="mt-0.5 h-4 w-4 text-accent-400" aria-hidden />
@@ -142,7 +143,7 @@ export function Footer() {
           <p>
             © {year} {siteConfig.name}. כל הזכויות שמורות.
           </p>
-          <p>תיקון והתקנת שערים חשמליים · מרכז הארץ ופריסה ארצית</p>
+          <p>{footerCopy.tagline}</p>
         </Container>
       </div>
     </footer>
