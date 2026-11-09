@@ -22,4 +22,4 @@ the owner confirms. See [entity-profile.md](entity-profile.md).
 
 - ⬜ Rebuilt as data-driven Next.js (was live WordPress+Elementor on the allgatesrepair theme). phoneOverride=true: uses OWN number 072-2587772, NOT the shared lead line.
 - ⬜ Pricing table figures are indicative/generic (technician visit ₪150–350 is from live; per-gate repair/install ranges authored to be honest where exact figures are unknown) — confirm real prices.
-- ⬜ No physical address (service-area business, central Israel + national) — confirm.
+- ⬜ No physical address (service-area business) — confirm. Coverage answered by the owner 2026-11-09: central Israel and the listed areas, not national; קריות, צפון, דרום and באר שבע are not served.

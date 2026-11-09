@@ -29,7 +29,7 @@
   "schema": {
     "type": "GeneralContractor",
     "priceRange": "₪₪",
-    "areaServed": "מרכז הארץ ופריסה ארצית",
+    "areaServed": "מרכז הארץ והאזורים שמופיעים באתר",
     "openingHours": [
       {
         "days": ["su", "mo", "tu", "we", "th"],
