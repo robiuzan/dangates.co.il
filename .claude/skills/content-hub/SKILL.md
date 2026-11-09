@@ -102,7 +102,7 @@ when the guide ships.
 | כמה זמן לוקח לתקן שער חשמלי?              | `/blog/תקלות-נפוצות-בשערים-חשמליים/` | the תקלות overview guide (fold of `תקלות-נפוצות…`, cal. §4) | ✅ interim · Ph 4  |
 | האם יש אחריות על התיקון?                  | —                                    | stays home — no term is coming (business-facts §D)          | no link-out        |
 | מה כוללת תחזוקה שוטפת לשער?               | `/blog/תחזוקה-מונעת-לשערים-חשמליים/` | the same post once migrated to the block model              | ✅                 |
-| איך לבחור שער חשמלי חדש?                  | `/blog/שערים-חשמליים-השקעה/`         | #4 gate-type comparison                                     | ✅ interim · Ph 4  |
+| איך לבחור שער חשמלי חדש?                  | `/מדריכים/שער-נגרר-כנף-או-קונזולי/`  | #4 gate-type comparison (retargeted Sprint 7, 2026-11-09)   | ✅ guide           |
 | מה העלות של ביקור טכנאי לבדיקה?           | `/מחירון/`                           | stays `/מחירון/` (N14 pivot, "what determines the price")   | ✅                 |
 | האם אתם עובדים עם לקוחות פרטיים ועסקיים?  | `/services/שערים-לדירה/`             | #3 ועד בית                                                  | ✅ interim · Ph 4  |
 | מה כוללת התקנה של שער חדש?                | —                                    | #1 ת״י 900 (what a compliant installation must include)     | ⏳ Phase 4         |

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Phone } from "lucide-react";
 import { siteConfig, telHref } from "@/lib/site-config";
-import { headerCopy, navItems } from "@/lib/content";
+import { headerCopy } from "@/lib/content";
+import { headerNav } from "@/lib/nav";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { MobileMenu } from "@/components/layout/MobileMenu";
@@ -22,7 +23,7 @@ export function Header() {
         {/* Desktop nav */}
         <nav aria-label={headerCopy.navLabel} className="hidden lg:block">
           <ul className="flex items-center gap-6">
-            {navItems.map((item) => (
+            {headerNav.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
@@ -47,7 +48,7 @@ export function Header() {
           </Button>
 
           <MobileMenu
-            items={navItems}
+            items={headerNav}
             phone={siteConfig.phone}
             phoneHref={telHref}
             labels={{

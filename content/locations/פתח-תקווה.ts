@@ -1,6 +1,6 @@
 /**
  * פתח-תקווה (פתח תקווה) — the content entry for /locations/פתח-תקווה/ (backlog §3.1, Sprint 6).
- * The local substance: the city's three employment zones and how they differ (סגולה, heavy
+ * The local substance: three of the city's employment zones and how they differ (סגולה, heavy
  * industry and trucks; קריית אריה and רמת סיב, office buildings and their car-park barriers), the
  * private houses giving way to high-rise buildings and what that does to the gates on both sides,
  * and the yard gates of the older ground-level housing (the west of קריית מטלון).
@@ -25,7 +25,7 @@ export const city: CityContent = {
     {
       heading: "במה שונים השערים באזורי התעסוקה של פתח תקווה?",
       paragraphs: [
-        "בפתח תקווה שלושה אזורי תעסוקה גדולים: קריית אריה, רמת סיב שבקריית מטלון, ואזור התעשייה סגולה. בקריית אריה וברמת סיב קמו בנייני משרדים וקמפוסים של חברות, חלקם במקום מפעלים ישנים. סגולה מאופיינת בעיקר בתעשייה כבדה, בשונה משאר אזורי התעשייה בעיר. לכן גם הכניסות שונות: שער רחב למשאיות מול מחסום לחניון.",
+        "בפתח תקווה כמה אזורי תעסוקה גדולים, ובהם קריית אריה, רמת סיב שבקריית מטלון ואזור התעשייה סגולה. בקריית אריה וברמת סיב קמו בנייני משרדים וקמפוסים של חברות, חלקם במקום מפעלים ישנים. סגולה מאופיינת בעיקר בתעשייה כבדה, בשונה משאר אזורי התעשייה בעיר. לכן גם הכניסות שונות: שער רחב למשאיות מול מחסום לחניון.",
         "בסגולה, במפעל או במחסן, הכניסה היא לרוב שער נגרר רחב, שצריך לפנות מקום למשאית ולא רק לרכב פרטי. כנף ארוכה שוקלת יותר, ולכן היא דורשת מנוע בדרגה שמתאימה למשקל, פס שיניים חזק וגלגלים שנושאים את העומס לאורך זמן.",
       ],
     },

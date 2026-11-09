@@ -21,10 +21,12 @@ import {
 } from "@/lib/content";
 import { cityContent, isCityWritten } from "@/lib/city-content";
 import { nearby } from "@/lib/nearby";
+import { guidesForLocation } from "@/lib/guides";
 import { serviceDepth } from "@/lib/service-depth";
 import { businessNode, locationServiceJsonLd, type JsonLd } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
+import { RelatedGuides } from "@/components/article/chrome";
 import { Faq } from "@/components/marketing/Faq";
 import {
   AnswerBlock,
@@ -101,6 +103,9 @@ export default function LocationPage({ params }: { params: { city: string } }) {
   const neighbours = written
     ? nearby(loc.slug).flatMap((slug) => locations.find((l) => l.slug === slug) ?? [])
     : [];
+
+  // The reverse index: guides that name this city (and declare it) appear here by themselves.
+  const guides = guidesForLocation(loc.slug);
 
   // Handed to PageHeader, which renders them with the breadcrumb as ONE @graph. The Service's
   // `provider` points at the business, so the business node rides along (never a LocalBusiness
@@ -206,6 +211,8 @@ export default function LocationPage({ params }: { params: { city: string } }) {
               </ul>
             </>
           )}
+
+          <RelatedGuides guides={guides} className="mt-10" />
         </div>
       </Section>
 

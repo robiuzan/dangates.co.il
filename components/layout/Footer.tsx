@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { siteConfig, telHref, services, locations } from "@/lib/site-config";
-import { footerCopy, footerTransparencyLink, serviceAreaLine } from "@/lib/content";
+import {
+  footerCopy,
+  footerTransparencyLink,
+  guidesNavItem,
+  serviceAreaLine,
+} from "@/lib/content";
+import { hasGuides } from "@/lib/guides";
 import { Container } from "@/components/ui/Container";
 
 export function Footer() {
@@ -109,6 +115,16 @@ export function Footer() {
                 מחירון
               </Link>
             </li>
+            {hasGuides && (
+              <li>
+                <Link
+                  href={guidesNavItem.href}
+                  className="text-white/70 hover:text-white"
+                >
+                  {guidesNavItem.label}
+                </Link>
+              </li>
+            )}
             <li>
               <Link href="/blog" className="text-white/70 hover:text-white">
                 בלוג

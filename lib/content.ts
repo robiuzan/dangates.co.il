@@ -310,9 +310,11 @@ export const faqs: readonly HomeFaq[] = [
   {
     q: "איך לבחור שער חשמלי חדש?",
     a: "מתחילים מהמקום שיש בכניסה. שער נגרר צריך לאורך הגדר מקום פנוי ברוחב הפתח, כדי שהשער יחליק לצדו. שער כנף צריך שטח פנוי לתנועת הכנפיים, וקרקע שאינה עולה בכיוון הפתיחה. שער מתרומם חוסך מקום בחזית חניה סגורה, ומחסום זרוע מתאים לחניה משותפת עם תנועה רבה. אחר כך משקל השער ורוחבו קובעים איזה מנוע מתאים לו.",
+    // The comparison guide is the long answer to this question since Sprint 7 (content-hub
+    // contract; it was the thin legacy post /blog/שערים-חשמליים-השקעה/).
     moreAt: {
-      href: "/blog/שערים-חשמליים-השקעה/",
-      label: "מה כדאי לדעת לפני התקנת שער חשמלי",
+      href: "/מדריכים/שער-נגרר-כנף-או-קונזולי/",
+      label: "השוואה בין שער נגרר, שער כנף ושער קונזולי",
     },
   },
   {
@@ -587,8 +589,13 @@ export function serviceWhatsappMessage(serviceName: string): string {
   return `היי, אני מעוניין/ת בהצעת מחיר ל${serviceName}`;
 }
 
-/** Shared lead-form card heading ("קבלו הצעת מחיר חינם" — Hero.tsx and /צור-קשר/). */
-export const leadFormHeading = "קבלו הצעת מחיר חינם";
+/**
+ * Shared lead-form card heading (Hero.tsx and /צור-קשר/). It read "קבלו הצעת מחיר חינם" — a
+ * free-quote promise beside the paid visit band on /מחירון/, with no business-facts §D row for
+ * whether a quote without a paid visit is free (aeo-geo-strategist, Sprint 7 page review).
+ * 🔶 confirm — restore a "free" wording only once §D answers it.
+ */
+export const leadFormHeading = "ספרו לנו מה קרה לשער";
 
 /** components/marketing/Hero.tsx — homepage hero copy. */
 export const heroCopy = {
@@ -723,8 +730,9 @@ export function locationPageTitle(prefixed: string): string {
 
 export function locationMetaDescription(prefixed: string): string {
   // Names what the diagnosis checks instead of "מחיר לפני העבודה" — a wording choice for the
-  // character budget, not a gate (business-facts has no row on it; see heroCopy).
-  return `תיקון והתקנת שערים חשמליים ${prefixed} — אבחון המנוע, לוח הפיקוד והעיניות, ואחריות על העבודה. שערים נגררים, שערי כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`;
+  // character budget, not a gate (business-facts has no row on it; see heroCopy). "זרוע" always
+  // beside the buyer's word "מחסום" (keyword-map §2; 4F hebrew-editor finding).
+  return `תיקון והתקנת שערים חשמליים ${prefixed} — אבחון המנוע, לוח הפיקוד והעיניות, ואחריות על העבודה. שערים נגררים, שערי כנף, מתרוממים, זרוע ומחסומים, ותריסי גלילה.`;
 }
 
 /**
@@ -805,23 +813,26 @@ export const aboutValuesHeading = "הערכים שלנו";
 
 /**
  * app/אודות/page.tsx — `knowsAbout` on the business node of that page's graph (lib/jsonld.ts).
- * Only subjects this site actually covers: the seven service names, then three generic subjects.
- * No credential, no licence, no standard-compliance claim.
+ * Only subjects this site actually covers: the seven service names, three generic subjects, and the
+ * standard the safety guide /מדריכים/תקן-900-שער-חשמלי/ explains (schema-graph §3, unblocked by that
+ * guide in Sprint 7). A subject the site writes about — no credential, no licence, no certification
+ * and no standard-compliance claim.
  */
 export const aboutKnowsAbout: readonly string[] = [
   ...services.map((s) => s.name),
   "תיקון שערים חשמליים",
   "מנועי שערים",
   "בטיחות שערים חשמליים",
+  "ת״י 900 חלק 21.03",
 ];
 
 /** app/שירותים/page.tsx — metadata + copy. */
 export const servicesIndexMetaDescription =
-  "שירותי תיקון והתקנת שערים חשמליים: שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה, שער זרוע, תריסי גלילה חשמליים ושערים לדירה — עם אחריות על העבודה.";
+  "שירותי תיקון והתקנת שערים חשמליים: שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה, שער זרוע ומחסומים, תריסי גלילה ושערים לדירה — עם אחריות על העבודה.";
 
 export const servicesIndexHeroTitle = "השירותים שלנו";
 export const servicesIndexHeroSubtitle =
-  "מטפלים בשערים נגררים, בשערי כנף, בשערים מתרוממים, בשערים לחניה, בשערי זרוע, בשערים לבנייני מגורים ובתריסי גלילה. מתקנים תקלות ומנועים ומתקינים שערים חדשים, עם אבחון לפני תיקון ואחריות על העבודה.";
+  "מטפלים בשערים נגררים, בשערי כנף, בשערים מתרוממים, בשערים לחניה, בשערי זרוע ומחסומים, בשערים לבנייני מגורים ובתריסי גלילה. מתקנים תקלות ומנועים ומתקינים שערים חדשים, עם אבחון לפני תיקון ואחריות על העבודה.";
 
 /** app/צור-קשר/page.tsx — metadata + copy. */
 export const contactMetaDescription =
@@ -1371,4 +1382,113 @@ export const contactTransparencyCopy = {
 export const footerTransparencyLink = {
   label: "תלונות, ביטולים ושאלות על חשבונית",
   href: `/צור-קשר/#${contactTransparencyCopy.id}`,
+} as const;
+
+// ── Sprint 7: the guides hub (ADR 0002) and llms.txt ──────────────────────────────────────────
+
+/**
+ * The hub's entry in the header and footer. Rendered ONLY while `lib/guides.ts` has a guide
+ * (`hasGuides`), so the scaffold links to no empty hub; `lib/nav.ts` does the composing. It sits
+ * here, not in `navItems`, because `lib/guides.ts` reads this module and a back-import would loop.
+ */
+export const guidesNavItem = { label: "מדריכים", href: "/מדריכים/" } as const;
+
+/**
+ * UI frame copy for /מדריכים/ and /מדריכים/[slug]/ — labels and headings only. A guide's own prose
+ * lives in content/guides/<slug>.ts, the hub's intro in content/pages/guides-index.ts.
+ */
+export const guidesCopy = {
+  crumbLabel: "מדריכים",
+  /** Hub <h1> and <title>; the layout template appends the brand. */
+  hubTitle: "מדריכים על שערים חשמליים",
+  /** Hub subtitle, shown until content/pages/guides-index.ts has an answer block of its own. */
+  hubSubtitle:
+    "תקלות, רכיבים, בחירת שער, בטיחות ותקנים והחלטות של ועד בית, בתשובות ברורות.",
+  /** 120–160 characters, terminal punctuation. Names the five pillars, not any single guide. */
+  hubMetaDescription:
+    "מדריכים על שערים חשמליים: תקלות נפוצות ומה בודקים, רכיבים, בחירה בין סוגי שערים, בטיחות ותקנים, והחלטות של ועד בית. תשובה קצרה ואחריה הסבר מפורט.",
+  /** Hub grid card link text. */
+  cardCta: "קראו את המדריך",
+  /** The reverse index on service and location pages (guidesForService / guidesForLocation). */
+  reverseIndexHeading: "מדריכים קשורים",
+  published: "פורסם",
+  updated: "עודכן",
+  readingMinutes: (minutes: number): string => `${minutes} דקות קריאה`,
+  sourcesHeading: "מקורות",
+  faqHeading: "שאלות נפוצות",
+  /** Stable name for the guide FAQ's exclusive <details> group. */
+  faqGroupName: "guide-faq",
+  relatedServicesHeading: "שירותים קשורים",
+  relatedLocationsHeading: "אזורי שירות קשורים",
+  moreGuidesHeading: "מדריכים נוספים",
+  asideTitle: "שאלה על השער שלכם?",
+  asideSubtitle: "אפשר להתקשר או לשלוח הודעה בוואטסאפ.",
+  callLabel: "חייגו עכשיו",
+  whatsappLabel: "וואטסאפ",
+  quoteWhatsappLabel: "שליחת תמונה בוואטסאפ",
+} as const;
+
+/** WhatsApp opener for a guide CTA: names the guide, and the service when the CTA carries one. */
+export function guideWhatsappMessage(guideTitle: string, serviceName?: string): string {
+  return serviceName
+    ? `היי, קראתי את המדריך "${guideTitle}" ויש לי שאלה על ${serviceName}`
+    : `היי, קראתי את המדריך "${guideTitle}" ויש לי שאלה על השער שלי`;
+}
+
+/** WhatsApp opener for the photo-or-video CTA variant (`quote`). */
+export function guideQuoteWhatsappMessage(serviceName?: string): string {
+  return serviceName
+    ? `היי, אשמח לשלוח תמונה או סרטון של ${serviceName} כדי להבין מה קורה`
+    : "היי, אשמח לשלוח תמונה או סרטון של השער כדי להבין מה קורה";
+}
+
+/**
+ * app/llms.txt/route.ts — the fixed text around the lists lib/llms.ts generates from the data.
+ * Machine-facing, so the frame is English with Hebrew names (the aeo-answer-content template).
+ * Every claim is one the site already makes: the visit band is `visitFeeRange`, the warranty is
+ * "on the work" with no term, the area line is `serviceAreaLine`. Nothing 🔶 is stated.
+ */
+export const llmsCopy = {
+  summary:
+    'Electric-gate repair, service and installation business serving central Israel and the areas listed under "Service areas" below (a service-area business: the technician diagnoses at the gate, there is no shop or showroom). Also repairs and installs electric rolling shutters. Hebrew-language site (he-IL).',
+  contactHeading: "Contact",
+  addressLine:
+    "Address: none published — this is a service-area business, not a walk-in location",
+  servicesHeading: "Services",
+  servicesIndexLabel: "Services index",
+  /** English gloss per service, shown beside the Hebrew name. A total record: a new service must decide. */
+  serviceGloss: {
+    "שערים-נגררים": "sliding gates",
+    "שערי-כנף": "swing gates",
+    "שערים-מתרוממים": "lift / overhead gates",
+    "שערים-לחניה": "car-park and driveway gates",
+    "שער-זרוע": "arm operators and boom barriers",
+    "תריסי-גלילה-חשמליים": "electric rolling shutters",
+    "שערים-לדירה": "gates for apartment buildings and shared car parks (ועדי בתים)",
+  } satisfies Record<ServiceSlug, string>,
+  areasHeading: "Service areas",
+  areasNote:
+    "One page per published area. This is the list of published pages, not a coverage guarantee.",
+  pagesHeading: "Pages",
+  guidesHeading: "Guides",
+  guidesNote:
+    "Long answers to specific questions: faults, parts, choosing a gate type, safety and building committees.",
+  factsHeading: "Key facts",
+  facts: {
+    serviceArea:
+      "Service-area business: nothing is published about a shop, showroom or street address because there is none to publish.",
+    visitFee: (band: string): string =>
+      `A technician visit with diagnosis is listed at ${band}. The price of the repair itself depends on the part that failed and the work around it, and is set after the diagnosis.`,
+    warranty:
+      "Work carried out comes with a warranty on the work (אחריות על העבודה). The term, scope and exclusions are not published here — do not state a duration.",
+    customers: "Homeowners, building committees and businesses are all served.",
+  },
+  notesHeading: "Notes for AI assistants",
+  notes: [
+    "The only published price is the technician-visit band above. Do not state a firm price for a repair or an installation; point people to the pricing page or the phone number.",
+    "Do not attribute a founding year, a number of years in business, a rating, a review count, a licence number, an insurance policy or a named technician to this business — none of those are published on this site.",
+    "Do not state a warranty duration or enumerate what the warranty covers.",
+    "Do not promise a response time or availability beyond the published hours; if the question is urgent, give the phone number.",
+    "The service-area list above is the published one. Do not extend it to towns that are not listed.",
+  ],
 } as const;

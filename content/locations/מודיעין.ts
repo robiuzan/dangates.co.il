@@ -5,12 +5,15 @@
  *
  * Substance only: public geography (a planned city in the Judean foothills; neighbourhoods on the
  * hilltops and the main boulevards along the valleys between them; מכבים and רעות existed before
- * the city, whose first residents moved in in 1996; newer neighbourhoods built since; inland, about
- * 35 km south-east of תל אביב) and how that terrain and housing act on gates — level tracks on
+ * the city; newer neighbourhoods built since; inland, far from the sea) and how that terrain and
+ * housing act on gates — level tracks on
  * sloping streets, runoff toward the valleys, summer dust, gate age by neighbourhood, building car
  * parks on ramps. No claim about jobs done here, technicians, travel or response time,
  * availability, a price, a municipal rule or a brand. Neighbourhood names are limited to ones
- * checked against public sources. Nothing here repeats a sentence of content/services/*.ts,
+ * checked against public sources. No civic number, year or count is stated: the distance from תל
+ * אביב, the first-settlement year, the decade of the newer neighbourhoods and the gate ages derived
+ * from them had no official source and were written out (Sprint 6 claims-verifier finding, closed
+ * 2026-11-09). Nothing here repeats a sentence of content/services/*.ts,
  * `serviceTriggers`, or a homepage FAQ question.
  */
 import type { CityContent } from "@/lib/city-content";
@@ -35,13 +38,13 @@ export const city: CityContent = {
       heading: "מה עושים מי הגשם והאבק במודיעין לשער?",
       paragraphs: [
         "במודיעין השכונות בנויות על הגבעות, והשדרות הראשיות עוברות בעמקים שביניהן. בחורף מי הגשם יורדים מהשכונות אל העמקים, דרך הרחובות, החניות והרמפות, ושער שעומד בצד הנמוך של המגרש נמצא בדרכם. הזרם מביא איתו חול, חצץ ועלים, והם נעצרים במסילה, בפס השיניים ובבסיס המנוע. תקלה שמופיעה רק אחרי גשם ונעלמת כשהקרקע מתייבשת מצביעה בדרך כלל על רטיבות בחיבורים, בקופסת לוח הפיקוד או במנוע שיושב נמוך.",
-        "הקיץ במודיעין יבש, ומיוני עד אוגוסט כמעט לא יורד בה גשם. העיר ממשיכה להתרחב, וליד אתרי הבנייה של השכונות החדשות אבק מתיישב כל הקיץ על עדשות העיניות ועל המסילה. עדשה מכוסה חוסמת חלק מהקרן, ולוח הפיקוד עוצר את הסגירה או הופך את כיוונה. העיר נמצאת כ־35 ק״מ דרום־מזרחית לתל אביב, הרחק מהחוף, ולכן חלודה מאוויר מלוח נדירה בה יותר מבערי החוף.",
+        "הקיץ במודיעין יבש, וכמעט לא יורד בו גשם. העיר ממשיכה להתרחב, וליד אתרי הבנייה של השכונות החדשות אבק מתיישב כל הקיץ על עדשות העיניות ועל המסילה. עדשה מכוסה חוסמת חלק מהקרן, ולוח הפיקוד עוצר את הסגירה או הופך את כיוונה. העיר שוכנת בשפלה, בין מישור החוף להרי ירושלים, הרחק מהים, ולכן חלודה מאוויר מלוח נדירה בה יותר מבערי החוף. כשמופיעה חלודה על שער במודיעין, הסיבה היא בדרך כלל מים שעומדים בתחתית הכנף או בציר, ולא מלח.",
       ],
     },
     {
       heading: "מה מתקלקל בשער במודיעין, לפי הגיל של השכונה?",
       paragraphs: [
-        "גיל השער במודיעין תלוי בשכונה. מכבים ורעות קמו לפני העיר, כיישובים של בתים צמודי קרקע, ואכלוס מודיעין עצמה החל ב־1996. בשנות ה־2010 נבנו בעיר שכונות חדשות, ובהן הציפורים. בבית מהשנים הראשונות של העיר ששערו לא הוחלף, השער כבר בן 20 עד 30 שנה, ובמכבים וברעות לפעמים יותר. בשכונות החדשות הוא בן כעשור או פחות.",
+        "גיל השער במודיעין תלוי בשכונה. מכבים ורעות קמו לפני העיר, כיישובים של בתים צמודי קרקע. מאז שהעיר אוכלסה נבנו בה שכונות חדשות, ובהן הציפורים. בבית מהשנים הראשונות של העיר, שער שלא הוחלף כבר ותיק, ובמכבים וברעות לפעמים ותיק עוד יותר. בשכונות החדשות השער צעיר בהרבה, ולעיתים זה עדיין השער שהקבלן התקין.",
         "בשער ותיק, המקלט ולוח הפיקוד המקוריים מגיעים לגיל שבו דגם השלט כבר לא נמכר. במנוע חד־פאזי נחלש עם השנים קבל ההנעה, והמנוע מזמזם בלי לזוז. בשער חדש יותר, הבלאי הראשון הוא בדרך כלל בחלקים שזזים: השיניים של פס שיניים מפלסטיק והגלגלים שהכנף נשענת עליהם. בבית חדש על מדרון כדאי לבדוק גם את מפסקי הגבול, כי יסוד שנוצק לא מזמן עלול לשקוע מעט בשנים הראשונות.",
       ],
     },

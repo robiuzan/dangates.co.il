@@ -5,8 +5,9 @@
  *
  * Local substance only: the hill terrain and what a slope does to a sliding or swing gate, the
  * stone-clad pillars that hinges and motor brackets are anchored into, the cold and wet winter in
- * the Judean hills, the heavy snow that falls every few years (the December 2013 storm and its
- * power cuts), the hillside apartment blocks with ramp-fed car parks, and the old industrial zones
+ * the Judean hills, the heavy snow that falls every few years and the power cuts it can bring (the
+ * named storm and its date were written out on 2026-11-09 — no official source in the copy; Sprint 6
+ * claims-verifier finding), the hillside apartment blocks with ramp-fed car parks, and the old industrial zones
  * beside the high-tech park. Public geography and general mechanism, stated as such; no elevation
  * figure. No claim about this business's jobs, technicians, travel time, response time,
  * availability or presence beyond serving the city; no municipal or legal claim (the stone
@@ -48,7 +49,7 @@ export const city: CityContent = {
     {
       heading: "מה קורה לשער החניה כשסופת שלג מפילה את החשמל?",
       paragraphs: [
-        "אחת לכמה שנים יורד בירושלים שלג כבד. בסופה של דצמבר 2013, למשל, נערם בעיר שלג עמוק, ובחלקים נרחבים ממנה היו הפסקות חשמל. בהפסקת חשמל שער בלי סוללת גיבוי נשאר במקום שבו עמד, וגם סוללת גיבוי מחזיקה זמן מוגבל. כשזה שער של חניון משותף, המכוניות של כל הדיירים עלולות להישאר בפנים.",
+        "אחת לכמה שנים יורד בירושלים שלג כבד. בסופת שלג כזו העצים וקווי החשמל נושאים משקל רב, ובחלקים מהעיר עלולות להיות הפסקות חשמל ארוכות. בהפסקת חשמל שער בלי סוללת גיבוי נשאר במקום שבו עמד, וגם סוללת גיבוי מחזיקה זמן מוגבל. כשזה שער של חניון משותף, המכוניות של כל הדיירים עלולות להישאר בפנים.",
         "שלג שנערם במסילה או בקשת הפתיחה עוצר את השער כמו כל חסימה אחרת. שלג על עדשת העינית נראה ללוח הפיקוד כמו מכשול בפתח, והשער לא ייסגר. לפני שמפעילים את השער אחרי שלג, מפנים את המסילה, את קשת הפתיחה ואת העיניות.",
       ],
     },

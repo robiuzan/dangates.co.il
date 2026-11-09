@@ -6,7 +6,9 @@ import { manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { blogIndexMetaDescription, crumbLabels } from "@/lib/content";
 import { itemListJsonLd } from "@/lib/jsonld";
+import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { PageContentBlock } from "@/components/marketing/ContentSections";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
@@ -27,6 +29,7 @@ const DATE_FMT = new Intl.DateTimeFormat("he-IL", {
 });
 
 export default function BlogIndexPage() {
+  const content = pageContent.blogIndex;
   const sorted = [...posts].sort((a, b) => b.date.localeCompare(a.date));
   // The full array the grid renders, in the same order.
   const nodes = [
@@ -41,13 +44,20 @@ export default function BlogIndexPage() {
     <>
       <PageHeader
         title="הבלוג של דן שערים חשמליים"
-        subtitle="טיפים מקצועיים וחדשות מהתחום — כל מה שכדאי לדעת על תיקון, תחזוקה ובטיחות של שערים חשמליים."
+        // Once written, the answer block is the first paragraph in <main>, so the subtitle steps aside.
+        subtitle={
+          isPageWritten(content)
+            ? undefined
+            : "טיפים מקצועיים וחדשות מהתחום — כל מה שכדאי לדעת על תיקון, תחזוקה ובטיחות של שערים חשמליים."
+        }
         nodes={nodes}
         crumbs={[
           { label: "בית", href: "/" },
           { label: "בלוג", href: "/blog/" },
         ]}
       />
+
+      <PageContentBlock content={content} />
 
       <Section tone="white">
         <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2">

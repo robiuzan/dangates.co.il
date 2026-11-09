@@ -112,12 +112,13 @@ human being is named anywhere on the site.
 Gate motors are 230V equipment. `רישיון`, `תעודה`, `מוסמך`, `ביטוח` and `חשמלאי` appear **nowhere** in
 the repo. For this trade specifically, that absence is conspicuous to a careful customer.
 
-| Field                          | Why it's needed                                         | Lands in                 | Value | Status |
-| ------------------------------ | ------------------------------------------------------- | ------------------------ | ----- | ------ |
-| Electrician licence / grade    | Expertise signal; legally relevant for 230V work        | content.ts `credentials` |       | 🔶     |
-| Insurance (ביטוח צד ג׳)        | Standard trade trust signal                             | content.ts `credentials` |       | 🔶     |
-| Manufacturer training / brands | Differentiator; names the motor systems actually fitted | content.ts `credentials` |       | 🔶     |
-| Trade association membership   | Authority signal                                        | content.ts `credentials` |       | 🔶     |
+| Field                                                          | Why it's needed                                                                     | Lands in                                    | Value | Status |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------- | ----- | ------ |
+| Electrician licence / grade                                    | Expertise signal; legally relevant for 230V work                                    | content.ts `credentials`                    |       | 🔶     |
+| Insurance (ביטוח צד ג׳)                                        | Standard trade trust signal                                                         | content.ts `credentials`                    |       | 🔶     |
+| Manufacturer training / brands                                 | Differentiator; names the motor systems actually fitted                             | content.ts `credentials`                    |       | 🔶     |
+| Trade association membership                                   | Authority signal                                                                    | content.ts `credentials`                    |       | 🔶     |
+| Does the business install / repair cantilever (קונזולי) gates? | Shapes the guide שער-נגרר-כנף-או-קונזולי CTA and whether llms.txt may list the type | `content/guides/שער-נגרר-כנף-או-קונזולי.ts` |       | 🔶     |
 
 ## D. Commercial terms — the price list is authored, not sourced
 

@@ -28,11 +28,13 @@ import {
 } from "@/lib/content";
 import { serviceDepth } from "@/lib/service-depth";
 import { getPost } from "@/lib/posts";
+import { guidesForService } from "@/lib/guides";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { businessNode, serviceNode, type JsonLd } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
+import { RelatedGuides } from "@/components/article/chrome";
 import { Faq } from "@/components/marketing/Faq";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
@@ -83,6 +85,8 @@ export default function ServicePage({ params }: { params: { service: string } })
     (slug) => locations.find((l) => l.slug === slug) ?? [],
   );
   const relatedPosts = depth.relatedPosts.flatMap((slug) => getPost(slug) ?? []);
+  // The reverse index: every guide that declares this service appears here, nothing to edit by hand.
+  const guides = guidesForService(card.slug);
 
   // Handed to PageHeader, which renders them with the page's breadcrumb as ONE @graph. The
   // business node rides along because the Service's `provider` points at it. The FAQPage joins
@@ -301,6 +305,8 @@ export default function ServicePage({ params }: { params: { service: string } })
               </ul>
             </>
           )}
+
+          <RelatedGuides guides={guides} className="mt-10" />
         </div>
       </Section>
 

@@ -1,6 +1,6 @@
 /**
  * page-content.ts — the typed copy of the three index pages that need depth of their own:
- * /שירותים/, /איזורי-שירות/ and /אודות/ (backlog §3.13, content-standards §1 — index 250, about 500
+ * /שירותים/, /איזורי-שירות/ and /אודות/ — and, since Sprint 7, /מדריכים/, /blog/ and /צור-קשר/ (backlog §3.13, content-standards §1 — index 250, about 500
  * unique words). One module per page under content/pages/ (`export const page: PageContent`), so the
  * three drafters never share a file. This file only types and assembles them.
  *
@@ -16,6 +16,9 @@
 import { page as areasIndex } from "@/content/pages/areas-index";
 import { page as servicesIndex } from "@/content/pages/services-index";
 import { page as about } from "@/content/pages/about";
+import { page as guidesIndex } from "@/content/pages/guides-index";
+import { page as blogIndex } from "@/content/pages/blog-index";
+import { page as contact } from "@/content/pages/contact";
 
 /** One section: a question-form H2, prose, and an optional bulleted list after it. */
 export interface PageContentSection {
@@ -42,10 +45,16 @@ export const pageContent: {
   servicesIndex: PageContent;
   areasIndex: PageContent;
   about: PageContent;
+  guidesIndex: PageContent;
+  blogIndex: PageContent;
+  contact: PageContent;
 } = {
   servicesIndex,
   areasIndex,
   about,
+  guidesIndex,
+  blogIndex,
+  contact,
 };
 
 /** Whether a page's drafter has written it (the answer block is the gate). */

@@ -37,6 +37,19 @@ exists and the container has the tag (owner-actions §2.4, Track B B2).
 | `complaints-email`    | `/צור-קשר/#complaints` — the email address in the same block                                       | `email_click`    |
 | `faq-more`            | a homepage FAQ `moreAt` link-out; a navigation link, not a call, but `/צור-קשר/` is a contact link | _(none)_         |
 
+**`data-cta` values added in Sprint 7** (the guides hub, `components/article/`). They follow
+`{location}-{action}`, each names one element kind, and all read as `placement: "article"`:
+
+| `data-cta`                | Element                                                          | Event            |
+| ------------------------- | ---------------------------------------------------------------- | ---------------- |
+| `article-inline-call`     | a guide's `cta` block, `inline` variant — the call button        | `tel_click`      |
+| `article-inline-whatsapp` | the same block's WhatsApp button, prefilled with the guide title | `whatsapp_click` |
+| `article-quote-call`      | a guide's `cta` block, `quote` variant — the call button         | `tel_click`      |
+| `article-quote-whatsapp`  | the same block's photo-or-video WhatsApp button                  | `whatsapp_click` |
+| `article-aside-call`      | the sticky card beside a guide — the phone number                | `tel_click`      |
+| `article-aside-whatsapp`  | the sticky card beside a guide — the WhatsApp button             | `whatsapp_click` |
+| `article-contact`         | an in-copy link to `/צור-קשר/` inside a guide paragraph          | _(none)_         |
+
 The three `complaints-*` values read as `placement: "contact"` — the block sits on the contact page —
 so the container can map them to that placement without a new one (owner work, with the rest of the
 container). `faq-more` fires no conversion event — the tag exists so `cta-coverage.mjs` can see that the one

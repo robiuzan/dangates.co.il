@@ -3,7 +3,7 @@
  * The field rules are the JSDoc on `CityContent` in lib/city-content.ts; the bar is
  * docs/content-standards.md §2–§5, §8.
  *
- * Substance is the city's housing and gate reality — 1950s blocks with a pillar storey over a garden
+ * Substance is the city's housing and gate reality — older blocks with a pillar storey over a garden
  * or car park (לב העיר), towers and office buildings with ramp-down car parks, the coastal
  * neighbourhoods' salt air (הצפון הישן, נווה צדק, יפו), narrow streets (פלורנטין, כרם התימנים,
  * נווה צדק) — tied to how gates fail. All of it is public
@@ -25,7 +25,7 @@ export const city: CityContent = {
     {
       heading: "מה מיוחד בשער החניה של בניין על עמודים?",
       paragraphs: [
-        "בלב העיר יש, לצד בתים ותיקים שחזיתם צמודה למדרכה, גם בניינים משנות החמישים עם קומת עמודים מעל גינה או חניה. בבניינים כאלה החניה המשותפת נמצאת בקומת הקרקע, מתחת לדירות. ברבים מהם השער החשמלי הותקן שנים אחרי הבנייה, ולכן המנוע מחובר לעמוד או לגדר קיימים שלא תוכננו לשאת אותו. תושבת רופפת מוציאה את השער מיישור.",
+        "בלב העיר יש, לצד בתים ותיקים שחזיתם צמודה למדרכה, גם בנייני דירות ותיקים שעומדים על קומת עמודים פתוחה מעל גינה או חניה. בבניינים כאלה החניה המשותפת נמצאת בקומת הקרקע, מתחת לדירות. ברבים מהם השער החשמלי הותקן שנים אחרי הבנייה, ולכן המנוע מחובר לעמוד או לגדר קיימים שלא תוכננו לשאת אותו. תושבת רופפת מוציאה את השער מיישור.",
         "בבניין כזה דיירים שהולכים ברגל עוברים לא פעם באותו פתח שבו נכנסים הרכבים, בדרך לחדר המדרגות. לכן העינית והגדרת כוח הסגירה בלוח הפיקוד חשובות כאן במיוחד. שער שממשיך לדחוף אחרי שפגע במכשול מסכן אדם, ולא רק רכב.",
       ],
     },

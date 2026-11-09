@@ -201,7 +201,9 @@ export interface ArticleInput {
    * The index this article sits in. Emitted as a full node (not an `@id` stub) so the reference is
    * defined on the page that makes it.
    */
-  isPartOf?: { path: string; name: string };
+  isPartOf?: { path: string; name: string; type?: "Blog" | "CollectionPage" };
+  /** External sources the copy cites (a guide's `sources`) → `citation`; absolute https URLs only. */
+  citation?: ReadonlyArray<{ name: string; url: string }>;
   /** Absolute or site-relative raster ≥ 1200×630. Defaults to the manifest OG card. */
   image?: string;
   /** `TechArticle` for the safety / component guide families, `BlogPosting` for /blog/, else `Article`. */
@@ -230,7 +232,7 @@ export function articleJsonLd(m: SiteManifest, a: ArticleInput): JsonLd {
     mainEntityOfPage: url,
     isPartOf: a.isPartOf
       ? {
-          "@type": "Blog",
+          "@type": a.isPartOf.type ?? "Blog",
           "@id": pageUrl(m, a.isPartOf.path),
           url: pageUrl(m, a.isPartOf.path),
           name: a.isPartOf.name,
@@ -239,6 +241,11 @@ export function articleJsonLd(m: SiteManifest, a: ArticleInput): JsonLd {
     datePublished: a.datePublished,
     dateModified: a.dateModified ?? a.datePublished,
     image,
+    citation: a.citation?.map((c) => ({
+      "@type": "CreativeWork",
+      name: c.name,
+      url: c.url,
+    })),
     author: { "@id": businessId(m) },
     publisher: { "@id": businessId(m) },
     inLanguage: m.locale,

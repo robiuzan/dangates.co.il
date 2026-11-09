@@ -2,9 +2,11 @@
  * רחובות (ברחובות) — the content entry for /locations/רחובות/ (backlog §3.1, Sprint 6).
  * The city's three housing realities and what each does to a gate: the private-house
  * neighbourhoods with yards (tracks on old ground, posts built for manual gates, fruit trees), the
- * apartment neighbourhoods built on the city's edges since the late 1990s with a shared car park,
+ * apartment neighbourhoods built on the city's edges in recent decades with a shared car park,
  * and the institutions and science park whose car parks run on barriers tied to access control;
- * plus the inland heat and dust.
+ * plus the inland heat and dust. No civic number or year: the founding year and the decade of the
+ * new neighbourhoods had no official source and were written out (Sprint 6 claims-verifier finding,
+ * closed 2026-11-09).
  *
  * Public geography and general technical knowledge only. No claim about this business's jobs,
  * technicians, travel or response time, availability or presence beyond serving the published
@@ -27,14 +29,14 @@ export const city: CityContent = {
     {
       heading: "מה מאפיין את השערים בשכונות הבתים הפרטיים של רחובות?",
       paragraphs: [
-        "רחובות החלה את דרכה ב-1890 כמושבה חקלאית, ובמשך שנים רבות הקיפו אותה כרמים ופרדסים. בחלק משכונותיה עדיין עומדים בתים פרטיים על מגרשים עם חצר. בשעריים, השכונה התימנית הוותיקה של העיר, גדלים עצי פרי בחצרות הבתים. בכניסה לחצר או לחניה הפרטית עובד בשכונות כאלה שער נגרר או שער כנף.",
+        "רחובות החלה את דרכה כמושבה חקלאית, ובמשך שנים רבות הקיפו אותה כרמים ופרדסים. בחלק משכונותיה עדיין עומדים בתים פרטיים על מגרשים עם חצר. בשעריים, השכונה התימנית הוותיקה של העיר, גדלים עצי פרי בחצרות הבתים. בכניסה לחצר או לחניה הפרטית עובד בשכונות כאלה שער נגרר או שער כנף.",
         "בחצרות ותיקות חלק מהשערים התחילו את דרכם כשערים ידניים, והמנוע נוסף להם מאוחר יותר. עמוד בנוי שתוכנן לשער ידני לא תמיד מחזיק את העומס של זרוע הנעה, וציר ישן מתחיל לחרוק ולהיתקע. עצים גדולים בחצר מפילים עלים ופירות למסילה ולמסלול של הכנף. לכן לפני שמחליפים מנוע בודקים את העמודים, את הצירים ואת הניקיון סביב השער.",
       ],
     },
     {
       heading: "מה משתנה בשכונות החדשות עם בנייני המגורים?",
       paragraphs: [
-        "מאז סוף שנות ה-90 נבנו בשולי רחובות שכונות חדשות, על אדמות שהיו פרדסים ושטחים חקלאיים. רחובות ההולנדית היא דוגמה לשכונה כזו: בנייני מגורים שנבנו סביב פארק. לבניינים כאלה יש בדרך כלל חניון משותף, ובכניסה אליו שער נגרר, שער מתרומם או מחסום.",
+        "בעשורים האחרונים נבנו בשולי רחובות שכונות חדשות, על אדמות שהיו פרדסים ושטחים חקלאיים. רחובות ההולנדית היא דוגמה לשכונה כזו: בנייני מגורים שנבנו סביב פארק. לבניינים כאלה יש בדרך כלל חניון משותף, ובכניסה אליו שער נגרר, שער מתרומם או מחסום.",
         "שער כזה משרת עשרות דירות, ונפתח מכל השלטים, הקודים והתגים של הדיירים. בכניסה הרגלית של רוב הבניינים הדלת נפתחת ביד, והאינטרקום רק משחרר את הנעילה החשמלית שלה. בבניין חדש כדאי לשמור את פרטי הדגם של המנוע ושל לוח הפיקוד שהותקנו עם הבניין. כשמגיעה התקלה הראשונה, המידע הזה חוסך ניחושים בזיהוי החלקים.",
       ],
     },

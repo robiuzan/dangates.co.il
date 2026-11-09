@@ -14,7 +14,9 @@ import {
   leadFormHeading,
   serviceAreaLine,
 } from "@/lib/content";
+import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { PageContentBlock } from "@/components/marketing/ContentSections";
 import { Section } from "@/components/ui/Section";
 import { LeadForm } from "@/components/forms/LeadForm";
 
@@ -43,17 +45,21 @@ const nodes = [
 ];
 
 export default function ContactPage() {
+  const content = pageContent.contact;
   return (
     <>
       <PageHeader
         title={contactHeroTitle}
-        subtitle={contactHeroSubtitle}
+        // Once written, the answer block is the first paragraph in <main>, so the subtitle steps aside.
+        subtitle={isPageWritten(content) ? undefined : contactHeroSubtitle}
         nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
           { label: crumbLabels.contact, href: "/צור-קשר/" },
         ]}
       />
+
+      <PageContentBlock content={content} />
 
       <Section tone="white">
         <div className="grid gap-10 lg:grid-cols-2">

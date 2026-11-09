@@ -1,12 +1,13 @@
 import type { MetadataRoute } from "next";
 import { siteConfig, services, locations, staticPages } from "@/lib/site-config";
 import { posts } from "@/lib/posts";
+import { guideList } from "@/lib/guides";
 
 /**
  * Generates /sitemap.xml from the static routes + the service, location and blog matrices.
  * Paths use the Hebrew URL scheme; all cities are normalized under /locations/<he-slug>/.
  * The route set is entirely data-driven: `staticPages`, `services`, `locations` and
- * `posts`, all from lib/. Nothing is declared here, so a new page cannot ship missing —
+ * `posts` and the guides registry, all from lib/. Nothing is declared here, so a new page cannot ship missing —
  * `scripts/audit/links.mjs` fails when the registry and the `app/` tree disagree.
  *
  * Every entry MUST carry a trailing slash: the export runs with `trailingSlash: true`
@@ -54,5 +55,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: p.updated ?? p.date,
   }));
 
-  return [...staticEntries, ...serviceEntries, ...locationEntries, ...blogEntries];
+  // Each guide from the registry, with its own dateModified — a new guide cannot ship absent.
+  const guideEntries: MetadataRoute.Sitemap = guideList.map((g) => ({
+    url: url(`מדריכים/${g.slug}`),
+    lastModified: g.dateModified,
+  }));
+
+  return [
+    ...staticEntries,
+    ...serviceEntries,
+    ...locationEntries,
+    ...blogEntries,
+    ...guideEntries,
+  ];
 }

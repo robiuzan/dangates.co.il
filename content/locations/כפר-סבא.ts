@@ -7,7 +7,9 @@
  * השרון, חמרה): a city in the south of the Sharon, east of רעננה, whose land suited citrus and was
  * largely orchard; the Sharon's soil mostly חמרה; private-house neighbourhoods (גאולים, בית ונוף,
  * and הדרים with low buildings beside them; שבזי's first homes semi-detached); כפר סבא הירוקה in the
- * north of the city, first occupied in 2012, mostly 5–17-storey buildings; an older industrial zone
+ * north of the city, a newer neighbourhood of low and tall apartment buildings (its first-occupancy
+ * year and storey range were written out on 2026-11-09 — no official source; Sprint 6
+ * claims-verifier finding); an older industrial zone
  * with factories and a high-tech zone (אזור עתיר ידע) in the east. Plus general technical knowledge
  * of how gates, motors, receivers and safety eyes behave in that setting. The underground car park
  * is stated as a general fact about buildings that tall, never as a fact about the neighbourhood.
@@ -44,7 +46,7 @@ export const city: CityContent = {
     {
       heading: "מה שונה בשער החניון של בניין גבוה בכפר סבא הירוקה?",
       paragraphs: [
-        "כפר סבא הירוקה, בצפון העיר, אוכלסה לראשונה ב-2012, ורוב הבניינים בה בני 5–17 קומות. בבניין בגובה כזה החניה היא בדרך כלל בחניון תת-קרקעי, שהכניסה אליו היא רמפה שיורדת מהרחוב, ובה שער נגרר, שער מתרומם או מחסום. רמפה כזו אוספת מי גשם. כשהניקוז בתחתיתה נסתם, המים מציפים את בסיס המנוע ואת העינית הנמוכה, וחודרים לחיישן הכביש אם האיטום של החריץ שלו סדוק.",
+        "כפר סבא הירוקה, בצפון העיר, היא שכונה חדשה יחסית של בנייני דירות, חלקם נמוכים וחלקם גבוהים. בבניין גבוה החניה היא בדרך כלל בחניון תת-קרקעי, שהכניסה אליו היא רמפה שיורדת מהרחוב, ובה שער נגרר, שער מתרומם או מחסום. רמפה כזו אוספת מי גשם. כשהניקוז בתחתיתה נסתם, המים מציפים את בסיס המנוע ואת העינית הנמוכה, וחודרים לחיישן הכביש אם האיטום של החריץ שלו סדוק.",
         "בבניין חדש רוב הדיירים נכנסים לגור בתוך חודשים ספורים, ושלטים רבים נרשמים במקלט של השער בבת אחת. כדאי לתעד כבר אז איזה שלט נרשם באיזה מקום בזיכרון ולאיזו דירה הוא שייך. במקלט שמאפשר למחוק שלט לפי מקומו בזיכרון, כך מוחקים שלט שאבד בלי לרשום מחדש את כל הבניין. במקלטים פשוטים יותר אי אפשר למחוק שלט שאינו ביד, ולכן מוחקים את כל הזיכרון ורושמים מחדש את השלטים של כל הדיירים.",
       ],
     },
