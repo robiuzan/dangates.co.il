@@ -205,7 +205,7 @@ Stated plainly, because it is the expensive decision in this document.
 - **There is no demand evidence at all.** Search Console is unverified: `googleSiteVerification`
   is `null` (owner-actions 2.3; the verification meta tag is a Sprint 1 task under §13.7 once the
   owner supplies the token), so no language or country data exists — speculative cost on a site with
-  41 of 45 pages under their Hebrew word floor.
+  31 of 45 pages under their Hebrew word floor (as of 2026-11-09; 41 on 2026-08-23).
 - **The Hebrew depth work comes first.** Content-standards §2 is the doorway test; an English mirror
   of doorway pages is twice the doorway risk.
 

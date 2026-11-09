@@ -44,8 +44,10 @@ and it leaves the site with **no proof of work at all**:
 The second problem is the one that decides whether the domain ranks: **the doorway pages.** All 18
 location pages are one template with the city name swapped — each carries 2–3 tokens its nearest
 sibling lacks (`node scripts/audit/content-depth.mjs`, doorway proxy), on a median of 122 unique words
-against a 350-word floor. The 7 service pages differ by 13–23 tokens on ~152 words against 450. 41 of
-the 45 content pages are under their floor. Doorway clusters are an explicit Google spam policy and
+against a 350-word floor. The 7 service pages differed by 13–23 tokens on ~152 words against 450
+until Sprint 5 gave each its own depth copy (`225ff45`, 2026-11-09: 1294–1542 unique words, delta
+404–468). 41 of the 45 content pages were under their floor on 2026-08-23; 31 are as of 2026-11-09
+(about, the areas index, the 18 locations, the 11 posts). Doorway clusters are an explicit Google spam policy and
 the penalty lands on the domain, not the page.
 
 The third is outside the repo: **the AI crawlers are refused at the Cloudflare edge.** On
@@ -218,10 +220,10 @@ this is the summary, in the order it pays off.
 Targets to judge the work against, each one measurable by a script or a screenshot — not traffic
 predictions, which nobody can honestly make without the baseline §4.1 provides.
 
-- **Zero pages under their word floor** (today 41 of 45) and **18 of 18 location pages passing the
-  doorway delta** (today 0) — `npm run audit -- --scope content` exit 0.
-- **The 7 service pages each with their own FAQ, triggers and mechanics** — the service doorway delta
-  above threshold.
+- **Zero pages under their word floor** (31 of 45 as of 2026-11-09; 41 on 2026-08-23) and **18 of 18
+  location pages passing the doorway delta** (today 0) — `npm run audit -- --scope content` exit 0.
+- ✅ **The 7 service pages each with their own FAQ, triggers and mechanics** — met in the repo
+  2026-11-09 (`225ff45`): service doorway delta 404–468 against 120, `faqPages 8`; not deployed.
 - **`/מדריכים/` live with the first eight guides** of the calendar published, each past
   `article-auditor`, each reachable from at least two non-hub pages.
 - **A Business Profile linked in `sameAs`, and the reviews section visible** with real reviews quoted

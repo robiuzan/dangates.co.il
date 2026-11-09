@@ -96,8 +96,9 @@ context, not findings to copy.
    single business fact. Prices are **not coming** — a "what drives the price" page is citable; an
    invented ₪ figure is not.
 8. **Structured data as machine context.** 45/45 pages emit one `@graph` (Sprint 2 — until then 18
-   locations and 8 static pages carried only `BreadcrumbList`; `schema.mjs` 0 as of 2026-11-09); `FAQPage` on 1 page (§4.13) — its answers were 4–12 words until
-   `af8ba4c` gave all ten real ones (§3.5 ✅), and they are what an assistant would quote. Point, don't re-audit.
+   locations and 8 static pages carried only `BreadcrumbList`; `schema.mjs` 0 as of 2026-11-09); `FAQPage` on 8 pages since Sprint 5 (§4.13 ✅ — `/` and the 7 services, 44 questions, none
+   twice); the homepage answers were 4–12 words until `af8ba4c` gave all ten real ones (§3.5 ✅), and
+   they are what an assistant would quote. Point, don't re-audit.
 
 ## Method
 

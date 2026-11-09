@@ -17,7 +17,8 @@ node scripts/audit/schema.mjs          # Service/areaServed presence per locatio
 ```
 
 As of 2026-08-23 every location page scores a doorway delta of **2** (3 for two-word names) against
-a threshold of 120, and 122–128 unique words against a 350 floor; the 7 services score 13–23. Quote
+a threshold of 120, and 122–128 unique words against a 350 floor; the 7 services scored 13–23 then
+and 404–468 since Sprint 5 (`225ff45`) — the locations are the doorway risk that is left. Quote
 the script, not this paragraph.
 
 ## 1. NAP consistency

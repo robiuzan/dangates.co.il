@@ -135,7 +135,7 @@ moves no longer need batching — edit `REDIRECTS.md` and rerun `node scripts/ge
 - **Two guides a month** after Phase 4 ships the hub with #1–#4. At that rate #5–#8 land within two
   months of the hub and #9–#16 within six. The constraint is drafting quality and the review chain,
   not the calendar.
-- **Phase dependency:** Phase 3 first (`cityContent`, `serviceDepth`, `prefixed`, the header and
+- **Phase dependency:** Phase 3 first (`cityContent`, `serviceDepth` — built in Sprint 5 — `prefixed`, the header and
   footer reaching all 18 locations) so guides have deep pages to link down to; Phase 4 builds the hub
   and migrates the block model; guides #5+ run alongside Phases 5–7.
 - **No seasonality is evidenced** for this trade. Symptom queries are urgent and year-round; do not

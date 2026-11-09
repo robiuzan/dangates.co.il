@@ -37,26 +37,27 @@ every content page emits **one** `<script>` holding **one** `@graph`, and every 
 at `#business` defines it. Sprint 2 closed this table (commits `02a3144` `d8edb28`, not deployed
 yet); until then 18 locations and 8 statics carried only the breadcrumb.
 
-| Route                    | Required                                                               | Currently (2026-11-08)                                                                                               |
-| ------------------------ | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `/`                      | one `@graph`: `GeneralContractor` + `WebSite` + `FAQPage`              | ✅ one `@graph`: business + `WebSite` `#website` + `FAQPage`                                                         |
-| `/services/{slug}/` ×7   | `Service` + `BreadcrumbList` (+ `FAQPage` once per-service FAQs exist) | ✅ business + `Service` (encoded `url`, `@id` `#service`, `provider` → `#business`) + breadcrumb; no FAQ yet (§4.13) |
-| `/locations/{slug}/` ×18 | `Service` with local `areaServed` + `BreadcrumbList`                   | ✅ business + `Service` with `areaServed` `City` / `AdministrativeArea` (§5) + breadcrumb                            |
-| `/שירותים/`              | `CollectionPage` + `BreadcrumbList`                                    | ✅ `CollectionPage` + `ItemList` (7) + breadcrumb                                                                    |
-| `/איזורי-שירות/`         | `CollectionPage` + `BreadcrumbList`                                    | ✅ `CollectionPage` + `ItemList` (18) + breadcrumb                                                                   |
-| `/blog/`                 | `CollectionPage` (or `Blog`) + `BreadcrumbList`                        | ✅ `CollectionPage` + `ItemList` (11) + breadcrumb                                                                   |
-| `/blog/{slug}/` ×11      | `BlogPosting` + `BreadcrumbList` (+ `FAQPage`)                         | ✅ business + `BlogPosting` (§6) + breadcrumb, one `@graph`; no FAQ                                                  |
-| `/מדריכים/{slug}/`       | `TechArticle`/`Article` + `FAQPage` + `BreadcrumbList`                 | route family does not exist yet (Phase 4, ADR 0002); `articleJsonLd` takes `type` already                            |
-| `/מחירון/`               | `WebPage` + `BreadcrumbList` — `Offer` is **blocked** (§4.4)           | ✅ `WebPage` + breadcrumb, no `Offer` (correct while prices are unsourced)                                           |
-| `/אודות/`                | `AboutPage` + `BreadcrumbList` (no `Person` — none is coming)          | ✅ business (with `knowsAbout`) + `AboutPage` (`about` → `#business`) + breadcrumb                                   |
-| `/צור-קשר/`              | `ContactPage` + `BreadcrumbList`                                       | ✅ business + `ContactPage` (`mainEntity` → `#business`) + breadcrumb                                                |
-| Legal pages              | `WebPage` + `BreadcrumbList`                                           | ✅ `WebPage` + breadcrumb                                                                                            |
-| `/תודה/`                 | none — it is `noindex` and outside the sitemap                         | ✅ none (since `68a4a7f`)                                                                                            |
-| `/404`                   | none                                                                   | ✅ none                                                                                                              |
+| Route                    | Required                                                           | Currently (2026-11-08)                                                                                                                          |
+| ------------------------ | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                      | one `@graph`: `GeneralContractor` + `WebSite` + `FAQPage`          | ✅ one `@graph`: business + `WebSite` `#website` + `FAQPage`                                                                                    |
+| `/services/{slug}/` ×7   | `Service` + `BreadcrumbList` + `FAQPage` from the per-service FAQs | ✅ business + `Service` (encoded `url`, `@id` `#service`, `provider` → `#business`) + `FAQPage` (4–5 Q/As, since `225ff45`, §4.13) + breadcrumb |
+| `/locations/{slug}/` ×18 | `Service` with local `areaServed` + `BreadcrumbList`               | ✅ business + `Service` with `areaServed` `City` / `AdministrativeArea` (§5) + breadcrumb                                                       |
+| `/שירותים/`              | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (7) + breadcrumb                                                                                               |
+| `/איזורי-שירות/`         | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (18) + breadcrumb                                                                                              |
+| `/blog/`                 | `CollectionPage` (or `Blog`) + `BreadcrumbList`                    | ✅ `CollectionPage` + `ItemList` (11) + breadcrumb                                                                                              |
+| `/blog/{slug}/` ×11      | `BlogPosting` + `BreadcrumbList` (+ `FAQPage`)                     | ✅ business + `BlogPosting` (§6) + breadcrumb, one `@graph`; no FAQ                                                                             |
+| `/מדריכים/{slug}/`       | `TechArticle`/`Article` + `FAQPage` + `BreadcrumbList`             | route family does not exist yet (Phase 4, ADR 0002); `articleJsonLd` takes `type` already                                                       |
+| `/מחירון/`               | `WebPage` + `BreadcrumbList` — `Offer` is **blocked** (§4.4)       | ✅ `WebPage` + breadcrumb, no `Offer` (correct while prices are unsourced)                                                                      |
+| `/אודות/`                | `AboutPage` + `BreadcrumbList` (no `Person` — none is coming)      | ✅ business (with `knowsAbout`) + `AboutPage` (`about` → `#business`) + breadcrumb                                                              |
+| `/צור-קשר/`              | `ContactPage` + `BreadcrumbList`                                   | ✅ business + `ContactPage` (`mainEntity` → `#business`) + breadcrumb                                                                           |
+| Legal pages              | `WebPage` + `BreadcrumbList`                                       | ✅ `WebPage` + breadcrumb                                                                                                                       |
+| `/תודה/`                 | none — it is `noindex` and outside the sitemap                     | ✅ none (since `68a4a7f`)                                                                                                                       |
+| `/404`                   | none                                                               | ✅ none                                                                                                                                         |
 
 **What is left** — none of it is a `schema.mjs` failure:
 
-1. `FAQPage` on 1 of 45 pages; service and location FAQs wait on their copy (backlog §4.13, Sprints 5–6).
+1. `FAQPage` on 8 of 45 pages since Sprint 5 (`/` and the 7 services, 44 questions, none marked up
+   twice — backlog §4.13 ✅); location FAQs wait on their copy (Sprint 6).
 2. `sameAs` is empty until the GBP exists (§5.1, Track B B3); `hasMap` follows it.
 3. The Rich Results Test on one route per type runs after the next deploy (§9 below).
 4. The four regions are typed `AdministrativeArea` from a slug set in `lib/jsonld.ts` until

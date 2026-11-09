@@ -12,8 +12,8 @@ national reach and **no walk-in address**. Your copy drives three actions, in or
 072-2587772**, a WhatsApp message, then the lead form.
 
 The site's problem is not tone — it is **depth and honesty**. Every location page is one interpolated
-city name away from its sibling; every service page shares the same four "when to call" bullets; and
-the strongest-sounding claims were authored to fill gaps. Your job is substance, not polish — and
+city name away from its sibling (the 7 service pages were too, until Sprint 5 gave each its own
+mechanism copy and FAQs); and the strongest-sounding claims were authored to fill gaps. Your job is substance, not polish — and
 never more invention. You are a **writer**: you never review your own copy (see Hand-off).
 
 ## Baseline — re-measure first
@@ -27,11 +27,10 @@ node scripts/audit/claims-grep.mjs        # every gated phrase in source and in 
 node scripts/audit/spam-grep.mjs          # emoji, curly quotes, fused words, spam tokens in lib/posts.ts
 ```
 
-As of 2026-11-09 (after 4F) for context only: all 18 locations sit at 136–142 unique words against a
-350 floor with a doorway delta of 2–3 tokens (threshold 120); all 7 services at 167–173 against 450,
-delta 28–50;
-all 11 posts under the 900 floor; no service, location or post page opens with a 40–60-word answer
-block (`/` and `/מחירון/` do, since Sprint 4); `claims-grep.mjs` passes — the five gated phrases it
+As of 2026-11-09 (after Sprint 5) for context only: all 18 locations sit at 139–145 unique words
+against a 350 floor with a doorway delta of 2–3 tokens (threshold 120); the 7 services pass since
+`225ff45` (1294–1542 against 450, delta 404–468); all 11 posts under the 900 floor; no location or
+post page opens with a 40–60-word answer block (`/`, `/מחירון/` and the 7 services do); `claims-grep.mjs` passes — the five gated phrases it
 failed on 2026-08-23 ("ניסיון רב שנים", "אחריות מלאה", "פריסה ארצית", 24/7, two superlatives) were
 softened in `1796ee7`, and 4F (`9195c9b`) took out the absolute workmanship lines ("ללא פשרות",
 "מצוינות", "שום חלק לא מוחלף…") and the form's "בהקדם" — the lexicon now fails the first two
@@ -68,10 +67,11 @@ entries of the same kind before adding one, so tone, length and structure match.
 - `reviews` is empty by design (`lib/content.ts` records why). A one-line caution, not a live
   finding: never write a testimonial, not even as a placeholder.
 
-**Target model — Phase 3 builds it (spec in /new-city and /new-service):** `kind`, `prefixed` and
-per-entry `updated` on `locations`; a `cityContent` map; `serviceDepth` with per-service `faqs` and
-`triggers` (replacing the shared array at `app/services/[service]/page.tsx`); `nearby`,
-`relatedServices`. **Phase 4 (ADR 0003, /new-guide):** the typed block model and `content/guides/*.ts`
+**Built in Sprint 5 (`/new-service` describes it):** one `ServiceDepth` module per service in
+`content/services/<slug>.ts` — answer, mechanism sections, caveats, FAQs, `relatedServices`,
+`locations`, `relatedPosts`, `metaDescription`; the triggers stay in `serviceTriggers`
+(`lib/content.ts`). **Target model — Phase 3 builds it (spec in /new-city):** `kind`, `prefixed` and
+per-entry `updated` on `locations`; a `cityContent` map; `nearby`. **Phase 4 (ADR 0003, /new-guide):** the typed block model and `content/guides/*.ts`
 under `/מדריכים/`. When a task targets a field that does not exist yet, write the copy in the skill's
 template shape and hand the wiring to `rtl-frontend-engineer` — do not invent a different shape.
 

@@ -15,7 +15,9 @@ checks; where a script exists it is the measurement.
 2026-11-08 after Sprints 2 and 3 on a clean rebuild (`npm run audit -- --scope full` → 15 across
 `content-depth` 10 and `claims-grep` 5), and again 2026-11-09 after Sprint 4 (`1796ee7` `af8ba4c`
 `74a92d1`): `npm run audit -- --scope full` → **8** failures, all in one check (`content-depth` 8) —
-unchanged after the roster sync `ad2f1ab` and the review follow-up `9195c9b` (4F), re-run 2026-11-09.
+unchanged after the roster sync `ad2f1ab` and the review follow-up `9195c9b` (4F), re-run 2026-11-09 —
+and again 2026-11-09 after Sprint 5 (`225ff45`): **5** failures, all `content-depth` (about,
+areas index, location floor, post floor, location doorway).
 
 **Severity:** P0 = shipping something wrong or harmful · P1 = material ranking/conversion loss ·
 P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half a day · L = multi-day.
@@ -61,9 +63,9 @@ Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region p
 | 5   | **Routing + owner docs.** Agent roster, owner actions, Cloudflare + GBP runbooks, content calendar, event taxonomy, rank tracking, competitors, growth roadmap                                                                                                                                  | `docs/agent-roster.md`, `docs/owner-actions.md`, `docs/*-runbook.md`, `docs/content-calendar.md`, … |
 | 6   | **De-stale pass + new assets** per the roster: 15 agents, 25 skills (and the saved `site-audit` workflow where workflows are available); every `file:line` re-anchored; scripts cited instead of numbers                                                                                        | `.claude/agents/`, `.claude/skills/`, `.claude/workflows/`                                          |
 
-**Next up** (as of 2026-11-09): Phases 1, 2 and 5's repo work and the Sprint 4 truth pass have
-shipped in the repo — Sprints 1–4. What comes next is Sprint 5, service depth — see "Suggested
-order of work" below.
+**Next up** (as of 2026-11-09): Phases 1, 2 and 5's repo work, the Sprint 4 truth pass and the
+Sprint 5 service depth have shipped in the repo — Sprints 1–5. What comes next is Sprint 6,
+locations and navigation — see "Suggested order of work" below.
 
 ---
 
@@ -228,7 +230,16 @@ Verified on the current `out/`:
 node scripts/audit/titles.mjs   # ✅ pass · 0 warnings · pages 46 · uniqueTitles 46 · uniqueDescriptions 46
 ```
 
-Sprint 5.5 re-derives the service lines from the depth copy once it exists, inside the same window.
+**The service half moved again 2026-11-09** by commit `225ff45` (Sprint 5 row 5.5): the meta line
+is now `ServiceDepth.metaDescription`, written with each page's depth copy in
+`content/services/<slug>.ts`; `ServiceMeta.metaDescription` and the `card.description` fallback are
+gone, and `generateMetadata` reads `serviceDepth[card.slug].metaDescription` for both the
+description and its openGraph block. Verified on the current `out/`:
+
+```bash
+node scripts/audit/titles.mjs   # ✅ pass · 0 warnings · pages 46 · uniqueTitles 46 · uniqueDescriptions 46
+# the 7 service meta descriptions, measured on out/services/*/index.html: 130–149 characters
+```
 
 ### 2.5 — P2 · S · [✅ DONE 2026-11-08] Blog titles render at 58–72 characters after the template
 
@@ -265,14 +276,32 @@ page. This is the single largest ranking risk on the site.
 **Fix (Phase 3):** `new-city` skill — `cityContent` with three or more genuinely local items per
 content-standards §2. Verify: `content-depth.mjs` → `location.belowFloor: 0`, delta ≥ 120.
 
-### 3.2 — P1 · L · [NOT STARTED] All 7 service pages carry 13–23 words their siblings lack
+### 3.2 — P1 · L · [✅ DONE 2026-11-09] All 7 service pages carried 13–23 words their siblings lacked
 
-`content-depth.mjs`: 151–155 unique words per page (floor 450), doorway delta 13–23 (threshold 120).
-Everything else — the trigger list, process steps, CTA card, related grid — is byte-identical across
-all seven and duplicated from the homepage.
+Until Sprint 5: `content-depth.mjs` measured 151–155 unique words per page (floor 450) and a doorway
+delta of 13–23 (threshold 120) on 2026-08-23 — 167–173 and 28–50 by 2026-11-09. Everything but one
+paragraph — the process steps, CTA card, related grid — was identical across all seven and shared
+with the homepage, and `תריסי גלילה חשמליים`, which is not a gate, read as a gate page.
 
-`תריסי גלילה חשמליים` is not a gate at all and needs genuinely different copy, not a noun swap.
-**Fix (Phase 3):** `new-service` skill — `serviceDepth` + per-service `faqs`/`triggers`.
+**Closed 2026-11-09** by commit `225ff45` (Sprint 5 rows 5.1–5.4). Each service has its own typed
+module `content/services/<slug>.ts` (`export const depth: ServiceDepth`), assembled and checked in
+`lib/service-depth.ts`: a question-form heading over a 40–60-word answer, mechanism sections on how
+that gate type works, fails and what moves its repair price, caveats, 4–5 FAQs, and declared related
+services, cities and posts. The shutters page uses the shutter's own parts and no gate vocabulary.
+Verified on the current `out/` (export check: source tree unchanged since the build):
+
+```bash
+node scripts/audit/content-depth.mjs
+# service 7 pages · belowFloor 0 · medianUnique 1387 / 450 · serviceMedianDelta 438 / 120
+# per page (unique · delta vs nearest sibling): שער-זרוע 1329 · 420 · שערי-כנף 1294 · 404
+#   שערים-לדירה 1313 · 417 · שערים-לחניה 1422 · 438 · שערים-מתרוממים 1452 · 459
+#   שערים-נגררים 1542 · 468 · תריסי-גלילה-חשמליים 1387 · 458
+# no service row in the failures; the answer-block warning no longer lists the service type
+```
+
+The per-page values come from the script's own `contentPages()` / `tokens()` helpers in
+`scripts/audit/lib/pages.mjs`; `--json` reports only the per-type median. `content-depth` went 8 → 5
+failures.
 
 ### 3.3 — P1 · S · [✅ DONE 2026-09-06] The shared `triggers` array puts gate faults on the shutters page
 
@@ -295,7 +324,9 @@ node -e "for (const s of require('fs').readdirSync('out/services')) { const h = 
 
 `/services/תריסי-גלילה-חשמליים/` now opens its "מתי כדאי לפנות אלינו?" list with
 "התריס לא עולה או לא יורד בלחיצה על המתג". `content-depth.mjs` `serviceMedianDelta` is 40 (was
-13–23 as of 2026-08-23); the 450-word floor is §3.2's remainder, not this row's.
+13–23 as of 2026-08-23); the 450-word floor was §3.2's remainder, not this row's — §3.2 closed it
+2026-11-09 (`225ff45`, `serviceMedianDelta 438`). `serviceTriggers` is still the source of each
+page's "מתי כדאי לפנות אלינו?" list.
 
 ### 3.4 — P1 · S · [✅ DONE] Location copy claimed "ובכל אזור המרכז" on pages outside המרכז
 
@@ -425,8 +456,13 @@ node scripts/audit/content-depth.mjs
 Commit `9195c9b` (4F, 2026-11-09) moved both by design and kept them over their floors: home 1788
 words · 1549 unique; pricing 914 · 914 unique, after the visit band's repeats were cut to two.
 
-**Still open — Sprint 6.8**, as of 2026-11-09 (`content-depth.mjs`): `/אודות/` 317/500,
-`/איזורי-שירות/` 98/250, `/שירותים/` 120/250 (239 of its 359 words in shared blocks).
+**Still open — Sprint 6.8**, as of 2026-11-09 after Sprint 5 (`content-depth.mjs`): `/אודות/`
+320/500, `/איזורי-שירות/` 101/250. `/שירותים/` now measures 336/250 (352 total) and passes the
+floor, but not on new copy: since `225ff45` the service pages no longer render the seven
+`serviceCards` descriptions, so each of them renders on two pages (`/` and `/שירותים/`), under the
+three-page shared-block threshold, and stopped being subtracted (`sharedParagraphs` 8 → 1). Its
+words are still the homepage teasers; Sprint 6.8 still owes it copy of its own. The homepage's
+unique count rose 1549 → 1765 for the same reason.
 
 ---
 
@@ -605,16 +641,29 @@ node scripts/audit/schema.mjs   # ✅ 0 warnings · post: BlogPosting 11 · Blog
 #               isPartOf {Blog, …/blog/} · author and publisher → #business · business url https://dangates.co.il/
 ```
 
-### 4.13 — P3 · M · [PARTIAL 2026-11-08 · homepage half done] `FAQPage` exists on 1 of 45 pages
+### 4.13 — P3 · M · [✅ DONE 2026-11-09] `FAQPage` existed on 1 of 45 pages
 
-`schema.mjs` → `faqPages: 1`. Since Google's August 2023 restriction it produces no rich result for a
-site of this type — treat it as machine-readable context (AEO), not as a rich-result play. One Q/A
-per `FAQPage` sitewide (`content-hub` rule); `schema.mjs` checks the parity.
+Until Sprint 5 `schema.mjs` → `faqPages: 1`. Since Google's August 2023 restriction it produces no
+rich result for a site of this type — treat it as machine-readable context (AEO), not as a
+rich-result play. One Q/A per `FAQPage` sitewide (`content-hub` rule); `schema.mjs` checks that every
+marked-up question is visible in `<main>` and that no question is marked up twice.
 
 **The homepage half closed 2026-11-08** by commit `af8ba4c` (Sprint 4 row 4.3, with §3.5): the one
 `FAQPage` now carries ten real answers built from the same `faqs` the page renders, `moreAt` kept
-out of the markup. `node scripts/audit/schema.mjs` → ✅ 0 failures · `faqPages 1`. **Still open —
-Sprint 5.3:** per-service FAQs, each question unique sitewide; `faqPages` stays 1 until then.
+out of the markup.
+
+**The service half closed 2026-11-09** by commit `225ff45` (Sprint 5 row 5.3). Each service page
+renders its own `ServiceDepth.faqs` through `Faq` (a `<details>` group named `service-faq` under the
+heading "שאלות נפוצות על …") and hands `faqJsonLd` the same `{ q, a }` list, so the markup is the
+visible copy. `lib/service-depth.ts` throws at module load if a service question repeats a homepage
+question or another service's. Verified on the current `out/`:
+
+```bash
+node scripts/audit/schema.mjs   # ✅ 0 failures · faqPages 8 (/ + the 7 services) · danglingIds 0 · rawHebrewUrls 0
+# measured on the export's FAQPage nodes: 34 service questions (4 on שערי-כנף, 5 on each of the others),
+# 44 questions sitewide, 0 marked up twice; every accepted answer's text is in <main>;
+# <details> per service page = its question count
+```
 
 ---
 
@@ -686,7 +735,7 @@ was gone but the edge answered **403** to every AI-crawler signature (N18). The 
 owner's and can revert without a repo change — **re-probe before every AEO claim; a `robots.txt`
 read proves nothing.** §6.2–§6.5 are no longer capped by this item.
 
-### 6.2 — P1 · M · [PARTIAL 2026-11-08 · `/` and `/מחירון/` done] No page opens with an extractable answer block
+### 6.2 — P1 · M · [PARTIAL 2026-11-09 · `/`, `/מחירון/` and the 7 services done] No page opens with an extractable answer block
 
 `content-depth.mjs` (as of 2026-08-23): 0 of 36 service, location and post pages open with a
 40–60-word paragraph — services open with 3–4 words, locations with 16–17, posts with 1. Spec:
@@ -697,9 +746,20 @@ content-standards §5. Closed by Phases 3–4 page by page.
 page. Measured with the audit's own `tokens()` on that paragraph (the proxy itself covers only
 service, location, post and guide pages): `/` 46 words, `/מחירון/` 45 words. Commit `9195c9b`
 (4F, 2026-11-09) made `homeAnswerBlock` self-contained (the areas list and the WhatsApp button named
-outright): `/` 52 words, `/מחירון/` still 45, both inside 40–60. **Still open:** the
-proxy warns on service 7/7 (3–4 words, Sprint 5.2), location 18/18 (19–20 words, Sprint 6) and
-post 11/11 (1 word — the date, Sprint 7.6), as of 2026-11-09.
+outright): `/` 52 words, `/מחירון/` still 45, both inside 40–60.
+
+**The 7 service pages closed 2026-11-09** by commit `225ff45` (Sprint 5 row 5.2): once a depth
+entry's `answer` is written, `PageHeader` drops the tagline and the first `<p>` after the H1 is that
+answer, under its question-form `answerHeading`. Verified on the current `out/`:
+
+```bash
+node scripts/audit/content-depth.mjs   # the answer-block warning lists location 18/18 and post 11/11 — no service row
+# first <p> after the H1, by the audit's tokens(): שער-זרוע 56 · שערי-כנף 52 · שערים-לדירה 52
+#   שערים-לחניה 55 · שערים-מתרוממים 49 · שערים-נגררים 49 · תריסי-גלילה-חשמליים 56
+```
+
+**Still open:** the proxy warns on location 18/18 (19–20 words, Sprint 6) and post 11/11 (1 word —
+the date, Sprint 7.6), as of 2026-11-09.
 
 ### 6.3 — P1 · L · [NOT STARTED] Nothing on the site is worth citing over a competitor
 
@@ -1005,15 +1065,37 @@ indexes and related links.
 (אשקלון, באר שבע, דרום, צפון, קריות, שרון); they are not strict orphans only because
 `/איזורי-שירות/` lists all 18.
 
-### 9.3 — P1 · M · [NOT STARTED] The service ↔ location mesh is one-way
+### 9.3 — P1 · M · [PARTIAL 2026-11-09 · service → city half done] The service ↔ location mesh is one-way
 
-No service page links to any city; no location links to another. Phase 3 adds `nearby` and
-`relatedServices`.
+Until Sprint 5 no service page linked to any city; no location links to another. **The service →
+city half shipped 2026-11-09** in commit `225ff45` (Sprint 5): each service page links the 5–6
+cities its `ServiceDepth.locations` declares, under "מחפשים שירות בעיר שלכם?". Measured on the
+current `out/` (`<main>` links): 13 distinct location pages reached from the 7 service pages, each
+from at least 2. The five unconfirmed region / far entries (קריות, שרון, צפון, דרום, באר שבע —
+business-facts §E) are left out by design. **Still open — Sprint 6.7:** location → location
+(`nearby`) and the location side of the mesh.
 
-### 9.4 — P2 · S · [NOT STARTED] Related items are selected by array order
+### 9.4 — P2 · S · [PARTIAL 2026-11-09 · service half done] Related items are selected by array order
 
-The `others` lists in `app/services/[service]/page.tsx` and `app/blog/[slug]/page.tsx` both `.slice(0, 4)`.
-`links.mjs` warns: 2 of 7 service pages and 6 of 11 posts receive no related link at all.
+Until Sprint 5 the `others` lists in `app/services/[service]/page.tsx` and `app/blog/[slug]/page.tsx`
+both took `.slice(0, 4)`, and `links.mjs` warned that 2 of 7 service pages and 6 of 11 posts
+received no related link at all.
+
+**The service half closed 2026-11-09** by commit `225ff45` (Sprint 5 row 5.4): the service route
+renders `ServiceDepth.relatedServices` (2–4 per page, never the page itself — a module-load throw)
+and `relatedPosts` (0–3; the shutters page declares none because no post covers a shutter), in
+declared order. Verified on the current `out/`:
+
+```bash
+node scripts/audit/links.mjs   # relatedServiceTargets 7 — every service page receives a related link;
+                               # no service-page monotony warning · orphans 0 · brokenLinks 0
+# related posts from the 7 service pages, measured on <main>: 9 of the 11 posts reached
+```
+
+**Still open:** the post route's `others` list is still `posts.filter(…).slice(0, 4)`; `links.mjs`
+still warns "post pages: the first 4 related links on every page come from the same 5 array-leading
+siblings; 6 of 11 post pages receive no related link" (`relatedPostTargets 5`). Not owner-blocked;
+carried to Sprint 7.3, which rewrites the post route.
 
 ### 9.5 — P1 · M · [NOT STARTED] The blog contains zero links
 
@@ -1699,21 +1781,25 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    `curlyQuotes 0`; audit 15 → 8. ~~The 4B / 4C reviewer should-fix items~~ — closed 2026-11-09
    in `9195c9b` (4F), with the roster `shortPitch` cleared in `ad2f1ab`; audit still 8, home 1549
    unique, `claims-grep` 0 over 14 claims. Partial by design: §3.13 (about and both indexes →
-   Sprint 6.8), §4.13 (service FAQs → 5.3), §6.2 (services, locations, posts → Sprints 5–7), §6.4
-   (8 of 11 posts dated; the rest with Sprint 7.3). Open: the deploy, and the manifest `areaServed`
-   phrase in the client bundle (B5).
-7. **Sprint 5 — service depth (next):** §3.2 · §6.2 and §4.13 for the 7 service pages · §9.4 ·
-   §2.4 re-derived inside the 120–160 window. Then **Sprint 6 — locations + navigation:** §3.1 (the
-   decision on whether this domain ranks) · §2.3 · §5.2 · §5.5 copy half · §9.1–9.3 · the rest of
-   §3.13. Acceptance: `content-depth.mjs` floors + delta (the 8 failures left), `links.mjs` 0
-   orphans and `notInChrome 0`, `claims-grep.mjs` still 0.
-8. **Phase 4 — guides hub + block model:** §6.3 · §3.8 · §3.10 · §9.5 · §6.2 for the posts
-   (ADR 0002, 0003) · the rest of §6.4 (PARTIAL since 4F) · §6.5 `llms.txt`.
-9. ~~**Phase 5 — engagement + CRO:** §8.1 · §8.3 · §8.4/N3 · §8.5 · N8 · §13.4–13.5 · §10.2 · N19~~
-   — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 closed
-   in `fba5957`, the form alert's buttons now `size="lg"`); `a11y.mjs`, `rtl-lint.mjs` and
-   `cta-coverage.mjs` 0, `clientComponents` 3. Left: §8.2 (PARTIAL — B2 / B10 only; the privacy
-   copy is signed off), §8.6 (PARTIAL — the GTM tag and B2), and the engagement events (Sprint 8.1).
-10. **Phase 6 — E-E-A-T + AEO:** ~~§7.2~~ · ~~§7.6~~ (Sprint 4) · §6.5 · §7.5 photos (B4).
-11. **Phase 7 — measurement:** §13.7 · §15.2 cadence · §15.3 (after B1, B2).
-12. Everything tagged `⏳ BLOCKED · owner` moves when [owner-actions.md](owner-actions.md) moves.
+   Sprint 6.8), §6.2 (locations, posts → Sprints 6–7), §6.4 (8 of 11 posts dated; the rest with
+   Sprint 7.3). Open: the deploy, and the manifest `areaServed` phrase in the client bundle (B5).
+7. ~~**Sprint 5 — service depth:** §3.2 · §6.2 and §4.13 for the 7 service pages · §9.4 service
+   half · §2.4 re-derived inside the 120–160 window~~ — shipped in the repo 2026-11-09 (commit
+   `225ff45`): service `belowFloor 0`, `serviceMedianDelta 438`, `faqPages 8`,
+   `relatedServiceTargets 7`, `titles.mjs` 0 warnings; audit 8 → 5. Partial: §9.4 (the post route
+   still `.slice(0, 4)` → Sprint 7.3) and §9.3 (service → city done; location → location → Sprint
+   6.7). Open: reviewer sign-off on record, and the deploy.
+8. **Sprint 6 — locations + navigation (next):** §3.1 (the decision on whether this domain ranks) ·
+   §2.3 · §5.2 · §5.5 copy half · §9.1–9.2 · the rest of §9.3 · the rest of §3.13. Acceptance:
+   `content-depth.mjs` floors + delta (the 5 failures left), `links.mjs` 0 orphans and
+   `notInChrome 0`, `claims-grep.mjs` still 0.
+9. **Phase 4 — guides hub + block model:** §6.3 · §3.8 · §3.10 · §9.5 · §6.2 for the posts
+   (ADR 0002, 0003) · the rest of §6.4 (PARTIAL since 4F) · the post half of §9.4 · §6.5 `llms.txt`.
+10. ~~**Phase 5 — engagement + CRO:** §8.1 · §8.3 · §8.4/N3 · §8.5 · N8 · §13.4–13.5 · §10.2 · N19~~
+    — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 closed
+    in `fba5957`, the form alert's buttons now `size="lg"`); `a11y.mjs`, `rtl-lint.mjs` and
+    `cta-coverage.mjs` 0, `clientComponents` 3. Left: §8.2 (PARTIAL — B2 / B10 only; the privacy
+    copy is signed off), §8.6 (PARTIAL — the GTM tag and B2), and the engagement events (Sprint 8.1).
+11. **Phase 6 — E-E-A-T + AEO:** ~~§7.2~~ · ~~§7.6~~ (Sprint 4) · §6.5 · §7.5 photos (B4).
+12. **Phase 7 — measurement:** §13.7 · §15.2 cadence · §15.3 (after B1, B2).
+13. Everything tagged `⏳ BLOCKED · owner` moves when [owner-actions.md](owner-actions.md) moves.

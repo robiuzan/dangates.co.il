@@ -133,7 +133,7 @@ app/
   page.tsx                # homepage — LocalBusiness + FAQPage JSON-LD
   sitemap.ts robots.ts    # /sitemap.xml (45 URLs), /robots.txt
   not-found.tsx           # 404
-  services/[service]/     # 7 pages — Service JSON-LD
+  services/[service]/     # 7 pages — Service + FAQPage JSON-LD, rendered from serviceDepth
   locations/[city]/       # 18 pages
   blog/ blog/[slug]/      # index + 11 posts
   שירותים/ איזורי-שירות/ מחירון/ אודות/ צור-קשר/
@@ -150,6 +150,7 @@ lib/
   site-config.ts   # ⭐ NAP, services[7], locations[18], telHref, whatsappHref
   content.ts       # ⭐ all Hebrew marketing copy; reviews = [] (gated)
   posts.ts         # ⭐ 11 migrated blog posts (untrusted — see golden rule 7)
+  service-depth.ts # ServiceDepth type + serviceDepth record + module-load checks (Sprint 5)
   jsonld.ts        # site-local JSON-LD builders — one @graph per page (§8)
   manifest.ts      # parseManifest(): narrows site.config.json at the boundary, throws on a bad key
   authors.ts       # empty Author registry — no person is coming; a Person author is forbidden while empty
@@ -160,6 +161,7 @@ lib/
 scripts/gen-redirects.mjs   # emits public/_redirects (72 real 301 rules) from REDIRECTS.md; runs on prebuild
 scripts/audit/     # ⭐ the measurements (12 checks + thresholds.json + claims.json) — roster §4
 scripts/live/      # fleet live-kit gates (prebuild / postbuild) and the weekly reminder — locked (§14)
+content/services/  # ⭐ one depth module per service (<slug>.ts → ServiceDepth): answer, sections, FAQs, links
 content/live/      # ⭐ _campaigns.mjs + _updates.mjs (the live registers) + the synced calendar (§14)
 live.config.mjs    # ⭐ calm / no-card pages, this site's ⛔ claim stems, pageOfSource (§14)
 live-kit.lock.json # the kit commit and the sha256 of every locked copy (§14)
@@ -204,12 +206,15 @@ lib/site-config.ts   manifest · siteConfig · services · locations · telHref 
         ├── lib/content.ts   serviceCards · serviceMeta · differentiators · processSteps
         │                    trustStats · priceRows · faqs · reviews · aboutValues · navItems
         ├── lib/posts.ts     posts[11]
+        ├── lib/service-depth.ts  serviceDepth  ← content/services/<slug>.ts (one per service)
         ▼
 app/**/page.tsx  →  components/**
 ```
 
 Rule of thumb: **identity and NAP go up the chain to the roster; wording goes in `lib/content.ts`;
-article bodies go in `lib/posts.ts`; layout goes in components.** Copy never gets typed directly
+article bodies go in `lib/posts.ts`; each service page's depth prose goes in its own
+`content/services/<slug>.ts` (UI labels around it stay in `lib/content.ts`); layout goes in
+components.** Copy never gets typed directly
 into JSX.
 
 ---
@@ -271,7 +276,9 @@ See the `hebrew-rtl` skill for the full rule set.
   and it appends the one `BreadcrumbList` (44 nested routes — never add a second). The business node
   ships on every page that references `#business`, with `logo`, `image`, `areaServed` as the 18
   published locations and `hasOfferCatalog` naming the 7 services (no `Offer`, no price); `WebSite`
-  is on `/` only; the 18 locations emit a `Service`, the indexes `CollectionPage` + `ItemList`,
+  is on `/` only; `FAQPage` is on `/` and the 7 service pages (`faqPages 8` since Sprint 5,
+  `225ff45` — 44 questions, each marked up on one page only); the 18 locations emit a `Service`,
+  the indexes `CollectionPage` + `ItemList`,
   `/אודות/` an `AboutPage` with `knowsAbout`, `/צור-קשר/` a `ContactPage`. Blog posts emit
   `BlogPosting` with an `Organization` author, `dateModified` from `updated ?? date` and `isPartOf`
   the `Blog`; every schema URL is percent-encoded. `node scripts/audit/schema.mjs` → 0 failures,

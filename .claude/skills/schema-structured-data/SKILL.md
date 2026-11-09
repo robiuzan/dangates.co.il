@@ -17,12 +17,14 @@ node scripts/audit/schema.mjs --json     # exit code = failures
 ```
 
 As of 2026-11-08 (clean rebuild): **`schema.mjs` → 0 failures, 0 warnings** — `pagesWithJsonLd 45`,
-`danglingIds 0`, `rawHebrewUrls 0`, `faqPages 1`; `links.mjs` → `breadcrumbPages 44`. Sprint 2
+`danglingIds 0`, `rawHebrewUrls 0`, `faqPages 1` (8 since Sprint 5, `225ff45` — re-run
+2026-11-09); `links.mjs` → `breadcrumbPages 44`. Sprint 2
 (`02a3144` `d8edb28`, in the repo, not deployed yet) closed the substance gap the 2026-08-23 run
 recorded — five failures and five warnings: locations and statics with only a breadcrumb, 18 dangling
 `#business` references, no `WebSite`, 18 raw-Hebrew URLs, no `image`/`logo`, a homepage array
-instead of one `@graph`. What is left: `FAQPage` on 1 page (§4.13), `sameAs` empty (B3), the Rich
-Results Test after the deploy. The numbers move; the script is the truth.
+instead of one `@graph`. Sprint 5 put a `FAQPage` on each service page (§4.13 ✅, 44 questions
+sitewide, none twice). What is left: `sameAs` empty (B3), location FAQs with their copy (Sprint 6),
+the Rich Results Test after the deploy. The numbers move; the script is the truth.
 
 ## The kit builders — and their limits
 
@@ -190,8 +192,9 @@ bar; the missing-`address` warning is the documented trade-off.
 - `prune()` is shallow: an empty nested object (`publisher: {}`) survives and becomes a dangling
   reference. Build nested nodes complete or leave them out.
 - `noUncheckedIndexedAccess` is on: `ogImageMeta(m.images)?.[0]?.url` — both optional chains are needed.
-- The service pages share their process steps and CTA card (the `triggers` are per-service since
-  `cfff52f`) — a per-service `FAQPage` must wait for per-service FAQs in `lib/content.ts` (Phase 3,
-  `/new-service`), or seven pages mark up identical questions and fail the sitewide-once rule.
+- The service pages share their process steps and CTA card; their `FAQPage` is built from each
+  page's own `ServiceDepth.faqs` (`content/services/<slug>.ts`, Sprint 5) — the same `{ q, a }` the
+  page renders. Never feed it a shared list: seven pages marking up identical questions fail the
+  sitewide-once rule, and `lib/service-depth.ts` throws on a repeated question first.
 - Business facts in the graph come from the manifest chain (`/dangates-architecture`). If a value is
   not there, the node field stays absent and a row goes to `docs/business-facts.md`.

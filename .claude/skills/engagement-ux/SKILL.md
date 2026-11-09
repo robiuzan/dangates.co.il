@@ -61,8 +61,10 @@ item, `name="faq"` for an exclusive accordion where supported (independent discl
 the same shape.
 
 Keep the `FaqItem` shape (`{ q, a }`) — `faqs` in `lib/content.ts` and `faqJsonLd` consume it.
-Per-service FAQs arrive with Phase 3 (`new-service`); one Q/A may appear in exactly one `FAQPage`
-sitewide (`schema.mjs`), so a service FAQ must not repeat a homepage question.
+Per-service FAQs shipped in Sprint 5 (`225ff45`, `new-service`): each service page renders its
+`ServiceDepth.faqs` through the same `Faq` component (a `<details>` group named `service-faq`, with
+its own H2). One Q/A may appear in exactly one `FAQPage` sitewide (`schema.mjs`), and
+`lib/service-depth.ts` throws at module load when a service question repeats a homepage one.
 
 ## The readability bar
 
@@ -92,8 +94,8 @@ trust the page was written to build.
   `article-aside-whatsapp`) — `cta-coverage.mjs` fails otherwise, and GTM reads nothing else.
 - 🔶 Never promise a response time in a CTA ("תוך שעה", "מיד") — business-facts §E.
 - Service pages today: the per-service `serviceTriggers` bullets (shared by all seven until `cfff52f`)
-  are the unresolved-variable block; the page's CTA belongs directly after them, not only in
-  `FinalCta`.
+  are the unresolved-variable block; the sticky CTA card (`service-call`, `service-whatsapp`) sits
+  beside them, and `FinalCta` closes the page.
 
 ## No pop-ups, no exit-intent, no chat widgets
 
@@ -120,9 +122,10 @@ applies unchanged: static export, no backend, ~dozens of clicks a month cannot i
 
 **body → related services → locations → FAQ → more guides → `FinalCta`.** The FAQ sits immediately
 before the banner on purpose — the last objection handler — and `FinalCta` must never be the only
-exit: a reader still deciding needs a lateral link. Related services by relevance, not
-`.slice(0, 4)` (the `others` list in `app/services/[service]/page.tsx`); locations all 18, not the footer's `locations.slice(0, 12)`'s
-`.slice(0, 12)` — both are `/internal-linking` Phase 3 work. "More guides" exists once `/מדריכים/`
+exit: a reader still deciding needs a lateral link. Related services by relevance — the service
+pages use declared `relatedServices`, cities and posts since Sprint 5 (`225ff45`); the post route's
+`others` list still takes `.slice(0, 4)` (Sprint 7.3). Locations all 18, not the footer's
+`locations.slice(0, 12)` — `/internal-linking` Phase 3 work. "More guides" exists once `/מדריכים/`
 exists (Phase 4).
 
 ## Engagement events — exactly `docs/event-taxonomy.md`

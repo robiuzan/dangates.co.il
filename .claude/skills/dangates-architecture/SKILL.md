@@ -56,8 +56,10 @@ locations instead. `site.config.json` is bundled whole into the client JS, so th
 ships once under `out/_next/static/`; the roster `shortPitch` was cleared of its claims in
 `ad2f1ab` (2026-11-09).
 
-**The richer data model does not exist yet:** `kind` / `prefixed` / per-entry `updated` on locations,
-`cityContent`, `serviceDepth` (Phase 3 — `/new-city`, `/new-service` are the spec); the typed block
+**The service depth model is built** (Sprint 5, `225ff45`): `lib/service-depth.ts` types, assembles
+and checks `serviceDepth`, one module per service in `content/services/<slug>.ts` — `/new-service`
+describes it. **The rest of the richer data model does not exist yet:** `kind` / `prefixed` /
+per-entry `updated` on locations, `cityContent` (Phase 3 — `/new-city` is the spec); the typed block
 model, `lib/guides.ts` + `content/guides/*.ts` (Phase 4 — ADR 0002/0003, `/new-guide`).
 `env-doctor.mjs` tracks them as "planned"; never cite a line number in them. (`lib/jsonld.ts` and
 `lib/authors.ts` left this list when Sprint 2 built them, 2026-11-08.)

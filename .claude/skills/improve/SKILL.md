@@ -139,18 +139,20 @@ verdicts, and: **"run `/qa-build-gate` then `/deploy-dangates` when the owner sa
    `/services/תריסי-גלילה-חשמליים/` lists "השער נתקע…". User-facing Hebrew in a route file.
 2. Route: §3 → `/new-service` → hebrew-copywriter (the per-service wording) + rtl-frontend-engineer
    (the render) → hebrew-editor → claims-verifier → `content-depth.mjs`.
-3. `/new-service` specifies `serviceDepth: Record<ServiceSlug, ServiceDepth>` in `lib/content.ts`
-   with a `triggers[]` per service; **it does not exist yet** — this item is the first slice of it.
-   Add `serviceDepth` with `triggers` only (typed, total record so a missing slug fails typecheck),
-   seven Hebrew lists from hebrew-copywriter, and read `serviceDepth[card.slug].triggers` in the
-   route; delete the module-scope array.
+3. When this item ran (2026-09-06, `cfff52f`) the depth model did not exist yet, so the triggers
+   landed on their own as `serviceTriggers: Record<ServiceSlug, readonly string[]>` in
+   `lib/content.ts` (a total record, so a missing slug fails typecheck): seven Hebrew lists from
+   hebrew-copywriter, read as `serviceTriggers[card.slug]` in the route; the module-scope array
+   deleted. §3.2 later built the rest (`lib/service-depth.ts`, Sprint 5, `225ff45`) and left the
+   triggers where they were.
 4. `npm run gate`; `node scripts/audit/content-depth.mjs` — the doorway delta for services should
    rise from the 13–23 range (as of 2026-08-23); no floor may drop.
 5. `hebrew-editor` → `claims-verifier` on the seven lists (no "24/7", no "אחריות מלאה" — the claim
    lexicon in `scripts/audit/claims.json`); `ts-react-reviewer` on the route diff.
-6. ADR: none — `serviceDepth` is the model `/new-service` already specifies; note in the row that
-   `§3.2` builds the rest of it.
-7. Row → `✅ DONE`; §3.2 row gains "triggers landed via §3.3".
+6. ADR: none — the field is the one `/new-service` specified; note in the row that `§3.2` builds
+   the rest of the model.
+7. Row → `✅ DONE`; the §3.2 row records that the triggers landed via §3.3 (§3.2 itself closed
+   2026-11-09).
 
 ## Checklist
 

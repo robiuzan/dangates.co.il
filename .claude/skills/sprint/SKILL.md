@@ -57,8 +57,8 @@ npm run audit:env          # step 0 — the environment's own self-test
 npm run gate               # lint → typecheck → format:check → build → audit
 ```
 
-Judge the audit exit against the **known baseline** in `qa-build-gate` (8 failures as of
-2026-11-09, all `content-depth`, after Sprints 1–4; 37 across 10 checks on 2026-08-24). The bar is _no failure absent
+Judge the audit exit against the **known baseline** in `qa-build-gate` (5 failures as of
+2026-11-09, all `content-depth`, after Sprints 1–5; 37 across 10 checks on 2026-08-24). The bar is _no failure absent
 from the latest `docs/audits/` report_, and every number the sprint's exit criterion names must move
 the right way. A new failure, or a number moving the wrong way, **stops the sprint** at that item:
 report the item, the failing check and its output, leave the working tree as it is, and hand back.

@@ -177,7 +177,8 @@ and fails any `Person` author in `out/`. Omitting a signal is legitimate; invent
    the control board, anything at 230V). A boundary, not a licence claim.
 4. **"When to call" per service** — the shared four bullets that put "השער נתקע" on the
    rolling-shutters page (backlog §3.3) are the opposite of expertise; per-service triggers live in
-   `serviceDepth` (Phase 3, `new-service`).
+   `serviceTriggers` (`lib/content.ts`, since `cfff52f`), beside each page's mechanism, failure-mode
+   and caveat copy in `content/services/<slug>.ts` (`serviceDepth`, Sprint 5, `new-service`).
 
 ### 3.4 Editorial freshness
 

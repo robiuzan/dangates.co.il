@@ -63,10 +63,11 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
    `engaged_time`, `toc_click`, `faq_open`, `related_click`, `outbound_click` — Sprint 8.1). GA4 is
    unprovisioned and no container tag consumes any of it (§13.7, owner, B2) — say so once, under
    owner-blocked, not per finding.
-8. **Related-link monotony (§9.4).** The `others` lists in `app/services/[service]/page.tsx`
-   and `app/blog/[slug]/page.tsx` both `.slice(0, 4)` in array order; `links.mjs` warns which pages
-   receive no related link at all. Relevance-based `relatedServices` / `nearby` are Phase 3
-   (`/internal-linking`); the data fields do not exist yet.
+8. **Related-link monotony (§9.4, PARTIAL).** Since Sprint 5 (`225ff45`) the service pages render
+   declared `relatedServices`, cities and posts (`relatedServiceTargets 7`, no service-page
+   warning). The post route's `others` list in `app/blog/[slug]/page.tsx` still takes
+   `.slice(0, 4)` in array order; `links.mjs` warns which post pages receive no related link at all
+   (Sprint 7.3). Location `nearby` is Phase 3 (`/internal-linking`) and does not exist yet.
 9. **Honest-trust gate.** Any CTA block, badge or microcopy that leans on "אחריות מלאה", "24/7",
    "ניסיון רב שנים" or a rating is a `claims-grep.mjs` hit, not a conversion asset — cross-reference
    `claims-verifier` instead of recommending more of it.

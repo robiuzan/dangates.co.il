@@ -13,26 +13,29 @@ bar — is outside it and never counted) **minus every paragraph of ≥ 12 words
 ≥ 3 routes** (the shared `FinalCta` lead, the service teasers, the process steps). That is exactly what
 `content-depth.mjs` computes; the floors live in `scripts/audit/thresholds.json` and mirror this table.
 
-"Today" is the script's median for the type as of **2026-11-09** (after Sprint 4 and its 4F
-follow-up, `9195c9b`; the 2026-08-23 value in brackets where it moved). Re-run before quoting.
+"Today" is the script's median for the type as of **2026-11-09** (after Sprint 5, `225ff45`; the
+2026-08-23 value in brackets where it moved). Re-run before quoting.
 
 | Page type                     | Minimum unique body words | Today (`content-depth.mjs`)                                                                                                                  |
 | ----------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Homepage                      | 800                       | 1549 ✅ (1788 total; 675 on 2026-08-24 after the reviews left — Sprint 4 added the answer block, the diagnosis section and real FAQ answers) |
-| Service page                  | 450                       | ~170 ❌ (7 of 7, range 167–173; ~152)                                                                                                        |
-| Location page                 | 350                       | ~136 ❌ (18 of 18, range 136–142; ~122)                                                                                                      |
-| Blog post                     | 900                       | ~510 ❌ (11 of 11, range 439–574)                                                                                                            |
+| Homepage                      | 800                       | 1765 ✅ (1781 total; 675 on 2026-08-24 after the reviews left — Sprint 4 added the answer block, the diagnosis section and real FAQ answers) |
+| Service page                  | 450                       | 1387 ✅ (7 of 7, range 1294–1542 — the Sprint 5 depth modules; 167–173 before, ~152 on 2026-08-23)                                           |
+| Location page                 | 350                       | ~139 ❌ (18 of 18, range 139–145; ~122)                                                                                                      |
+| Blog post                     | 900                       | ~513 ❌ (11 of 11, range 442–577)                                                                                                            |
 | Guide (`/מדריכים/`)           | 900                       | route family not built yet (Phase 4)                                                                                                         |
-| Index page (services / areas) | 250                       | `/שירותים/` 120 ❌ (359 total — 239 in shared blocks) · `/איזורי-שירות/` 98 ❌ · `/blog/` 392 ✅                                             |
+| Index page (services / areas) | 250                       | `/שירותים/` 336 ✅ on the metric only — still the homepage teasers (see below) · `/איזורי-שירות/` 101 ❌ · `/blog/` 395 ✅                   |
 | Pricing                       | 400                       | 914 ✅ (144 — the "what determines the price" pivot, N14; 945 before 4F cut the repeated visit band)                                         |
-| About                         | 500                       | 317 ❌ (277)                                                                                                                                 |
+| About                         | 500                       | 320 ❌ (277)                                                                                                                                 |
 | Contact, legal, thank-you     | no minimum                | fine as-is                                                                                                                                   |
 
 A block rendered identically on another route earns no credit anywhere — a service page that reuses
 the homepage's `processSteps` gets nothing for those words, and the four "מתי כדאי לפנות אלינו"
 bullets once shared by all seven service pages counted on exactly one page, not seven (per-service
-`serviceTriggers` since `cfff52f`). The script lists the shared paragraphs it subtracted (8 as of
-2026-11-09).
+`serviceTriggers` since `cfff52f`). The script lists the shared paragraphs it subtracted (1 as of
+2026-11-09, the `FinalCta` body; 8 before Sprint 5). The threshold is three pages: since `225ff45` the
+seven service-card descriptions render on `/` and `/שירותים/` only, so they count on both — which is
+why `/שירותים/` and the homepage rose without new copy. A page-level reading, not the script, decides
+whether an index has copy of its own (Sprint 6.8).
 
 Word count is a floor, not a goal. A 500-word page that says five specific true things beats a
 900-word page that says one thing five ways — and the 11 blog posts are the proof: they clear 500 words
@@ -51,7 +54,9 @@ The measurable half is the **doorway delta**: the number of tokens a page carrie
 sibling of the same type does not. `content-depth.mjs` computes it pairwise; the threshold is
 `doorwayMinUniqueTokens: 120` in `thresholds.json`. As of 2026-08-23 every location scores **2**
 (3 for the two-word names — the only variable is `${loc.name}`, interpolated into one shared
-template) and the services score **13–23**. Both fail by an order of magnitude.
+template) and the services scored **13–23**; both failed by an order of magnitude. As of 2026-11-09
+the locations still score 2–3; the services score 404–468 (`serviceMedianDelta 438`) since their
+depth modules shipped in Sprint 5 (`225ff45`).
 
 ```bash
 node scripts/audit/content-depth.mjs        # per-page delta and nearest sibling in the failure detail
@@ -74,8 +79,10 @@ If none of those can be said truthfully about a city, **that city does not warra
 [business-facts.md](business-facts.md) §E rather than padding.
 
 The same test applies to service pages with the service name swapped — `תריסי גלילה חשמליים` is not
-even a gate. The per-city and per-service content lands in `cityContent` / `serviceDepth` in
-`lib/content.ts` — fields that **do not exist yet** (Phase 3, `new-city` / `new-service`).
+even a gate, and since Sprint 5 its page is written with the shutter's own parts. The per-service
+content lives in `content/services/<slug>.ts`, typed and checked by `lib/service-depth.ts`
+(`serviceDepth`, built 2026-11-09 — `new-service`). The per-city `cityContent` in `lib/content.ts`
+**does not exist yet** (Phase 3, `new-city`).
 
 ---
 
@@ -87,14 +94,15 @@ even a gate. The per-city and per-service content lands in `cityContent` / `serv
 2. Answer block (§5) — what this service is, in 40–60 words.
 3. What it involves, concretely: which motor and drive suit this gate type at what weight and width,
    duration, what's included and excluded.
-4. **Per-service** "when to call us" — not the shared four bullets currently hardcoded at
-   `app/services/[service]/page.tsx`, which put "השער נתקע" on the rolling-shutters page.
+4. **Per-service** "when to call us" — `serviceTriggers` in `lib/content.ts` since `cfff52f`, not the
+   shared four bullets that once put "השער נתקע" on the rolling-shutters page.
 5. Process — may reuse `processSteps` but must add at least one service-specific step or caveat.
 6. No per-service price — none is sourced (business-facts §D). Where a price is needed at all it is
    the visit band, interpolated from `visitFeeRange` (`priceRows`) — never restated as a literal; what
    moves the price is explained, as `/מחירון/` does since N14.
 7. **Per-service FAQ**, 3–5 questions, feeding `FAQPage` — each Q/A on exactly one page sitewide.
-8. Related services chosen by relevance, plus links to 2–3 locations.
+8. Related services chosen by relevance, plus links to 2–3 locations (the seven pages declare 5–6
+   each in `ServiceDepth.locations` since Sprint 5).
 9. CTA.
 
 **Location page**

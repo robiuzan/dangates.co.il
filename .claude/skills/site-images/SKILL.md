@@ -60,7 +60,8 @@ Cloudflare Image Transformations — ON for imgquarry.com and for this zone (clo
 - Per-photo **job metadata is not a manifest field.** `GalleryItem` carries `key`, dimensions, alt,
   focal and one `category`. The city · gate type · month that turns a photo into evidence lives in
   `lib/content.ts` — a `photoEvidence` record keyed by catalog key, built in Phase 3 alongside
-  `cityContent`/`serviceDepth`. It does not exist today; do not invent the shape ad hoc.
+  `cityContent` (`serviceDepth` exists since Sprint 5, in `lib/service-depth.ts`). `photoEvidence`
+  does not exist today; do not invent the shape ad hoc.
 
 ## Rules that do not bend
 
@@ -89,14 +90,14 @@ Cloudflare Image Transformations — ON for imgquarry.com and for this zone (clo
 
 ## Photos as evidence — where each one earns its place
 
-| Photo                                   | Goes to                                        | Carries                                                            |
-| --------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------ |
-| Job photo with city · gate type · month | that city's `cityContent.localNotes` (Phase 3) | a dated, placed proof line: «החלפת מנוע לשער כנף, רחובות, 06/2026» |
-| Gate-type photo                         | the matching service page (`serviceDepth`)     | the depth signal a generic gate on all 7 pages is not              |
-| Before/after pair, same position        | service page + the symptom guide (Phase 4)     | the conversion format for this trade — `templates/BeforeAfter.tsx` |
-| Detail: motor, לוח פיקוד, עינית, track  | component guides (Phase 4), image search       | `ImageObject` with a Hebrew `caption`                              |
-| Van / workshop                          | `/אודות/`                                      | "a real operation" (owner-actions §4.2)                            |
-| Team                                    | nothing until §B names a person                | 🔶 — a photo of an unnamed "team" is not a trust signal            |
+| Photo                                   | Goes to                                                                  | Carries                                                            |
+| --------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| Job photo with city · gate type · month | that city's `cityContent.localNotes` (Phase 3)                           | a dated, placed proof line: «החלפת מנוע לשער כנף, רחובות, 06/2026» |
+| Gate-type photo                         | the matching service page (its `content/services/<slug>.ts` depth entry) | the depth signal a generic gate on all 7 pages is not              |
+| Before/after pair, same position        | service page + the symptom guide (Phase 4)                               | the conversion format for this trade — `templates/BeforeAfter.tsx` |
+| Detail: motor, לוח פיקוד, עינית, track  | component guides (Phase 4), image search                                 | `ImageObject` with a Hebrew `caption`                              |
+| Van / workshop                          | `/אודות/`                                                                | "a real operation" (owner-actions §4.2)                            |
+| Team                                    | nothing until §B names a person                                          | 🔶 — a photo of an unnamed "team" is not a trust signal            |
 
 A photo whose city, gate type and month are unknown is decoration; park it in the gallery with a
 category and no evidence claim. Month only, never a date that implies a record we do not keep.

@@ -41,7 +41,8 @@ field fixes it, and what would be wrong to "fix". Quote today's numbers only as 
 ## The graph as it stands (as of 2026-11-08 — re-measure)
 
 `schema.mjs` → **0 failures, 0 warnings** after a clean rebuild: `pagesWithJsonLd 45`,
-`danglingIds 0`, `rawHebrewUrls 0`, `faqPages 1`; `links.mjs` → `breadcrumbPages 44`. Sprint 2
+`danglingIds 0`, `rawHebrewUrls 0`, `faqPages 8` (1 until Sprint 5, `225ff45`, re-run 2026-11-09);
+`links.mjs` → `breadcrumbPages 44`. Sprint 2
 (`02a3144` `d8edb28`, in the repo — not deployed yet) closed the eight gaps the 2026-08-23 run listed:
 locations and statics with only a breadcrumb (§4.2), the dangling `#business` (§4.4), no `WebSite`
 (§4.9), raw-Hebrew URLs (§4.7, N2), no `image`/`logo` (§4.5), the homepage array and the split
@@ -50,8 +51,10 @@ Your job is now a **regression watch** plus what is still open:
 
 1. **One script, one `@graph` per page; `#business` defined wherever referenced; every URL
    encoded.** Any regression is a `schema.mjs` failure — report it by builder.
-2. **`FAQPage` on 1 of 45 pages** — correct today: only the homepage renders FAQs (backlog §4.13);
-   service and location FAQs come with their copy (Sprints 5–6), one Q/A per `FAQPage` sitewide.
+2. **`FAQPage` on 8 of 45 pages** — `/` and the 7 services (backlog §4.13 ✅ since `225ff45`), 44
+   questions, each marked up once and visible in `<main>`; each service's list is built from the
+   `ServiceDepth.faqs` the page renders. Location FAQs come with their copy (Sprint 6), one Q/A per
+   `FAQPage` sitewide.
 3. **`sameAs` empty** until the GBP exists (§5.1, B3); `knowsAbout` limited to what the site covers.
 4. **Regions typed by a slug set** in `lib/jsonld.ts` until `locations` gains `kind` (Phase 3) — check
    קריות, שרון, צפון, דרום still emit `AdministrativeArea`.

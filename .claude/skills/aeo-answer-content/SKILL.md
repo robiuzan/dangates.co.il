@@ -112,10 +112,13 @@ An answer engine lifts a **contiguous, self-contained span**. Structure for that
 Other liftable shapes: a **definition** ("שער נגרר הוא…"), a **comparison table** (תיקון מול החלפה;
 נגרר / כנף / מתרומם by plot width and clearance), a **spec list** (which operator suits which gate weight).
 
-**Where the copy lives — none of it exists yet.** Phase 3 adds `cityContent[slug].answer` and
-`serviceDepth[slug].answer` to `lib/content.ts` (`/new-city`, `/new-service`); Phase 4 adds guides
-whose first block is the answer (`/new-guide`, ADR 0003). The route must render it as the **first
-`<p>` after the `<h1>`** — what `content-depth.mjs` measures; today the `PageHeader` subtitle sits there.
+**Where the copy lives.** The 7 service pages have theirs since Sprint 5 (`225ff45`):
+`serviceDepth[slug].answer`, written in `content/services/<slug>.ts` and rendered as the first `<p>`
+after the `<h1>` under a question-form `answerHeading` (49–56 words; the answer-block warning lists
+no service page). Still to come: `cityContent[slug].answer` in `lib/content.ts` (`/new-city`,
+Phase 3) and guides whose first block is the answer (`/new-guide`, ADR 0003, Phase 4). The route
+must render it as the **first `<p>` after the `<h1>`** — what `content-depth.mjs` measures; on the
+location pages and posts the `PageHeader` subtitle still sits there.
 
 **Rendering rules:** the answer is in the HTML at first paint — not behind a tab, not client-fetched.
 The `Faq` component is native `<details>/<summary>` (N8): every answer is in the DOM at first paint,

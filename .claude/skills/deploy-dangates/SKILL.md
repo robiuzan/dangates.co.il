@@ -97,7 +97,8 @@ node -e "require('fs').rmSync('.next',{recursive:true,force:true})" && npm run b
    Judge it per page type: rendered copy changed → bump; metadata, analytics, styling or a verbatim
    refactor → leave it. Client-only UI that is absent from the crawled bytes (the lead form's error
    block) is not a copy change — check the built HTML rather than the component. Precedent:
-   2026-09-06 bumped the seven services for the per-service trigger lists and nothing else.
+   2026-09-06 bumped the seven services for the per-service trigger lists and nothing else;
+   2026-11-09 (`225ff45`) bumped them again for the Sprint 5 depth copy.
 6. **Stop-ship, all script-proven:** a doubled `<title>` or missing canonical (`titles.mjs`); a live
    🔶/⛔ claim (`claims-grep.mjs`); `Review`/`AggregateRating` or an `author` key reappearing
    (`schema.mjs` fails — the review block is gated in code, golden rule 1); a container id change

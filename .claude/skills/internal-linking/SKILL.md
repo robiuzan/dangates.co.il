@@ -22,15 +22,15 @@ graph: counted, the guide a seasonal line points at would read every page as an 
 `perl -0777 -pe 's/<div class="live-topbar".*?<\/div><\/div>//gs; s/<div class="live-dialogs".*?<\/dialog><\/div>//gs'`.
 The homepage updates strip is inside `<main>` and counts: it is content on one page.
 
-## Current state (as of 2026-08-23 — re-run before quoting)
+## Current state (as of 2026-08-23, the service rows re-measured 2026-11-09 after Sprint 5 — re-run before quoting)
 
-| Finding                                                                                                                                               | Anchor                                                                                | Metric                                                                                                    |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Header reaches no service or location — it renders `navItems` only; the footer is the only chrome that does, and it carries 7 services + 12 locations | `components/layout/Header.tsx`; `navItems` at `lib/content.ts`                        | `chromeLinks: 28` (6 nav + 7 services + 12 locations + home, blog, legal); posts reached only via indexes |
-| Six locations missing from the chrome (אשקלון, באר שבע, דרום, צפון, קריות, שרון)                                                                      | `components/layout/Footer.tsx` `locations.slice(0, 12)`                               | `notInChrome: 6`, `orphans: 0` (only `/איזורי-שירות/` saves them)                                         |
-| Service → location: zero; location → location: zero                                                                                                   | no `nearby`, no `serviceDepth.locations` — the model is Phase 3                       | backlog §9.3                                                                                              |
-| Related services and posts by array order — the same 5 leading siblings absorb every related link                                                     | `app/services/[service]/page.tsx` and `app/blog/[slug]/page.tsx`, both `.slice(0, 4)` | `relatedServiceTargets: 5` (2 of 7 never linked), `relatedPostTargets: 5` (6 of 11 never linked)          |
-| Blog in-copy links: zero — 42 anchor-shaped phrases survived migration as dead text                                                                   | `lib/posts.ts` (the 42 emoji lines `spam-grep.mjs` counts)                            | backlog §3.8, §9.5                                                                                        |
+| Finding                                                                                                                                               | Anchor                                                                                           | Metric                                                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Header reaches no service or location — it renders `navItems` only; the footer is the only chrome that does, and it carries 7 services + 12 locations | `components/layout/Header.tsx`; `navItems` at `lib/content.ts`                                   | `chromeLinks: 28` (6 nav + 7 services + 12 locations + home, blog, legal); posts reached only via indexes          |
+| Six locations missing from the chrome (אשקלון, באר שבע, דרום, צפון, קריות, שרון)                                                                      | `components/layout/Footer.tsx` `locations.slice(0, 12)`                                          | `notInChrome: 6`, `orphans: 0` (only `/איזורי-שירות/` saves them)                                                  |
+| Service → location: 5–6 cities per service page since Sprint 5 (13 distinct, each on 2+ services); location → location: zero                          | `ServiceDepth.locations` (`content/services/<slug>.ts`); no `nearby` yet — Phase 3               | backlog §9.3 PARTIAL                                                                                               |
+| Related posts on the post pages by array order — the same 5 leading siblings absorb every related link                                                | `app/blog/[slug]/page.tsx` `.slice(0, 4)`; the service route uses declared lists since `225ff45` | `relatedServiceTargets: 7` ✅ (2 of 7 never linked until Sprint 5), `relatedPostTargets: 5` (6 of 11 never linked) |
+| Blog in-copy links: zero — 42 anchor-shaped phrases survived migration as dead text                                                                   | `lib/posts.ts` (the 42 emoji lines `spam-grep.mjs` counts)                                       | backlog §3.8, §9.5                                                                                                 |
 
 Breadcrumbs are **not** a finding any more: `PageHeader` emits `BreadcrumbList` on all 44 nested
 pages (`breadcrumbPages: 44`) — §7 is about keeping that parity, not creating it.
@@ -66,25 +66,29 @@ Proof: `links.mjs` → `notInChrome: 0` and `chromeLinks: 34` (28 + the six citi
 
 ## 3. Service ↔ location mesh — from the Phase-3 model
 
-The data does not exist yet (`/new-city`, `/new-service`; `/improve §3.1` / `§3.2` build it). When it
-lands:
+The service half exists since Sprint 5 (`225ff45`, `/new-service`); the location half does not yet
+(`/new-city`, `/improve §3.1`):
 
-- **Service page → 4–6 cities** from `serviceDepth[slug].locations` — chosen by where that service is
-  genuinely asked for, not by array order.
+- **Service page → 4–6 cities** from `serviceDepth[slug].locations` — built: 5–6 per page under
+  "מחפשים שירות בעיר שלכם?", rotated so each published city sits on 2+ services, never an
+  unconfirmed region (business-facts §E). No demand data chose them; revisit with Search Console.
 - **Location page → 2–4 neighbours** from `cityContent[slug].nearby`, declared **on both sides**; a
   region's "nearby" is its constituent cities, never another region.
 - The full service list on every location page already exists (`serviceCards.map`); keep it.
 
-Until then, do not fake the edge with a hand-typed list in a route file — that is the same pattern as
-the shared `triggers` array.
+Until `nearby` lands, do not fake the location edge with a hand-typed list in a route file — that is
+the same pattern as the shared `triggers` array.
 
 ## 4. Relevance-based related items
 
-Replace both `.slice(0, 4)` calls with declared adjacency: `serviceDepth[slug].relatedServices`
-(Phase 3) and a `relatedServices` / `related` field on posts and guides (Phase 4, ADR 0003). A total
-`Record<ServiceSlug, …>` means a service with no declared relations fails typecheck instead of
-silently inheriting the first four. Proof: `relatedServiceTargets: 7`, `relatedPostTargets` = every
-surviving post, and the `links.mjs` monotony warning disappears.
+The service half is done (Sprint 5, `225ff45`): the service route renders
+`serviceDepth[slug].relatedServices` (2–4) and `relatedPosts` (0–3) in declared order, and
+`lib/service-depth.ts` throws on a self-reference, a duplicate or an unknown post slug. A total
+`Record<ServiceSlug, …>` means a service with no entry fails typecheck instead of silently
+inheriting the first four. `relatedServiceTargets: 7`, and the service-page monotony warning is
+gone. **Left:** the post route's `.slice(0, 4)` — a `relatedServices` / `related` field on posts and
+guides (Phase 4, ADR 0003; Sprint 7.3). Proof: `relatedPostTargets` = every surviving post, and the
+post-page monotony warning disappears.
 
 ## 5. Contextual in-copy links
 
@@ -93,8 +97,9 @@ Zero exist today, but the blog is **already written as if they do** — "למי�
 Making them real needs the typed block model (`paragraph.links: InlineLink[]`, anchor verbatim in the
 text or the build throws); `/new-article` Operation B does it per post.
 
-As `serviceDepth` and `cityContent` land, each carries 2–3 links **inside the prose** with
-descriptive Hebrew anchors:
+`serviceDepth` landed with its links in lists below the prose, none inside it; as `cityContent` lands
+and the depth copy is next edited, each should carry 2–3 links **inside the prose** with descriptive
+Hebrew anchors:
 
 - ✅ `<Link href="/services/שערים-נגררים/">תיקון מנוע לשער נגרר</Link>`
 - ❌ "לחצו כאן", "למידע נוסף", a bare URL
@@ -148,8 +153,8 @@ stubs are `noindex` by design and are meant to be unlinked; `links.mjs` counts t
 
 - [ ] All 7 services and 18 locations reachable in one hop from the header, from the data arrays.
 - [ ] Footer renders all 18 locations — no `slice`.
-- [ ] Every service page links 4–6 locations; every location page links 2–4 nearby, both ways.
-- [ ] Related services and posts come from declared adjacency, not `.slice(0, 4)`.
+- [ ] Every service page links 4–6 locations (✅ since Sprint 5); every location page links 2–4 nearby, both ways.
+- [ ] Related services and posts come from declared adjacency, not `.slice(0, 4)` (✅ on service pages; posts left).
 - [ ] The blog's plain-text link references are real links (after the block-model migration).
 - [ ] Guides declare `relatedServices`; the reverse index places them on service pages.
 - [ ] Breadcrumbs render and emit exactly one `BreadcrumbList` from the same array.

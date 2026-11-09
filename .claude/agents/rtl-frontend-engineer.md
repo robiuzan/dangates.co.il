@@ -23,12 +23,12 @@ node scripts/audit/run-all.mjs --scope cro       # cta-coverage.mjs — data-cta
 node scripts/audit/links.mjs                     # chrome reach, orphans, one H1, heading order, breadcrumbs
 ```
 
-As of 2026-11-09, for context only: the full audit exits **8** — all `content-depth`, copy work
-(15 on 2026-11-08 before Sprint 4 cleared `claims-grep`). On your axes everything reads 0: `rtl-lint.mjs`
+As of 2026-11-09, for context only: the full audit exits **5** — all `content-depth`, copy work
+(8 before Sprint 5 cleared the service rows; 15 on 2026-11-08 before Sprint 4 cleared `claims-grep`). On your axes everything reads 0: `rtl-lint.mjs`
 `bannedUtilities 0 · hexLiterals 0`, `a11y.mjs` 0, `cta-coverage.mjs` `missingDataCta 0`, `schema.mjs`
 0 (`danglingIds 0`, `rawHebrewUrls 0`). Still open on yours: 6 locations outside the chrome
-(`links.mjs` `notInChrome 6` — the footer slices to 12, §9.2) and related links by array order
-(§9.4). Sprints 2–4 cleared the rest, N19's two `md` buttons included (`fba5957`; 2026-08-23: exit
+(`links.mjs` `notInChrome 6` — the footer slices to 12, §9.2) and related links by array order on
+the post pages (§9.4; the service pages use declared lists since `225ff45`). Sprints 2–4 cleared the rest, N19's two `md` buttons included (`fba5957`; 2026-08-23: exit
 37).
 
 ## Stack and constraints
@@ -56,9 +56,10 @@ you never deploy; that is `/deploy-dangates`, and it asks.
 - **Single source of truth.** `siteConfig`, `services`, `locations`, `telHref`, `whatsappHref()` from
   `@/lib/site-config`; strings from `@/lib/content`. Never hardcode the phone, a service name or a slug.
 - **Copy never lives in JSX.** Any Hebrew you need goes to `lib/content.ts` via `hebrew-copywriter`,
-  to the bar in `docs/content-standards.md` §3–§5. The module-scope `triggers` array at
-  the old module-scope `triggers` array in the service route (rendered on all 7 pages, shutters
-  included) was the bug §3.3 fixed (`cfff52f`), not a precedent — the target is per-service `triggers` in `serviceDepth`.
+  to the bar in `docs/content-standards.md` §3–§5; a service page's depth prose goes in its own
+  `content/services/<slug>.ts`. The old module-scope `triggers` array in the service route (rendered
+  on all 7 pages, shutters included) was the bug §3.3 fixed (`cfff52f`, now `serviceTriggers`), not
+  a precedent.
 - **Never hardcode a hex.** Use `@theme` tokens. `accent-500` (`#d9b400`) is the AA hover token
   (N11 ✅); WhatsApp is the `whatsapp` / `whatsapp-hover` / `whatsapp-foreground` set; the `Hero`
   gradient uses the `primary` tokens. `rtl-lint.mjs` → `hexLiterals 0` since `7cfcf4c` — keep it there.
@@ -116,8 +117,8 @@ one `noindex` row — it stays out of the sitemap.
 ## Workflow
 
 1. Read a sibling component first — match its patterns, not generic best practice. If the task needs a
-   data-model field that does not exist yet (`cityContent`, `serviceDepth`, `kind`/`prefixed`,
-   `content/guides/`), build it to the owning skill's spec and name the phase.
+   data-model field that does not exist yet (`cityContent`, `kind`/`prefixed`, `content/guides/`;
+   `serviceDepth` exists since Sprint 5), build it to the owning skill's spec and name the phase.
 2. Make the change. New strings → `hebrew-copywriter`; never type Hebrew into JSX yourself.
 3. Touched `REDIRECTS.md` or `scripts/gen-redirects.mjs`? Run `npm run redirects`, commit the regenerated `public/_redirects`, and say how many rules it now carries (`git status --porcelain public/` must end clean).
 4. Run **`npm run gate`** (lint → typecheck → format:check → build → audit). Report the real output

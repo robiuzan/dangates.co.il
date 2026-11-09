@@ -163,8 +163,10 @@ Escape and focus return in the same pass (§11.4). `dir="rtl"` mirrors flex and 
 
 ### 3.2 Mesh, relatedness, breadcrumbs
 
-- Service ↔ location is one-way today (§9.3); Phase 3 adds `nearby` and `relatedServices` to the
-  data. Related items by relevance, not `.slice(0, 4)` (§9.4); every sibling receives at least one
+- Since Sprint 5 (`225ff45`) each service page links the cities its `ServiceDepth.locations`
+  declares; location → location is still missing until Phase 3 adds `nearby` (§9.3). Related items
+  by relevance, not `.slice(0, 4)` (§9.4): the service pages use declared `relatedServices` and
+  `relatedPosts` since Sprint 5; the post route still slices (Sprint 7.3). Every sibling receives at least one
   inbound related link; cards carry `data-related="service|location|guide|post"` for `related_click`.
 - `PageHeader` renders the trail **and** emits `BreadcrumbList` from the same `crumbs` array, mapping
   `{label, href}` to the kit's `{name, path}` through `schemaPath()`. Never add a second

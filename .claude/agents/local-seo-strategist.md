@@ -79,8 +79,9 @@ number below is "as of 2026-08-23" context for reading the output, not a finding
    it holds. **Never** a `LocalBusiness` per city, never a
    `PostalAddress`.
 8. **Internal equity** (§9.2, §9.3). `components/layout/Footer.tsx` renders `locations.slice(0, 12)`
-   → `links.mjs` `notInChrome: 6` (אשקלון, באר שבע, דרום, צפון, קריות, שרון); no service page links
-   to a city and no city to another — the mesh is one-way. Phase 3 adds `nearby` / `relatedServices`
+   → `links.mjs` `notInChrome: 6` (אשקלון, באר שבע, דרום, צפון, קריות, שרון); since Sprint 5
+   (`225ff45`) each service page links 5–6 cities (13 distinct, each on 2+ services, no unconfirmed
+   region), but no city links to another — §9.3 is PARTIAL. Phase 3 adds `nearby`
    (`/internal-linking`).
 9. **Freshness.** `locationsUpdated` is one shared date (`lib/site-config.ts`) feeding all 18
    sitemap `lastmod`s — false precision the moment the pages diverge (§2.3).
