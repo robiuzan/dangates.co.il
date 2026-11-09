@@ -7,7 +7,7 @@
  *
  * The pairs are geography, not a ranking, and they carry no claim about service: a link from one
  * page to another says the two places are near each other, nothing about coverage. A pair that
- * touches a region (קריות, שרון, צפון, דרום) is a link to the region's page, not an availability promise.
+ * touches the region (שרון) is a link to the region's page, not an availability promise.
  *
  * Module-load checks throw (so `next build` fails) on a self-pair and on a pair listed twice in
  * either direction. An unknown slug cannot be written: the tuple is typed on `LocationSlug`.
@@ -32,16 +32,24 @@ export const nearbyPairs: readonly NearbyPair[] = [
   ["מודיעין", "ירושלים"],
   ["מודיעין", "פתח-תקווה"],
   ["מודיעין", "רחובות"],
-  ["חיפה", "קריות"],
-  ["חיפה", "צפון"],
-  ["קריות", "צפון"],
-  ["באר-שבע", "דרום"],
-  ["אשקלון", "דרום"],
-  // The two pairs below give ירושלים and באר שבע a second neighbour (content-standards §3, location
-  // block 5: 2–4 nearby links). Each is among the nearest published places after the first pair:
-  // רחובות after מודיעין for ירושלים, אשקלון after the region for באר שבע.
+  // 2026-11-09 (owner-actions 3.6): קריות, צפון, דרום and באר שבע were retired, and every pair that
+  // touched one of them went with it. Two places lost their neighbours and the pairs below restore the
+  // nearby links each page needs (content-standards §3, location block 5):
+  //  - חיפה had only the retired קריות and צפון. Its nearest published page is נתניה, down the coast
+  //    with חדרה, קיסריה and זכרון יעקב (no page of their own) in between — far, but the nearest.
+  //    It is חיפה's one link, the documented exception in content-standards §3 block 5. No second
+  //    distant place is added to fill a count, and not the שרון region: a region pairs only with its
+  //    own towns (/new-city step 4), and חיפה is not one of them. The shared heading over these links
+  //    (`locationPageCopy.nearbyHeading`) asks for close places, which נתניה is not, so חיפה's module
+  //    carries its own `nearbyHeading` asking which page on the site is the nearest — true for a
+  //    single far link. The shared heading never says "closest": on the other pages a nearer page
+  //    can exist without being paired.
+  //  - אשקלון had only the retired דרום and באר שבע, leaving just אשדוד. Its next-nearest published
+  //    place up the coast is יבנה.
+  ["חיפה", "נתניה"],
+  ["אשקלון", "יבנה"],
+  // ירושלים gets a second neighbour: רחובות, the nearest published place after מודיעין.
   ["ירושלים", "רחובות"],
-  ["באר-שבע", "אשקלון"],
 ];
 
 /** The neighbours of a location, from either side of every pair, in the order the pairs are listed. */

@@ -4,8 +4,9 @@
  * docs/content-standards.md §2–§5, §8.
  *
  * What this module may NOT claim (docs/business-facts.md §E): no response time, no travel time, no
- * same-day or emergency promise, no jobs done or technicians in the city, no coverage of the Sharon
- * region beyond Netanya itself, no price, no municipal or legal rule. The substance is public
+ * same-day or emergency promise, no jobs done or technicians in the city, no claim about other
+ * Sharon towns (the region has its own bounded page, /locations/שרון/), no price, no municipal or
+ * legal rule. The substance is public
  * geography (the kurkar cliff along most of the coast and its absence at Poleg and Ir Yamim, the
  * cliff-top promenade, the Ir Yamim towers, the house neighbourhoods, the Poleg / Kiryat Sapir
  * industrial zone — names and descriptions as in he.wikipedia.org/wiki/נתניה and

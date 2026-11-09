@@ -8,6 +8,7 @@
  */
 import { locations, services, siteConfig, staticPages } from "@/lib/site-config";
 import {
+  areaLinkLabel,
   crumbLabels,
   legalPageNames,
   llmsCopy,
@@ -69,8 +70,11 @@ export function buildLlmsTxt(): string {
   add("", `${llmsCopy.servicesIndexLabel}: ${url("שירותים")}`, "");
 
   add(`## ${llmsCopy.areasHeading}`, "", serviceAreaLine, "");
+  // Each area by its display form (`areaLinkLabel(prefixed)`: "שערים חשמליים באזור השרון"), never the bare
+  // `name`: a bare region name in a list reads as coverage of the whole region, and the list is a set of
+  // published pages, not a coverage promise.
   for (const l of locations) {
-    add(`- [${l.name}](${url(`locations/${l.slug}`)})`);
+    add(`- [${areaLinkLabel(l.prefixed)}](${url(`locations/${l.slug}`)})`);
   }
   add("", llmsCopy.areasNote, "");
 

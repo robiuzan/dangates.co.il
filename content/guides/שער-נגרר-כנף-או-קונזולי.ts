@@ -34,7 +34,7 @@ import type { Guide } from "@/lib/guide-types";
  * Nothing here repeats a sentence of content/services/שערים-נגררים.ts, שערי-כנף.ts,
  * שערים-לחניה.ts or שערים-מתרוממים.ts, the homepage `faqs`, or the slope section of
  * content/locations/ירושלים.ts — it links to them. The one location link goes to ירושלים (a
- * published, non-bounded city whose page carries the slope section), not to a 🔶 region.
+ * published city whose page carries the slope section), not to the שרון region page.
  */
 export const guide = {
   slug: "שער-נגרר-כנף-או-קונזולי",

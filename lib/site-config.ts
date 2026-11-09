@@ -5,7 +5,7 @@
  * these values rather than hardcoding the phone number, service names, or location slugs.
  *
  * Slugs are the EXACT Hebrew slugs from the live services sitemap (SEO fidelity). Locations
- * are NORMALIZED to `/locations/<he-slug>/` for all 18 cities (the live site scattered most
+ * are NORMALIZED to `/locations/<he-slug>/` for every published city (the live site scattered most
  * of them at the site root; the old URLs are 301-redirected — see REDIRECTS.md).
  */
 
@@ -131,21 +131,25 @@ export const services = [
 export type ServiceSlug = (typeof services)[number]["slug"];
 
 /**
- * Local-SEO location matrix (live-site locations silo) — מרכז הארץ + ארצי.
- * Drives `app/locations/[city]` (`תיקון שערים חשמליים [prefixed]`). All 18 entries normalized
+ * Local-SEO location matrix (live-site locations silo) — the published service places.
+ * Drives `app/locations/[city]` (`תיקון שערים חשמליים [prefixed]`). All 14 entries normalized
  * to `/locations/<he-slug>/` (old root-level URLs are 301-redirected — see REDIRECTS.md).
  *
- * `kind`      "city" or "region". Four entries are regions (קריות, שרון, צפון, דרום): schema types
- *             them `AdministrativeArea`, never `City` (lib/jsonld.ts `placeNode`).
- * `prefixed`  the name WITH its preposition — `בתל אביב`, `באזור השרון`, `בצפון הארץ`. Every
+ * 2026-11-09: באר-שבע, קריות, צפון and דרום were retired on the owner's answer (owner-actions 3.6:
+ * the business does not serve them). Their pages are gone and their URLs 301 to /איזורי-שירות/;
+ * never re-add one without a new owner answer.
+ *
+ * `kind`      "city" or "region". One entry is a region (שרון): schema types it
+ *             `AdministrativeArea`, never `City` (lib/jsonld.ts `placeNode`).
+ * `prefixed`  the name WITH its preposition — `בתל אביב`, `באזור השרון`. Every
  *             template that used to interpolate a bare `ב${name}` reads this instead, because the
  *             bare form is wrong Hebrew for the regions (content-standards §8). Grammar, not copy.
  * `updated`   ISO date this entry's page copy last changed — its own sitemap <lastmod>. Bump it ONLY
  *             for real copy edits to that page (its content/locations/<slug>.ts or a rewrite of a
  *             template it renders), never for styling, metadata or analytics work. It replaced the
- *             single shared `locationsUpdated`, true only while all 18 rendered from one template.
- *             All 18 start at the shared date they inherited (2026-07-13); the copy step moves the
- *             ones it rewrites. 2026-11-09: all 18 moved — each page gained its own
+ *             single shared `locationsUpdated`, true only while every page rendered from one template.
+ *             All entries started at the shared date they inherited (2026-07-13); the copy step moves the
+ *             ones it rewrites. 2026-11-09: all moved — each page gained its own
  *             content/locations/<slug>.ts copy (Sprint 6), written that day.
  *
  * Keep this block's entries as `name: "…"` lines — scripts/audit/gsc-ingest.mjs reads them by regex.
@@ -224,38 +228,10 @@ export const locations = [
     updated: "2026-11-09",
   },
   {
-    slug: "באר-שבע",
-    name: "באר שבע",
-    kind: "city",
-    prefixed: "בבאר שבע",
-    updated: "2026-11-09",
-  },
-  {
-    slug: "קריות",
-    name: "קריות",
-    kind: "region",
-    prefixed: "בקריות",
-    updated: "2026-11-09",
-  },
-  {
     slug: "אשקלון",
     name: "אשקלון",
     kind: "city",
     prefixed: "באשקלון",
-    updated: "2026-11-09",
-  },
-  {
-    slug: "צפון",
-    name: "צפון",
-    kind: "region",
-    prefixed: "בצפון הארץ",
-    updated: "2026-11-09",
-  },
-  {
-    slug: "דרום",
-    name: "דרום",
-    kind: "region",
-    prefixed: "בדרום הארץ",
     updated: "2026-11-09",
   },
   {

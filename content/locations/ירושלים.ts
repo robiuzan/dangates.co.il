@@ -9,8 +9,13 @@
  * named storm and its date were written out on 2026-11-09 — no official source in the copy; Sprint 6
  * claims-verifier finding), the hillside apartment blocks with ramp-fed car parks, and the old industrial zones
  * beside the high-tech park. Public geography and general mechanism, stated as such; no elevation
- * figure. No claim about this business's jobs, technicians, travel time, response time,
- * availability or presence beyond serving the city; no municipal or legal claim (the stone
+ * figure. ירושלים was not named in the owner's 2026-11-09 answer (owner-actions 3.6 asked about it
+ * by name; the answer named only חיפה, אשקלון and אזור השרון as served, and the four retired places
+ * as not served). Until the owner says yes 🔶, the answer block and the meta description carry the
+ * bound — call and check whether and when a visit is possible, the same bound `finalCtaCopy` closes
+ * the page with — and never a flat "כן" (the old one was taken out on 2026-11-09, claims-verifier).
+ * Do not strengthen it. No claim about this business's jobs, technicians, travel time, response
+ * time, availability or presence in the city; no municipal or legal claim (the stone
  * cladding is described as a material, never as a rule); no price; no experience, warranty term,
  * licence or brand.
  */
@@ -19,11 +24,14 @@ import type { CityContent } from "@/lib/city-content";
 export const city: CityContent = {
   title: "תיקון שערים חשמליים בירושלים",
   h1: "תיקון שערים חשמליים בירושלים",
+  // 🔶 confirm — whether ירושלים is served waits on the owner (owner-actions 3.6); the meta and the
+  // answer carry the bound, not a "כן". The business-facts §E question row for ירושלים is still to be
+  // added by the doc pass.
   metaDescription:
-    "תיקון והתקנה של שערים חשמליים ותריסי גלילה בירושלים: שער על חניה משופעת, מנוע שמעוגן בעמוד אבן, וקור וגשם שמשבשים את המנוע ואת לוח הפיקוד בחורף. התקשרו לאבחון.",
-  answerHeading: "אתם מתקנים שערים חשמליים ותריסים בירושלים?",
+    "תיקון שערים חשמליים ותריסי גלילה בירושלים: שער על חניה משופעת, מנוע שמעוגן בעמוד אבן, וקור וגשם שמשבשים את לוח הפיקוד בחורף. התקשרו ובדקו אם אפשר להגיע.",
+  answerHeading: "איך יודעים אם תוכלו לתקן שער חשמלי או תריס בירושלים?",
   answer:
-    "כן, אנחנו בדן שערים חשמליים מתקנים, מתחזקים ומתקינים שערים חשמליים ותריסי גלילה חשמליים בירושלים. העיר בנויה על הרים, ולכן השערים בה מתמודדים עם חניות על מדרון, עם תושבות שמעוגנות בעמודי אבן ועם חורף קר וגשום. התקשרו, תארו את סוג השער ומה קורה לו, ונתאם ביקור אבחון.",
+    "כדי לדעת אם נוכל לתקן את השער החשמלי או את תריס הגלילה שלכם בירושלים, ומתי, התקשרו אלינו ומסרו את הכתובת. העיר בנויה על הרים, ולכן השערים בה מתמודדים עם חניות על מדרון, עם תושבות שמעוגנות בעמודי אבן ועם חורף קר וגשום. בשיחה תארו גם את סוג השער ומה קורה לו, ונגיד לכם אם אפשר לתאם אבחון.",
   localNotes: [
     {
       heading: "מה עושה חניה על מדרון לשער נגרר ולשער כנף?",

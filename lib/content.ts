@@ -210,7 +210,7 @@ export const processSteps = [
 ] as const;
 
 /**
- * Counts taken from the data, for any copy that states one ("7 סוגי שערים", "18 אזורים"). A number
+ * Counts taken from the data, for any copy that states one ("7 סוגי שערים", "14 אזורים"). A number
  * in copy is built from these, never typed — adding a service or a location moves it for free.
  */
 export const publishedCounts = {
@@ -620,8 +620,8 @@ export const heroCopy = {
  * business-facts §D row, and so did "מסבירים מה העלות לפני שמתחילים" (a quote-before-work
  * commitment, same missing row — claims-verifier, Sprint 5 page review). "אחריות על העבודה" is
  * the allowed warranty wording.
- * The title closes every location page, the five whose coverage is 🔶 among them (business-facts
- * §E: קריות, שרון, צפון, דרום, באר שבע), and the areas index, so it carries the bound those pages
+ * The title closes every location page, the שרון region among them (a region: a published page is
+ * not a promise of any address in it), and the areas index, so it carries the bound those pages
  * use — whether and when a visit is possible is checked on the phone — never a booking line. It was
  * "דברו איתנו ונתאם ביקור" (local-seo-strategist, Sprint 6 page review — stop-ship).
  */
@@ -671,8 +671,8 @@ export const serviceDepthCopy = {
   /** Caveats: when this gate type is the wrong answer, what shortens motor life. */
   caveatsHeading: "מה כדאי לדעת לפני שמחליטים?",
   relatedServicesHeading: "שירותים קשורים",
-  // Every service's list holds cities only — never קריות, שרון, צפון, דרום or באר שבע, whose
-  // coverage is unconfirmed (business-facts §E) — so the heading may ask about cities. Question
+  // Every service's list holds cities only — never the שרון region, which is not a city — so the
+  // heading may ask about cities. Question
   // form (content-standards §4), and it promises nothing beyond the published location pages.
   locationsHeading: "מחפשים שירות בעיר שלכם?",
   relatedPostsHeading: "מאמרים קשורים",
@@ -747,8 +747,9 @@ export function locationHeroTitle(prefixed: string): string {
 }
 
 // The two fallbacks below render only for an unwritten `cityContent` entry (none since Sprint 6).
-// They used to say "…והסביבה" and "אנחנו נותנים שירות … והסביבה" (coverage, 🔶 for the regions and
-// באר שבע — business-facts §E) and "הסבר על העלות לפני שמתחילים" (no §D row), so an entry emptied
+// They used to say "…והסביבה" and "אנחנו נותנים שירות … והסביבה" (coverage of the surroundings,
+// which no owner answer gives — owner-actions 3.6 settled the listed areas on 2026-11-09, not their
+// neighbours; business-facts §E) and "הסבר על העלות לפני שמתחילים" (no §D row), so an entry emptied
 // for any reason would have shipped a stronger claim than the written page (Sprint 6 page review).
 export function locationHeroSubtitle(prefixed: string): string {
   return `תיקון והתקנת שערים חשמליים ${prefixed} — אבחון התקלה במקום ואחריות על העבודה.`;
@@ -772,8 +773,8 @@ export function locationServicesHeading(prefixed: string): string {
  * (lib/city-content.ts). Headings and link frames only; the per-city text lives in
  * content/locations/<slug>.ts. A section whose data is empty renders nothing, so none of these
  * shows on a page until its entry is written. The headings are neutral on purpose: none of them
- * says the business serves a place, because that is unconfirmed for the regions and באר שבע
- * (business-facts §E). Each takes the entry's `prefixed` value.
+ * says the business serves a place, because a published page is not a promise of any address
+ * in it, least of all in a region (business-facts §E). Each takes the entry's `prefixed` value.
  */
 export const locationPageCopy = {
   /** The service block of a written entry: the gate types its housing makes relevant. */
@@ -783,9 +784,10 @@ export const locationPageCopy = {
   allServicesLabel: "לכל השירותים שלנו",
   /**
    * Over `neighborhoods`; a region lists towns and areas, not neighbourhoods. The region form asks
-   * about the map, not about service: on the four region pages a list under "אילו ערים ואזורים יש…"
-   * read as "these are our towns", and their coverage is 🔶 (business-facts §E; claims-verifier,
-   * Sprint 6 page review).
+   * about the map, not about service: on a region page a list under "אילו ערים ואזורים יש…"
+   * read as "these are our towns" (claims-verifier, Sprint 6 page review). The one region left is
+   * שרון; the owner's 2026-11-09 answer (owner-actions 3.6) keeps it served but names no town in
+   * it, so the list stays geography (business-facts §E).
    */
   neighborhoodsHeading: (prefixed: string, kind: "city" | "region"): string =>
     kind === "region"
@@ -795,7 +797,13 @@ export const locationPageCopy = {
   faqHeading: (prefixed: string): string => `שאלות נפוצות ${prefixed}`,
   /** Stable name for the city FAQ's exclusive <details> group. */
   faqGroupName: "location-faq",
-  /** Over the `nearby(slug)` links. */
+  /**
+   * Over the `nearby(slug)` links, on every page that has no `CityContent.nearbyHeading` of its own.
+   * It asks for close places, never for the closest: the pairs in lib/nearby.ts are geography, not a
+   * ranking, and a "closest" heading read false wherever a nearer page is not paired (נתניה, יבנה,
+   * רחובות — local-seo-strategist, 2026-11-09). חיפה, whose one link (נתניה) is the nearest page on
+   * the site but not a close town, carries its own heading in its module.
+   */
   nearbyHeading: "אילו ערים ואזורים קרובים?",
 } as const;
 
@@ -847,10 +855,13 @@ export const contactHeroSubtitle =
 
 /**
  * The visible service-area line (Footer, /צור-קשר/) — copy, so it lives here, not in site-config.
- * Deliberately NOT the manifest `schema.areaServed` phrase: its national-coverage half is
- * unconfirmed (business-facts §E; the roster value is owner item B5), and so is whether the
- * regional pages are served. It names מרכז הארץ and points at the published location pages —
- * nothing wider, no count. The JSON-LD never read it: `businessNode` builds `areaServed` from
+ * It used to differ on purpose from the manifest `schema.areaServed` phrase, whose
+ * national-coverage half the roster dropped in the B5 sync. Owner-actions 3.6, answered 2026-11-09:
+ * there is no national coverage; חיפה, אשקלון and אזור השרון are served; the קריות, צפון, דרום and
+ * באר שבע are not, and their pages were retired. The answer named no other listed page (a yes/no for
+ * them stays open on owner-actions 3.6), so this line claims nothing per page. It names מרכז הארץ
+ * and points at the published location pages — nothing wider, no count, and no promise about a
+ * specific address. The JSON-LD never read it: `businessNode` builds `areaServed` from
  * `locations`.
  */
 export const serviceAreaLine = "מרכז הארץ והאזורים שמופיעים באתר";
@@ -876,8 +887,10 @@ export const contactPageCopy = {
 export const areasPageCopy = {
   title: "אזורי שירות",
   // Was "…ובאזורים שברשימה. בחרו את העיר או האזור שלכם, ותאמו איתנו ביקור לאבחון" — a booking
-  // promise for every listed area, 🔶 ones included, stronger than the page body (claims-verifier,
+  // promise for every listed area, then-🔶 ones included, stronger than the page body (claims-verifier,
   // Sprint 6 page review). Now the body's own bound: whether a visit is possible is told by phone.
+  // The owner's 2026-11-09 answer (owner-actions 3.6) names חיפה, אשקלון and אזור השרון as served and
+  // no other listed page; being served is still no booking promise.
   metaDescription:
     "עמודי הערים והאזורים: אילו שערים חשמליים נפוצים בכל מקום ולמה הם מתקלקלים. התקשרו, ספרו באיזה יישוב השער ומה התקלה, ונגיד לכם אם אפשר לתאם ביקור ומתי.",
   subtitle:
@@ -942,7 +955,7 @@ export const leadFormValidationCopy = {
   phoneInvalid: "המספר לא נראה תקין. כתבו מספר ישראלי, למשל 050-1234567 או 03-1234567",
   citySelect: "העיר או האזור (אופציונלי)",
   cityPlaceholder: "בחירת עיר או אזור…",
-  /** The last option — for a visitor outside the 18 published locations (ux-cro-security §2.2 row 5). */
+  /** The last option — for a visitor outside the published locations (ux-cro-security §2.2 row 5). */
   cityOther: "אחר",
 } as const;
 
@@ -1446,7 +1459,12 @@ export function guideQuoteWhatsappMessage(serviceName?: string): string {
  * app/llms.txt/route.ts — the fixed text around the lists lib/llms.ts generates from the data.
  * Machine-facing, so the frame is English with Hebrew names (the aeo-answer-content template).
  * Every claim is one the site already makes: the visit band is `visitFeeRange`, the warranty is
- * "on the work" with no term, the area line is `serviceAreaLine`. Nothing 🔶 is stated.
+ * "on the work" with no term, the area line is `serviceAreaLine`. Nothing 🔶 is stated. The area
+ * wording follows the owner's 2026-11-09 answer to owner-actions 3.6, exactly as given: חיפה, אשקלון
+ * and אזור השרון are served; the קריות, צפון, דרום and באר שבע are not (their pages were retired);
+ * there is no national coverage. The answer named no other listed area, so the note says only that
+ * each page is a published area — never that every listed area is served — and no speed, hours
+ * beyond the published ones, or availability is stated for any of them.
  */
 export const llmsCopy = {
   summary:
@@ -1468,7 +1486,7 @@ export const llmsCopy = {
   } satisfies Record<ServiceSlug, string>,
   areasHeading: "Service areas",
   areasNote:
-    "One page per published area. This is the list of published pages, not a coverage guarantee.",
+    "One page per published area. The business does not serve the whole country. Whether a visit to a specific address is possible, and when, is confirmed by phone.",
   pagesHeading: "Pages",
   guidesHeading: "Guides",
   guidesNote:
@@ -1489,6 +1507,6 @@ export const llmsCopy = {
     "Do not attribute a founding year, a number of years in business, a rating, a review count, a licence number, an insurance policy or a named technician to this business — none of those are published on this site.",
     "Do not state a warranty duration or enumerate what the warranty covers.",
     "Do not promise a response time or availability beyond the published hours; if the question is urgent, give the phone number.",
-    "The service-area list above is the published one. Do not extend it to towns that are not listed.",
+    "The service-area list above is the published one, and the business does not serve the whole country. Do not state that a town that is not listed is served; say that a visit is confirmed by phone.",
   ],
 } as const;

@@ -116,7 +116,9 @@ above the floor, as of 2026-11-09.
 2. Answer block — do we serve this city, how fast, at what cost.
 3. Local substance — at least three items from §2.
 4. Full service list with links.
-5. Nearby locations (2–4 links).
+5. Nearby locations (2–4 links) — or the one nearest published page when no other published place
+   is near (חיפה, since the 2026-11-09 retirement of קריות and צפון). Never add a distant place to
+   reach a count; a region pairs only with its own towns.
 6. City-specific FAQ, 2–3 questions.
 7. CTA.
 

@@ -37,11 +37,19 @@ const REDIRECTS = {
   "/רחובות/": "/locations/רחובות/",
   "/יבנה/": "/locations/יבנה/",
   "/אשדוד/": "/locations/אשדוד/",
-  "/באר-שבע/": "/locations/באר-שבע/",
-  "/קריות/": "/locations/קריות/",
-  "/צפון/": "/locations/צפון/",
-  "/דרום/": "/locations/דרום/",
+  "/באר-שבע/": "/איזורי-שירות/",
+  "/קריות/": "/איזורי-שירות/",
+  "/צפון/": "/איזורי-שירות/",
+  "/דרום/": "/איזורי-שירות/",
   "/שרון/": "/locations/שרון/",
+
+  // 1b. Retired locations (owner-actions 3.6, 2026-11-09): the business does not serve these four, so
+  // their pages are gone. Both the page URL and the legacy root URL (above) 301 straight to the areas
+  // index — never through a retired page, so nothing chains.
+  "/locations/באר-שבע/": "/איזורי-שירות/",
+  "/locations/קריות/": "/איזורי-שירות/",
+  "/locations/צפון/": "/איזורי-שירות/",
+  "/locations/דרום/": "/איזורי-שירות/",
 
   // 2. Blog — old long slugs -> clean /blog/<slug>/
   "/שערים-חשמליים-השקעה-שמחזירה-את-עצמה-ומה-כדאי-לדעת/": "/blog/שערים-חשמליים-השקעה/",

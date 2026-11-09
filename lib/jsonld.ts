@@ -104,7 +104,7 @@ export function placeNode(loc: Place): JsonLd {
  * `description` is the tagline, not the kit's default (`shortPitch`): the roster pitch carries claims
  * `docs/business-facts.md` has not confirmed, and this node now ships on every page.
  *
- * `areaServed` is the 18 published locations as `City` / `AdministrativeArea` nodes (`placeNode`),
+ * `areaServed` is the 14 published locations as `City` / `AdministrativeArea` nodes (`placeNode`),
  * not the roster's marketing phrase, which includes the unconfirmed "פריסה ארצית" (§4.8).
  * `hasOfferCatalog` names the 7 services as `Service` nodes by `@id` — no `Offer`, no price
  * (§4.10): `OfferCatalog.itemListElement` accepts any `Thing`. Each entry carries `name` and `url` so it
@@ -167,7 +167,7 @@ export function serviceNode(
 
 /**
  * Location page — `Service` × place (schema-graph §5). Never a `LocalBusiness` per city: this is a
- * service-area business with no premises, and 18 business nodes is a recognised local-spam pattern.
+ * service-area business with no premises, and one business node per city is a recognised local-spam pattern.
  * `svc.name` is the page's full display name — the caller composes it from `lib/content.ts`.
  */
 export function locationServiceJsonLd(

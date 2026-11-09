@@ -3,12 +3,13 @@
  * The field rules are the JSDoc on `CityContent` in lib/city-content.ts; the bar is
  * docs/content-standards.md §2–§5, §8.
  *
- * What this page may say: that we serve אשקלון (a published location), and how gates and shutters
- * behave in this city — salt, sand, the dry climate, the housing stock, the industrial zones —
- * stated as how things work. What it may not say: any job done here, a technician, a travel or
- * response time, availability, a price, a municipal rule, or service anywhere in the south beyond
- * the city itself (business-facts §E). No national infrastructure in the southern zone is named, so
- * nothing reads as a client.
+ * What this page may say: that we serve אשקלון (owner-confirmed 2026-11-09, owner-actions 3.6), and
+ * how gates and shutters behave in this city — salt, sand, the dry climate, the housing stock, the
+ * industrial zones — stated as how things work. What it may not say: any job done here, a
+ * technician, a travel or response time, availability, a price, a municipal rule, or service
+ * anywhere in the south beyond the city itself — the same answer retired the דרום and באר שבע pages
+ * as not served (business-facts §E). The Negev is named only as the source of the dry wind. No
+ * national infrastructure in the southern zone is named, so nothing reads as a client.
  *
  * Public geography, from he.wikipedia (the articles אשקלון — גאוגרפיה ואקלים, תעשייה; שכונת
  * אפרידר; שכונת ברנע; שכונת אגמים; שכונת שמשון; מישור החוף הדרומי): the dry nights and the winds

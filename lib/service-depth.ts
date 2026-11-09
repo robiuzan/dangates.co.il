@@ -60,7 +60,7 @@ export interface ServiceDepth {
   faqs: readonly ServiceDepthFaq[];
   /** 2–4 services by relevance, never the service itself. */
   relatedServices: readonly ServiceSlug[];
-  /** 4–6 locations from the published list; an unconfirmed region is never chosen to fill the count. */
+  /** 4–6 locations from the published list; the שרון region is never chosen to fill the count. */
   locations: readonly LocationSlug[];
   /** 1–3 slugs of existing posts in lib/posts.ts. */
   relatedPosts: readonly string[];

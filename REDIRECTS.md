@@ -5,32 +5,38 @@ Pages reads that file at the edge and issues the real 301s; `scripts/gen-redirec
 from the map below. All old→new pairs below. Hebrew paths are shown decoded; the generator emits them
 URL-encoded (percent-encoded UTF-8). Trailing slashes match the site's `trailingSlash: true` output —
 and because Cloudflare Pages matches a source path literally, the generator emits **each mapped path
-twice**, in its slashed and bare form, so an inbound link in either shape 301s instead of reaching the 404. That is why `_redirects` carries 72 rules for the 37 pairs listed here.
+twice**, in its slashed and bare form, so an inbound link in either shape 301s instead of reaching the 404. That is why `_redirects` carries 80 rules for the 41 pairs listed here.
 
-## 1. Locations — normalize all 18 cities to `/locations/<he-slug>/`
+## 1. Locations — normalize the cities to `/locations/<he-slug>/`
 
 The live site scattered most cities at the site root; the rebuild serves them all under `/locations/`.
 
-| Old (live root)      | New                                                                                             |
-| -------------------- | ----------------------------------------------------------------------------------------------- |
-| `/תל-אביב/`          | `/locations/תל-אביב/`                                                                           |
-| `/ירושלים/`          | `/locations/ירושלים/`                                                                           |
-| `/חיפה/`             | `/locations/חיפה/`                                                                              |
-| `/ראשון-לציון/`      | `/locations/ראשון-לציון/`                                                                       |
-| `/פתח-תקווה/`        | `/locations/פתח-תקווה/`                                                                         |
-| `/נתניה/`            | `/locations/נתניה/`                                                                             |
-| `/חולון/`            | `/locations/חולון/`                                                                             |
-| `/כפר-סבא/`          | `/locations/כפר-סבא/`                                                                           |
-| `/מודיעין/`          | `/locations/מודיעין/`                                                                           |
-| `/רחובות/`           | `/locations/רחובות/`                                                                            |
-| `/יבנה/`             | `/locations/יבנה/`                                                                              |
-| `/אשדוד/`            | `/locations/אשדוד/`                                                                             |
-| `/באר-שבע/`          | `/locations/באר-שבע/`                                                                           |
-| `/קריות/`            | `/locations/קריות/`                                                                             |
-| `/צפון/`             | `/locations/צפון/`                                                                              |
-| `/דרום/`             | `/locations/דרום/`                                                                              |
-| `/שרון/`             | `/locations/שרון/`                                                                              |
-| `/locations/אשקלון/` | `/locations/אשקלון/` (unchanged — the one city already under `/locations/`; no redirect needed) |
+| Old (live root)       | New                                                                                             |
+| --------------------- | ----------------------------------------------------------------------------------------------- |
+| `/תל-אביב/`           | `/locations/תל-אביב/`                                                                           |
+| `/ירושלים/`           | `/locations/ירושלים/`                                                                           |
+| `/חיפה/`              | `/locations/חיפה/`                                                                              |
+| `/ראשון-לציון/`       | `/locations/ראשון-לציון/`                                                                       |
+| `/פתח-תקווה/`         | `/locations/פתח-תקווה/`                                                                         |
+| `/נתניה/`             | `/locations/נתניה/`                                                                             |
+| `/חולון/`             | `/locations/חולון/`                                                                             |
+| `/כפר-סבא/`           | `/locations/כפר-סבא/`                                                                           |
+| `/מודיעין/`           | `/locations/מודיעין/`                                                                           |
+| `/רחובות/`            | `/locations/רחובות/`                                                                            |
+| `/יבנה/`              | `/locations/יבנה/`                                                                              |
+| `/אשדוד/`             | `/locations/אשדוד/`                                                                             |
+| `/באר-שבע/`           | `/איזורי-שירות/` (retired: see the note below)                                                  |
+| `/קריות/`             | `/איזורי-שירות/` (retired: see the note below)                                                  |
+| `/צפון/`              | `/איזורי-שירות/` (retired: see the note below)                                                  |
+| `/דרום/`              | `/איזורי-שירות/` (retired: see the note below)                                                  |
+| `/שרון/`              | `/locations/שרון/`                                                                              |
+| `/locations/אשקלון/`  | `/locations/אשקלון/` (unchanged — the one city already under `/locations/`; no redirect needed) |
+| `/locations/באר-שבע/` | `/איזורי-שירות/` (retired page: see the note below)                                             |
+| `/locations/קריות/`   | `/איזורי-שירות/` (retired page: see the note below)                                             |
+| `/locations/צפון/`    | `/איזורי-שירות/` (retired page: see the note below)                                             |
+| `/locations/דרום/`    | `/איזורי-שירות/` (retired page: see the note below)                                             |
+
+**Retired locations (2026-11-09, owner-actions 3.6).** The business does not serve באר שבע, קריות, צפון or דרום, so their four `/locations/<slug>/` pages are gone. Each retired page and its legacy root URL (`/באר-שבע/`, `/קריות/`, `/צפון/`, `/דרום/`) 301s straight to `/איזורי-שירות/`: the legacy rows are re-pointed rather than left aimed at the retired page, so no rule chains. Never aim a rule at a retired page.
 
 ## 2. Blog — old long slugs → clean `/blog/<slug>/`
 

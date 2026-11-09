@@ -2,7 +2,7 @@
  * city-content.ts — the per-city content model that app/locations/[city]/page.tsx renders
  * (backlog §3.1, `.claude/skills/new-city`, docs/content-standards.md §2). One typed entry per
  * location, written in its own module under content/locations/<slug>.ts
- * (`export const city: CityContent`) so eighteen drafters can work in parallel without touching one
+ * (`export const city: CityContent`) so the drafters can work in parallel without touching one
  * file. This file only types, assembles and checks them.
  *
  * `cityContent` is a total `Record<LocationSlug, CityContent>`: adding a location to
@@ -41,11 +41,7 @@ import { city as modiin } from "@/content/locations/מודיעין";
 import { city as rehovot } from "@/content/locations/רחובות";
 import { city as yavne } from "@/content/locations/יבנה";
 import { city as ashdod } from "@/content/locations/אשדוד";
-import { city as beerSheva } from "@/content/locations/באר-שבע";
-import { city as krayot } from "@/content/locations/קריות";
 import { city as ashkelon } from "@/content/locations/אשקלון";
-import { city as north } from "@/content/locations/צפון";
-import { city as south } from "@/content/locations/דרום";
 import { city as sharon } from "@/content/locations/שרון";
 
 /** One local-notes section: a question-form H2 and its prose. */
@@ -74,8 +70,11 @@ export interface CityContent {
   /**
    * Meta description and og:description: 150–160 characters (keyword-map §5 — titles.mjs warns only
    * outside its sitewide 120–160 band), ending on an action and terminal punctuation, unique
-   * sitewide, no unconfirmed claim. For a place whose coverage is 🔶 (business-facts §E) the action
-   * is the bound — check by phone whether a visit is possible — never a booking.
+   * sitewide, no unconfirmed claim. חיפה, אשקלון and אזור השרון are served (owner-actions 3.6,
+   * answered 2026-11-09); the answer named no other published place, so for the rest nothing beyond
+   * the page's own wording is confirmed — ירושלים is still 🔶 and its answer and meta keep the bound.
+   * Either way it is no booking promise: the action is a call, or the bound — check by phone whether
+   * and when a visit is possible — never "נתאם" or another booking certainty.
    * Empty → `locationMetaDescription(prefixed)`.
    */
   metaDescription: string;
@@ -103,6 +102,13 @@ export interface CityContent {
    * reverse direction of the mesh), with a link out to the full list. Empty → the full list of seven.
    */
   services: readonly ServiceSlug[];
+  /**
+   * Optional H2 over the `nearby(slug)` links, for a page whose links the shared
+   * `locationPageCopy.nearbyHeading` ("אילו ערים ואזורים קרובים?") would misdescribe — today only
+   * חיפה, whose one link is the nearest page on the site but not a close town (lib/nearby.ts).
+   * Question form; asks about the site's pages, never about service. Absent → the shared heading.
+   */
+  nearbyHeading?: string;
 }
 
 export const cityContent: Record<LocationSlug, CityContent> = {
@@ -118,11 +124,7 @@ export const cityContent: Record<LocationSlug, CityContent> = {
   רחובות: rehovot,
   יבנה: yavne,
   אשדוד: ashdod,
-  "באר-שבע": beerSheva,
-  קריות: krayot,
   אשקלון: ashkelon,
-  צפון: north,
-  דרום: south,
   שרון: sharon,
 };
 

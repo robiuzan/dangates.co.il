@@ -3,12 +3,15 @@
  * The field rules are the JSDoc on `CityContent` in lib/city-content.ts; the bar is
  * docs/content-standards.md §2–§5, §8.
  *
- * What this module may say: that Haifa itself is a published service location (lib/site-config.ts),
- * public geography (the Carmel slopes, the neighbourhoods named below, the port, the sea air), and
+ * What this module may say: that the business serves Haifa itself (owner-confirmed 2026-11-09,
+ * owner-actions 3.6 — the answer block says so), public geography (the Carmel slopes, the neighbourhoods named below, the port, the sea air), and
  * general technical knowledge of how gates, motors, controllers and eyes behave there.
  * What it may NOT say (docs/business-facts.md §B–§E): any job done here, any technician, travel or
- * response time, availability hours, a price, or service in the קריות — the bay towns north of the
- * city are their own, unconfirmed page. Neighbourhoods are limited to ones that are certainly inside Haifa.
+ * response time, availability hours, a price, or service in the bay towns north of the city
+ * (the קריות), which are not served and have no page — so "בחיפה עצמה" in the answer block is a true
+ * boundary. Being served is not a booking promise: the answer and the meta description ask the
+ * reader to call and check when a visit is possible, the same bound `finalCtaCopy` closes the page
+ * with. Neighbourhoods are limited to ones that are certainly inside Haifa.
  *
  * Geography sources (public, for claims-verifier): he.wikipedia "חיפה" — the city built on
  * topographic "steps"; more rain on the upper Carmel than at the port; the wooded wadis between the
@@ -23,10 +26,13 @@ export const city: CityContent = {
   title: "תיקון שערים חשמליים בחיפה",
   h1: "תיקון שערים חשמליים בחיפה",
   metaDescription:
-    "תיקון והתקנה של שערים חשמליים בחיפה: שערים נגררים על מדרונות הכרמל, שערי חניה בבנייני מגורים ומחסומים במפרץ חיפה ובפארק מת״ם. התקשרו אלינו לתיאום אבחון.",
+    "תיקון והתקנה של שערים חשמליים בחיפה: שערים נגררים על מדרונות הכרמל, שערי חניה בבנייני מגורים ומחסומים במפרץ חיפה ובפארק מת״ם. התקשרו ובדקו מתי אפשר להגיע.",
   answerHeading: "האם אתם מתקנים שערים חשמליים בחיפה?",
+  // The one link below this page's FAQ is נתניה (lib/nearby.ts): the nearest page on the site, not a
+  // close town, so the shared "אילו ערים ואזורים קרובים?" would misdescribe it.
+  nearbyHeading: "איזה עמוד באתר הוא הקרוב ביותר לחיפה?",
   answer:
-    "כן, אנחנו נותנים שירות בחיפה עצמה: תיקון, תחזוקה והתקנה של שערים חשמליים, כמו שערים נגררים, שערי חניה, שערים מתרוממים ומחסומים. בעיר שבנויה על מדרונות הכרמל ולצד הים, שלושה דברים מעמיסים על השערים: שיפוע הכניסה, מי גשם שזורמים אל המסילה ומלח שמגיע מהים. לתיאום אבחון התקשרו אלינו, או שלחו הודעה דרך כפתור הוואטסאפ באתר.",
+    "כן, אנחנו נותנים שירות בחיפה עצמה: תיקון, תחזוקה והתקנה של שערים חשמליים, כמו שערים נגררים, שערי חניה, שערים מתרוממים ומחסומים. בעיר שבנויה על מדרונות הכרמל ולצד הים, שלושה דברים מעמיסים על השערים: שיפוע הכניסה, מי גשם שזורמים אל המסילה ומלח שמגיע מהים. כדי לבדוק מתי אפשר להגיע לאבחון, התקשרו אלינו או שלחו הודעה דרך כפתור הוואטסאפ באתר.",
   localNotes: [
     {
       heading: "מה עושה המדרון של הכרמל לשער החשמלי?",

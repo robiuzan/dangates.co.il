@@ -14,9 +14,11 @@
  * and the seaside car-park barrier questions (local-seo-strategist, Sprint 6 page review: two FAQs
  * here had no Sharon anchor).
  * What it may NOT say (docs/business-facts.md §E): that this business serves any named Sharon town
- * or the whole region, a job done here, a technician, a travel fee or time, a response time,
- * availability hours, a price, or how often a fault occurs here. Coverage of the Sharon is an open
- * owner question, so the answer block ends on the bound.
+ * or every address in the region, a job done here, a technician, a travel fee or time, a response
+ * time, availability hours, a price, or how often a fault occurs here. 2026-11-09 (owner-actions
+ * 3.6): the owner listed the areas that are NOT served and left the Sharon off that list, so the
+ * page stays published. That answer names no town and gives no coverage wording, so the answer
+ * block keeps its bound — whether and when a visit is possible is checked by phone, per address.
  */
 import type { CityContent } from "@/lib/city-content";
 

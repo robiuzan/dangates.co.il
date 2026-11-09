@@ -162,7 +162,7 @@ export interface Guide {
    *  index that renders this guide on those service pages, which is what makes an orphan impossible. */
   relatedServices: readonly ServiceSlug[];
   /** Only when the copy genuinely names a city — and then with the entry's `prefixed` value
-   *  ("בצפון הארץ", never a bare "בצפון"). A declared location needs an in-copy link to its page,
+   *  ("באזור השרון", never a bare "בשרון"). A declared location needs an in-copy link to its page,
    *  and an in-copy link to a location page needs the declaration. Names no coverage claim. */
   relatedLocations?: readonly LocationSlug[];
   /** The evidenced query this guide targets (keyword-map §2/§8/§13 phrasing, verbatim). The registry
