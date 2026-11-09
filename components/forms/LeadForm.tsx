@@ -14,6 +14,7 @@ import {
   leadFormConsentCopy,
   leadFormErrorCopy,
   leadFormMessageCopy,
+  leadFormSuccessCopy,
   leadFormValidationCopy,
   privacyPath,
   thanksPath,
@@ -267,11 +268,9 @@ export function LeadForm({
           <Check className="h-6 w-6" aria-hidden />
         </span>
         <p className="mt-3 font-heading text-lg font-bold text-primary">
-          תודה! קיבלנו את הפנייה
+          {leadFormSuccessCopy.heading}
         </p>
-        <p className="mt-1 text-sm text-gray-600">
-          נחזור אליכם בהקדם. צריכים מענה מיידי? התקשרו אלינו.
-        </p>
+        <p className="mt-1 text-sm text-gray-600">{leadFormSuccessCopy.body}</p>
       </div>
     );
   }

@@ -99,6 +99,14 @@
       "status": "never"
     },
     {
+      "id": "workmanship-absolute",
+      "pattern": "ללא פשרות|בלי פשרות|מצוינות בכל|למצוינות",
+      "section": "content-standards §6",
+      "row": "Superlatives and absolute workmanship promises",
+      "status": "never",
+      "note": "Added in Sprint 4F after the aboutValues and aboutSections lines. Replace with the mechanism (the check order, what is checked)."
+    },
+    {
       "id": "named-person",
       "pattern": "הבעלים [א-ת]+ [א-ת]+|המייסד [א-ת]+|הטכנאי שלנו [א-ת]+",
       "section": "B",

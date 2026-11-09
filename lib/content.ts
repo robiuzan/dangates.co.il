@@ -46,9 +46,9 @@ const serviceMeta: Record<ServiceSlug, ServiceMeta> = {
   "שערי-כנף": {
     tagline: "פתרון אלגנטי וחזק",
     description:
-      "שערי כנף נפתחים על צירים, פנימה או החוצה, ומתאימים לבתים פרטיים, למתחמים מסחריים ולמוסדות, כשיש מרחב פתיחה לפני השער. אנחנו מייצרים, מתקינים ומתקנים אותם: כיוון צירים, תיקון כנף כבדה ששוקעת ונגררת על הקרקע, ובחירת מנוע לפי רוחב הכנף ומשקלה.",
+      "שערי כנף נפתחים על צירים, פנימה או החוצה, ומתאימים לבתים פרטיים, למתחמים מסחריים ולמוסדות, כשיש מרחב פתיחה לפני השער. אנחנו מתקינים ומתקנים אותם: כיוון צירים, תיקון כנף כבדה ששוקעת ונגררת על הקרקע, ובחירת מנוע לפי רוחב הכנף ומשקלה.",
     metaDescription:
-      "ייצור, התקנה ותיקון של שערי כנף לבתים פרטיים, למתחמים מסחריים ולמוסדות — כיוון צירים, תיקון כנף כבדה ששוקעת ונגררת על הקרקע, ובחירת מנוע לפי רוחב הכנף ומשקלה.",
+      "התקנה ותיקון של שערי כנף לבתים פרטיים, למתחמים מסחריים ולמוסדות — כיוון צירים, תיקון כנף כבדה ששוקעת ונגררת על הקרקע, ובחירת מנוע לפי רוחב הכנף ומשקלה.",
     icon: "DoorOpen",
   },
   "שערים-מתרוממים": {
@@ -68,13 +68,15 @@ const serviceMeta: Record<ServiceSlug, ServiceMeta> = {
   "שער-זרוע": {
     tagline: "מחסומים וזרועות הפעלה",
     description:
-      "התקנה ותיקון של שערי זרוע ומחסומים לחניה — אבחון המנוע, קפיץ האיזון, לוח הפיקוד והשלטים, עם דגש על בטיחות ותיקונים עמידים לאורך זמן.",
+      "התקנה ותיקון של שערי זרוע ומחסומים לחניה — אבחון המנוע, קפיץ האיזון, לוח הפיקוד, העיניות והשלטים, וכיוון הזרוע כך שתעצור בגובה ובמיקום הנכונים.",
     icon: "DoorClosed",
   },
   "תריסי-גלילה-חשמליים": {
     tagline: "ביטחון ונוחות לבית ולעסק",
     description:
-      "תריסי גלילה חשמליים הם פתרון חכם ויעיל לביטחון ולנוחות בכל בית או משרד. אנו מספקים התקנה מקצועית ושירות גם אחרי ההתקנה, לצד תיקון ותחזוקה של תריסי גלילה קיימים.",
+      "תריסי גלילה חשמליים מופעלים במנוע צינורי שיושב בתוך ציר הגלילה, ונשלטים במתג על הקיר או בשלט. אנחנו מתקינים תריסים חשמליים, ומתקנים ומתחזקים תריסים קיימים: תיקון מנוע שלא מגיב או תריס שנעצר באמצע, החזרת שלבים שיצאו מהמסילה וכיוון נקודות העצירה.",
+    metaDescription:
+      "התקנה, תיקון ותחזוקה של תריסי גלילה חשמליים לבית ולמשרד — תיקון מנוע שלא מגיב ותריס שנעצר באמצע, החזרת שלבים שיצאו מהמסילה וכיוון נקודות העצירה.",
     icon: "Blinds",
   },
   "שערים-לדירה": {
@@ -174,13 +176,15 @@ export const differentiators = [
   },
   {
     icon: "Users",
-    title: "כל סוגי השערים והמנגנונים",
-    body: "לכל שער מנגנון אחר, ואנחנו מאבחנים לפי המנגנון: מסילה וגלגלים בשער נגרר, צירים ובוכנות בשער כנף, קפיצי איזון בשער מתרומם ובשער זרוע, ציר גלילה בתריס.",
+    title: "מנגנון אחר לכל סוג שער",
+    body: "אנחנו מאבחנים כל שער לפי המנגנון שלו: מסילה וגלגלים בשער נגרר, צירים ובוכנות בשער כנף, קפיצי איזון בשער מתרומם ובשער זרוע, ציר גלילה בתריס.",
   },
   {
     icon: "Wrench",
-    title: "ציוד מתקדם",
-    body: "עבודה עם ציוד וכלים מתקדמים לאבחון ותיקון מדויק, אמין ובטיחותי.",
+    // Was "ציוד מתקדם" — an unsourced quality claim. Now the repair-or-replace mechanism that
+    // /מחירון/ already states (pricingPageCopy, "motor-reuse"), with no "only"/"never" absolute.
+    title: "תיקון לפי החלק שנכשל",
+    body: "כשהמנוע הקיים תקין או ניתן לתיקון, משאירים אותו ומטפלים במה שנכשל, למשל בקבל ההנעה או בגלגלי השיניים שבתוכו. כשצריך מנוע חדש, מתאימים אותו לשער ולשימוש, ולא בהכרח לדגם הישן.",
   },
   {
     icon: "Settings2",
@@ -205,7 +209,7 @@ export const processSteps = [
   },
   {
     title: "ביצוע מקצועי",
-    body: "מתקנים או מתקינים את השער בציוד מתקדם, עם דגש על בטיחות ואמינות.",
+    body: "מתקנים את מה שנמצא באבחון, או מתקינים את השער החדש עם המנוע, לוח הפיקוד והעיניות.",
   },
   {
     title: "בדיקה ואחריות",
@@ -288,7 +292,7 @@ export interface HomeFaq {
 export const faqs: readonly HomeFaq[] = [
   {
     q: "כמה זמן לוקח לתקן שער חשמלי?",
-    a: "ניקוי ויישור של עינית, החלפת סוללה בשלט או קידוד שלט מחדש הם בדרך כלל עבודה קצרה. החלפת לוח פיקוד, קבל הנעה או מנוע לוקחת יותר זמן, ותלויה גם בזמינות החלק המתאים לדגם. תיקון מכני, כמו מסילה עקומה, גלגל שחוק או ציר שבור, תלוי בהיקף הנזק. האבחון מברר איזה מהמקרים האלה הוא שלכם.",
+    a: "משך התיקון תלוי בתקלה. ניקוי ויישור של עינית, החלפת סוללה בשלט או קידוד שלט מחדש הם בדרך כלל עבודה קצרה. החלפת לוח פיקוד, קבל הנעה או מנוע לוקחת יותר זמן, ותלויה גם בזמינות החלק המתאים לדגם. תיקון מכני, כמו מסילה עקומה, גלגל שחוק או ציר שבור, תלוי בהיקף הנזק. האבחון מברר איזה מהמקרים האלה הוא שלכם.",
     moreAt: {
       href: "/blog/תקלות-נפוצות-בשערים-חשמליים/",
       label: "על התקלות הנפוצות בשערים חשמליים",
@@ -296,7 +300,9 @@ export const faqs: readonly HomeFaq[] = [
   },
   {
     q: "האם יש אחריות על התיקון?",
-    a: "כן. על תיקונים ועל התקנות שביצענו ניתנת אחריות על העבודה. לפני שמסיימים בודקים את השער מקצה לקצה: פתיחה וסגירה עד הסוף, תגובה לשלט, ועצירה כשהעינית מזהה מכשול. אם אחרי הביקור השער לא מתנהג כמו שצריך, התקשרו ותארו מה קורה. את היקף האחריות על העבודה שלכם שאלו כשקובעים את הביקור.",
+    // The warranty term, scope and exclusions are unconfirmed (business-facts §D), so the answer
+    // uses the one allowed wording and sends the scope question to the visit — it states no term.
+    a: "כן. על תיקונים ועל התקנות שביצענו אנחנו נותנים אחריות על העבודה. לפני שמסיימים בודקים את השער מקצה לקצה: פתיחה וסגירה עד הסוף, תגובה לשלט, ועצירה כשהעינית מזהה מכשול. אם אחרי הביקור השער לא מתנהג כמו שצריך, התקשרו ותארו מה קורה. מה בדיוק כוללת האחריות על העבודה בשער שלכם? שאלו את הטכנאי לפני שהוא מתחיל.",
   },
   {
     q: "מה כוללת תחזוקה שוטפת לשער?",
@@ -318,7 +324,7 @@ export const faqs: readonly HomeFaq[] = [
     q: "מה העלות של ביקור טכנאי לבדיקה?",
     // 🔶 confirm — business-facts §D: the band is still current; whether it is credited against
     // the repair is unconfirmed, so it is a question to ask, never a policy.
-    a: `עלות ביקור טכנאי לבדיקת שער היא ${visitFeeRange}. את הסכום המדויק לשער שלכם שאלו כשקובעים את הביקור. בביקור מאבחנים את התקלה, ומחיר התיקון עצמו נקבע אחרי האבחון: לפי החלק שנכשל, סוג השער והעבודה שנדרשת סביבו. אם חשוב לכם לדעת אם עלות הביקור מתקזזת ממחיר התיקון, שאלו על כך בשיחה, לפני שקובעים את הביקור.`,
+    a: `עלות ביקור טכנאי לבדיקת שער היא ${visitFeeRange}. בביקור מאבחנים את התקלה, ומחיר התיקון עצמו תלוי בחלק שנכשל, בסוג השער ובעבודה שנדרשת סביבו. את הסכום המדויק של הביקור לשער שלכם, ואם הוא מתקזז ממחיר התיקון, שאלו אותנו בטלפון עוד לפני הביקור.`,
     moreAt: { href: "/מחירון/", label: "מה קובע את המחיר של תיקון שער חשמלי" },
   },
   {
@@ -402,12 +408,18 @@ export const REVIEW_AVG: string | null =
 /** About-page core values (live-site audit "למה לבחור בנו?" / values, 6 items). */
 export const aboutValues = [
   {
-    title: "מצוינות",
-    body: "אנו שואפים למצוינות בכל היבט של עבודתנו — משירות הלקוחות ועד לאיכות הביצוע.",
+    // Was "מצוינות" / "שואפים למצוינות בכל היבט של העבודה" — an unsourced quality claim
+    // (content-standards §6). Now what the visit actually delivers: the fault named, and the upkeep
+    // the blog's maintenance posts describe.
+    title: "הסבר על התקלה",
+    body: "אחרי האבחון מסבירים מה נכשל ולמה, ומה אפשר לעשות כדי שהשער יחזיק מעמד: ניקוי העיניות, שימון המסילה או הצירים והחלפת סוללה בשלט.",
   },
   {
-    title: "שביעות רצון הלקוחות",
-    body: "שביעות הרצון של הלקוח עומדת במרכז — אנו מלווים אתכם עד שהשער עובד בדיוק כמו שצריך.",
+    title: "גם אחרי הביקור",
+    // Was an absolute workmanship promise ("…עד שהשער עובד בדיוק כמו שצריך"), unsourced
+    // (business-facts §D). Now only the step the original offered — call and describe — with no
+    // outcome promised, and without restating the end-of-visit check aboutIntro already describes.
+    body: "אם אחרי הביקור השער לא נפתח, לא נסגר או לא מגיב לשלט כמו שצריך, התקשרו אלינו ותארו מה קורה.",
   },
   {
     title: "יושרה ושקיפות",
@@ -431,7 +443,7 @@ export const aboutValues = [
 export const aboutSections = [
   {
     title: "החזון והמשימה",
-    body: "אנו מאמינים כי שירות איכותי מתחיל בהבנה מעמיקה של צורכי הלקוח. המשימה שלנו היא להעניק לכל לקוח פתרון מותאם אישית, תוך שמירה על סטנדרטים גבוהים של בטיחות, אמינות ואיכות עבודה ללא פשרות.",
+    body: "אנחנו מאמינים ששירות איכותי מתחיל בהבנה מעמיקה של צורכי הלקוח. המשימה שלנו היא להעניק לכל לקוח פתרון שמתאים לשער ולשימוש שלו, עם דגש על בטיחות ואמינות.",
   },
   {
     title: "תחומי ההתמחות",
@@ -439,7 +451,7 @@ export const aboutSections = [
   },
   {
     title: "המחויבות ללקוחות",
-    body: "אנחנו לא רק מתקינים ומתקנים שערים — אנו מחויבים להעניק לכם ביטחון ושקט נפשי. כל שירות שאנו מספקים מכוון לשיפור הבטיחות, השימושיות והאסתטיקה של השערים שלכם.",
+    body: "אנחנו לא רק מתקינים ומתקנים שערים — אנחנו מחויבים להעניק לכם ביטחון ושקט נפשי. כל שירות שאנחנו מספקים מכוון לשיפור הבטיחות, השימושיות והאסתטיקה של השערים שלכם.",
   },
 ] as const;
 
@@ -579,10 +591,13 @@ export const leadFormHeading = "קבלו הצעת מחיר חינם";
 
 /** components/marketing/Hero.tsx — homepage hero copy. */
 export const heroCopy = {
-  eyebrow: "אבחון במקום · מחיר לפני העבודה · מרכז הארץ",
+  // The eyebrow and the points name the diagnosis rather than "מחיר לפני העבודה" — a wording
+  // choice, not a gate: business-facts has no row on explaining the cost before work starts, and
+  // the lead keeps that clause because it is content-standards §4's reference line.
+  eyebrow: "תיקון · תחזוקה · התקנה · מרכז הארץ",
   h1: "דן שערים חשמליים – תיקון והתקנה מקצועית",
   lead: "השער נתקע או לא נסגר עד הסוף? טכנאי מגיע לאבחון, בודק את המנוע, את לוח הפיקוד ואת העיניות, ומסביר מה התקלה ומה העלות לפני שמתחילים — עם אחריות על העבודה.",
-  points: ["מחיר ברור לפני העבודה", "אחריות על העבודה", "תיאום מועד בשעות הפעילות"],
+  points: ["אבחון לפני תיקון", "אחריות על העבודה", "תיאום מועד בשעות הפעילות"],
   callLabel: "חייגו עכשיו:",
   whatsappLabel: "וואטסאפ",
   formSubtitle: "השאירו פרטים ונחזור אליכם עם פתרון — ללא התחייבות.",
@@ -590,7 +605,7 @@ export const heroCopy = {
 
 /** components/marketing/FinalCta.tsx — sitewide closing CTA copy. */
 export const finalCtaCopy = {
-  title: "השער תקוע או לא נסגר? דברו איתנו עוד היום.",
+  title: "השער תקוע או לא נסגר? דברו איתנו ונתאם ביקור.",
   body: `ייעוץ והצעת מחיר שקופה — ללא התחייבות. מאבחנים את התקלה, מסבירים מה העלות לפני שמתחילים ונותנים אחריות על העבודה. שעות הפעילות: ${siteConfig.hours.weekday}, ${siteConfig.hours.friday}.`,
   callLabel: "חייגו עכשיו:",
   whatsappLabel: "שלחו וואטסאפ",
@@ -605,7 +620,7 @@ export const serviceAreasCopy = {
 } as const;
 
 /** app/page.tsx — homepage <meta name="description">. */
-export const homeMetaDescription = `תיקון והתקנת שערים חשמליים לבתים, ועדי בתים ועסקים — שערים נגררים, כנף, מתרוממים ותריסי גלילה. אבחון במקום, מחיר שקוף מראש ואחריות על העבודה. חייגו ${siteConfig.phone}.`;
+export const homeMetaDescription = `תיקון והתקנת שערים חשמליים לבתים, ועדי בתים ועסקים — שערים נגררים, כנף, מתרוממים ותריסי גלילה. אבחון במקום לפני כל תיקון ואחריות על העבודה. חייגו ${siteConfig.phone}.`;
 
 /** app/page.tsx — the homepage FAQ section heading. */
 export const homeFaqHeading = {
@@ -633,7 +648,9 @@ export function locationPageTitle(cityName: string): string {
 }
 
 export function locationMetaDescription(cityName: string): string {
-  return `תיקון והתקנת שערים חשמליים ב${cityName} — אבחון במקום, מחיר לפני העבודה ואחריות על העבודה. לכל סוגי השערים: נגררים, כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`;
+  // Names what the diagnosis checks instead of "מחיר לפני העבודה" — a wording choice for the
+  // character budget, not a gate (business-facts has no row on it; see heroCopy).
+  return `תיקון והתקנת שערים חשמליים ב${cityName} — אבחון המנוע, לוח הפיקוד והעיניות, ואחריות על העבודה. שערים נגררים, שערי כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`;
 }
 
 /**
@@ -653,7 +670,7 @@ export function locationHeroSubtitle(cityName: string): string {
 
 /** app/locations/[city]/page.tsx — the two intro paragraphs, per city. */
 export function locationIntroParagraph1(cityName: string): string {
-  return `מחפשים תיקון או התקנה של שער חשמלי ב${cityName}? ב${siteConfig.name} מטפלים בכל סוגי השערים החשמליים — נגררים, כנף, מתרוממים, שערים לחניה, שערי זרוע ותריסי גלילה — עם אבחון מדויק, ציוד מתקדם ותיקונים עמידים לאורך זמן.`;
+  return `מחפשים תיקון או התקנה של שער חשמלי ב${cityName}? ב${siteConfig.name} מטפלים בשערים נגררים, בשערי כנף, בשערים מתרוממים, בשערים לחניה, בשערי זרוע, במחסומים ובתריסי גלילה חשמליים. כשמזמינים תיקון, כל ביקור מתחיל באבחון לפי סדר: חשמל, שלט ומקלט, עיניות ולוח פיקוד, ואז המנוע והמכניקה.`;
 }
 
 export function locationIntroParagraph2(cityName: string): string {
@@ -666,7 +683,7 @@ export function locationServicesHeading(cityName: string): string {
 
 /** app/אודות/page.tsx — metadata + copy. */
 export const aboutMetaDescription =
-  "דן שערים חשמליים — תיקון, תחזוקה והתקנה של שערים חשמליים ותריסי גלילה. אבחון המנוע, לוח הפיקוד והעיניות, מחיר לפני העבודה ואחריות על העבודה.";
+  "דן שערים חשמליים — תיקון, תחזוקה והתקנה של שערים חשמליים ותריסי גלילה. אבחון המנוע, לוח הפיקוד והעיניות לפני כל תיקון, ואחריות על העבודה.";
 
 export const aboutHeroTitle = "אודות דן שערים חשמליים";
 export const aboutHeroSubtitle =
@@ -694,7 +711,7 @@ export const servicesIndexMetaDescription =
 
 export const servicesIndexHeroTitle = "השירותים שלנו";
 export const servicesIndexHeroSubtitle =
-  "פתרון לכל סוג שער חשמלי — מתיקון תקלות ומנועים ועד התקנת שער חדש, עם אבחון לפני תיקון ואחריות על העבודה.";
+  "מטפלים בשערים נגררים, בשערי כנף, בשערים מתרוממים, בשערים לחניה, בשערי זרוע, בשערים לבנייני מגורים ובתריסי גלילה. מתקנים תקלות ומנועים ומתקינים שערים חדשים, עם אבחון לפני תיקון ואחריות על העבודה.";
 
 /** app/צור-קשר/page.tsx — metadata + copy. */
 export const contactMetaDescription =
@@ -744,8 +761,10 @@ export const areasPageCopy = {
 export const servicesGridCopy = {
   eyebrow: "השירותים שלנו",
   title: "תיקון והתקנת שערים חשמליים",
-  subtitle:
-    "פתרון לכל סוג שער — משערים נגררים וכנף ועד תריסי גלילה, עם התקנה ותיקון מקצועיים ואחריות על העבודה.",
+  // "אחריות על העבודה" is already in the TrustBar, WhyUs and the /שירותים/ hero — not repeated here.
+  // No list of the services either: the cards right below name all of them, and on /שירותים/ the
+  // hero subtitle already lists them. The count's noun ("סוגי שירות") matches trustStats.
+  subtitle: `${publishedCounts.services} סוגי שירות, בהתקנה ובתיקון, ולכל אחד מהם עמוד משלו. בחרו את השירות שמתאים לכם.`,
   moreLabel: "למידע נוסף",
 } as const;
 
@@ -772,6 +791,18 @@ export const leadFormErrorCopy = {
   whatsappLabel: "שליחה בוואטסאפ",
   callLabel: "התקשרו עכשיו",
   retryLabel: "נסו לשלוח שוב",
+} as const;
+
+/**
+ * components/forms/LeadForm.tsx — the inline success state, shown only when the redirect to
+ * `thanksPath` is blocked. Replaces the heading and line typed in its JSX, whose "בהקדם" and
+ * "מענה מיידי" were a response-time promise no business-facts row confirms (§E). It says when we
+ * call back from the manifest hours behind `siteConfig.hours`, as `contactPageCopy.formSubtitle`
+ * does, and points at the phone without implying it is answered at every hour.
+ */
+export const leadFormSuccessCopy = {
+  heading: "תודה! קיבלנו את הפנייה",
+  body: `נחזור אליכם למספר שהשארתם בשעות הפעילות: ${siteConfig.hours.weekday}, ${siteConfig.hours.friday}. אפשר גם להתקשר אלינו ישירות.`,
 } as const;
 
 /**
@@ -969,12 +1000,17 @@ export const pricingCtaCopy = {
  */
 export const pricingTeaserCopy = {
   eyebrow: "מחירון",
-  title: "ממה מורכב המחיר של תיקון שער חשמלי?",
-  subtitle: `ביקור טכנאי ואבחון עולה ${visitFeeRange}. מחיר התיקון עצמו תלוי בחלק שנכשל, במשקל השער וברוחבו, בסוג המנוע ובחיווט, ונקבע אחרי האבחון.`,
+  // The title answers what the table shows, so it does not re-ask the pricing question that the
+  // Diagnosis section (on /) and the answer block (on /מחירון/) ask above it. The band is in the
+  // table row only (`priceRows`), never retyped here — /מחירון/ shows it at most twice.
+  title: "איזה מחיר ידוע עוד לפני הביקור?",
+  // What the repair price depends on is said once per page: by faqs[4] on / and by the answer
+  // block on /מחירון/ — so the subtitle answers the title and nothing else.
+  subtitle: "רק עלות ביקור הטכנאי והאבחון, שמופיעה בטבלה.",
   tableCaption: "עלות ביקור טכנאי ואבחון",
   serviceHeader: "שירות",
   priceHeader: "מחיר",
-  note: "* את הסכום המדויק שאלו כשקובעים את הביקור. מחיר התיקון נקבע אחרי האבחון.",
+  note: "* לסכום המדויק לשער שלכם, התקשרו אלינו בשעות הפעילות.",
   quoteLabel: "בקשו הצעת מחיר לשער שלכם",
   more: { href: "/מחירון/", label: "מה קובע את המחיר — בעמוד המחירון" },
 } as const;
@@ -1076,11 +1112,18 @@ export const pricingPageCopy = {
       // question as the heading only once §D answers it.
       id: "visit-fee",
       heading: "מה כולל ביקור הטכנאי, ומה כדאי לשאול לפני שקובעים אותו?",
+      // The band itself is in the answer block above and in the PricingTeaser table below, so this
+      // section does not repeat it (the page carries it twice, both from `visitFeeRange`/`priceRows`).
       paragraphs: [
-        `ביקור טכנאי ואבחון עולה ${visitFeeRange}. את הסכום המדויק שאלו כשקובעים את הביקור. בביקור בודקים את השער לפי סדר: חשמל, שלט ומקלט, עיניות, לוח פיקוד, מנוע ומכניקה, עד שמגיעים למקור התקלה.`,
-        "שאלו גם, לפני שקובעים, איך ומתי מקבלים את הצעת המחיר לתיקון.",
-        "שאלה ששווה לשאול בטלפון, לפני שקובעים: האם עלות הביקור מתקזזת ממחיר התיקון, אם מחליטים לתקן. שאלו מראש, כדי שהתשובה תהיה ברורה עוד לפני שהטכנאי מגיע.",
+        "בביקור בודקים את השער לפי סדר: חשמל, שלט ומקלט, עיניות, לוח פיקוד, מנוע ומכניקה, עד שמגיעים למקור התקלה.",
+        "לפני שקובעים את הביקור, כדאי לשאול אותנו בטלפון שלוש שאלות:",
       ],
+      items: [
+        "מה הסכום המדויק של הביקור לשער שלכם.",
+        "האם עלות הביקור מתקזזת ממחיר התיקון, אם מחליטים לתקן.",
+        "איך ומתי מקבלים את הצעת המחיר לתיקון.",
+      ],
+      after: "כך התשובות ברורות עוד לפני שהטכנאי מגיע.",
     },
     {
       id: "found-on-opening",
@@ -1105,11 +1148,11 @@ export const pricingPageCopy = {
       "תמונה או סרטון קצר בוואטסאפ: השער בתנועה, המנוע ולוח הפיקוד מבחוץ, בלי לפתוח מכסים שיש מתחתם חשמל.",
     ],
     after:
-      "גם עם כל הפרטים, המחיר הסופי נקבע רק באבחון במקום. השיחה עוזרת להבין מראש אם מדובר בכיוון, בהחלפת חלק או בעבודה גדולה יותר.",
+      "גם עם כל הפרטים, את המחיר הסופי אפשר לדעת רק אחרי שהטכנאי רואה את השער. השיחה עוזרת להבין מראש אם מדובר בכיוון, בהחלפת חלק או בעבודה גדולה יותר.",
     whatsappMessage:
       "היי, אני רוצה לברר מחיר לתיקון שער חשמלי. מצרף/ת תמונה של השער ותיאור של התקלה:",
   },
-  footnote: `המחיר היחיד שמופיע בעמוד הוא עלות ביקור הטכנאי והאבחון, ${visitFeeRange}. מחיר כל תיקון או התקנה נקבע באבחון בשטח, לפי הגורמים שבעמוד.`,
+  footnote: "מחיר כל תיקון או התקנה תלוי בגורמים שתוארו בעמוד, ומתברר באבחון.",
 } as const;
 
 /**
@@ -1117,7 +1160,7 @@ export const pricingPageCopy = {
  * first paragraph directly under the H1. What the business does, for whom, where (מרכז הארץ and
  * the published areas — no wider region promised, business-facts §E) and how to reach it.
  */
-export const homeAnswerBlock = `ב${siteConfig.name} מתקנים, מתחזקים ומתקינים שערים חשמליים ותריסי גלילה חשמליים: שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה, שערי זרוע ומחסומים. אנחנו עובדים עם בעלי בתים, ועדי בתים, חברות ניהול ועסקים, במרכז הארץ ובאזורים שמופיעים באתר. אפשר להתקשר בטלפון ${siteConfig.phone}, לשלוח וואטסאפ או להשאיר פרטים בטופס.`;
+export const homeAnswerBlock = `ב${siteConfig.name} מתקנים, מתחזקים ומתקינים שערים חשמליים ותריסי גלילה חשמליים: שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה, שערי זרוע ומחסומים. אנחנו עובדים עם בעלי בתים, ועדי בתים, חברות ניהול ועסקים, במרכז הארץ ובאזורים שברשימת אזורי השירות באתר. אפשר להתקשר בטלפון ${siteConfig.phone}, לשלוח הודעה דרך כפתור הוואטסאפ באתר או להשאיר פרטים בטופס.`;
 
 /** A titled short paragraph — one diagnosis step on the homepage, one topic on /צור-קשר/. */
 export interface TitledText {
@@ -1135,7 +1178,7 @@ export const homeDiagnosisCopy = {
   eyebrow: "אבחון ומחיר",
   heading: "איך מאבחנים תקלה בשער חשמלי, ואיך נקבע המחיר?",
   intro:
-    "אותו סימן יכול להגיע מכמה מקומות שונים. שער שלא נסגר עד הסוף יכול לנבוע מעינית מלוכלכת, מגלגל תקוע, מהגדרה בלוח הפיקוד או ממנוע שמאבד כוח. לכן האבחון עובר על המערכת לפי סדר קבוע, מהפשוט אל המורכב, ושום חלק לא מוחלף לפני שברור שהוא מקור התקלה.",
+    "אותו סימן יכול להגיע מכמה מקומות שונים. שער שלא נסגר עד הסוף יכול לנבוע מעינית מלוכלכת, מגלגל תקוע, מהגדרה בלוח הפיקוד או ממנוע שמאבד כוח. לכן האבחון עובר על המערכת לפי סדר, מהפשוט אל המורכב: מאספקת החשמל והשלט, דרך העיניות ולוח הפיקוד, ועד המנוע והמכניקה. כך מאתרים את הרכיב שגורם לתקלה, ולא רק את הסימן שלה.",
   checks: [
     {
       title: "אספקת החשמל",
