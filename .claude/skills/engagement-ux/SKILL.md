@@ -11,8 +11,9 @@ This skill owns what happens between landing and converting: whether a reader wh
 **decide** can find, read and finish the page — and whether we can see that they did.
 
 Adapted from galbath's `article-conversion` (`c:/Users/robiu/antigravity/Projects/galbath.co.il/.claude/skills/article-conversion/SKILL.md`)
-and widened to every page type here, because dangates has no guide family yet (Phase 4) and its
-service and location pages are the pages that must start earning engagement first.
+and widened to every page type here, because dangates had no guide family until Sprint 7 (four
+guides since `89439b7`) and its service and location pages are the pages that must earn engagement
+too.
 
 ## Baseline — re-measure first
 
@@ -38,14 +39,15 @@ dimensions) shipped in `68a4a7f`; the six engagement events below did not.
   one only after Phase 3 rewrites them past the floor.
 - **Derived from the block array at build** — zero client JS. Every H2 gets a stable `id` (a slug of
   the heading text), which also gives AEO section targeting something to anchor to. The block model
-  (`PostBlock`, `lib/guides.ts`) that makes this derivable is Phase 4; until then the 11 `/blog/`
-  posts are `{type:"h"|"p"|"li"; text}` with no ids and no TOC.
+  that makes this derivable is built for the guides since Sprint 7 (`lib/guide-types.ts`,
+  `guideHeadings()` in `lib/guides.ts`); the 11 `/blog/` posts are still `{type:"h"|"p"|"li"; text}`
+  with no ids and no TOC until their migration (owner-actions 3.8).
 - **Pattern:** galbath `components/article/chrome.tsx` `ArticleToc` — one component, an explicit
   `variant: "mobile" | "desktop"`, one visible element per call site. Mobile = a collapsed
   `<details>` in the flow so it never pushes the answer block below the fold; desktop = a
   `sticky top-24` `<nav aria-label="תוכן העניינים">` in the aside, with the call + WhatsApp card
-  below it. Copy the structure into `components/article/` in Phase 4; do not copy galbath's
-  `lib/articles.ts` imports.
+  below it. Its structure is in `components/article/` since Sprint 7 (`chrome.tsx`, `GuideView.tsx`); galbath's
+  `lib/articles.ts` imports were not copied.
 - **RTL:** logical utilities only (`ps-*`, `ms-*`, `start-*`) — `rules/rtl-markup.md` lints the file.
 - Links are `#id` anchors, so `toc_click` is the only event they need (see below).
 
@@ -126,8 +128,7 @@ exit: a reader still deciding needs a lateral link. Related services by relevanc
 pages use declared `relatedServices`, cities and posts since Sprint 5 (`225ff45`); the post route's
 `others` list still takes `.slice(0, 4)` (Sprint 7.3). Locations all 18 — the footer renders them
 all and each location page links its `nearby` neighbours since Sprint 6 (`7c3f2db`); the header is
-still Sprint 6.5 (`/internal-linking`). "More guides" exists once `/מדריכים/`
-exists (Phase 4).
+still Sprint 6.5 (`/internal-linking`). "More guides" is the `relatedGuides` list on each guide since Sprint 7 (`89439b7`).
 
 ## Engagement events — exactly `docs/event-taxonomy.md`
 

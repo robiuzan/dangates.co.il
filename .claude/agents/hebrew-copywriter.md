@@ -52,7 +52,7 @@ still to strip.
 
 ## Where copy lives — today, and the model you write against
 
-**Today — for the guides the target model does not exist yet; say so rather than pretend.** Read
+**Today — every page type has its model; the guides' since Sprint 7 (`89439b7`).** Read
 two neighbouring entries of the same kind before adding one, so tone, length and structure match.
 
 - A city page's copy is its own module, `content/locations/<slug>.ts` (`export const city:
@@ -79,8 +79,11 @@ CityContent`), typed and checked by `cityContent` in `lib/city-content.ts` (buil
 `content/services/<slug>.ts` — answer, mechanism sections, caveats, FAQs, `relatedServices`,
 `locations`, `relatedPosts`, `metaDescription`; the triggers stay in `serviceTriggers`
 (`lib/content.ts`). **Built in Sprint 6 (`/new-city` describes it):** `kind`, `prefixed` and
-per-entry `updated` on `locations`; `cityContent`; `nearbyPairs`. **Target model — Phase 4 (ADR 0003, /new-guide):** the typed block model and `content/guides/*.ts`
-under `/מדריכים/`. When a task targets a field that does not exist yet, write the copy in the skill's
+per-entry `updated` on `locations`; `cityContent`; `nearbyPairs`. **Built in Sprint 7 (`/new-guide` describes it):** the typed block model (`lib/guide-types.ts`,
+ADR 0003) and one `content/guides/<slug>.ts` per guide under `/מדריכים/`, registered in
+`lib/guides.ts` — external facts per `docs/research/2026-11-08-standards-and-law.md` (no October-2006
+date, no device list as law, no gate majority). The 11 posts stay on `PostBlock` until owner-actions
+3.8. When a task targets a field that does not exist yet, write the copy in the skill's
 template shape and hand the wiring to `rtl-frontend-engineer` — do not invent a different shape.
 
 ## Voice

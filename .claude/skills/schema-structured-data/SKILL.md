@@ -74,17 +74,17 @@ The last crumb keeps its `href` — `BreadcrumbList` needs a resolvable `item` a
 
 ## Per route type — target vs today (2026-11-08)
 
-| Route                                 | Target (one `@graph`)                                                             | Today (repo)                   |
-| ------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------ |
-| `/`                                   | business + `WebSite` + `FAQPage`                                                  | ✅                             |
-| `/services/{slug}/` ×7                | business + `Service` (`#service`, encoded `url`) + breadcrumb (+ `FAQPage` later) | ✅ (no FAQ yet)                |
-| `/locations/{slug}/` ×18              | business + `Service` with local `areaServed` + breadcrumb                         | ✅                             |
-| `/שירותים/` `/איזורי-שירות/` `/blog/` | `CollectionPage` + `ItemList` + breadcrumb                                        | ✅ (ItemLists of 7, 18 and 11) |
-| `/blog/{slug}/` ×11                   | business + `BlogPosting` (`#article`, `isPartOf`) + breadcrumb                    | ✅                             |
-| `/מדריכים/{slug}/` (Phase 4)          | business + `TechArticle`/`Article` + `FAQPage` + breadcrumb                       | route family does not exist    |
-| `/אודות/` · `/צור-קשר/`               | business + `AboutPage` (`knowsAbout`) / `ContactPage` + breadcrumb — no `Person`  | ✅                             |
-| `/מחירון/` · legal                    | `WebPage` + breadcrumb — `Offer` is **blocked** (business-facts §D)               | ✅                             |
-| `/תודה/` · `/404`                     | nothing (`noindex`)                                                               | ✅                             |
+| Route                                 | Target (one `@graph`)                                                                                        | Today (repo)                                      |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| `/`                                   | business + `WebSite` + `FAQPage`                                                                             | ✅                                                |
+| `/services/{slug}/` ×7                | business + `Service` (`#service`, encoded `url`) + breadcrumb (+ `FAQPage` later)                            | ✅ (no FAQ yet)                                   |
+| `/locations/{slug}/` ×18              | business + `Service` with local `areaServed` + breadcrumb                                                    | ✅                                                |
+| `/שירותים/` `/איזורי-שירות/` `/blog/` | `CollectionPage` + `ItemList` + breadcrumb                                                                   | ✅ (ItemLists of 7, 18 and 11)                    |
+| `/blog/{slug}/` ×11                   | business + `BlogPosting` (`#article`, `isPartOf`) + breadcrumb                                               | ✅                                                |
+| `/מדריכים/{slug}/` ×4 · `/מדריכים/`   | business + `TechArticle`/`Article` (`citation`) + `FAQPage` + breadcrumb · hub `CollectionPage` + `ItemList` | ✅ since `89439b7` (`TechArticle` 1, `Article` 3) |
+| `/אודות/` · `/צור-קשר/`               | business + `AboutPage` (`knowsAbout`) / `ContactPage` + breadcrumb — no `Person`                             | ✅                                                |
+| `/מחירון/` · legal                    | `WebPage` + breadcrumb — `Offer` is **blocked** (business-facts §D)                                          | ✅                                                |
+| `/תודה/` · `/404`                     | nothing (`noindex`)                                                                                          | ✅                                                |
 
 ## `lib/jsonld.ts` — built 2026-11-08 (Sprint 2)
 
@@ -137,7 +137,7 @@ only), and `author` + `publisher` → `#business` — the `Organization`, becaus
 (business-facts §B). Until then it was built inline with a raw `mainEntityOfPage`, `dateModified`
 pinned to `post.date` and a dangling `publisher`. `schema.mjs` tolerates the `Organization` author
 and forbids a `Person` while `lib/authors.ts` is empty (it exists, empty, since `d8edb28`); inventing
-one is never fine. Guides (Phase 4)
+one is never fine. Guides (built in Sprint 7, `89439b7`)
 use `TechArticle` for the safety/component families, `Article` otherwise, plus a `FAQPage` derived
 from the guide's own FAQ blocks so rule 2 below cannot drift.
 

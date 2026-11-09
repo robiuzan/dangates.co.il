@@ -74,8 +74,9 @@ context for reading the output, never a finding to copy.
    `schema.mjs` forbids a `Person` author while `lib/authors.ts` is empty. Grep for רישיון, תעודה,
    מוסמך, ביטוח, ח.פ., חשמלאי מוסמך: absence is the honest state for a 230V trade with no licence on
    record, and any appearance is ⛔. The legitimate expertise anchor is the ת״י 900 חלק 21.03 safety
-   guide (keyword-map §12, sourced from sii.org.il) — cite it as the `/eeat-build` path, not as a
-   claim.
+   guide (built in Sprint 7, `89439b7`; facts per `docs/research/2026-11-08-standards-and-law.md`) —
+   cite it as the `/eeat-build` path, not as a claim; a sentence presenting a safety device as a
+   legal requirement, or the refuted October-2006 date, is ⛔.
 5. **Zero photographs** (§7.5, business-facts §F ⏳). `a11y.mjs` / `perf.mjs` → `images: 0` on 46
    pages; the logo renders as text in the header (the home `<Link>` in `components/layout/Header.tsx`)
    and `public/dangates-logo.png` reaches only the JSON-LD `logo`. Photos are coming; the pipeline is

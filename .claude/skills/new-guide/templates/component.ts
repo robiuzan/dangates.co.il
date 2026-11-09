@@ -5,8 +5,12 @@ import type { Guide } from "@/lib/guide-types";
  * Worked against content-calendar §2 row 7 (`עינית לשער חשמלי`). One part per URL.
  *
  * Block order (content-standards §3; /new-guide):
- *   answer → context → how it works and why it is mandatory → how failure shows → the failure-mode
- *   table → note → replace-or-repair → inline CTA → what determines the price → FAQ.
+ *   answer → context → how it works and what it protects against → how failure shows → the
+ *   failure-mode table → note → replace-or-repair → inline CTA → what determines the price → FAQ.
+ * Never call the part mandatory: no primary source lists the devices ת״י 900 requires (the
+ * requirements are in the paid standard text — docs/research/2026-11-08-standards-and-law.md §A).
+ * A photocell is described as a safety device gates are commonly built with, and how it works —
+ * never as a requirement of the standard or of Israeli law.
  * Buyer vocabulary is binding: עינית (never חיישן), לוח פיקוד (never לוח בקרה) — keyword-map §2.
  * Price: ❌ not coming (business-facts §D). This family NEVER states a part or labour figure; it
  * explains what moves the price and hands off to /מחירון/ (keyword-map §10).
@@ -20,7 +24,9 @@ export const guide = {
     "⟨TODO: 120–160 תווים — תפקיד העינית, סימני הכשל השכיחים, ומתי ניקוי מספיק לעומת החלפה.⟩",
   family: "component",
   targetQuery: "עינית לשער חשמלי",
-  datePublished: "⟨TODO: yyyy-mm-dd⟩",
+  // Placeholders until the deploy: set both to the real deploy day in the deploy commit, never
+  // backdated (deploy-dangates, "Before you deploy").
+  datePublished: "⟨TODO: yyyy-mm-dd — the deploy day⟩",
   dateModified: "⟨TODO: same as datePublished⟩",
   relatedServices: ["שערים-לחניה", "שערים-נגררים", "שערי-כנף"],
 
@@ -37,12 +43,15 @@ export const guide = {
       text: "⟨TODO: 60–90 מילים — למה דווקא הרכיב הזה מייצר כל כך הרבה קריאות שירות, ומה המדריך מכסה.⟩",
     },
 
-    { kind: "heading", level: 2, text: "איך העינית עובדת, ולמה היא לא רכיב אופציונלי?" },
+    { kind: "heading", level: 2, text: "איך העינית עובדת, וממה היא מגינה?" },
     {
       kind: "paragraph",
-      text: "⟨TODO: המנגנון — קרן אינפרא-אדום בין עמוד לעמוד, הפסקת הקרן = מכשול, מה לוח הפיקוד עושה עם האות.⟩ עיניות בטיחות הן אחד הפריטים שהתקן הישראלי לשערים חשמליים דורש, ולכן שער בלי עינית תקינה הוא לא רק שער מעצבן אלא שער שאסור להפעיל.",
+      text: "⟨TODO: המנגנון — קרן אינפרא-אדום בין עמוד לעמוד, הפסקת הקרן = מכשול, מה לוח הפיקוד עושה עם האות.⟩ עינית היא אחד מאמצעי הבטיחות הנפוצים בשערים חשמליים, ושער שהעינית שלו לא עוצרת אותו מול מכשול לא מפעילים עד בדיקה. על מה ת״י 900 חל ומה מכון התקנים ממליץ פירטנו במדריך על תקן 900 לשערים חשמליים.",
       links: [
-        { anchor: "התקן הישראלי לשערים חשמליים", href: "/מדריכים/תקן-900-שער-חשמלי/" },
+        {
+          anchor: "במדריך על תקן 900 לשערים חשמליים",
+          href: "/מדריכים/תקן-900-שער-חשמלי/",
+        },
       ],
     },
 
@@ -73,7 +82,7 @@ export const guide = {
     {
       kind: "callout",
       tone: "note",
-      text: "⟨TODO: מה לא לעשות — לא לגשר על העינית בלוח כדי ״שהשער יעבוד״. למה זה מסוכן ומה זה אומר מבחינת אחריות (בלי לצטט סעיף חוק שלא אומת — business-facts §C, keyword-map §12).⟩",
+      text: "⟨TODO: מה לא לעשות — לא לגשר על העינית בלוח כדי ״שהשער יעבוד״. למה זה מסוכן — בלי לכתוב שהתקן או החוק מחייבים עינית, ובלי לצטט סעיף חוק שלא אומת (research §A; business-facts §C).⟩",
     },
 
     { kind: "heading", level: 2, text: "להחליף או לתקן — מה קובע?" },

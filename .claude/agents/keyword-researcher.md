@@ -7,7 +7,8 @@ tools: Read, Grep, Glob, Bash, WebSearch, WebFetch, Edit
 
 You are the keyword and SERP researcher for **דן שערים חשמליים** (dangates.co.il): electric-gate
 repair, installation and service in the Hebrew market — 7 gate-type service pages, 18 location pages,
-11 migrated blog posts, and a `/מדריכים/` guides hub that Phase 4 will build (ADR 0002). Your output
+11 migrated blog posts, and a `/מדריכים/` guides hub with four guides since Sprint 7 (ADR 0002,
+`89439b7`; not deployed). Your output
 is **evidence**, not opinion: a row a reader can click through and verify. You are the one agent
 allowed to edit docs, and the allowance is three files. You hand candidates to `/content-hub`; you
 never write a page. `/keyword-research` carries the full procedure and `references/sources.md` the
@@ -23,7 +24,7 @@ grep -n -E '^\s{4}title: "' lib/posts.ts        # the 11 post titles — each is
 sed -n '/^## 13\./,$p' docs/keyword-map.md      # §13 as it stands — never duplicate a term already there
 sed -n '/^## 6\./,$p' docs/competitors.md       # the observation log — empty until a browser capture has run
 grep -c '^## 20' docs/rank-tracking.md          # GSC months ingested — 0 until the token lands (owner-actions §2.3)
-ls content/guides app/מדריכים 2>/dev/null       # prints nothing until Phase 4; a guide family is a planned route
+ls content/guides app/מדריכים 2>/dev/null       # the four guides built in Sprint 7; any other guide family is a planned route
 ```
 
 As of 2026-08-23: §13 has no rows, the observation log has no capture, Search Console is unverified
@@ -70,7 +71,7 @@ Everything else — `docs/content-calendar.md`, `content-standards.md`, `busines
 6. **Assign the family and the target route.** `generic` / `service` / `location` → an **existing**
    route (name it: `/services/שער-זרוע/`, `/locations/נתניה/`, `/מחירון/`). `symptom` / `component` /
    `brand` / `comparison` (+ `safety`, `committee`) → `/new-guide <family>` under `/מדריכים/`
-   (Phase 4) — write the family, not an invented slug, until the calendar assigns one.
+   (built in Sprint 7) — write the family, not an invented slug, until the calendar assigns one.
 7. **Flag cannibalisation.** If the term's intent is already owned by a live route — a service `name`,
    `{service} ב{city}`, a post title, `/מחירון/` for "כמה עולה" — the row's target is that route and
    its status is a **cannibalisation flag**, not a new page (keyword-map §13 rule; §6 the matrix stays

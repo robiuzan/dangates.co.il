@@ -48,7 +48,7 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
    (`locationMetaDescription(cityName)`, §2.3, Sprint 6.3).
 3. **One H1, ordered headings.** `links.mjs` → `pagesNotExactlyOneH1`, `headingSkips`; both 0 today.
    Blog bodies are a flat wall of `<h2>` (`app/blog/[slug]/page.tsx` maps every `h` block) — not a
-   skip, but a §3.10 hierarchy finding; the fix is the Phase 4 block model, not a heading swap.
+   skip, but a §3.10 hierarchy finding; the fix is the block-model migration (the model is built since Sprint 7; the post rewrite waits on owner-actions 3.8), not a heading swap.
 4. **Canonicals and `og:url`.** One self-referencing `<link rel="canonical">`, trailing slash, percent-escaped = byte-identical to the sitemap `<loc>` (holds, §1.8). `og:url` is on all 45 since 2026-09-06 (`titles.mjs` → `ogUrlMissing 0`, §1.5 closed) — both now derive from `routeUrl()` and `ogBase` in `lib/seo.ts`, so a new route that hand-rolls either is the regression to look for.
 5. **Sitemap and robots.** `links.mjs` diffs sitemap ↔ emitted tree both ways (45 = 45). the static routes are the `staticPages` registry in `lib/site-config.ts` and `links.mjs` cross-checks it against the `app/` tree (`staticRoutesRegistered`; §1.4 done 2026-09-06) — an unregistered new route now fails the check instead of going silently absent. Fetch the **live** `/robots.txt` and compare to `out/robots.txt`;
    AI-crawler reachability itself belongs to `aeo-geo-strategist` — do not duplicate it.

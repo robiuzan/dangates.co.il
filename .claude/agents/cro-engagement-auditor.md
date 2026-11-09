@@ -50,8 +50,9 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
    `openingHoursSpecification`); nothing promises 24/7. Flag any CTA that adds availability outside
    those hours — the truth of 24/7 is business-facts §E / backlog §5.4, not yours to settle.
 5. **TOC on long pages.** The rule (`/engagement-ux`) is a table of contents on any page over 900
-   unique words. `content-depth.mjs` medians show no such page exists today — every post is under the
-   900 floor — so record "no page qualifies yet; re-check when `/מדריכים/` lands (Phase 4)".
+   unique words. Since Sprint 7 (`89439b7`) the four guides qualify (median 2395.5 unique) —
+   check that `GuideView` renders their TOC; the home, service and services-index pages also clear
+   900 on `content-depth.mjs` and are judged by the same rule. The posts are all under it.
 6. **FAQ answers in the DOM (N8).** The `Faq` component is native `<details>/<summary>`, so
    every answer is in the DOM, visible to find-in-page, with zero client JS (`/engagement-ux`, §10.2).
    Flag any regression to `hidden` answers.

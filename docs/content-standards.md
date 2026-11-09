@@ -16,17 +16,17 @@ bar — is outside it and never counted) **minus every paragraph of ≥ 12 words
 "Today" is the script's median for the type as of **2026-11-09** (after Sprint 5, `225ff45`; the
 2026-08-23 value in brackets where it moved). Re-run before quoting.
 
-| Page type                     | Minimum unique body words | Today (`content-depth.mjs`)                                                                                                                  |
-| ----------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Homepage                      | 800                       | 1765 ✅ (1781 total; 675 on 2026-08-24 after the reviews left — Sprint 4 added the answer block, the diagnosis section and real FAQ answers) |
-| Service page                  | 450                       | 1387 ✅ (7 of 7, range 1294–1542 — the Sprint 5 depth modules; 167–173 before, ~152 on 2026-08-23)                                           |
-| Location page                 | 350                       | 842 ✅ (18 of 18, range 717–1022, as of 2026-11-09 — the Sprint 6 `cityContent` modules; 139–145 before, ~122 on 2026-08-23)                 |
-| Blog post                     | 900                       | ~513 ❌ (11 of 11, range 442–577)                                                                                                            |
-| Guide (`/מדריכים/`)           | 900                       | route family not built yet (Phase 4)                                                                                                         |
-| Index page (services / areas) | 250                       | `/שירותים/` 1018 ✅ · `/איזורי-שירות/` 456 ✅ (Sprint 6 `content/pages/`; 336 and 101 before) · `/blog/` 400 ✅ — as of 2026-11-09           |
-| Pricing                       | 400                       | 914 ✅ (144 — the "what determines the price" pivot, N14; 945 before 4F cut the repeated visit band)                                         |
-| About                         | 500                       | 1145 ✅ (Sprint 6 `content/pages/about.ts`, as of 2026-11-09; 320 before, 277 on 2026-08-23)                                                 |
-| Contact, legal, thank-you     | no minimum                | fine as-is                                                                                                                                   |
+| Page type                     | Minimum unique body words | Today (`content-depth.mjs`)                                                                                                                     |
+| ----------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Homepage                      | 800                       | 1765 ✅ (1781 total; 675 on 2026-08-24 after the reviews left — Sprint 4 added the answer block, the diagnosis section and real FAQ answers)    |
+| Service page                  | 450                       | 1387 ✅ (7 of 7, range 1294–1542 — the Sprint 5 depth modules; 167–173 before, ~152 on 2026-08-23)                                              |
+| Location page                 | 350                       | 842 ✅ (18 of 18, range 717–1022, as of 2026-11-09 — the Sprint 6 `cityContent` modules; 139–145 before, ~122 on 2026-08-23)                    |
+| Blog post                     | 900                       | ~513 ❌ (11 of 11, range 442–577)                                                                                                               |
+| Guide (`/מדריכים/`)           | 900                       | built in Sprint 7 (`89439b7`): 4 pages, `belowFloor 0`, median 2395.5 unique (2026-11-09); `lib/guides.ts` also throws below 900 at module load |
+| Index page (services / areas) | 250                       | `/שירותים/` 1018 ✅ · `/איזורי-שירות/` 456 ✅ (Sprint 6 `content/pages/`; 336 and 101 before) · `/blog/` 400 ✅ — as of 2026-11-09              |
+| Pricing                       | 400                       | 914 ✅ (144 — the "what determines the price" pivot, N14; 945 before 4F cut the repeated visit band)                                            |
+| About                         | 500                       | 1145 ✅ (Sprint 6 `content/pages/about.ts`, as of 2026-11-09; 320 before, 277 on 2026-08-23)                                                    |
+| Contact, legal, thank-you     | no minimum                | fine as-is                                                                                                                                      |
 
 A block rendered identically on another route earns no credit anywhere — a service page that reuses
 the homepage's `processSteps` gets nothing for those words, and the four "מתי כדאי לפנות אלינו"
@@ -126,9 +126,11 @@ above the floor, as of 2026-11-09.
 2. Answer block in the first 60 words — the whole answer, before any preamble. None of the 11 existing
    posts do this; they all open with scene-setting (`content-depth.mjs` answer-block proxy: first
    paragraph outside 40–60 words on 36 of 36 service, location and post pages on 2026-08-23; on the
-   11 posts only since Sprints 5 and 6 gave the services and locations theirs, as of 2026-11-09).
-3. Body with question-form `<h2>`s and real `<h3>`s — which needs the typed block model (Phase 4,
-   ADR 0003); today `PostBlock` is `{ type: "h" | "p" | "li"; text }` and every heading is an `<h2>`.
+   11 posts only since Sprints 5, 6 and 7 gave the services, locations, statics and guides theirs, as
+   of 2026-11-09).
+3. Body with question-form `<h2>`s and real `<h3>`s — which needs the typed block model (ADR 0003,
+   built for the guides in Sprint 7); the posts still use `PostBlock` (`{ type: "h" | "p" | "li"; text }`,
+   every heading an `<h2>`) until their migration, which waits on owner-actions 3.8.
 4. At least one captioned table, list or comparison a reader would screenshot.
 5. `datePublished` / `dateModified`; the `Organization` as author — no byline until a real person is
    named (none is coming, business-facts §B).
@@ -235,7 +237,7 @@ certification the business doesn't hold; a photo presented as our work that isn'
 - Ranges use an en dash: `3–6 שעות`, `150–350 ₪`.
 - No language mixing mid-sentence. English brand or material names get their own clause.
 - Copy lives in `lib/content.ts` (marketing), `lib/posts.ts` (the 11 legacy posts) and
-  `content/guides/` (guides, Phase 4), never in JSX.
+  `content/guides/` (guides, since Sprint 7), never in JSX.
 
 ---
 
@@ -258,7 +260,8 @@ Sprint 6 (2026-11-09); templates and `content/locations/*.ts` use `prefixed`, ne
 - [x] The duplicated "פוסטים קשורים" tail is gone — `relatedTails: 0`.
 - [x] No leftovers from the source theme (`allgatesrepair`) — 0.
 - [ ] **42 plain-text link references** ("📌 היכנסו למחירון", "בקרו בעמוד צור קשר") are still not links
-      — needs the typed block model (Phase 4, ADR 0003; backlog §3.8).
+      — needs the posts moved onto the typed block model (ADR 0003, built for the guides in Sprint 7;
+      backlog §3.8, ⏳ BLOCKED · owner 3.8).
 - [x] No curly quotes, no empty `מקרי מבחן` section, no superlatives — `curlyQuotes 0`,
       `superlative 0` since Sprint 4 (`1796ee7` `74a92d1`).
 - [ ] 39 structural emoji and a flat all-`<h2>` outline (Sprint 7.3; backlog §3.8, §3.10).

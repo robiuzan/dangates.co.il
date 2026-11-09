@@ -18,7 +18,9 @@ checks; where a script exists it is the measurement.
 unchanged after the roster sync `ad2f1ab` and the review follow-up `9195c9b` (4F), re-run 2026-11-09 —
 and again 2026-11-09 after Sprint 5 (`225ff45`): **5** failures, all `content-depth` (about,
 areas index, location floor, post floor, location doorway) — and again 2026-11-09 after the Sprint 6
-content (`7c3f2db`): **1** failure, `content-depth` post floor (11 of 11 posts under 900; Sprint 7).
+content (`7c3f2db`): **1** failure, `content-depth` post floor (11 of 11 posts under 900) — and
+again 2026-11-09 after Sprint 7 (`89439b7`, the guides hub, four guides and `llms.txt`): still
+**1**, the same post floor, which now waits on the owner (owner-actions 3.8; Sprint 7.3).
 
 **Severity:** P0 = shipping something wrong or harmful · P1 = material ranking/conversion loss ·
 P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half a day · L = multi-day.
@@ -27,10 +29,11 @@ P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half 
 (moves only when [business-facts.md](business-facts.md) / [owner-actions.md](owner-actions.md) moves) ·
 `✅ HOLDS` (sound today — don't regress) · `NOT STARTED`.
 
-**Scope reminder:** 45 indexable content pages — 1 home, 7 Hebrew statics, 7 services, 18 locations,
-the blog index and 11 posts — plus the `noindex` `/תודה/` (since 2026-11-08) and `/404`, for 47
-`index.html` files in `out/`. The 37 legacy redirect stubs that once made it 83 are gone since
-2026-09-06 (ADR 0004).
+**Scope reminder:** 50 indexable content pages as of 2026-11-09 — 1 home, 8 Hebrew statics (the
+`/מדריכים/` hub joined them in `89439b7`), 7 services, 18 locations, 4 guides, the blog index and
+11 posts — plus the `noindex` `/תודה/` (since 2026-11-08) and `/404`, for 52 `index.html` files in
+`out/` (`links.mjs` → `sitemapUrls 50`, `contentPages 51`). It was 45 / 47 until Sprint 7. The 37
+legacy redirect stubs that once made it 83 are gone since 2026-09-06 (ADR 0004).
 
 ---
 
@@ -65,10 +68,12 @@ Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region p
 | 6   | **De-stale pass + new assets** per the roster: 15 agents, 25 skills (and the saved `site-audit` workflow where workflows are available); every `file:line` re-anchored; scripts cited instead of numbers                                                                                        | `.claude/agents/`, `.claude/skills/`, `.claude/workflows/`                                          |
 
 **Next up** (as of 2026-11-09): Phases 1, 2 and 5's repo work, the Sprint 4 truth pass, the
-Sprint 5 service depth and the Sprint 6 location and index-page content (`7c3f2db`) have shipped in
-the repo. What is left of Sprint 6 is the header (§9.1, row 6.5), the reviewer sign-off and the
-owner's answer on the five 🔶 entries (B5, owner-actions 3.6); then Sprint 7 — see "Suggested
-order of work" below.
+Sprint 5 service depth, the Sprint 6 location and index-page content (`7c3f2db`) and the Sprint 7
+guides hub, first four guides and `llms.txt` (`89439b7`) have shipped in the repo. Not
+owner-blocked and still open: the header (§9.1, Sprint 6.5), the reviewer sign-offs on record, and
+the deploy (with the guide dates set to the deploy day first — `deploy-dangates`). The post rewrite
+(§3.8, §3.10, §9.5, the post half of §6.2, §6.4 and §9.4) waits on owner-actions 3.8 — see
+"Suggested order of work" below.
 
 ---
 
@@ -134,7 +139,8 @@ wholesale rather than merging, and `url: null` does not typecheck). `titles.mjs`
 
 ### 1.3 — P1 · M · [NOT STARTED] 45 RSC payload files ship to production as crawlable duplicates
 
-`perf.mjs` → `rscPayloads: 45`, `rscBytes` ≈ 1.43 MB (as of 2026-08-23). Next emits an `index.txt`
+`perf.mjs` → `rscPayloads: 45`, `rscBytes` ≈ 1.43 MB (as of 2026-08-23); `rscPayloads 51`,
+`rscBytes` 3.54 MB as of 2026-11-09 after the Sprint 7 hub and guides (`89439b7`). Next emits an `index.txt`
 RSC payload beside every `index.html`. They contain the full readable copy of every page, sit at
 crawlable URLs, and `robots.txt` allows them.
 
@@ -418,7 +424,7 @@ All 11 posts ended with an identical 5-heading block naming four articles that n
 domain. Deleted 2026-08-17; `spam-grep.mjs` → `relatedTails: 0`. The route renders the real
 "מאמרים נוספים" list at `app/blog/[slug]/page.tsx`.
 
-### 3.8 — P1 · M · [NOT STARTED] 42 unlinked call-to-action phrases across the blog
+### 3.8 — P1 · M · [⏳ BLOCKED · owner 3.8] 42 unlinked call-to-action phrases across the blog
 
 Migration stripped every `<a>`. The posts say "היכנסו למחירון", "בקרו בעמוד צור קשר", "📌 למידע נוסף" as
 plain text — anchor text written, target obvious, link missing. `spam-grep.mjs` also counts the
@@ -426,19 +432,24 @@ structural emoji those phrases hang off: 39 as of 2026-11-09 (re-run after 4F) (
 before Sprint 4 rewrote three post sentences).
 
 This is the cheapest internal-linking win on the site (§9.5) but needs the typed block model
-([ADR 0003](decisions/0003-block-content-model.md), Phase 4, `new-article` skill).
+([ADR 0003](decisions/0003-block-content-model.md), `new-article` skill). The block model itself
+exists since `89439b7` (`lib/guide-types.ts`, the guides use it); moving the posts onto it is the
+post rewrite owner-actions 3.8 has not approved, and the live registers quote post sentences
+(CLAUDE.md §14) — Sprint 7.3, ⏳ BLOCKED · owner 3.8 as of 2026-11-09.
 
 ### 3.9 — P2 · S · [✅ DONE] Six run-together list items in the oldest post
 
 A bold label fused to its sentence when `<strong>` was stripped. Fixed 2026-08-17;
 `spam-grep.mjs` → `fusedWords: 0`.
 
-### 3.10 — P2 · M · [NOT STARTED] Blog bodies are a flat wall of H2s with zero H3s
+### 3.10 — P2 · M · [⏳ BLOCKED · owner 3.8] Blog bodies are a flat wall of H2s with zero H3s
 
 `PostBlock` is `{ type: "h" | "p" | "li"; text }` and the renderer maps every `h` to `<h2>`
 (`app/blog/[slug]/page.tsx`), producing 15–31 sibling H2s per post. The source hierarchy is destroyed.
 
-**Fix (Phase 4):** the typed block model with `level` — closed by the same refactor as §3.8.
+**Fix:** the typed block model with `level` — closed by the same refactor as §3.8. The model and its
+renderer (`components/article/`) are built since `89439b7`; migrating the posts onto them waits on
+owner-actions 3.8 (Sprint 7.3).
 
 ### 3.11 — P2 · S · [✅ DONE 2026-11-08] Mis-typed CTA heading and the empty `מקרי מבחן` section
 
@@ -823,7 +834,7 @@ was gone but the edge answered **403** to every AI-crawler signature (N18). The 
 owner's and can revert without a repo change — **re-probe before every AEO claim; a `robots.txt`
 read proves nothing.** §6.2–§6.5 are no longer capped by this item.
 
-### 6.2 — P1 · M · [PARTIAL 2026-11-09 · `/`, `/מחירון/`, the 7 services, the 18 locations, the indexes and `/אודות/` done] No page opens with an extractable answer block
+### 6.2 — P1 · M · [PARTIAL 2026-11-09 · every page but the 11 posts done · posts ⏳ BLOCKED · owner 3.8] No page opens with an extractable answer block
 
 `content-depth.mjs` (as of 2026-08-23): 0 of 36 service, location and post pages open with a
 40–60-word paragraph — services open with 3–4 words, locations with 16–17, posts with 1. Spec:
@@ -857,14 +868,63 @@ node scripts/audit/content-depth.mjs   # the answer-block warning lists post 11/
 #   /שירותים/ 56 · /איזורי-שירות/ 45 · /אודות/ 51
 ```
 
-**Still open:** the proxy warns on post 11/11 (1 word — the date, Sprint 7.6), as of 2026-11-09.
+**`/blog/`, `/צור-קשר/`, the `/מדריכים/` hub and the four guides closed 2026-11-09** by commit
+`89439b7` (Sprint 7 rows 7.1, 7.2 and 7.6): `/blog/` and `/צור-קשר/` open with their own copy
+modules (`content/pages/blog-index.ts`, `content/pages/contact.ts`), the hub with
+`content/pages/guides-index.ts`, and every guide carries exactly one `answer` block in its first two
+blocks — a module-load throw in `lib/guides.ts` (30–80 words, the content-standards §5 band
+widened for Hebrew density). Verified on the current `out/`:
 
-### 6.3 — P1 · L · [NOT STARTED] Nothing on the site is worth citing over a competitor
+```bash
+node scripts/audit/content-depth.mjs   # the answer-block warning lists post 11/11 only — no guide row
+# first <p> after the H1 inside <main>, by the audit's tokens():
+#   /blog/ 46 · /צור-קשר/ 55 · /מדריכים/ 58
+#   the four guides 56–58 (מחסום-חניה-ועד-בית 58 · שער-חשמלי-רועש 58 · שער-נגרר-כנף-או-קונזולי 56
+#   · תקן-900-שער-חשמלי 57)
+```
 
-No fault-to-cost map, no repair-vs-replace comparison, no gate-type selection matrix, no motor lifespan
-data, no DIY/licensed boundary. The blog circles all five and answers none with a number or a table.
-**Fix (Phase 4):** the `/מדריכים/` hub ([ADR 0002](decisions/0002-guides-hub-route.md)), first eight
-guides in [content-calendar.md](content-calendar.md) §2, each gated by `article-auditor`.
+The two legal pages and `/תודה/` are out of scope (no question to answer; the proxy skips them).
+
+**Still open:** the proxy warns on post 11/11 (1 word — the date), as of 2026-11-09. The posts'
+answer blocks come with the post rewrite (Sprint 7.3 / 7.6), ⏳ BLOCKED · owner 3.8.
+
+### 6.3 — P1 · L · [✅ DONE 2026-11-09 · repo · the hub and guides #1–#4; #5–#16 planned] Nothing on the site is worth citing over a competitor
+
+Until Sprint 7: no fault-to-cost map, no repair-vs-replace comparison, no gate-type selection
+matrix, no motor lifespan data, no DIY/licensed boundary. The blog circles all five and answers none
+with a number or a table. **Fix (Phase 4):** the `/מדריכים/` hub
+([ADR 0002](decisions/0002-guides-hub-route.md)), first eight guides in
+[content-calendar.md](content-calendar.md) §2, each gated by `article-auditor`.
+
+**Closed for the hub and the first four guides 2026-11-09** by commit `89439b7` (Sprint 7 rows 7.1
+and 7.2). `lib/guide-types.ts` is the typed block model (ADR 0003) and `lib/guides.ts` the registry:
+module-load throws reject a guide under 900 words, without exactly one answer block in its first two
+blocks, without a captioned table, with a title, target query or H2 that a service, location,
+pricing or post page owns, with a question any other page already marks up, over its family's CTA
+cap, with fewer than two in-copy links or none to a service, or a safety guide without `sources`; a
+total `relatedGuides` record and the reverse index (`guidesForService()`, `guidesForLocation()`) put
+every guide on the pages it declares. `app/מדריכים/` (index + `[slug]`) renders it through
+`components/article/`; the sitemap, `llms.txt`, the header and footer entry read the same array.
+Guides: ת״י 900 חלק 21.03 (`safety`, `TechArticle`), a noisy gate by type (`symptom`), a car-park
+barrier in a shared building (`committee`), sliding vs swing vs cantilever (`comparison`). Every
+external fact was read on sii.org.il, gov.il or the statute text first
+([research/2026-11-08-standards-and-law.md](research/2026-11-08-standards-and-law.md)). Verified on
+the current `out/`:
+
+```bash
+node scripts/audit/content-depth.mjs   # guide 4 pages · belowFloor 0 · medianUnique 2395.5 / 900
+                                        # guides-index 1 page · 870 unique / 250 · belowFloor 0
+node scripts/audit/links.mjs           # sitemapUrls 50 · orphans 0 · brokenLinks 0 · breadcrumbPages 49
+node scripts/audit/schema.mjs          # 0 failures, 0 warnings · faqPages 30 · danglingIds 0
+                                        # guide types: TechArticle 1 · Article 3 · FAQPage 4
+# FAQPage questions across the export: 115, 0 marked up twice (17 on the four guides)
+# guide links inside <main>: all 7 service pages (1–3 each) · /locations/ירושלים/ (1)
+```
+
+**Not this row:** guides #5–#16 stay planned in content-calendar §2–§3 at the two-a-month cadence;
+none is live until the deploy, which first sets each guide's `datePublished` / `dateModified` to the
+deploy day (`deploy-dangates`); the article-auditor sign-off per guide is not on record in the repo
+(the commit message records the review pass's fixes).
 
 ### 6.4 — P2 · S · [PARTIAL 2026-11-09 · 8 of 11 posts] No freshness signal on the blog
 
@@ -884,13 +944,34 @@ grep -o '"dateModified":"[^"]*"' out/blog/תקלות-נפוצות-בשערים-�
 ```
 
 **Still open:** the page shows only the publish date (the post `PageHeader` subtitle formats
-`post.date`), and the three untouched posts get `updated` only with a real edit — Sprint 7.3. Two
-posts still share a publish date.
+`post.date`), and the three untouched posts get `updated` only with a real edit — Sprint 7.3,
+⏳ BLOCKED · owner 3.8 since 2026-11-09. Two posts still share a publish date. (The four guides
+carry their own `datePublished` / `dateModified` — to be set to the real deploy day before they
+first go live, `deploy-dangates`.)
 
-### 6.5 — P2 · S · [NOT STARTED] No `llms.txt`
+### 6.5 — P2 · S · [✅ DONE 2026-11-09 · repo] No `llms.txt`
 
-`edge.mjs` warns. Template ready in `aeo-answer-content/templates/llms.txt`; only useful once §6.1
-opens.
+Until Sprint 7 `edge.mjs` warned and the live URL returned 404 (2026-09-06). Template in
+`aeo-answer-content/templates/llms.txt`; useful since §6.1 opened.
+
+**Closed in the repo 2026-11-09** by commit `89439b7` (Sprint 7 row 7.5). `/llms.txt` is not a
+hand-written `public/` file: `app/llms.txt/route.ts` serves `buildLlmsTxt()` from `lib/llms.ts`,
+which builds it from `siteConfig`, `staticPages`, `services`, `locations` and the guides registry the
+way `app/sitemap.ts` builds the sitemap, so a new page cannot be missing and a removed one cannot
+linger; the fixed wording is `llmsCopy` in `lib/content.ts`. It carries the NAP, no address, the
+one 🔶 visit band, the warranty without a term, and a "Notes for AI assistants" block (no founding
+year, rating, licence, named person, response time, or towns beyond the list). Verified on the
+current `out/`:
+
+```bash
+node scripts/audit/edge.mjs   # llmsTxt true · 0 failures, 0 warnings
+# out/llms.txt: 89 lines · 39 linked URLs, every one byte-identical to a sitemap <loc>
+#   (all percent-encoded, 0 raw Hebrew) · sections Contact · Services · Service areas · Pages
+#   · Guides · Key facts · Notes for AI assistants; the 11 posts are not listed (the blog index is)
+```
+
+**Live after the deploy** — the acceptance is `curl -sI https://dangates.co.il/llms.txt` → 200,
+after the AI-crawler full-UA probe (§6.1).
 
 ---
 
@@ -979,7 +1060,9 @@ while that registry is empty.
 `logo`/`image` from `02a3144` (§4.5). `lib/authors.ts` exports the `Author` type and
 `authors: readonly Author[] = []`; `/אודות/` emits an `AboutPage` with `about` → `#business`, and the
 business node on that page carries `knowsAbout` — the 7 service names plus תיקון שערים חשמליים,
-מנועי שערים and בטיחות שערים חשמליים, nothing the site does not cover. What stays absent on purpose:
+מנועי שערים and בטיחות שערים חשמליים, nothing the site does not cover; since `89439b7` (2026-11-09)
+also "ת״י 900 חלק 21.03", which the safety guide now covers (`aboutKnowsAbout` in `lib/content.ts` —
+a subject, not a compliance claim). What stays absent on purpose:
 the person. One registry entry with permission opens the gate (Sprint 9.5). Verified after a clean
 rebuild:
 
@@ -1216,12 +1299,14 @@ node scripts/audit/links.mjs   # relatedServiceTargets 7 — every service page 
 
 **Still open:** the post route's `others` list is still `posts.filter(…).slice(0, 4)`; `links.mjs`
 still warns "post pages: the first 4 related links on every page come from the same 5 array-leading
-siblings; 6 of 11 post pages receive no related link" (`relatedPostTargets 5`). Not owner-blocked;
-carried to Sprint 7.3, which rewrites the post route.
+siblings; 6 of 11 post pages receive no related link" (`relatedPostTargets 5`, re-measured
+2026-11-09 at `89439b7`). Not owner-blocked in itself, but it is carried in Sprint 7.3, which
+rewrites the post route and is ⏳ BLOCKED · owner 3.8; it can be split out if the wait runs long.
 
-### 9.5 — P1 · M · [NOT STARTED] The blog contains zero links
+### 9.5 — P1 · M · [⏳ BLOCKED · owner 3.8] The blog contains zero links
 
-See §3.8 — 42 anchor-shaped phrases survived migration as dead text.
+See §3.8 — 42 anchor-shaped phrases survived migration as dead text. Moves with the post rewrite
+(Sprint 7.3), which waits on owner-actions 3.8.
 
 ### 9.6 — P2 · S · [✅ DONE] Breadcrumbs render but emitted no schema
 
@@ -1903,8 +1988,9 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    `curlyQuotes 0`; audit 15 → 8. ~~The 4B / 4C reviewer should-fix items~~ — closed 2026-11-09
    in `9195c9b` (4F), with the roster `shortPitch` cleared in `ad2f1ab`; audit still 8, home 1549
    unique, `claims-grep` 0 over 14 claims. Partial by design: §3.13 (about and both indexes —
-   closed in Sprint 6.8, `7c3f2db`), §6.2 (locations closed in Sprint 6; posts → Sprint 7), §6.4
-   (8 of 11 posts dated; the rest with Sprint 7.3). Open: the deploy, and the manifest `areaServed` phrase in the client bundle (B5).
+   closed in Sprint 6.8, `7c3f2db`), §6.2 (locations closed in Sprint 6, the rest but the posts in
+   Sprint 7; the posts with Sprint 7.3, ⏳ owner 3.8), §6.4 (8 of 11 posts dated; the rest with
+   Sprint 7.3). Open: the deploy, and the manifest `areaServed` phrase in the client bundle (B5).
 7. ~~**Sprint 5 — service depth:** §3.2 · §6.2 and §4.13 for the 7 service pages · §9.4 service
    half · §2.4 re-derived inside the 120–160 window~~ — shipped in the repo 2026-11-09 (commit
    `225ff45`): service `belowFloor 0`, `serviceMedianDelta 438`, `faqPages 8`,
@@ -1918,13 +2004,21 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    §5.5 copy half are done for the 13 confirmed cities and ⏳ BLOCKED · owner (3.6, B5) for the five
    🔶 entries, which ship as bounded pages. **Next:** §9.1 header reach (row 6.5, not
    owner-blocked), local-seo-strategist and claims-verifier sign-off on record, then the deploy.
-9. **Phase 4 — guides hub + block model (next after 6.5):** §6.3 · §3.8 · §3.10 · §9.5 · §6.2 for the posts
-   (ADR 0002, 0003) · the rest of §6.4 (PARTIAL since 4F) · the post half of §9.4 · §6.5 `llms.txt`.
+9. **Phase 4 — guides hub + block model:** ~~§6.3 the hub and guides #1–#4 · §6.5 `llms.txt` ·
+   §6.2 for `/blog/`, `/צור-קשר/`, the hub and the guides~~ — shipped in the repo 2026-11-09
+   (Sprint 7, commit `89439b7`): guide `belowFloor 0` (median 2395.5 unique / 900), `faqPages 30`,
+   `orphans 0`, `sitemapUrls 50`, `edge.mjs` → `llmsTxt true`; audit still 1 (the post floor).
+   **⏳ BLOCKED · owner 3.8:** §3.8 · §3.10 · §9.5 · §6.2 for the posts · the rest of §6.4 · the post
+   half of §9.4 (not owner-blocked in itself; it rides with the post route rewrite) and the
+   content-calendar §4 keep / fold / 301 moves (Sprint 7.3, 7.4). Open and not blocked: guides #5–#8
+   at the two-a-month cadence, the reviewer sign-offs on record, and the deploy — guide dates set to
+   the deploy day first.
 10. ~~**Phase 5 — engagement + CRO:** §8.1 · §8.3 · §8.4/N3 · §8.5 · N8 · §13.4–13.5 · §10.2 · N19~~
     — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 closed
     in `fba5957`, the form alert's buttons now `size="lg"`); `a11y.mjs`, `rtl-lint.mjs` and
     `cta-coverage.mjs` 0, `clientComponents` 3. Left: §8.2 (PARTIAL — B2 / B10 only; the privacy
     copy is signed off), §8.6 (PARTIAL — the GTM tag and B2), and the engagement events (Sprint 8.1).
-11. **Phase 6 — E-E-A-T + AEO:** ~~§7.2~~ · ~~§7.6~~ (Sprint 4) · §6.5 · §7.5 photos (B4).
+11. **Phase 6 — E-E-A-T + AEO:** ~~§7.2~~ · ~~§7.6~~ (Sprint 4) · ~~§6.5~~ (Sprint 7, `89439b7`,
+    live after the deploy) · §7.5 photos (B4).
 12. **Phase 7 — measurement:** §13.7 · §15.2 cadence · §15.3 (after B1, B2).
 13. Everything tagged `⏳ BLOCKED · owner` moves when [owner-actions.md](owner-actions.md) moves.

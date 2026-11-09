@@ -69,7 +69,7 @@ Quick reference (the roster is authoritative):
 npm run gate          # lint → typecheck → format:check → build → npm run audit
 ```
 
-The bar is not "exit 0" until Phase 1 lands; it is **no failure absent from the known-baseline table
+The bar is not "exit 0" (the audit exits 1 as of 2026-11-09 — the post floor, ⏳ owner 3.8); it is **no failure absent from the known-baseline table
 in `/qa-build-gate`, and the item's own proof script moved the right way**. Run that script alone
 too, so its output can be quoted in step 7:
 

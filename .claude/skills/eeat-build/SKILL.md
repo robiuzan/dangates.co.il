@@ -42,9 +42,13 @@ bucket at 0. Since `9195c9b` (4F) the lexicon has 14 ids: `workmanship-absolute`
 | "פריסה ארצית"                             | §E                | 🔶      | Copy says `serviceAreaLine` and names the 18 areas; the manifest phrase is a roster question   |
 | GBP + reviews · job photos                | §A · §F           | ⏳      | Gated on `REVIEW_SOURCE_URL` (`docs/gbp-runbook.md` §11) · `/site-images`; zero `<img>` today  |
 
-**Available now, and enough to build on:** the SII safety standard **ת״י 900 חלק 21.03** (keyword-map
-§12 — verified on sii.org.il; the October-2006 date and the licensed-electrician requirement are
-**not** and stay out); the mechanics of seven gate types and their components (מנוע, לוח פיקוד, עינית,
+**Available now, and enough to build on:** the SII safety standard **ת״י 900 חלק 21.03** — guide #1
+since Sprint 7 (`89439b7`), its facts read on primary sources 2026-11-08/09
+(`docs/research/2026-11-08-standards-and-law.md`, which outranks keyword-map §12): scope and official
+status verified; the "official since October 2006" date **refuted** and never stated; no primary
+list of required devices, so no device is ever "required by the standard"; the licence grade a gate
+motor needs unverified and never stated (that electrical work is licensed, חוק החשמל §6(א), is
+verified); the mechanics of seven gate types and their components (מנוע, לוח פיקוד, עינית,
 מסילה, גלגלים, מפסק גבול, קבל, סוללת גיבוי); the boundary between what a customer may check and what
 needs a technician; the visit band **150–350 ₪** (`priceRows` → `visitFeeRange` — the one sourced number, itself
 🔶 "still current?"); the real hours; the phone that is answered.
@@ -136,9 +140,11 @@ carries none of the four claims since `1796ee7`. The rewrite (Sprint 6.8) goes i
    battery, an obstruction in the track, a dirty עינית lens) and what they must not open (motor
    housing, control board, anything at 230V). Boundaries are the strongest trust signal a trade with
    no credential to show can offer.
-5. **The standard** — ת״י 900 חלק 21.03 as what a compliant gate must have, the SII page cited inline
-   (keyword-map §12; the ₪800,000 judgment and fatalities only with that URL beside them); link the
-   safety guide once `/new-guide safety` ships it (Phase 4).
+5. **The standard** — ת״י 900 חלק 21.03: what it covers and its official status, the SII page cited
+   inline — never "what a compliant gate must have" (no primary list exists; research §A). SII's own
+   statements (the ₪800,000 award, the criminal-offence line) only attributed to SII with that URL
+   beside them; the deaths and injuries are headlines SII quotes, never findings. Link the safety
+   guide `/מדריכים/תקן-900-שער-חשמלי/` (built in Sprint 7, `89439b7`).
 6. Areas (the 18, linked), hours as they are, the visit band 150–350 ₪ as an estimate to confirm.
 
 Schema: `pageNode(m, "AboutPage", …)` + `businessNode(m)` (which carries `knowsAbout` — the gate

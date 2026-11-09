@@ -2,128 +2,154 @@ import type { Guide } from "@/lib/guide-types";
 
 /**
  * COMMITTEE family skeleton — copy to content/guides/<slug>.ts and replace every ⟨TODO⟩.
- * Worked against content-calendar §2 row 3 (מחסום חניה בבית משותף). B2B: the ועד בית audience the
- * site names and never serves (keyword-map §8.6).
+ * Worked against content-calendar §2 row 3, which shipped in Sprint 7 (89439b7) as
+ * content/guides/מחסום-חניה-ועד-בית.ts — read that module before writing a second committee guide,
+ * and give the new one its own slug, target query and H2s (lib/guides.ts throws on a repeated H2).
+ * B2B: the ועד בית audience the site names and never served (keyword-map §8.6).
  *
  * Block order (content-standards §3; /new-guide family table):
- *   answer → context → why approval is needed → approval steps + table → who pays → quote CTA →
- *   what to put in the tender → FAQ.
+ *   answer → context → why it is a building decision → what the model bylaws say, and what they do
+ *   not → the decision steps + table → which costs are voted on → quote CTA → what the quote must
+ *   show → FAQ.
  * Schema: Article + FAQPage + BreadcrumbList.
  *
- * Verified (keyword-map §8.6): a shared underground car park is communal property, so a barrier
- * installation needs house-committee approval and sometimes an owners' majority.
- * NOT verified: the actual majority thresholds and which decisions need which majority. Every
- * threshold cell cites the law text itself (חוק המקרקעין, התשכ״ט-1969, פרק ו׳ — on nevo.co.il or
- * gov.il), never a competitor page; claims-verifier marks a cell without a URL ⛔ (calendar row 3).
- * The lexicon ids `insurance` and `licence` (scripts/audit/claims.json) name Hebrew words the
- * liability paragraph must be written without. Buyer vocabulary: מחסום alongside שער זרוע (§2).
- * The skeleton is ~280 words; lib/guides.ts throws below 900.
+ * The law — read 2026-11-09 on the he.wikisource consolidated text of חוק המקרקעין, התשכ״ט-1969
+ * (NOT the official Reshumot publication — the copy says so beside every quote; whether that source
+ * is acceptable is owner-actions 3.10), recorded in docs/research/2026-11-08-standards-and-law.md §C:
+ *   ⛔ NO section sets a majority for a gate or a parking barrier. Never state one, never imply one,
+ *     and never give the table a "majority required" column.
+ *   VERIFIED model bylaws (they apply under §64 where the building's own registered bylaws are
+ *     silent — say the building's bylaws may differ): §5(א) the assembly decides "דרכי ניהולו של
+ *     הרכוש המשותף והשימוש בו"; §12(א) "יתקבלו ברוב דעות"; §13(ב) one vote per apartment; §7(א) notice
+ *     four days ahead; §8(א) the quorum of half the apartments ONLY with its notice condition, and
+ *     §8(ב) (a later hour the same day, "בכל מספר של משתתפים") beside it.
+ *   §12(ב) is never cut before "מסוג או שיעור שלא פורשו"; §58(א) does spell out a charge (upkeep and
+ *     management), so whether a barrier cost binds an objecting owner is OPEN — a question for a
+ *     lawyer or the מפקח על רישום מקרקעין, never answered by the guide. Never legal advice.
+ *   §62(א) (changing the bylaws) and "הסכמת כל בעלי הדירות" (attaching common property to one
+ *     apartment) are about other decisions — never present them as the barrier rule.
+ * The lexicon ids `insurance` and `licence` (scripts/audit/claims.json) name Hebrew words the copy
+ * about this business is written without. Buyer vocabulary: מחסום alongside שער זרוע (§2).
+ * The skeleton is ~350 words; lib/guides.ts throws below 900.
  */
+
+const LAW_WIKISOURCE =
+  "https://he.wikisource.org/wiki/%D7%97%D7%95%D7%A7_%D7%94%D7%9E%D7%A7%D7%A8%D7%A7%D7%A2%D7%99%D7%9F";
+const LAW_KNESSET_PDF = "https://fs.knesset.gov.il/6/law/6_lsr_208977.pdf";
+
 export const guide = {
-  slug: "מחסום-חניה-ועד-בית",
-  title: "מחסום חניה בבית משותף — מה ועד הבית צריך לאשר, ומתי נדרש רוב של בעלי הדירות",
-  crumbLabel: "מחסום חניה וועד בית",
+  slug: "⟨TODO: a new Hebrew slug — מחסום-חניה-ועד-בית is taken⟩",
+  title: "⟨TODO: the question verbatim, bare — never ״מתי נדרש רוב״⟩",
+  crumbLabel: "⟨TODO⟩",
   description:
-    "⟨TODO: 120–160 תווים — מי מאשר התקנת מחסום בחניה משותפת, מתי צריך רוב, מי משלם ומה כותבים בהצעת המחיר.⟩",
+    "⟨TODO: 120–160 תווים — מה האסיפה מחליטה לפי התקנון, מה בודקים בהצעת המחיר, ומה שאלה לעורך דין. בלי ״רוב נדרש״.⟩",
   family: "committee",
-  targetQuery: "מחסום חניה ועד בית",
-  datePublished: "⟨TODO: yyyy-mm-dd — the real publish day⟩",
+  targetQuery: "⟨TODO: one Tier-3 query no other guide targets⟩",
+  // Placeholders until the deploy: set both to the real deploy day in the deploy commit, never
+  // backdated (deploy-dangates, "Before you deploy").
+  datePublished: "⟨TODO: yyyy-mm-dd — the deploy day⟩",
   dateModified: "⟨TODO: same as datePublished⟩",
   relatedServices: ["שער-זרוע", "שערים-לחניה", "שערים-לדירה"],
 
   blocks: [
-    // Question form for the committee family: "מה ועד הבית צריך לאשר לפני התקנת מחסום?" — the rule
-    // (communal property → committee decision), the exception (when a majority is needed), the
-    // pointer to the law. 40–60 words, no threshold number without its source (content-standards §5).
+    // Question form for the committee family: what the committee checks — the decision belongs to the
+    // building, the building's bylaws may differ from the model ones, no statute sets a gate majority.
     {
       kind: "answer",
-      q: "מה ועד הבית צריך לאשר לפני התקנת מחסום בחניה?",
-      a: "⟨TODO: 40–60 מילים — החניה המשותפת היא רכוש משותף, ולכן התקנת מחסום היא החלטה של הבית המשותף ולא של דייר; ועד הבית מביא אותה לאסיפה; בחלק מהמקרים נדרש רוב של בעלי הדירות (🔶 איזה רוב — רק עם ציטוט החוק). מי משלם נקבע יחד עם ההחלטה.⟩",
+      q: "⟨TODO: question-form H2 — unique across the hub⟩",
+      a: "⟨TODO: 40–60 מילים — החניה המשותפת היא רכוש משותף, ולכן מחסום הוא החלטה של האסיפה ולא של דייר; לפי התקנון המצוי החלטות מתקבלות ברוב דעות, אבל התקנון הרשום של הבית יכול לקבוע אחרת; אין בחוק סעיף שקובע רוב מיוחד למחסום.⟩",
     },
     {
       kind: "paragraph",
-      text: "⟨TODO: 60–90 מילים — המצב הטיפוסי: רכבים זרים בחניה, דייר שרוצה מחסום, ועד שלא יודע אם הוא רשאי להחליט לבד. מה המדריך נותן: סדר האישורים, מי משלם, ומה לדרוש מהמתקין.⟩",
+      text: "⟨TODO: 60–90 מילים — המצב הטיפוסי: רכבים זרים בחניה, דייר שרוצה מחסום, ועד שלא יודע מה לבדוק. מה המדריך נותן: סדר ההחלטה, מה בודקים בהצעת המחיר, ומתי פונים לעורך דין.⟩",
     },
 
     {
       kind: "heading",
       level: 2,
-      text: "למה מחסום בחניה משותפת דורש אישור, ולא רק החלטה של הוועד?",
+      text: "⟨TODO: מה התקנון המצוי קובע על החלטות האסיפה, ומה אין בו?⟩",
     },
     {
       kind: "paragraph",
-      text: "⟨TODO: רכוש משותף — מה זה כולל (חניה תת-קרקעית, שביל הגישה), ומה ההבדל בין תחזוקה שוטפת לשינוי ברכוש המשותף. ציטוט הסעיף הרלוונטי בחוק המקרקעין עם הקישור, לא פרפרזה.⟩",
+      text: "⟨TODO: ציטוט מדויק של סעיפים 5(א), 12(א) ו־13(ב) בתקנון המצוי, ושל סעיף 64 — עם האמירה שהנוסח נקרא בוויקיטקסט ולא בפרסום הרשמי.⟩ קראנו אותם בנוסח המשולב של חוק המקרקעין בוויקיטקסט.",
       links: [
         {
-          anchor: "⟨TODO: anchor verbatim from text⟩",
-          href: "⟨TODO: nevo.co.il / gov.il URL of חוק המקרקעין, פרק ו׳⟩",
+          anchor: "בנוסח המשולב של חוק המקרקעין בוויקיטקסט",
+          href: LAW_WIKISOURCE,
         },
       ],
     },
 
-    { kind: "heading", level: 2, text: "מה סדר האישורים, ומי מחליט בכל שלב?" },
-    // The citable asset of the committee family: step → who decides → threshold (law citation) → who pays.
-    // A threshold cell without a law URL beside it is a ⛔ — delete the row rather than guess.
+    { kind: "heading", level: 2, text: "⟨TODO: מה השלבים בהחלטה, ומי מעורב בכל אחד?⟩" },
+    // The citable asset of the committee family: step → who is involved → what to check → source.
+    // The source cell names a statute section (read on wikisource) or an SII URL — never a majority.
     {
       kind: "table",
       caption:
-        "שלבי האישור להתקנת מחסום חניה בבית משותף — מי מחליט, איזה רוב נדרש לפי חוק המקרקעין, ומי נושא בעלות — דן שערים חשמליים",
-      head: ["השלב", "מי מחליט", "הרוב הנדרש (סעיף בחוק)", "מי משלם"],
+        "⟨TODO: שלבי ההחלטה על מחסום חניה בבית משותף — מי מעורב, מה בודקים ומה המקור, לפי נוסח חוק המקרקעין והתקנון המצוי שבתוספת לו (נוסח משולב, לא הפרסום הרשמי)⟩",
+      head: ["שלב", "מי מעורב", "מה בודקים", "מקור"],
       rows: [
-        ["העלאת הנושא לאסיפת הדיירים", "ועד הבית", "⟨TODO: 🔶 סעיף + URL⟩", "—"],
         [
-          "החלטה על התקנת מחסום ברכוש המשותף",
-          "אסיפת בעלי הדירות",
-          "⟨TODO: 🔶 סעיף + URL⟩",
+          "⟨TODO: הודעה על האסיפה⟩",
           "⟨TODO⟩",
+          "⟨TODO: ארבעה ימים מראש⟩",
+          "⟨TODO: תקנון מצוי, סעיף 7(א)⟩",
         ],
         [
-          "בחירת סוג המחסום ומספר השלטים",
+          "⟨TODO: מניין חוקי⟩",
           "⟨TODO⟩",
-          "⟨TODO: 🔶 או ״אין דרישת רוב מיוחדת״ עם מקור⟩",
-          "⟨TODO⟩",
+          "⟨TODO: עם תנאי ההודעה וסעיף 8(ב)⟩",
+          "⟨TODO: סעיף 8(א)–(ב)⟩",
         ],
         [
-          "תחזוקה שוטפת ותיקונים",
-          "ועד הבית",
-          "⟨TODO: 🔶 סעיף + URL⟩",
-          "⟨TODO: קופת הוועד לפי חלקים⟩",
+          "⟨TODO: ההחלטה⟩",
+          "⟨TODO⟩",
+          "⟨TODO: התקנון הרשום של הבית קודם⟩",
+          "⟨TODO: סעיפים 12(א), 64⟩",
         ],
-        ["שלט נוסף לדייר", "⟨TODO⟩", "—", "⟨TODO: הדייר⟩"],
+        ["⟨TODO: בדיקת הצעת המחיר⟩", "⟨TODO⟩", "⟨TODO⟩", "⟨TODO: sii.org.il URL⟩"],
       ],
     },
 
-    { kind: "heading", level: 2, text: "מי משלם על המחסום, ומי על התחזוקה שלו?" },
+    {
+      kind: "heading",
+      level: 2,
+      text: "⟨TODO: על אילו הוצאות מצביעים, ומה קורה עם מי שלא הסכים?⟩",
+    },
     {
       kind: "paragraph",
-      text: "⟨TODO: החלוקה המקובלת — ההתקנה מקופת הבית לפי חלק ברכוש המשותף, שלטים לפי דירה, תחזוקה מקופת הוועד; מה קורה עם דייר שמתנגד. בלי סכומים (business-facts §D ❌) ובלי מילים מלקסיקון `insurance`.⟩ סוגי המחסומים והשערים שמתאימים לחניה משותפת מפורטים בעמוד שער זרוע ובעמוד שערים לחניה.",
+      text: "⟨TODO: סעיף 58(א) והשאלה הפתוחה — אם עלות מחסום מחייבת בעל דירה שהתנגד זו שאלה לעורך דין או למפקח על רישום מקרקעין; בלי סכומים (business-facts §D ❌) ובלי תשובה משפטית.⟩ סוגי המחסומים שמתאימים לחניה משותפת מפורטים בעמוד שער זרוע ובעמוד שערים לחניה.",
       links: [
         { anchor: "שער זרוע", href: "/services/שער-זרוע/" },
         { anchor: "שערים לחניה", href: "/services/שערים-לחניה/" },
       ],
     },
-    // Quote CTA after "who pays": the committee now needs a number to bring to the meeting.
+    // Quote CTA after the costs: the committee now needs a written quote to bring to the meeting.
+    // Say only what the site already states — no walk-through or callback promise.
     {
       kind: "cta",
       variant: "quote",
-      text: "מכינים את הנושא לאסיפה? שלחו בוואטסאפ תמונה של הכניסה לחניה ומספר הדירות — נחזור עם הצעה כתובה שאפשר להביא לדיירים.",
+      text: "⟨TODO: תמונה של הכניסה לחניה בוואטסאפ, שיחה בשעות הפעילות — בלי הבטחת זמן חזרה.⟩",
       service: "שער-זרוע",
     },
 
-    { kind: "heading", level: 2, text: "מה לדרוש בהצעת המחיר לפני שהוועד חותם?" },
+    {
+      kind: "heading",
+      level: 2,
+      text: "⟨TODO: מה צריך להופיע בהצעת המחיר לפני ההצבעה?⟩",
+    },
     {
       kind: "list",
       items: [
-        "⟨TODO: עמידה בת״י 900 חלק 21.03 ותעודת בדיקה — קישור למדריך התקן⟩",
-        "⟨TODO: פירוט רכיבים — מנוע, זרוע, עיניות, לולאת כביש, שלטים⟩",
+        "⟨TODO: פרטי היצרן והמתקין, הוראות תחזוקה והוראות בטיחות — מה שמכון התקנים ממליץ לבקש⟩",
+        "⟨TODO: פירוט רכיבים — מנוע, זרוע, לולאת כביש, שלטים (עיניות כאמצעי נפוץ, לא כדרישת חוק)⟩",
         "⟨TODO: מה כלול ומה לא — תשתית חשמל, חפירה, שילוט⟩",
         "⟨TODO: אחריות על העבודה — בלי תקופה (business-facts §D 🔶)⟩",
-        "⟨TODO: הסדר תחזוקה ומי מקבל את קריאת השירות⟩",
       ],
     },
     {
       kind: "paragraph",
-      text: "⟨TODO: משפט מעבר.⟩ מה התקן דורש ממחסום ומי נושא באחריות כשהוא לא עומד בו — במדריך על תקן 900 לשערים חשמליים. לפנייה מסודרת של ועד או חברת ניהול, עמוד צור קשר.",
+      text: "⟨TODO: משפט מעבר.⟩ על מה ת״י 900 חל ומה מכון התקנים ממליץ — במדריך על תקן 900 לשערים חשמליים. לפנייה מסודרת של ועד או חברת ניהול, עמוד צור קשר.",
       links: [
         {
           anchor: "במדריך על תקן 900 לשערים חשמליים",
@@ -136,18 +162,24 @@ export const guide = {
     {
       kind: "faq",
       items: [
-        // "האם אתם עובדים עם לקוחות פרטיים ועסקיים?" is a homepage FAQ that gains a moreAt to this guide
-        // (content-hub contract) — do NOT repeat that question here; ask the committee's own questions.
+        // A question the homepage, a service, a city or another guide already marks up throws at
+        // module load — ask the committee's own questions.
         {
-          q: "⟨TODO: ״דייר אחד מתנגד — אפשר להתקין בכל זאת?״ — רק עם ציטוט החוק⟩",
-          a: "⟨TODO: 40–80 מילים⟩",
+          q: "⟨TODO: שאלה שאף עמוד אחר לא שואל⟩",
+          a: "⟨TODO: 40–80 מילים, בלי רוב ובלי ייעוץ משפטי⟩",
         },
-        {
-          q: "⟨TODO: ״כמה שלטים מקבלת כל דירה?״ — מה נהוג, בלי לטעון חובה⟩",
-          a: "⟨TODO⟩",
-        },
-        { q: "⟨TODO: ״מי מטפל בתקלה במחסום — הדייר או הוועד?״⟩", a: "⟨TODO⟩" },
+        { q: "⟨TODO⟩", a: "⟨TODO⟩" },
+        { q: "⟨TODO⟩", a: "⟨TODO⟩" },
       ],
     },
+  ],
+
+  // Not required on the committee family, but every quote needs its URL here and beside it.
+  sources: [
+    {
+      label: "חוק המקרקעין, התשכ״ט-1969 — נוסח משולב בוויקיטקסט, לא הפרסום הרשמי",
+      url: LAW_WIKISOURCE,
+    },
+    { label: "חוק המקרקעין — אתר הכנסת (PDF)", url: LAW_KNESSET_PDF },
   ],
 } as const satisfies Guide;

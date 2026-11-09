@@ -52,10 +52,12 @@ Your job is now a **regression watch** plus what is still open:
 
 1. **One script, one `@graph` per page; `#business` defined wherever referenced; every URL
    encoded.** Any regression is a `schema.mjs` failure — report it by builder.
-2. **`FAQPage` on 8 of 45 pages** — `/` and the 7 services (backlog §4.13 ✅ since `225ff45`), 44
-   questions, each marked up once and visible in `<main>`; each service's list is built from the
-   `ServiceDepth.faqs` the page renders. Location FAQs come with their copy (Sprint 6), one Q/A per
-   `FAQPage` sitewide.
+2. **`FAQPage` on 30 of 50 pages** (as of 2026-11-09, `89439b7`) — `/`, the 7 services (backlog
+   §4.13 ✅ since `225ff45`), the 18 locations (Sprint 6) and the 4 guides (Sprint 7): 115 questions,
+   each marked up once and visible in `<main>`; each list is built from the same `faqs` /
+   `ServiceDepth.faqs` / `cityContent` FAQs / guide `faq` blocks the page renders, and a guide that
+   repeats a question throws at module load. The guides add `TechArticle` (1) / `Article` (3) with
+   `citation`; `schema.mjs` does not require those types yet, so check them by hand.
 3. **`sameAs` empty** until the GBP exists (§5.1, B3); `knowsAbout` limited to what the site covers.
 4. **Regions typed by a slug set** in `lib/jsonld.ts` until `locations` gains `kind` (Phase 3) — check
    קריות, שרון, צפון, דרום still emit `AdministrativeArea`.

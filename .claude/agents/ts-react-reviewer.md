@@ -74,8 +74,9 @@ SiteManifest`. Any new `as unknown as` is a finding.
 11. **Blog rendering.** `app/blog/[slug]/page.tsx` `renderBlocks` groups consecutive `li`
     blocks into a `<ul>` via a mutable `list` array and `flush(key)`. Read it: flush keying, the
     trailing flush at `:69`, and whether `ul-${key}` collides with index-keyed siblings. The block
-    model is `{ type: "h" | "p" | "li"; text }` only — no nested headings, tables or links yet (the
-    Phase 4 block model, ADR 0003).
+    model is `{ type: "h" | "p" | "li"; text }` only — no nested headings, tables or links (the
+    guides' block model in `lib/guide-types.ts`, ADR 0003, has them since Sprint 7; the posts move
+    onto it with owner-actions 3.8).
 12. **Imports.** `@/*` alias, no `../../..` chains; `cn()` for conditional classes.
 
 ## Method

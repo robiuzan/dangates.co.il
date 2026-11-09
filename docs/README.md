@@ -99,7 +99,7 @@ When two sources disagree:
 5. **Live response > repo** for anything served at the edge — headers, `robots.txt`, redirects,
    cache, and the answer an AI crawler gets. That answer changed twice with no commit: a managed
    `robots.txt` block (2026-08-16), an edge 403 with the block gone (2026-08-23), 200 across the board
-   (2026-09-06). `cloudflare-runbook` Step 1 is the only measurement; `app/robots.ts` and the planned
+   (2026-09-06). `cloudflare-runbook` Step 1 is the only measurement; `app/robots.ts` and
    `public/_headers` are _inputs_, not evidence.
 6. **`business-facts.md` > optimism.** An unsourced claim does not ship, however good it would look;
    a live 🔶/⛔ claim is stop-ship.

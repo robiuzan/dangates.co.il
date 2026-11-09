@@ -41,22 +41,22 @@ through owner-actions and are never assumed done.
 ## 1. Site architecture — three silos, one hub
 
 Each intent class owns a URL space, and **no silo answers another silo's question** — that is what
-keeps 45 pages, and the guides to come, from cannibalising. The hub is the only expansion surface.
+keeps 50 pages (as of 2026-11-09), and the guides still to come, from cannibalising. The hub is the only expansion surface.
 
 ```text
 /                              the head term + the brand entity
 ├── /services/[service]/       SILO A — 7 pages — "what we do, buy it" — transactional, by gate type
 ├── /locations/[city]/         SILO B — 18 pages — "we do it near you" — 14 cities + 4 region entries
 ├── /blog/                     the 11 legacy posts — keep / fold / redirect per content-calendar §4
-├── /מדריכים/                  PLANNED (Phase 4, ADR 0002) — "what is wrong, what to choose, what the law requires"
+├── /מדריכים/                  THE HUB (ADR 0002, built Sprint 7) — 4 guides — "what is wrong, what to choose, what the law says"
 │                              five pillars (content-calendar §1): תקלות · רכיבים · בחירה · בטיחות ותקנים · ועד בית
 └── /שירותים/ /איזורי-שירות/ /מחירון/ /אודות/ /צור-קשר/   index + trust surfaces
 ```
 
 `/איזורי-שירות/` is the live URL, misspelling included — never "correct" it (golden rule 3).
-`/מדריכים/`, `lib/guides.ts` and `content/guides/` do not exist yet: `new-guide` builds them per
+`/מדריכים/`, `lib/guides.ts` and `content/guides/` exist since `89439b7` (2026-11-09, not deployed): `new-guide` built them per
 [decisions/0002](decisions/0002-guides-hub-route.md) and [decisions/0003](decisions/0003-block-content-model.md);
-`app/sitemap.ts` derives its nine static routes from the `staticPages` registry in `lib/site-config.ts` (backlog §1.4, done 2026-09-06 in `c047d4d`); the hub's guides registry joins it in Phase 4.
+`app/sitemap.ts` derives its static routes (nine indexable until the hub made it ten in Sprint 7) from the `staticPages` registry in `lib/site-config.ts` (backlog §1.4, done 2026-09-06 in `c047d4d`); since Sprint 7 (`89439b7`) the guides registry feeds it too (`guideList`, each row's `<lastmod>` from the guide's `dateModified`) — 50 URLs as of 2026-11-09.
 
 ### 1.1 The ownership contract
 
@@ -105,7 +105,7 @@ sii.org.il, a GSC export) → `keyword-researcher` appends one row to keyword-ma
 strength tier → `content-hub` runs the four-question "does it earn a page" test → a content-calendar
 row → `/new-guide <family> <slug>` → `article-auditor`. A candidate whose target route already exists
 is a cannibalisation flag, not a page; cannibalisation against the 7 services, the 18 locations,
-`/מחירון/` and other guides becomes a **module-load throw in `lib/guides.ts`** (Phase 4, ADR 0003).
+`/מחירון/` and other guides is a **module-load throw in `lib/guides.ts`** since Sprint 7 (`89439b7`, ADR 0003).
 
 ---
 
@@ -116,8 +116,8 @@ is a cannibalisation flag, not a page; cannibalisation against the 7 services, t
 The canonical strings are gbp-runbook §0 — copy, never retype: `דן שערים חשמליים`, `072-2587772`
 (`phoneOverride: true`; never the shared fleet number), `info@dangates.co.il`,
 `https://dangates.co.il/`, **no street address**. They flow roster → `site.config.json` →
-`lib/site-config.ts` → footer, `/צור-קשר/`, `#business`, the profile, every citation and (Phase 6)
-`public/llms.txt`; a mismatch splits the entity. The absent `address` is **correct** and holds
+`lib/site-config.ts` → footer, `/צור-קשר/`, `#business`, the profile, every citation and `/llms.txt`
+(generated from `siteConfig` by `lib/llms.ts` since `89439b7`); a mismatch splits the entity. The absent `address` is **correct** and holds
 (backlog §4.11); WhatsApp on the same number is 🔶 (owner-actions §3.7) and is never the NAP.
 
 ### 3.2 The four entries that are not cities
@@ -210,23 +210,32 @@ Every service page, location page, post and guide carries, in this order:
 ### 4.4 Gate 4 — citability
 
 An assistant picks the source that answers most precisely; reassurance loses to a competitor with a
-number. Nothing on the site carries a citable number or table today (backlog §6.3). The substance,
-in build order ([content-calendar.md](content-calendar.md) §2):
+number. Until Sprint 7 nothing on the site carried a citable table (backlog §6.3); since `89439b7`
+(2026-11-09, in the repo) the hub and guides #1–#4 do. The substance, in build order
+([content-calendar.md](content-calendar.md) §2):
 
-1. **The ת״י 900 חלק 21.03 safety page** — the SII fatality record, the 800,000 ₪ judgment, the
-   criminal-offence framing, the insurance consequence and a conformity checklist on one page; no
-   competitor combines them (keyword-map §12). Citable **only with the sii.org.il URL inline**; the
-   2006 date and the licensed-electrician question stay 🔶 until sii.org.il or gov.il says so.
+1. **The ת״י 900 חלק 21.03 safety page** — built as guide #1 (`תקן-900-שער-חשמלי`): the standard's
+   verified scope and official status, the 2019 building rule and SII's own statements and advice on
+   one page, each with the sii.org.il URL inline. Verified 2026-11-08/09
+   ([research/2026-11-08-standards-and-law.md](research/2026-11-08-standards-and-law.md)): the
+   "official since October 2006" date is **refuted** and never stated; SII lists the standard
+   "רשמי" (in whole or in part; the 2011 edition); **no primary list of required devices exists**, so
+   photocells, a flashing light or safety edges are never presented as legal requirements; the
+   ₪800,000 award and the criminal-offence line are SII's statements, attributed to SII; חוק החשמל
+   §6(א) is verified, the licence grade a gate motor needs is not and is never stated.
 2. **Mechanism depth per gate type** — which motor and drive suit which weight and width, what
    shortens an operator's life, the self-fix boundary where 230V work must stop.
 3. **"What determines the price"** — fault type, gate weight, motor class, motor reuse, cabling run,
    whether the visit fee is credited (N14 ✅ since `af8ba4c`; keyword-map §10). The 150–350 ₪ visit
    fee interpolates from `visitFeeRange` (`priceRows`).
 
-**`public/llms.txt`** ships from `.claude/skills/aeo-answer-content/templates/llms.txt` (backlog
-§6.5): NAP from the manifest, the 7 services and 18 areas with percent-encoded canonicals, and a
-"notes for AI assistants" block naming what must **not** be attributed — no warranty term, years,
-rating, licence or response-time promise. `edge.mjs` → `llmsTxt: false`; live 404 as of 2026-09-06.
+**`/llms.txt`** is built in the repo since `89439b7` (2026-11-09; backlog §6.5 ✅ · repo):
+`app/llms.txt/route.ts` serves `buildLlmsTxt()` from `lib/llms.ts`, in the shape of
+`.claude/skills/aeo-answer-content/templates/llms.txt` — NAP from the manifest, the 7 services, 18
+areas, the static pages and the guides with percent-encoded canonicals byte-identical to the sitemap,
+and a "notes for AI assistants" block naming what must **not** be attributed — no warranty term,
+years, rating, licence or response-time promise. `edge.mjs` → `llmsTxt true`; live 404 until the
+next deploy (it was 404 on 2026-09-06).
 **No author → `Organization`:** no person is coming (owner-actions §3.3); `lib/authors.ts` (an empty registry
 since `d8edb28`, 2026-11-08) stays empty and `schema.mjs` forbids a `Person` author while it is. Expertise is mechanism depth.
 
@@ -297,20 +306,20 @@ full`** report carries the Δ on every script above (baseline 2026-08-24).
 
 ## 7. Enforcement map
 
-| Rule                                                                                                              | Enforced by                                                                                                                                                                              |
-| ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| One query family = one URL; no guide in the silos' phrase space                                                   | `article-auditor` by hand → `lib/guides.ts` module-load throws (not yet → backlog §6.3, ADR 0003)                                                                                        |
-| No service × location matrix; no 19th city / 8th service                                                          | `local-seo-il`, `content-hub` doctrine; CLAUDE.md §12 — judgment, not mechanical                                                                                                         |
-| Doorway delta ≥ 120; word floors; answer block 40–60 words                                                        | `content-depth.mjs` (`thresholds.json`) — the answer block warns until Phase 3 copy lands (backlog §6.2); `local-seo-strategist` reads new city pages                                    |
-| One Q/A per `FAQPage` sitewide; answers rendered                                                                  | `schema.mjs` parity; `<details>` not yet → N8                                                                                                                                            |
-| `#business` defined on every page; `WebSite`; escaped URLs                                                        | `schema.mjs` — fails on all three today (backlog §4.4, §4.9, §4.7)                                                                                                                       |
-| `Review` / `AggregateRating` / `Person` / `Offer` absent until sourced; no address; `sameAs` only from the roster | `schema.mjs`; `Reviews.tsx` gate on `REVIEW_SOURCE_URL`; `schema-auditor` (backlog §4.11 HOLDS); `guard-protected-paths.ps1` denies `site.config.json`                                   |
-| Buyer vocabulary; region grammar (`prefixed`)                                                                     | `hebrew-editor` review; `prefixed` on every `locations` entry since `7c3f2db` (backlog §5.2 ✅, `new-city`)                                                                              |
-| Unconfirmed claims (24/7, ארצית, אחריות מלאה, ניסיון)                                                             | `claims-grep.mjs` (`claims.json`); `post-edit-lint.ps1` at edit time; `claims-verifier`                                                                                                  |
-| Title brand once; canonical = sitemap; one H1; orphans; chrome reach                                              | `titles.mjs`, `links.mjs`                                                                                                                                                                |
-| Gate 1 re-probed live, full UA string, never inferred; no zone mutation by an agent                               | `aeo-answer-content` checklist; `aeo-geo-strategist` brief; `guard-destructive-ops.ps1` — the probe is manual (🔶 no script probes the live edge)                                        |
-| `llms.txt` present and in sync; `dateModified` from a real `updated`                                              | `edge.mjs` `llmsTxt` (presence only; not yet → backlog §6.5); `articleJsonLd` since `02a3144`, real on 8 of 11 posts since `9195c9b` — no script checks it (backlog §6.4, `new-article`) |
-| No volume / CPC / difficulty without a source; GSC numbers only via the script; citations in this file resolve    | `keyword-research` §2 rule; `gsc-ingest.mjs` `--write` refuses the fixture (backlog §15.3); `env-doctor.mjs` (`npm run audit:env`)                                                       |
+| Rule                                                                                                              | Enforced by                                                                                                                                                                                                                                                          |
+| ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| One query family = one URL; no guide in the silos' phrase space                                                   | `lib/guides.ts` module-load throws since `89439b7` (backlog §6.3, ADR 0003) + `article-auditor` for the body under each H2                                                                                                                                           |
+| No service × location matrix; no 19th city / 8th service                                                          | `local-seo-il`, `content-hub` doctrine; CLAUDE.md §12 — judgment, not mechanical                                                                                                                                                                                     |
+| Doorway delta ≥ 120; word floors; answer block 40–60 words                                                        | `content-depth.mjs` (`thresholds.json`) — the answer block warns until Phase 3 copy lands (backlog §6.2); `local-seo-strategist` reads new city pages                                                                                                                |
+| One Q/A per `FAQPage` sitewide; answers rendered                                                                  | `schema.mjs` parity; native `<details>` since N8 (`7cfcf4c`)                                                                                                                                                                                                         |
+| `#business` defined on every page; `WebSite`; escaped URLs                                                        | `schema.mjs` — fails on all three today (backlog §4.4, §4.9, §4.7)                                                                                                                                                                                                   |
+| `Review` / `AggregateRating` / `Person` / `Offer` absent until sourced; no address; `sameAs` only from the roster | `schema.mjs`; `Reviews.tsx` gate on `REVIEW_SOURCE_URL`; `schema-auditor` (backlog §4.11 HOLDS); `guard-protected-paths.ps1` denies `site.config.json`                                                                                                               |
+| Buyer vocabulary; region grammar (`prefixed`)                                                                     | `hebrew-editor` review; `prefixed` on every `locations` entry since `7c3f2db` (backlog §5.2 ✅, `new-city`)                                                                                                                                                          |
+| Unconfirmed claims (24/7, ארצית, אחריות מלאה, ניסיון)                                                             | `claims-grep.mjs` (`claims.json`); `post-edit-lint.ps1` at edit time; `claims-verifier`                                                                                                                                                                              |
+| Title brand once; canonical = sitemap; one H1; orphans; chrome reach                                              | `titles.mjs`, `links.mjs`                                                                                                                                                                                                                                            |
+| Gate 1 re-probed live, full UA string, never inferred; no zone mutation by an agent                               | `aeo-answer-content` checklist; `aeo-geo-strategist` brief; `guard-destructive-ops.ps1` — the probe is manual (🔶 no script probes the live edge)                                                                                                                    |
+| `llms.txt` present and in sync; `dateModified` from a real `updated`                                              | `edge.mjs` `llmsTxt` (presence only; `true` since `89439b7`, backlog §6.5 — in sync by construction, `lib/llms.ts` reads the registries); `articleJsonLd` since `02a3144`, real on 8 of 11 posts since `9195c9b` — no script checks it (backlog §6.4, `new-article`) |
+| No volume / CPC / difficulty without a source; GSC numbers only via the script; citations in this file resolve    | `keyword-research` §2 rule; `gsc-ingest.mjs` `--write` refuses the fixture (backlog §15.3); `env-doctor.mjs` (`npm run audit:env`)                                                                                                                                   |
 
 ---
 
@@ -320,7 +329,7 @@ No page ships without all of these; each line is a command or a named agent.
 
 - [ ] Exactly one `<h1>`, one search intent; heading order unbroken; ≥ 2 in-copy internal links with descriptive anchors; reachable from ≥ 2 non-index pages — `links.mjs`
 - [ ] Title unique sitewide, brand suffix **exactly once**; canonical self-referencing, trailing slash, percent-escaped byte-identically to the sitemap `<loc>` — `titles.mjs`
-- [ ] The route family owns the primary query per §1.1; no cross-silo collision — `article-auditor` (guides), `lib/guides.ts` throws once built
+- [ ] The route family owns the primary query per §1.1; no cross-silo collision — `article-auditor` (guides), `lib/guides.ts` throws (built in Sprint 7)
 - [ ] Word floor met with unique copy; for a location or service, doorway delta ≥ 120; a 40–60 word answer block as the first `<p>` after the `<h1>` — `content-depth.mjs`
 - [ ] Every FAQ question in exactly one `FAQPage` sitewide, rendered in the DOM; JSON-LD per [schema-graph.md](schema-graph.md) with `#business` defined, escaped URLs, one `@graph`, no `Review` / `Offer` / `Person` / `PostalAddress` — `schema.mjs`
 - [ ] Every claim free per content-standards §6 or marked 🔶 with a business-facts row; a live 🔶/⛔ phrase is stop-ship — `claims-grep.mjs`, `claims-verifier`; buyer vocabulary (עינית, לוח פיקוד, מחסום) — `hebrew-editor`

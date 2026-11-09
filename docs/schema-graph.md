@@ -37,22 +37,22 @@ every content page emits **one** `<script>` holding **one** `@graph`, and every 
 at `#business` defines it. Sprint 2 closed this table (commits `02a3144` `d8edb28`, not deployed
 yet); until then 18 locations and 8 statics carried only the breadcrumb.
 
-| Route                    | Required                                                           | Currently (2026-11-09)                                                                                                                          |
-| ------------------------ | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`                      | one `@graph`: `GeneralContractor` + `WebSite` + `FAQPage`          | ✅ one `@graph`: business + `WebSite` `#website` + `FAQPage`                                                                                    |
-| `/services/{slug}/` ×7   | `Service` + `BreadcrumbList` + `FAQPage` from the per-service FAQs | ✅ business + `Service` (encoded `url`, `@id` `#service`, `provider` → `#business`) + `FAQPage` (4–5 Q/As, since `225ff45`, §4.13) + breadcrumb |
-| `/locations/{slug}/` ×18 | `Service` with local `areaServed` + `BreadcrumbList` + `FAQPage`   | ✅ business + `Service` with `areaServed` `City` / `AdministrativeArea` from `kind` (§5) + `FAQPage` (3 Q/As, since `7c3f2db`) + breadcrumb     |
-| `/שירותים/`              | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (7) + breadcrumb                                                                                               |
-| `/איזורי-שירות/`         | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (18) + breadcrumb                                                                                              |
-| `/blog/`                 | `CollectionPage` (or `Blog`) + `BreadcrumbList`                    | ✅ `CollectionPage` + `ItemList` (11) + breadcrumb                                                                                              |
-| `/blog/{slug}/` ×11      | `BlogPosting` + `BreadcrumbList` (+ `FAQPage`)                     | ✅ business + `BlogPosting` (§6) + breadcrumb, one `@graph`; no FAQ                                                                             |
-| `/מדריכים/{slug}/`       | `TechArticle`/`Article` + `FAQPage` + `BreadcrumbList`             | route family does not exist yet (Phase 4, ADR 0002); `articleJsonLd` takes `type` already                                                       |
-| `/מחירון/`               | `WebPage` + `BreadcrumbList` — `Offer` is **blocked** (§4.4)       | ✅ `WebPage` + breadcrumb, no `Offer` (correct while prices are unsourced)                                                                      |
-| `/אודות/`                | `AboutPage` + `BreadcrumbList` (no `Person` — none is coming)      | ✅ business (with `knowsAbout`) + `AboutPage` (`about` → `#business`) + breadcrumb                                                              |
-| `/צור-קשר/`              | `ContactPage` + `BreadcrumbList`                                   | ✅ business + `ContactPage` (`mainEntity` → `#business`) + breadcrumb                                                                           |
-| Legal pages              | `WebPage` + `BreadcrumbList`                                       | ✅ `WebPage` + breadcrumb                                                                                                                       |
-| `/תודה/`                 | none — it is `noindex` and outside the sitemap                     | ✅ none (since `68a4a7f`)                                                                                                                       |
-| `/404`                   | none                                                               | ✅ none                                                                                                                                         |
+| Route                    | Required                                                           | Currently (2026-11-09)                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------ | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                      | one `@graph`: `GeneralContractor` + `WebSite` + `FAQPage`          | ✅ one `@graph`: business + `WebSite` `#website` + `FAQPage`                                                                                                                                                                                                                                                                                             |
+| `/services/{slug}/` ×7   | `Service` + `BreadcrumbList` + `FAQPage` from the per-service FAQs | ✅ business + `Service` (encoded `url`, `@id` `#service`, `provider` → `#business`) + `FAQPage` (4–5 Q/As, since `225ff45`, §4.13) + breadcrumb                                                                                                                                                                                                          |
+| `/locations/{slug}/` ×18 | `Service` with local `areaServed` + `BreadcrumbList` + `FAQPage`   | ✅ business + `Service` with `areaServed` `City` / `AdministrativeArea` from `kind` (§5) + `FAQPage` (3 Q/As, since `7c3f2db`) + breadcrumb                                                                                                                                                                                                              |
+| `/שירותים/`              | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (7) + breadcrumb                                                                                                                                                                                                                                                                                                        |
+| `/איזורי-שירות/`         | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (18) + breadcrumb                                                                                                                                                                                                                                                                                                       |
+| `/blog/`                 | `CollectionPage` (or `Blog`) + `BreadcrumbList`                    | ✅ `CollectionPage` + `ItemList` (11) + breadcrumb                                                                                                                                                                                                                                                                                                       |
+| `/blog/{slug}/` ×11      | `BlogPosting` + `BreadcrumbList` (+ `FAQPage`)                     | ✅ business + `BlogPosting` (§6) + breadcrumb, one `@graph`; no FAQ                                                                                                                                                                                                                                                                                      |
+| `/מדריכים/{slug}/`       | `TechArticle`/`Article` + `FAQPage` + `BreadcrumbList`             | ✅ since `89439b7` (2026-11-09, not deployed): business + `TechArticle` (safety) or `Article` (symptom, committee, comparison) with `author` → `#business` and `citation` from `sources`, + `FAQPage` + `BreadcrumbList`, one `@graph`; the hub `/מדריכים/` is `CollectionPage` + `ItemList`. `schema.mjs` still requires only the breadcrumb on a guide |
+| `/מחירון/`               | `WebPage` + `BreadcrumbList` — `Offer` is **blocked** (§4.4)       | ✅ `WebPage` + breadcrumb, no `Offer` (correct while prices are unsourced)                                                                                                                                                                                                                                                                               |
+| `/אודות/`                | `AboutPage` + `BreadcrumbList` (no `Person` — none is coming)      | ✅ business (with `knowsAbout`) + `AboutPage` (`about` → `#business`) + breadcrumb                                                                                                                                                                                                                                                                       |
+| `/צור-קשר/`              | `ContactPage` + `BreadcrumbList`                                   | ✅ business + `ContactPage` (`mainEntity` → `#business`) + breadcrumb                                                                                                                                                                                                                                                                                    |
+| Legal pages              | `WebPage` + `BreadcrumbList`                                       | ✅ `WebPage` + breadcrumb                                                                                                                                                                                                                                                                                                                                |
+| `/תודה/`                 | none — it is `noindex` and outside the sitemap                     | ✅ none (since `68a4a7f`)                                                                                                                                                                                                                                                                                                                                |
+| `/404`                   | none                                                               | ✅ none                                                                                                                                                                                                                                                                                                                                                  |
 
 **What is left** — none of it is a `schema.mjs` failure:
 
@@ -83,15 +83,16 @@ the roster pitch carries unconfirmed claims), `url` with the trailing slash, `te
 locations (`City` ×14, `AdministrativeArea` ×4 — never the roster phrase, which includes the
 unconfirmed "פריסה ארצית"), and `hasOfferCatalog` — an `OfferCatalog` of the 7 services as `Service`
 nodes by `@id`, no `Offer`, no price. On `/אודות/` only it also carries `knowsAbout` (the 7 services +
-תיקון שערים חשמליים, מנועי שערים, בטיחות שערים חשמליים).
+תיקון שערים חשמליים, מנועי שערים, בטיחות שערים חשמליים, and since `89439b7` ת״י 900 חלק 21.03 — a
+subject the safety guide covers, never a compliance claim).
 
 **Deliberately absent — do not "fix":** `address` / `PostalAddress`. This is a **service-area business
 with no premises**. Model coverage with `areaServed` (and optionally `serviceArea` + `GeoCircle`).
 Inventing an address is a Google Business Profile suspension risk, not a completeness improvement.
 
-**Unblocked and still open:** `knowsAbout` naming ת״י 900 חלק 21.03 waits for the guide that covers it
-(Sprint 7.2) — the list names only what the site already covers; `sameAs` comes from the manifest
-**only** (empty today).
+**Closed in the repo:** `knowsAbout` names ת״י 900 חלק 21.03 since the guide that covers it shipped
+(Sprint 7.2, `89439b7`, 2026-11-09) — the list names only what the site already covers. **Still
+open:** `sameAs` comes from the manifest **only** (empty today).
 
 **Missing, and each blocked on a specific fact:**
 
@@ -191,7 +192,7 @@ since `9195c9b`, 2026-11-09; on the other three the two are equal), `isPartOf` a
 
 `author` stays the `Organization` — no person is coming (business-facts §B). **Never invent one.**
 
-Guides under `/מדריכים/` (Phase 4) use the same `articleJsonLd` with `type: "TechArticle"` for the
+Guides under `/מדריכים/` (built in Sprint 7, `89439b7`) use the same `articleJsonLd` with `type: "TechArticle"` for the
 safety / component families and `Article` otherwise, plus `FAQPage` derived from the guide's FAQ
 blocks. Deriving it from the blocks rather than authoring it separately is what keeps rule §4.2 from
 breaking as copy is edited.

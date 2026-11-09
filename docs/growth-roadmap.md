@@ -131,7 +131,7 @@ of array order. The bar is [content-standards.md](content-standards.md); the doo
 floors are measured, not assumed. **Where it stands (2026-11-09, in the repo, not deployed):** the
 service pages since `225ff45`; the 18 location pages, the region grammar, the full footer, the
 mesh and the three index pages since `7c3f2db` — location delta 288–428 against 120, `notInChrome
-0`. Still to do: the header (Sprint 6.5) and the post-page related links (Sprint 7.3). **Blocked on
+0`. Still to do: the header (Sprint 6.5) and the post-page related links (Sprint 7.3, which waits on your approval of the post rewrite — §3.8). **Blocked on
 you:** the five bounded entries wait on your 3.6 answer; §3.5 makes the rest better.
 
 ### Phase 4 — The guides hub and the block model
@@ -143,7 +143,14 @@ you. The first four ship with the hub; the queue, the order and the reasons are 
 [content-calendar.md](content-calendar.md). The same change replaces the blog's flat content model,
 which restores the heading outline, turns 42 dead link phrases into links, and lets a post carry a
 table or an answer block. Three of the 11 migrated posts survive; the rest fold into guides or
-redirect (calendar §4 — **needs your approval**, §3.8).
+redirect (calendar §4 — **needs your approval**, §3.8). **Where it stands (2026-11-09, in the repo,
+not deployed):** the hub and the first four guides shipped in `89439b7` — the ת״י 900 page, a noisy
+gate, a car-park barrier in a shared building, and sliding vs swing vs cantilever — each over the
+900-word floor (median 2395.5 unique), plus `llms.txt`. Every legal and standards fact in them was
+read on sii.org.il, gov.il or the statute text first: the "official since October 2006" date turned
+out to be wrong and is left out, and no law sets a special majority for a gate. **Blocked on you:**
+the post rewrite and the keep / fold / redirect moves (§3.8), whether the statute text read on
+he.wikisource is a good enough source (§3.10), and whether you install cantilever gates (§3.9).
 
 ### Phase 5 — Engagement and conversion
 
@@ -159,7 +166,7 @@ you:** the GA4 property (§2.4) — without it the events fire into nothing.
 **Buys:** an authors registry that stays empty until someone is named, with the data-only path ready
 for that day; an `AboutPage` with `knowsAbout` (the standard, the gate types); "אחריות מלאה" softened
 sitewide to "אחריות על העבודה" and "ניסיון רב שנים" replaced by mechanism depth — claims the site can
-stand behind (the registry, the `AboutPage` and the softening are in the repo since Sprints 2 and 4); `llms.txt` and per-bot `robots.ts` rules ready for the moment the edge block lifts; the
+stand behind (the registry, the `AboutPage` and the softening are in the repo since Sprints 2 and 4); per-bot `robots.ts` rules live since 2026-09-06, and `llms.txt` built in the repo since Sprint 7 (`89439b7`), live after the next deploy; the
 photo pipeline wired the day photos arrive (Cloudflare Image Transformations are already on).
 **Blocked on you:** the AI-crawler toggle (§1.1), the profile URL (§2.1), the photos (§4.1).
 
@@ -182,7 +189,7 @@ wait for them; it is written so that their absence is not a lie.
 | Not coming                    | What the site does instead                                                                                                                                                                                                                                                                                             |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Warranty term, scope          | "אחריות על העבודה" — a true statement with no number; never "מלאה" with an implied duration. No warranty page.                                                                                                                                                                                                         |
-| Licence, insurance            | No licence, insurance or certification is claimed anywhere. Expertise is shown by **mechanism depth** — why an עינית fails, what ת״י 900 requires — not by a badge.                                                                                                                                                    |
+| Licence, insurance            | No licence, insurance or certification is claimed anywhere. Expertise is shown by **mechanism depth** — why an עינית fails, what ת״י 900 covers and what SII advises — not by a badge.                                                                                                                                 |
 | Founding year, a named person | No `foundingDate`, no `Person`, no byline; articles are attributed to the organisation; "ניסיון רב שנים" goes. The ת״י 900 guide carries the expertise signal instead of a CV.                                                                                                                                         |
 | Real prices                   | `/מחירון/` becomes "what determines the price" — fault type, gate weight, motor class, access, whether the visit fee is credited. The one sourced figure (₪150–350 visit) stays, marked as needing confirmation. No `Offer` schema. At least one competitor publishes a ~40-line price table; we will not copy theirs. |
 
@@ -225,7 +232,7 @@ this is the summary, in the order it pays off.
 Targets to judge the work against, each one measurable by a script or a screenshot — not traffic
 predictions, which nobody can honestly make without the baseline §4.1 provides.
 
-- **Zero pages under their word floor** (11 of 45 as of 2026-11-09 — the 11 posts; 41 on
+- **Zero pages under their word floor** (11 of 50 as of 2026-11-09 after Sprint 7 — the 11 posts, waiting on §3.8; 41 of 45 on
   2026-08-23) and ✅ **18 of 18 location pages passing the doorway delta** — met in the repo
   2026-11-09 (`7c3f2db`, `locationMedianDelta 343.5`; 0 before); the reviewer sign-off and the five
   🔶 entries (owner-actions 3.6) are still open — `npm run audit -- --scope content` exit 0 is the
@@ -234,7 +241,8 @@ predictions, which nobody can honestly make without the baseline §4.1 provides.
   2026-11-09 (`225ff45`): service doorway delta 404–468 against 120, `faqPages 8` (26 since the
   city FAQs, `7c3f2db`); not deployed.
 - **`/מדריכים/` live with the first eight guides** of the calendar published, each past
-  `article-auditor`, each reachable from at least two non-hub pages.
+  `article-auditor`, each reachable from at least two non-hub pages. Four of eight in the repo since
+  `89439b7` (2026-11-09; every service page links 1–3 of them), none live until the next deploy.
 - **A Business Profile linked in `sameAs`, and the reviews section visible** with real reviews quoted
   verbatim — `grep -rl aggregateRating out` returns the homepage because it finally may.
 - **Photos on every service page** with Hebrew `alt` and city/gate-type/month, shipped through the kit
@@ -284,12 +292,12 @@ the business has not confirmed — unlike the cost calculator competitors run.
 
 ## 7. Suggested sequence
 
-| Order         | Work                                                                        | Why here                                                               |
-| ------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **First**     | Deploy Phase 0 (`deploy-dangates`, on your go-ahead)                        | The fabricated reviews are live until this happens                     |
-| **Now**       | Search Console · AI-crawler setting · GBP claim · GA4 (owner-actions §1–2)  | None depends on code; each unblocks a phase                            |
-| **Next**      | Phase 1 correctness · Phase 2 schema                                        | Small, mechanical, all verifiable by script                            |
-| **Then**      | Phase 3 depth + navigation                                                  | The largest lever on the site and the one that clears the doorway risk |
-| **Then**      | Phase 4 hub + first four guides + blog migration                            | The pages that get cited; the ת״י 900 anchor needs nothing from you    |
-| **Alongside** | Photos arrive → Phase 6 image pipeline; reviews arrive → restore verbatim   | Each is a short, mechanical change once the asset exists               |
-| **Ongoing**   | Phase 5 engagement · Phase 7 measurement · 2 guides a month · monthly audit | Continuous                                                             |
+| Order         | Work                                                                                        | Why here                                                               |
+| ------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **First**     | Deploy Phase 0 (`deploy-dangates`, on your go-ahead)                                        | The fabricated reviews are live until this happens                     |
+| **Now**       | Search Console · AI-crawler setting · GBP claim · GA4 (owner-actions §1–2)                  | None depends on code; each unblocks a phase                            |
+| **Next**      | Phase 1 correctness · Phase 2 schema                                                        | Small, mechanical, all verifiable by script                            |
+| **Then**      | Phase 3 depth + navigation                                                                  | The largest lever on the site and the one that clears the doorway risk |
+| **Then**      | Phase 4 hub + first four guides (in the repo since `89439b7`) + blog migration (needs §3.8) | The pages that get cited; the ת״י 900 anchor needed nothing from you   |
+| **Alongside** | Photos arrive → Phase 6 image pipeline; reviews arrive → restore verbatim                   | Each is a short, mechanical change once the asset exists               |
+| **Ongoing**   | Phase 5 engagement · Phase 7 measurement · 2 guides a month · monthly audit                 | Continuous                                                             |

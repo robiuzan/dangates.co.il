@@ -1,6 +1,6 @@
 ---
 name: new-guide
-description: Build one Hebrew guide under /מדריכים/[slug]/ from a family template — symptom, component, brand, comparison, safety or committee — as a typed content/guides/<slug>.ts module: the required blocks per family in order, the answer block first, the captioned citable table each family must carry, CTA placement and cap, TechArticle/Article + FAQPage + BreadcrumbList schema, link targets into services, locations and sibling guides, registration in lib/guides.ts and the reverse index, then typecheck, build, the audit scripts and the article-auditor → hebrew-editor → claims-verifier chain. Use only after /content-hub has said the topic earns a page. Triggers: "new guide", "write a guide about", "symptom page", "component page", "comparison page", "brand page", "מדריך חדש", "עמוד תקלה", "/new-guide".
+description: Build one Hebrew guide under /מדריכים/[slug]/ from a family template — symptom, component, brand, comparison, safety or committee — as a typed content/guides/<slug>.ts module: the required blocks per family in order, the answer block first, the captioned citable table each family must carry, CTA placement and cap, TechArticle/Article + FAQPage + BreadcrumbList schema, link targets into services, locations and sibling guides, registration in lib/guides.ts (built in Sprint 7 with its module-load throws; four guides built in the repo) and the reverse index, the deploy-day dates, then typecheck, build, the audit scripts and the article-auditor → hebrew-editor → claims-verifier chain. Use only after /content-hub has said the topic earns a page. Triggers: "new guide", "write a guide about", "symptom page", "component page", "comparison page", "brand page", "מדריך חדש", "עמוד תקלה", "/new-guide".
 argument-hint: "symptom|component|brand|comparison|safety|committee <hebrew-slug>"
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 ---
@@ -12,38 +12,41 @@ placement and cap, the schema type, the link targets and the one table that make
 Whether the topic earns a page at all is `/content-hub`'s verdict — run it first and quote the
 calendar row. Whether the result is publishable is `article-auditor`'s verdict — run it last.
 
-## What exists today vs what Phase 4 builds
+## What is built (Sprint 7, `89439b7`, 2026-11-09)
 
-**Nothing below exists as of 2026-08-23.** The only editorial model is
-`PostBlock = {type: "h" | "p" | "li"; text}` (`lib/posts.ts`). Phase 4 (`/improve` against ADR 0002
-and ADR 0003) builds the hub; this skill describes the model it builds so the first guides and the
-route family land together. If `lib/guide-types.ts` is absent when this skill is invoked, **stop at
-step 2** and route to `/improve` — never park a guide in `lib/posts.ts` or invent a one-off route.
+**The hub is BUILT in the repo** (not deployed until the next deploy). Sprint 7 built the model from
+this skill's templates (ADR 0002, ADR 0003) and shipped the first four guides with it:
+`תקן-900-שער-חשמלי` (`safety`), `שער-חשמלי-רועש` (`symptom`), `מחסום-חניה-ועד-בית` (`committee`) and
+`שער-נגרר-כנף-או-קונזולי` (`comparison`). A new guide is one module plus one registry line — never a
+guide parked in `lib/posts.ts` (the 11 legacy posts still use the flat `PostBlock` model) and never a
+one-off route.
 
-| Asset                                      | Built from                                                   | Does                                                               |
-| ------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------ |
-| `lib/guide-types.ts`                       | `templates/guide-types.ts` (this skill) — the authority      | `Guide`, `Block`, `Family`, `Pillar`, the per-family consts        |
-| `lib/guides.ts`                            | galbath `lib/articles.ts`, retargeted                        | registry, `guidesForService/Location`, `relatedGuides`, the throws |
-| `content/guides/<slug>.ts`                 | `templates/<family>.ts`                                      | one guide, `as const satisfies Guide`                              |
-| `components/article/*`                     | galbath `components/article/*`                               | `ArticleBody` (block renderer), TOC, meta                          |
-| `app/מדריכים/page.tsx`, `[slug]/`          | galbath `app/מדריכים/**`                                     | index (`ItemList`) + detail; Hebrew-param decode + NFC             |
-| `lib/jsonld.ts` `articleJsonLd`            | schema-graph §8 (built 2026-11-08; takes `type`)             | `TechArticle`/`Article` in one `@graph`                            |
-| `scripts/audit/schema.mjs` `requiredTypes` | `schema.mjs:57-62` returns only `BreadcrumbList` for `guide` | Phase 4 extends it to the article type + `FAQPage`                 |
+| Asset                                         | State                                                                                      | Does                                                                                                                                                                 |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lib/guide-types.ts`                          | ✅ built from `templates/guide-types.ts` (this skill — still the authority for new fields) | `Guide`, `Block`, `Family`, `Pillar`, `familyPillar`, `schemaTypeFor`, `familyCtaCap`, `headingId`                                                                   |
+| `lib/guides.ts`                               | ✅ built (galbath `lib/articles.ts`, retargeted)                                           | the `guides` tuple, `guideList`, `findGuide()`, the total `relatedGuides` record, `guidesForService()` / `guidesForLocation()`, `guidesByPillar()`, the throws below |
+| `content/guides/<slug>.ts`                    | ✅ four guides                                                                             | one guide, `export const guide = {…} as const satisfies Guide`                                                                                                       |
+| `components/article/*`                        | ✅ `ArticleBody`, `GuideView`, `blocks`, `chrome`                                          | block renderer, TOC, meta, CTAs (`data-cta` `article-{inline,aside,quote}-{call,whatsapp}`)                                                                          |
+| `app/מדריכים/page.tsx`, `[slug]/`             | ✅ index (`CollectionPage` + `ItemList`, copy in `content/pages/guides-index.ts`) + detail | Hebrew-param decode + NFC via `findGuide()`                                                                                                                          |
+| `lib/jsonld.ts` `articleJsonLd`               | ✅ takes `type` and `citation`                                                             | `TechArticle` / `Article` in the page's one `@graph`, `author` → `#business`                                                                                         |
+| `app/sitemap.ts`, `lib/llms.ts`, `lib/nav.ts` | ✅ read `guideList`                                                                        | the sitemap rows (`lastModified` = `dateModified`), the `llms.txt` Guides section, the header and footer entry (shown while `hasGuides`)                             |
+| `scripts/audit/schema.mjs` `requiredTypes`    | **not extended** — still requires only `BreadcrumbList` on a `guide` page                  | the article type + `FAQPage` are not script-required yet; check the type census by hand (`TechArticle` 1 · `Article` 3 · `FAQPage` 4 as of 2026-11-09)               |
 
-Already in place: `scripts/audit/lib/pages.mjs:138-139` classifies `/מדריכים/` as `guides-index` /
-`guide`; `thresholds.json` carries `guide: 900` and `guides-index: 250`; `content-depth.mjs` measures
-the answer block on `guide` pages.
+Also in place: `scripts/audit/lib/pages.mjs` `routeType()` classifies `/מדריכים/` as `guides-index`
+/ `guide`; `thresholds.json` carries `guide: 900` and `guides-index: 250`; `content-depth.mjs`
+measures the answer block on `guide` pages. As of 2026-11-09 the four guides measure 2395.5 unique
+words (median) and open with answers of 56–58 words.
 
 ## The family table
 
-| Family       | Required blocks, in order                                                                                                                                                                | Citable table (caption required)                                        | CTA                                                         | Schema                                                            | Answer-block question                          | Link targets                                                                                       |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `symptom`    | answer · intro ¶ · h2 likely causes + **table** · h2 DIY checks (ordered list) · **warn callout** (stop here) · h2 when it is a technician job · cta · h2 typical fix and duration · faq | cause → DIY check → when to call → typical fix                          | 1 inline after "when to call", optional quote at end; cap 2 | `Article` + `FAQPage` + `BreadcrumbList`                          | `למה השער החשמלי {symptom}?`                   | the gate-type service(s) the symptom lives on · the component guide of the failing part · ≤ 1 city |
-| `component`  | answer · intro ¶ · h2 what it does · h2 failure modes + **table** · h2 symptoms it produces · h2 replace or repair · cta · h2 what drives the price (no number) · faq                    | failure mode → symptom → replace-or-repair                              | 1 after replace-or-repair; cap 1                            | `TechArticle` + `FAQPage` + `BreadcrumbList`                      | `מה עושה {part} בשער חשמלי ומתי מחליפים אותו?` | `/מחירון/` · the service(s) · the symptom guide(s) it causes                                       |
-| `comparison` | answer · intro ¶ · h2 the matrix + **table** · h2 per option (h3 each) · h2 which fits which entrance · cta · faq                                                                        | 3-axis matrix: option × (space/clearance · weight/width · cost drivers) | 1 quote after "which fits"; cap 1                           | `Article` + `FAQPage` + `BreadcrumbList`                          | `{A} או {B} — מה מתאים לכניסה שלכם?`           | the 2–3 services compared · `/מחירון/`                                                             |
-| `safety`     | answer · intro ¶ · h2 what the standard requires + **table** · h2 who is liable · h2 the conformity checklist (ordered) · h2 periodic checks · cta · faq · `sources`                     | conformity checklist with an SII citation per row                       | 1 inline after the checklist; cap 1                         | `TechArticle` + `FAQPage` + `BreadcrumbList` + `citation`         | `מה דורש ת״י 900 חלק 21.03 משער חשמלי?`        | all 7 services (`relatedServices`) · `/אודות/`                                                     |
-| `committee`  | answer · intro ¶ · h2 why approval is needed · h2 approval steps + **table** · h2 who pays · h2 what to put in the tender · cta · faq                                                    | step → who decides → threshold (law citation) → who pays                | 1 quote after "who pays"; cap 1                             | `Article` + `FAQPage` + `BreadcrumbList`                          | `מה ועד הבית צריך לאשר לפני התקנת מחסום?`      | שער-זרוע · שערים-לחניה · שערים-לדירה · `/צור-קשר/`                                                 |
-| `brand`      | answer · intro ¶ · h2 what characterises the motors · h2 what fails first + **table** · h2 parts and repair economics · cta · faq — **🔶 blocked on business-facts §C**                  | model line → typical failure → symptom → repairable?                    | 1 inline; cap 1                                             | `Article` + `FAQPage` + `BreadcrumbList`, **no `brand` property** | `מה מאפיין מנועי {brand} ומה נכשל בהם?`        | the services the motor is fitted on · the symptom guide of its typical failure                     |
+| Family       | Required blocks, in order                                                                                                                                                                                                                                                                            | Citable table (caption required)                                                                                                                      | CTA                                                         | Schema                                                            | Answer-block question                             | Link targets                                                                                       |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `symptom`    | answer · intro ¶ · h2 likely causes + **table** · h2 DIY checks (ordered list) · **warn callout** (stop here) · h2 when it is a technician job · cta · h2 typical fix and duration · faq                                                                                                             | cause → DIY check → when to call → typical fix                                                                                                        | 1 inline after "when to call", optional quote at end; cap 2 | `Article` + `FAQPage` + `BreadcrumbList`                          | `למה השער החשמלי {symptom}?`                      | the gate-type service(s) the symptom lives on · the component guide of the failing part · ≤ 1 city |
+| `component`  | answer · intro ¶ · h2 what it does · h2 failure modes + **table** · h2 symptoms it produces · h2 replace or repair · cta · h2 what drives the price (no number) · faq                                                                                                                                | failure mode → symptom → replace-or-repair                                                                                                            | 1 after replace-or-repair; cap 1                            | `TechArticle` + `FAQPage` + `BreadcrumbList`                      | `מה עושה {part} בשער חשמלי ומתי מחליפים אותו?`    | `/מחירון/` · the service(s) · the symptom guide(s) it causes                                       |
+| `comparison` | answer · intro ¶ · h2 the matrix + **table** · h2 per option (h3 each) · h2 which fits which entrance · cta · faq                                                                                                                                                                                    | 3-axis matrix: option × (space/clearance · weight/width · cost drivers)                                                                               | 1 quote after "which fits"; cap 1                           | `Article` + `FAQPage` + `BreadcrumbList`                          | `{A} או {B} — מה מתאים לכניסה שלכם?`              | the 2–3 services compared · `/מחירון/`                                                             |
+| `safety`     | answer · intro ¶ · h2 what the standard is and covers · h2 its official status · h2 the building rule · h2 what SII says and advises · h2 the safety devices gates are usually built with · h2 what to check on an existing gate + **table** · cta · h2 who may work on the supply · faq · `sources` | device → what it does → how to check it safely → when to stop using the gate — captioned as common construction, **not** a list of legal requirements | 1 inline after the check order; cap 1                       | `TechArticle` + `FAQPage` + `BreadcrumbList` + `citation`         | `מה זה ת״י 900 חלק 21.03, ועל אילו שערים הוא חל?` | the services (`relatedServices`) · `/אודות/`                                                       |
+| `committee`  | answer · intro ¶ · h2 why it is a building decision · h2 what the model bylaws say, and what they do not · h2 the decision steps + **table** · h2 which costs are voted on · h2 what the quote must show · cta · faq                                                                                 | step → who is involved → what to check → source (statute section or SII URL) — never a "majority required" column                                     | 1 quote after the costs; cap 1                              | `Article` + `FAQPage` + `BreadcrumbList`                          | `מה ועד הבית צריך לבדוק לפני התקנת מחסום בחניה?`  | שער-זרוע · שערים-לחניה · שערים-לדירה · `/צור-קשר/`                                                 |
+| `brand`      | answer · intro ¶ · h2 what characterises the motors · h2 what fails first + **table** · h2 parts and repair economics · cta · faq — **🔶 blocked on business-facts §C**                                                                                                                              | model line → typical failure → symptom → repairable?                                                                                                  | 1 inline; cap 1                                             | `Article` + `FAQPage` + `BreadcrumbList`, **no `brand` property** | `מה מאפיין מנועי {brand} ומה נכשל בהם?`           | the services the motor is fitted on · the symptom guide of its typical failure                     |
 
 Word floor 900 unique (content-standards §1; `guide` in `thresholds.json`). Answer block 40–60 words
 (§5). Sentences ≤ 25 words, an H2 at least every 200 words (§4). Every H2 in question form and unique
@@ -54,8 +57,8 @@ across the hub. Buyer vocabulary: עינית not חיישן, לוח פיקוד n
 
 1. **Verdict first.** `/content-hub`: the four-question test, the family, the silo it hands off to, the
    calendar row (`docs/content-calendar.md` §2–§3). No row, no guide.
-2. **Model check.** `ls lib/guide-types.ts lib/guides.ts components/article app/מדריכים` — absent →
-   route to `/improve` (Phase 4). Present → continue.
+2. **Model check.** `ls lib/guide-types.ts lib/guides.ts components/article app/מדריכים` — all four
+   exist since `89439b7`. If one is missing, the tree is broken: stop and route to `/improve`.
 3. **Create `content/guides/<slug>.ts` from `templates/<family>.ts`.** Replace every `TODO`; keep the
    block order; keep the comments that cite content-standards §3/§5 until the draft is final. Slug is
    the Hebrew query, hyphenated, NFC; `title` is the question verbatim, **bare** — the layout appends
@@ -69,15 +72,21 @@ across the hub. Buyer vocabulary: עינית not חיישן, לוח פיקוד n
 7. **Every claim free or written around.** The dangates 🔶 list: the 150–350 ₪ visit fee is the only
    sourced price and is itself 🔶 current; no per-job price; "אחריות על העבודה", never "מלאה"; no
    licence, insurance, founding year or named person; 24/7 and "פריסה ארצית" are bounded. External
-   facts (ת״י 900, חוק החשמל, בתים משותפים) cite sii.org.il / gov.il / nevo via `sources` — never a
-   competitor. `scripts/audit/claims.json` is the lexicon the hook and `claims-grep.mjs` apply.
+   facts (ת״י 900, חוק החשמל, בתים משותפים) cite sii.org.il / gov.il / the statute text via
+   `sources`, read there first and recorded in `docs/research/2026-11-08-standards-and-law.md` —
+   never a competitor. Statute wording read on he.wikisource says so beside the quote (whether that
+   source is enough is owner-actions 3.10). `scripts/audit/claims.json` is the lexicon the hook and
+   `claims-grep.mjs` apply.
 8. **Register in `lib/guides.ts`:** import, append to `guides`, place on `relatedGuides` — a total
-   `Record`, so omitting it is a compile error. `generateStaticParams` and `app/sitemap.ts` read the
-   registry (ADR 0002 requires the sitemap derive the hub — backlog §1.4). If a homepage FAQ gains a
+   `Record`, so omitting it is a compile error. `generateStaticParams`, `app/sitemap.ts`, `lib/llms.ts` (the
+   `llms.txt` Guides section) and the nav read the registry, so there is nothing else to wire (ADR
+   0002 requires the sitemap derive the hub — backlog §1.4). If a homepage FAQ gains a
    `moreAt`, add it to `faqs` in `lib/content.ts` now (content-hub contract).
 9. **Verify** (below). 10. **Hand off:** `article-auditor` → `hebrew-editor` → `claims-verifier`; then
    flip the calendar row to review, and to published only after `npm run gate` passes on the build
-   that contains it.
+   that contains it. 11. **Dates at deploy:** `datePublished` / `dateModified` written while drafting
+   are placeholders — before the first deploy that carries the guide, both are set to the real deploy
+   day in the deploy commit, never backdated (`deploy-dangates`, "Before you deploy").
 
 ## Schema — derived, never authored twice
 
@@ -86,8 +95,8 @@ schema-graph §6/§8) with `@id {pageUrl}#article`, `isPartOf → #website`, `pu
 percent-encoded `mainEntityOfPage` (N2), `datePublished`/`dateModified` from the guide, `citation`
 from `sources`; `FAQPage` derived from the guide's `faq` blocks; `BreadcrumbList` from `PageHeader`'s
 `crumbs` (`{label, href}` — it maps to the kit's `{name, path}`; the last crumb carries an `href` so
-the trail ends on this page; **never a second one**). `author` is the Organization — `lib/authors.ts`
-ships empty and `schema.mjs` fails a page that emits `author` while it is. No `Offer`, no `Review`,
+the trail ends on this page; **never a second one**). `author` is the business (`{ "@id": …#business }`) — `lib/authors.ts`
+ships empty and `schema.mjs` fails a page that emits a `Person` author while it is. No `Offer`, no `Review`,
 no `brand` property.
 
 ## Verification
@@ -136,7 +145,23 @@ unknown slug in any related array · a `moreAt` with no matching guide. Rebuild 
 - **No image block** until `/site-images` has a real file with width/height (business-facts §F).
 - **Brand family:** no dealer, factory-training or manufacturer-warranty claim, ever — and no `brand`
   property in JSON-LD. It asserts an affiliation the business has not confirmed.
-- **Safety family:** the October-2006 date and the licensed-electrician requirement are **unverified**
-  (keyword-map §12). The ₪800,000 judgment, the criminal-offence framing and the fatality record are
-  citable only with the SII URL in `sources` and beside the sentence.
+- **Safety family — verified 2026-11-08/09** (`docs/research/2026-11-08-standards-and-law.md`; it
+  outranks keyword-map §12, which predates it): the "official since October 2006" date is
+  **refuted** — never state a first-declaration date; the official status is verified (SII "מעמד:
+  רשמי", which may be in whole or in part; the November 2011 edition) — state the cancellation of
+  the 2006 edition only as the SII page gives it. **No primary list of required devices exists** (the
+  requirements are in the paid standard text): photocells (עיניות), a flashing light, force
+  limitation, safety edges or a manual release are described as devices gates are commonly built
+  with and how they work — never as a requirement of ת״י 900 or of Israeli law. Never state a single
+  voltage ceiling (the scope names two). חוק החשמל §6(א) — electrical work on the supply is licensed
+  work — is verified; **which licence grade** a gate motor needs is unverified: never state it. SII's
+  statements stay SII's: the criminal-offence statement, the ₪800,000 award ("according to SII", no
+  case name), the insurance cover that "may" be lost; the deaths and injuries are news headlines SII
+  quotes, never verified findings. Each needs the SII URL in `sources` and beside the sentence.
+- **Committee family — verified 2026-11-09** (same file, §C): **no section of חוק המקרקעין sets a
+  majority for a gate or a parking barrier — never state or imply one.** Quote the model bylaws
+  (§5(א), §12(א) "ברוב דעות", §13(ב)), say the building's registered bylaws may differ, state the §8(א)
+  quorum only with its notice condition and §8(ב), never cut §12(ב) before "מסוג או שיעור שלא פורשו",
+  and leave whether a cost binds an objecting owner to a lawyer or the מפקח על רישום מקרקעין. The
+  statute text was read on he.wikisource, not Reshumot — the copy says so.
 - The `tool` block renders nothing — no component exists. Leave it out of the first guides.

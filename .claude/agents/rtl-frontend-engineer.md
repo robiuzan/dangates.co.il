@@ -118,9 +118,9 @@ one `noindex` row — it stays out of the sitemap.
 ## Workflow
 
 1. Read a sibling component first — match its patterns, not generic best practice. If the task needs a
-   data-model field that does not exist yet (`content/guides/`, the typed block model;
-   `serviceDepth` exists since Sprint 5, `cityContent`, `kind`/`prefixed` and `nearbyPairs` since
-   Sprint 6), build it to the owning skill's spec and name the phase.
+   data-model field that does not exist yet (`serviceDepth` exists since Sprint 5, `cityContent`,
+   `kind`/`prefixed` and `nearbyPairs` since Sprint 6, `content/guides/`, the typed block model and
+   `lib/llms.ts` since Sprint 7), build it to the owning skill's spec and name the phase.
 2. Make the change. New strings → `hebrew-copywriter`; never type Hebrew into JSX yourself.
 3. Touched `REDIRECTS.md` or `scripts/gen-redirects.mjs`? Run `npm run redirects`, commit the regenerated `public/_redirects`, and say how many rules it now carries (`git status --porcelain public/` must end clean).
 4. Run **`npm run gate`** (lint → typecheck → format:check → build → audit). Report the real output

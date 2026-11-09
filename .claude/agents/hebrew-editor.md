@@ -58,7 +58,8 @@ strings apply the same patterns yourself (next section) and note the gap as a ca
 5. **Scannability.** Sentences ≤ 25 words (split on `.?!`, count); an H2 at least every ~200 words;
    H2s in question form where the block answers a question (למה / מה / איך / כמה / מתי / האם … ?).
    In `lib/posts.ts` every heading is `{ type: "h" }` and renders as `<h2>` — a flat outline is the
-   Phase 4 block model's job (backlog §3.10), so flag it once, not per heading.
+   block-model migration's job (backlog §3.10 — the model exists since Sprint 7, moving the posts onto
+   it waits on owner-actions 3.8), so flag it once, not per heading.
 6. **Location grammar (§8).** קריות, שרון, צפון, דרום are regions: correct Hebrew is בקריות, באזור
    השרון, בצפון הארץ, בדרום הארץ — never `בשרון`, `בצפון` in a title, H1 or description. Every
    `locations` entry carries `prefixed` since Sprint 6 (`7c3f2db`, backlog §5.2 ✅), so a bare

@@ -68,11 +68,20 @@ regex for `claims.json` in your report (you do not edit it).
    (`docs/agent-roster.md`, opening paragraph).
 4. **External facts** — citable only with the source URL inline in the copy, and only after you have
    fetched it this run (WebFetch is allowed for `sii.org.il` and `www.gov.il`; nothing else counts):
-   ת״י 900 חלק 21.03 — בטיחות שערים, the criminal-offence framing, the ₪800,000 judgment and the
-   fatality record → the SII page named in keyword-map §12; חוק החשמל תשי״ד-1954 and the licence
-   grades → gov.il. The **October 2006** date and the **ampere thresholds** are sourced only to
-   competitor blogs — "unverified — do not publish" until you find them on sii/gov. A competitor's
-   9-point conformity checklist is indicative, not a requirement, until re-verified. Mark each external
+   ת״י 900 חלק 21.03 (its title, scope and official status → the SII standard page; SII's
+   criminal-offence statement, the ₪800,000 award and the headlines it quotes → the SII article —
+   attributed to SII, never as findings); חוק החשמל תשי״ד-1954 and the licence grades → gov.il or
+   the statute text. The 2026-11-08/09 reading is recorded in
+   `docs/research/2026-11-08-standards-and-law.md` — start from it, re-fetch before you pass a
+   number. Its outcome: the **October 2006** date is **refuted** — a first-declaration date of any
+   kind is "do not publish"; the official status ("רשמי", whole or part; the 2011 edition) is
+   verified; **no primary list of required devices exists**, so photocells, a flashing light or
+   safety edges as a legal requirement are ⛔ (a competitor's 9-point checklist never becomes one);
+   the **licence grade** for a gate motor and the **ampere thresholds** are unverified — do not
+   publish; **no section of חוק המקרקעין sets a majority for a gate or barrier** — any stated or
+   implied majority is ⛔. Statute wording read on he.wikisource passes only with the on-page
+   disclosure that it is not the official publication (whether that is enough is owner-actions
+   3.10). Mark each external
    claim **verified external (URL, fetched dd/mm/yyyy)** or **unverified — do not publish**.
 5. **Schema ↔ visible copy parity** (`schema.mjs`, schema-graph §4): every `FAQPage` question text
    appears inside `<main>` of that page and is marked up once sitewide (`app/page.tsx` builds it

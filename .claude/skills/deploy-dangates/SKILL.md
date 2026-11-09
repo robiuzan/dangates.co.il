@@ -1,6 +1,6 @@
 ---
 name: deploy-dangates
-description: Ship dangates to production — ops/deploy-site.ps1 with -DryRun first, then -Confirm plus a trailing "# APPROVED: <reason>" (the exact form guard-destructive-ops.ps1 accepts), wrangler direct upload to the Cloudflare Pages project, why pushing to main now publishes nothing at all (the GitHub Pages workflow was retired with ADR 0004), the npm file: tarball and .next cache traps, /qa-build-gate and ops/validate-manifests.ps1 as the pre-deploy gates, the out.prev rollback, and post-deploy verification against the live site — the legacy-URL 301 probe and the two header curls are part of every deploy now, not a future step. Use when publishing. Triggers: "deploy", "ship it", "publish the site", "go live", "roll back", "why isn't my change live", "להעלות לאוויר", "פריסה".
+description: Ship dangates to production — ops/deploy-site.ps1 with -DryRun first, then -Confirm plus a trailing "# APPROVED: <reason>" (the exact form guard-destructive-ops.ps1 accepts), wrangler direct upload to the Cloudflare Pages project, why pushing to main now publishes nothing at all (the GitHub Pages workflow was retired with ADR 0004), the npm file: tarball and .next cache traps, /qa-build-gate and ops/validate-manifests.ps1 as the pre-deploy gates, the pre-deploy step that sets each new guide's datePublished and dateModified to the real deploy day in the deploy commit (never backdated), the out.prev rollback, and post-deploy verification against the live site — the legacy-URL 301 probe and the two header curls are part of every deploy now, not a future step. Use when publishing. Triggers: "deploy", "ship it", "publish the site", "go live", "roll back", "why isn't my change live", "להעלות לאוויר", "פריסה".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -99,8 +99,17 @@ node -e "require('fs').rmSync('.next',{recursive:true,force:true})" && npm run b
    block) is not a copy change — check the built HTML rather than the component. Precedent:
    2026-09-06 bumped the seven services for the per-service trigger lists and nothing else;
    2026-11-09 (`225ff45`) bumped them again for the Sprint 5 depth copy.
-6. **Stop-ship, all script-proven:** a doubled `<title>` or missing canonical (`titles.mjs`); a live
-   🔶/⛔ claim (`claims-grep.mjs`); `Review`/`AggregateRating` or an `author` key reappearing
+6. **First deploy carrying a guide? Set its dates to the deploy day — in the deploy commit, never
+   backdated.** Each `content/guides/<slug>.ts` carries `datePublished` and `dateModified` from
+   drafting (the four Sprint 7 guides, `89439b7`, say 2026-11-08 / 2026-11-09), and they feed
+   the `TechArticle` / `Article` node and the sitemap `<lastmod>`. A guide is published the day it
+   goes live: before the first deploy that carries it, set **both** fields to that real deploy day
+   (`dateModified` may never precede `datePublished` — `lib/guides.ts` throws), rebuild, and commit
+   the change as part of the deploy — a pre-deploy step, done before `-DryRun`, so the dry run gates
+   the bytes that ship. Never set a date earlier than the day the guide is actually live; after that
+   first deploy, `dateModified` moves only with a real edit (rule 5).
+7. **Stop-ship, all script-proven:** a doubled `<title>` or missing canonical (`titles.mjs`); a live
+   🔶/⛔ claim (`claims-grep.mjs`); `Review`/`AggregateRating` or a `Person` author appearing
    (`schema.mjs` fails — the review block is gated in code, golden rule 1); a container id change
    without the `gtm.js` 200-check (golden rule 8).
 
@@ -109,13 +118,16 @@ node -e "require('fs').rmSync('.next',{recursive:true,force:true})" && npm run b
 ```bash
 curl -sSI https://dangates.co.il/ | head -20
 curl -sS "https://dangates.co.il/services/%D7%A9%D7%A2%D7%A8%D7%99%D7%9D-%D7%A0%D7%92%D7%A8%D7%A8%D7%99%D7%9D/" | grep -o '<title>[^<]*</title>'
-curl -sS https://dangates.co.il/sitemap.xml | grep -c '<url>'                                   # 45
+curl -sS https://dangates.co.il/sitemap.xml | grep -c '<url>'                                   # 50 since Sprint 7 (45 before)
+curl -o /dev/null -w '%{http_code}\n' -s https://dangates.co.il/llms.txt                       # 200 since Sprint 7 (404 before)
 curl -o /dev/null -w '%{http_code}\n' -s "https://www.googletagmanager.com/gtm.js?id=GTM-KWGGH438"   # 200
 curl -sSI "https://dangates.co.il/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/" | grep -iE '^HTTP|^location'
 ```
 
-Check: the page is the new build; the title carries the brand exactly once; the sitemap lists 45
-URLs; GTM returns 200.
+Check: the page is the new build; the title carries the brand exactly once; the sitemap lists 50
+URLs (the hub and the four guides joined the 45 in Sprint 7); `/llms.txt` answers 200; GTM returns 200. After the first deploy carrying the guides, also confirm a guide's `datePublished` in the live
+JSON-LD is the deploy day (step 6 above), and run the AI-crawler full-UA probe before any claim about
+`llms.txt` being read.
 
 ### The legacy-URL 301 probe — run it on every deploy
 

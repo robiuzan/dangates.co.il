@@ -89,8 +89,8 @@ The service half is done (Sprint 5, `225ff45`): the service route renders
 `lib/service-depth.ts` throws on a self-reference, a duplicate or an unknown post slug. A total
 `Record<ServiceSlug, …>` means a service with no entry fails typecheck instead of silently
 inheriting the first four. `relatedServiceTargets: 7`, and the service-page monotony warning is
-gone. **Left:** the post route's `.slice(0, 4)` — a `relatedServices` / `related` field on posts and
-guides (Phase 4, ADR 0003; Sprint 7.3). Proof: `relatedPostTargets` = every surviving post, and the
+gone. **Left:** the post route's `.slice(0, 4)` — a `relatedServices` / `related` field on posts (the
+guides have theirs since Sprint 7; the posts' waits on Sprint 7.3, ⏳ BLOCKED · owner 3.8). Proof: `relatedPostTargets` = every surviving post, and the
 post-page monotony warning disappears.
 
 ## 5. Contextual in-copy links
@@ -111,11 +111,11 @@ descriptive Hebrew anchors (the content types would need an inline-link field fi
 
 Every page should be reachable along at least two axes; a page on one axis only is a weak node.
 
-| Axis                                  | Pages                      | Links out to                                                                                                                   | Links in from                                                                                |
-| ------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| **City** (`/locations/`)              | 18                         | all 7 services · `nearby` cities · `guidesForLocation(slug)`                                                                   | header, footer, `/איזורי-שירות/` · `serviceDepth.locations` · guides' `relatedLocations`     |
-| **Gate type** (`/services/`)          | 7                          | `relatedServices` · `locations` · `guidesForService(slug)` · `/מחירון/`                                                        | header, footer, `/שירותים/`, every location page · guides' `relatedServices`                 |
-| **Symptom / component** (`/מדריכים/`) | guides (Phase 4, ADR 0002) | `relatedServices` (validated at module load; capped CTAs down to the transactional page) · `relatedLocations` · sibling guides | the hub `ItemList` · the reverse index on service and location pages · homepage FAQ `moreAt` |
+| Axis                                  | Pages                         | Links out to                                                                                                                   | Links in from                                                                                |
+| ------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| **City** (`/locations/`)              | 18                            | all 7 services · `nearby` cities · `guidesForLocation(slug)`                                                                   | header, footer, `/איזורי-שירות/` · `serviceDepth.locations` · guides' `relatedLocations`     |
+| **Gate type** (`/services/`)          | 7                             | `relatedServices` · `locations` · `guidesForService(slug)` · `/מחירון/`                                                        | header, footer, `/שירותים/`, every location page · guides' `relatedServices`                 |
+| **Symptom / component** (`/מדריכים/`) | 4 guides (Sprint 7, ADR 0002) | `relatedServices` (validated at module load; capped CTAs down to the transactional page) · `relatedLocations` · sibling guides | the hub `ItemList` · the reverse index on service and location pages · homepage FAQ `moreAt` |
 
 The **reverse index** is what makes an orphaned guide structurally impossible: a guide that declares
 `relatedServices: ["שערים-נגררים"]` appears on `/services/שערים-נגררים/` through `guidesForService`

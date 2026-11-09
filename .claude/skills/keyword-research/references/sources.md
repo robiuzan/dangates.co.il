@@ -43,20 +43,26 @@ why that term sits at `strong`. Their review counts and prices are not evidence 
 
 ## 4. The Standards Institution — sii.org.il (WebFetch allow-listed)
 
-The authority for the safety family and the site's strongest E-E-A-T angle (keyword-map §12): ת״י 900
-חלק 21.03, the fatality record, the criminal-offence framing, the ₪800,000 judgment. Terms it
+The authority for the safety family and the site's strongest E-E-A-T angle: ת״י 900 חלק 21.03 — its
+standard page (title, scope, official status) and SII's article with its own statements (the
+criminal-offence line, the ₪800,000 award, the headlines it quotes — SII's, never findings). Terms it
 evidences: `תקן שערים חשמליים`, `ת״י 900 שער חשמלי`, `בדיקת תקן לשער חשמלי`, `שער חשמלי מסוכן`.
 Any **fact** from here that reaches copy is cited to the SII page itself, never to a competitor
-restating it — `claims-verifier` checks. Two open items to confirm on sii.org.il / gov.il before the
-safety guide ships: the 2006 effective date; whether a licensed electrician is legally required for
-the whole installation or only the 230V connection.
+restating it — `claims-verifier` checks. The safety guide shipped in Sprint 7 (`89439b7`) after both open
+items were checked (`docs/research/2026-11-08-standards-and-law.md`): the "official since October
+2006" date is **refuted** — never carry a first-declaration date into an evidence cell; that
+electrical work on the supply is licensed work (חוק החשמל §6(א)) is verified, **which licence grade**
+a gate motor needs is not. SII publishes no list of required devices — a term like `עינית חובה` is
+evidence of demand, never of a requirement.
 
 ## 5. gov.il and primary law (WebFetch allow-listed for www.gov.il)
 
 חוק החשמל תשי״ד-1954 and the Ministry of Labour licensing grades evidence the `legal` intent
-(`חשמלאי מוסמך לשער חשמלי`, `רישיון להתקנת שער`). For the ועד בית guide (content-calendar #3) the
-approval/majority thresholds must cite the law text (gov.il, or the statute on a legal database
-opened in the browser), not a blog. Ampere thresholds in secondary sources are unverified
+(`חשמלאי מוסמך לשער חשמלי`, `רישיון להתקנת שער`). For the ועד בית guide (content-calendar #3, shipped in
+Sprint 7) the law text was read (he.wikisource consolidated text, research §C): **no section of חוק
+המקרקעין sets a majority for a gate or a parking barrier** — an evidence cell never states one, and a
+term like `רוב להתקנת מחסום` is a question the guide answers by saying so. Whether wikisource is an
+acceptable source is owner-actions 3.10. Ampere thresholds in secondary sources are unverified
 (keyword-map §12) — do not carry them into a term's evidence cell as fact.
 
 ## 6. Search Console — the only numeric source, and it is blocked

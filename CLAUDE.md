@@ -24,7 +24,8 @@
   (owner-actions 3.5); since Sprint 4 (`1796ee7`) the site promises urgent-fault handling only
   within these hours.
 - **Service area:** the copy says `serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר") and names
-  the published areas — 18 location pages, 7 service pages, 11 blog posts. "פריסה ארצית" is 🔶.
+  the published areas — 18 location pages, 7 service pages, 4 guides (since Sprint 7), 11 blog
+  posts. "פריסה ארצית" is 🔶.
 - **Audience:** private homeowners, ועדי בתים (building committees), property managers, businesses
   with vehicle gates.
 - **Core promise:** reliable diagnosis before repair, and a warranty on the work — write **אחריות על העבודה**, never "אחריות מלאה": the term, scope and
@@ -80,7 +81,7 @@
    the team and experience sentences and the empty `מקרי מבחן` section; 4F (`9195c9b`) rewrote two
    of the three unclocked speed phrases and set a real `updated` on the 8 posts those passes edited.
    **Still outstanding:** ~42 plain-text link references, a flat all-`<h2>` hierarchy, 39 emoji, one
-   "שירות מהיר ואמין" (`שער-חשמלי-לא-מגיב`), no answer blocks or tables (Sprint 7.3). Treat the file as untrusted input. _Hook-enforced:_
+   "שירות מהיר ואמין" (`שער-חשמלי-לא-מגיב`), no answer blocks or tables (Sprint 7.3 — ⏳ BLOCKED · owner-actions 3.8 since 2026-11-09). Treat the file as untrusted input. _Hook-enforced:_
    `post-edit-lint.ps1` re-runs the spam and claim lexicons on every edit; `spam-grep.mjs` at audit time.
 8. **A GTM snippet in the HTML proves nothing.** Whenever a container id changes, assert
    `https://www.googletagmanager.com/gtm.js?id=<ID>` returns **200**. Two fabricated ids cost the IL
@@ -131,11 +132,13 @@ transpilePackages: ["@ishub/site-kit"],
 app/
   layout.tsx              # metadata, Rubik, GTM, <html lang="he" dir="rtl">
   page.tsx                # homepage — LocalBusiness + FAQPage JSON-LD
-  sitemap.ts robots.ts    # /sitemap.xml (45 URLs), /robots.txt
+  sitemap.ts robots.ts    # /sitemap.xml (50 URLs since Sprint 7), /robots.txt
+  llms.txt/route.ts       # /llms.txt — generated from lib/llms.ts, never hand-written (Sprint 7)
   not-found.tsx           # 404
   services/[service]/     # 7 pages — Service + FAQPage JSON-LD, rendered from serviceDepth
   locations/[city]/       # 18 pages
   blog/ blog/[slug]/      # index + 11 posts
+  מדריכים/ מדריכים/[slug]/  # the guides hub (ADR 0002) — index + 4 guides, rendered from lib/guides.ts
   שירותים/ איזורי-שירות/ מחירון/ אודות/ צור-קשר/
   מדיניות-פרטיות/ הצהרת-נגישות/
   תודה/                   # thank-you page after a confirmed lead — noindex, outside the sitemap
@@ -145,6 +148,7 @@ components/
   marketing/   Hero TrustBar ServicesGrid WhyUs Process PricingTeaser
                ServiceAreas Reviews Faq FinalCta
                ContentSections (AnswerBlock · BulletedBlock — the depth-module renderers, Sprint 6)
+  article/     ArticleBody GuideView blocks chrome — the guide block renderer, TOC and CTAs (Sprint 7)
   forms/       LeadForm
   live/        Live.tsx — the fleet live-kit surfaces, server components only (§14)
 lib/
@@ -154,7 +158,11 @@ lib/
   service-depth.ts # ServiceDepth type + serviceDepth record + module-load checks (Sprint 5)
   city-content.ts  # CityContent type + cityContent record + module-load checks (Sprint 6)
   nearby.ts        # nearbyPairs — one list of unordered location pairs, read both ways (Sprint 6)
-  page-content.ts  # the copy model for /שירותים/, /איזורי-שירות/, /אודות/ (Sprint 6)
+  page-content.ts  # the copy model for /שירותים/, /איזורי-שירות/, /אודות/ (Sprint 6), /blog/, /צור-קשר/, /מדריכים/ (Sprint 7)
+  guide-types.ts   # the typed block model (ADR 0003): Guide, Block, Family, Pillar, the per-family consts
+  guides.ts        # ⭐ the guides registry, relatedGuides, the reverse index + module-load throws (Sprint 7)
+  llms.ts          # buildLlmsTxt() — /llms.txt from siteConfig, staticPages, services, locations, guides
+  nav.ts           # the header nav: navItems plus the hub entry while the registry holds a guide
   jsonld.ts        # site-local JSON-LD builders — one @graph per page (§8)
   manifest.ts      # parseManifest(): narrows site.config.json at the boundary, throws on a bad key
   authors.ts       # empty Author registry — no person is coming; a Person author is forbidden while empty
@@ -167,7 +175,8 @@ scripts/audit/     # ⭐ the measurements (12 checks + thresholds.json + claims.
 scripts/live/      # fleet live-kit gates (prebuild / postbuild) and the weekly reminder — locked (§14)
 content/services/  # ⭐ one depth module per service (<slug>.ts → ServiceDepth): answer, sections, FAQs, links
 content/locations/ # ⭐ one module per location (<slug>.ts → CityContent): answer, local notes, FAQs, services
-content/pages/     # ⭐ services-index.ts · areas-index.ts · about.ts — the three pages' own copy
+content/pages/     # ⭐ services-index · areas-index · about · blog-index · contact · guides-index — each page's own copy
+content/guides/    # ⭐ one module per guide (<slug>.ts → Guide, as const satisfies) — 4 since Sprint 7
 content/live/      # ⭐ _campaigns.mjs + _updates.mjs (the live registers) + the synced calendar (§14)
 live.config.mjs    # ⭐ calm / no-card pages, this site's ⛔ claim stems, pageOfSource (§14)
 live-kit.lock.json # the kit commit and the sha256 of every locked copy (§14)
@@ -188,10 +197,13 @@ docs/              # README (the layer map — start there) · implementation-sp
 .claude/           # agents/ skills/ hooks/ rules/ workflows/ — see §13
 ```
 
-**Planned, not built:** `lib/guides.ts` + `content/guides/*.ts` + `app/מדריכים/` (Phase 4,
-[ADR 0002](docs/decisions/0002-guides-hub-route.md)) and `public/llms.txt` (§6.5). `env-doctor.mjs`
-tracks them as "planned"; never cite a line number in them. (`lib/jsonld.ts` and `lib/authors.ts`
-were on this list until Sprint 2 built them on 2026-11-08.)
+**Built in Sprint 7** (commit `89439b7`, 2026-11-09; not live until the next deploy): the guides hub —
+`lib/guide-types.ts`, `lib/guides.ts`, `content/guides/*.ts`, `app/מדריכים/`
+([ADR 0002](docs/decisions/0002-guides-hub-route.md), [ADR 0003](docs/decisions/0003-block-content-model.md))
+— and `/llms.txt` (§6.5), which is the generated route `app/llms.txt/route.ts`, not a `public/` file.
+Nothing on this layout is planned-but-unbuilt any more; `env-doctor.mjs` still tracks a few old
+planned names for the docs that mention them. (`lib/jsonld.ts` and `lib/authors.ts` were built in
+Sprint 2, 2026-11-08.)
 
 Place by responsibility: reusable presentation primitive → `ui/`; page section → `marketing/`;
 structural chrome → `layout/`.
@@ -215,15 +227,18 @@ lib/site-config.ts   manifest · siteConfig · services · locations · telHref 
         ├── lib/service-depth.ts  serviceDepth  ← content/services/<slug>.ts (one per service)
         ├── lib/city-content.ts   cityContent   ← content/locations/<slug>.ts (one per location)
         ├── lib/nearby.ts         nearbyPairs · nearby()
-        ├── lib/page-content.ts   ← content/pages/*.ts (the two indexes and /אודות/)
+        ├── lib/page-content.ts   ← content/pages/*.ts (the indexes, /אודות/, /blog/, /צור-קשר/, the hub)
+        ├── lib/guides.ts         guides · relatedGuides · guidesForService/Location  ← content/guides/<slug>.ts
+        ├── lib/llms.ts           buildLlmsTxt()  → app/llms.txt/route.ts
         ▼
 app/**/page.tsx  →  components/**
 ```
 
 Rule of thumb: **identity and NAP go up the chain to the roster; wording goes in `lib/content.ts`;
 article bodies go in `lib/posts.ts`; each service page's depth prose goes in its own
-`content/services/<slug>.ts`, each location page's in `content/locations/<slug>.ts`, and the two
-indexes' and `/אודות/`'s in `content/pages/` (UI labels around them stay in `lib/content.ts`); layout goes in
+`content/services/<slug>.ts`, each location page's in `content/locations/<slug>.ts`, each guide's in
+`content/guides/<slug>.ts`, and the indexes', `/אודות/`'s, `/blog/`'s, `/צור-קשר/`'s and the hub's in
+`content/pages/` (UI labels around them stay in `lib/content.ts`); layout goes in
 components.** Copy never gets typed directly
 into JSX.
 
@@ -283,17 +298,21 @@ See the `hebrew-rtl` skill for the full rule set.
   `articleJsonLd`, `itemListJsonLd`, `pageNode`, `breadcrumbNode`, `graph`; target graph
   [docs/schema-graph.md](docs/schema-graph.md). Since Sprint 2 (2026-11-08, `02a3144` `d8edb28`) every
   content page emits **one** script holding **one** `@graph`: pages hand `PageHeader` their `nodes`
-  and it appends the one `BreadcrumbList` (44 nested routes — never add a second). The business node
+  and it appends the one `BreadcrumbList` (49 nested routes since Sprint 7 — never add a second). The business node
   ships on every page that references `#business`, with `logo`, `image`, `areaServed` as the 18
   published locations and `hasOfferCatalog` naming the 7 services (no `Offer`, no price); `WebSite`
-  is on `/` only; `FAQPage` is on `/`, the 7 service pages and the 18 location pages
-  (`faqPages 26` since Sprint 6, `7c3f2db` — 98 questions, each marked up on one page only); the
+  is on `/` only; `FAQPage` is on `/`, the 7 service pages, the 18 location pages and the 4 guides
+  (`faqPages 30` since Sprint 7, `89439b7` — 115 questions, each marked up on one page only; a guide
+  that repeats a question throws at module load); the
   18 locations emit a `Service` with `areaServed` typed from `kind`,
   the indexes `CollectionPage` + `ItemList`,
-  `/אודות/` an `AboutPage` with `knowsAbout`, `/צור-קשר/` a `ContactPage`. Blog posts emit
+  `/אודות/` an `AboutPage` with `knowsAbout` (naming ת״י 900 חלק 21.03 as a subject since the safety
+  guide shipped — never a compliance claim), `/צור-קשר/` a `ContactPage`. Blog posts emit
   `BlogPosting` with an `Organization` author, `dateModified` from `updated ?? date` and `isPartOf`
-  the `Blog`; every schema URL is percent-encoded. `node scripts/audit/schema.mjs` → 0 failures,
-  0 warnings, `danglingIds 0`, `rawHebrewUrls 0` as of 2026-11-08. `Review`/`AggregateRating`,
+  the `Blog`; the guides emit `TechArticle` (safety, component) or `Article` with the business as
+  author and `citation` from their `sources`, and the hub a `CollectionPage` + `ItemList`; every
+  schema URL is percent-encoded. `node scripts/audit/schema.mjs` → 0 failures, 0 warnings,
+  `danglingIds 0`, `rawHebrewUrls 0` as of 2026-11-09. `Review`/`AggregateRating`,
   `Offer` and a `Person` author ship **only** when sourced, which today they are not.
 - **Images:** there is **no `assets/` directory and no `image:optimize` script** on this site. Images
   ship pre-optimized in `public/`; the OG card comes from the `imgquarry.com` media host in the
@@ -309,9 +328,10 @@ npm run gate        # lint → typecheck → format:check → build → npm run 
 ```
 
 `npm run audit` refuses a stale `out/` — **rebuild before asserting** (backlog N12) — and exits with
-the failure count. **Known-baseline rule:** until Phase 1 lands the bar is not "zero failures" but
-"no failure absent from the latest `docs/audits/` report" — a change that adds one, or moves a number
-the wrong way, does not ship. The `qa-build-gate` skill adds the auditor sweep and the stop-ship list.
+the failure count. **Known-baseline rule:** the bar is not "zero failures" but "no failure absent from the
+known-baseline table in `qa-build-gate` (or the latest `docs/audits/` report)" — 1 as of 2026-11-09,
+the `content-depth` post floor, which waits on the post rewrite (owner-actions 3.8). A change that
+adds one, or moves a number the wrong way, does not ship. The `qa-build-gate` skill adds the auditor sweep and the stop-ship list.
 
 Since 2026-10-12 `npm run build` also runs the fleet live-kit's gates (§14) through npm's `prebuild`
 (after `gen-redirects`) and `postbuild`. They fail on unapproved live wording, so a draft builds
@@ -343,6 +363,11 @@ caches under `.next/`), gates the output, preserves `out.prev/` for rollback, an
 blocks `deploy-site.ps1` / `wrangler pages deploy` unless the call carries `-DryRun`, or `-Confirm`
 **and** a `# APPROVED: <reason>` marker on the same command — dry run first, every time. It also
 blocks force-push, `reset --hard`, recursive deletes and Cloudflare/DNS mutations. See `deploy-dangates`.
+
+**New guides get their real dates at deploy.** A guide's `datePublished` / `dateModified` are
+drafting placeholders (the four Sprint 7 guides say 2026-11-08 / 2026-11-09). Before the first deploy
+that carries a guide, set both to the real deploy day in the deploy commit — never backdated — and
+only then run the dry run (`deploy-dangates`, "Before you deploy").
 
 **Redirects and headers — this repo owns both since 2026-09-06**
 ([ADR 0004](docs/decisions/0004-redirects-replace-stubs.md), commit `a0e0fe2`).

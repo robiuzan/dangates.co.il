@@ -12,7 +12,8 @@ editorial — symptom, component, brand, comparison, safety and committee pages 
 `/new-guide <family> <slug>` into `/מדריכים/`** (ADR 0002), after `/content-hub` decides the topic
 earns a page. Do not add a twelfth post; do not "rewrite" a post into a topic the calendar routes to
 a guide. This skill covers three operations only: **clean** a post inside today's model, **migrate**
-it to the typed block model (Phase 4), or **retire** it with a 301.
+it to the typed block model (built for the guides in Sprint 7; the posts' move waits on
+owner-actions 3.8), or **retire** it with a 301.
 
 ## Measure first
 
@@ -51,8 +52,10 @@ extend it ad hoc — ADR 0003 already decided the replacement: galbath's discrim
 level 2|3, `list`, `table` with a required `caption`, `answer {q, a}`, `faq`, `image` with
 width/height, `callout`, `cta` capped) as `lib/guide-types.ts`, a registry whose rules are
 **module-load throws**, and one renderer `components/article/ArticleBody` shared by guides and posts.
-Built in Phase 4 by `/improve`; `/new-guide` documents the templates. Until then, no raw HTML in a
-string and no second mini-model.
+Built for the guides in Sprint 7 (`89439b7`, 2026-11-09) — `lib/guide-types.ts`, `lib/guides.ts`,
+`components/article/`; `/new-guide` documents the templates. The posts still render from `PostBlock`
+in `lib/posts.ts` until Operation B runs, which waits on owner-actions 3.8 (Sprint 7.3, ⏳ BLOCKED).
+Until then, no raw HTML in a string and no second mini-model.
 
 ## Keep, fold or 301 — decide before you edit
 
@@ -83,7 +86,7 @@ and nothing else — the guide is written to the `/new-guide` bar, not pasted.
    curly quotes, both superlatives and the empty `מקרי מבחן` section (`claims-grep.mjs` 0,
    `curlyQuotes 0`).
 
-## Operation B — migrate a "keep" post to the block model (Phase 4)
+## Operation B — migrate a "keep" post to the block model (⏳ BLOCKED · owner 3.8 — the model exists since Sprint 7)
 
 1. Convert each `{ type: "h" }` to `heading` with a real `level` — restore the H2/H3 outline the
    migration flattened; an H3 before any H2 throws.

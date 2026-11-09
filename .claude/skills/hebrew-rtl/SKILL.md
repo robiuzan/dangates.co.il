@@ -108,7 +108,8 @@ return items.find((i) => i.slug.normalize("NFC") === target);
 Both `NFC` normalizations matter — Hebrew with niqqud or certain composed forms won't match otherwise.
 A route that skips this **works in dev and 404s in production**. Copy the existing matcher from
 `findCard` in `app/services/[service]/page.tsx` or `findLocation` in `app/locations/[city]/page.tsx`. `app/blog/[slug]` takes
-Hebrew slugs too, and the Phase 4 `app/מדריכים/[slug]/` route (ADR 0002) must use the same matcher.
+Hebrew slugs too, and so does `app/מדריכים/[slug]/` (ADR 0002, built in Sprint 7) — through
+`findGuide()` in `lib/guides.ts`, the same decode + NFC matcher.
 
 The same concern drives `encodeURI` in `app/sitemap.ts` and `schemaPath()` in
 `components/layout/PageHeader.tsx`: the sitemap `<loc>`, the page canonical, the `BreadcrumbList`
@@ -124,8 +125,9 @@ correctly, the URL does not. Renaming it without a 301 throws away ranking signa
 - Keep user-facing strings Hebrew. No mid-sentence language mixing — an English material or brand
   name gets its own clause.
 - Address the reader as "אתם"; speak as "אנחנו" / דן שערים חשמליים.
-- Copy lives in `lib/content.ts` (marketing) and `lib/posts.ts` (articles), never in JSX. Phase 4
-  adds `content/guides/` for the `/מדריכים/` hub (ADR 0003) — same rule.
+- Copy lives in `lib/content.ts` (marketing), `lib/posts.ts` (the legacy posts) and the `content/`
+  modules (services, locations, pages, and `content/guides/` for the `/מדריכים/` hub since Sprint 7,
+  ADR 0003), never in JSX.
 - Region names need a preposition form: `בצפון הארץ`, `באזור השרון`, never a bare `ב${loc.name}`.
   The `prefixed` field on every `locations` entry carries it (since Sprint 6, `7c3f2db` — `/new-city`).
 - Full voice and depth rules: `docs/content-standards.md` §4 and §7; second-pass review by

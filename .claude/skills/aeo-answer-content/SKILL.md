@@ -1,6 +1,6 @@
 ---
 name: aeo-answer-content
-description: Answer-engine and LLM-citability layer for dangates — the Cloudflare edge that refused every AI-crawler user agent until 2026-09 and can do so again without a repo change (Gate 1, re-probe every time), the per-bot Allow target for app/robots.ts, question-form H2s with a 40–60 word extractable answer first, definition and comparison blocks, templates/llms.txt, and freshness/authorship signals without a named person. Use when optimizing a page to be quoted by AI Overviews, ChatGPT or Perplexity, or when wiring robots.ts / llms.txt. Triggers: "AEO", "GEO", "AI Overviews", "llms.txt", "will an LLM cite this", "answer block", "AI crawlers", "robots.ts", "האם ChatGPT יצטט אותנו", "בלוק תשובה".
+description: Answer-engine and LLM-citability layer for dangates — the Cloudflare edge that refused every AI-crawler user agent until 2026-09 and can do so again without a repo change (Gate 1, re-probe every time), the per-bot Allow target for app/robots.ts, question-form H2s with a 40–60 word extractable answer first, definition and comparison blocks, the generated /llms.txt (app/llms.txt/route.ts from lib/llms.ts, built in Sprint 7 — templates/llms.txt is its shape), and freshness/authorship signals without a named person. Use when optimizing a page to be quoted by AI Overviews, ChatGPT or Perplexity, or when wiring robots.ts / llms.txt. Triggers: "AEO", "GEO", "AI Overviews", "llms.txt", "will an LLM cite this", "answer block", "AI crawlers", "robots.ts", "האם ChatGPT יצטט אותנו", "בלוק תשובה".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -20,11 +20,13 @@ node scripts/audit/edge.mjs                 # llmsTxt metric + the out/robots.tx
 curl -sS https://dangates.co.il/robots.txt  # what actually serves — never read app/robots.ts and assume
 ```
 
-As of 2026-08-23: **0 of 36** service, location and post pages open with a 40–60-word paragraph
-(services 3–4 words, locations 16–17, posts 1 — the first `<p>` is the `PageHeader` subtitle or a
-date); `edge.mjs` → `llmsTxt: false`; FAQPage on 1 page; `updated` set on 0 of 11 posts (8 of 11
-since `9195c9b`, 2026-11-09; `/` and `/מחירון/` have had answer blocks since Sprint 4). The
-`robots.txt` note in `edge.mjs` is informational — it tells you to run the probe below.
+As of 2026-11-09 (Sprint 7, `89439b7`): every page type but the 11 posts opens with a 40–60-word
+answer — `/` and `/מחירון/` since Sprint 4, the 7 services since Sprint 5, the 18 locations, the
+indexes and `/אודות/` since Sprint 6, and `/blog/` (46 words), `/צור-קשר/` (55), the `/מדריכים/` hub
+(58) and the four guides (56–58) since Sprint 7; the proxy warns on post 11/11 only (1 word — the
+date; the rewrite is ⏳ owner-actions 3.8). `edge.mjs` → `llmsTxt true`; `faqPages 30`; `updated` on
+8 of 11 posts. (On 2026-08-23 it was 0 of 36, `llmsTxt false`, FAQPage on 1 page.) The `robots.txt`
+note in `edge.mjs` is informational — it tells you to run the probe below.
 
 ## Gate 1 — reachability. Check this first.
 
@@ -47,7 +49,7 @@ n/a  Google-Extended · Applebot-Extended — robots.txt product tokens, never a
 ```
 
 An advisory `Disallow` became an **enforced refusal**: a crawler refused at the edge cannot read the
-answer blocks, the schema or a future `llms.txt` — and `robots.txt` still returns 200 to a blocked UA,
+answer blocks, the schema or `llms.txt` — and `robots.txt` still returns 200 to a blocked UA,
 so reading it alone proves nothing. **No repo change overrides this.** Owner's zone setting:
 `docs/owner-actions.md` §1.1 (the toggle; "if still 403, check WAF / Super Bot Fight Mode") and
 `docs/cloudflare-runbook.md` step 1 (decision table — recommended: allow retrieval, block training). Backlog §6.1.
@@ -68,9 +70,9 @@ done
 answer a live question — **this produces citations**), **`use=reference`** (attribution). Blocking
 training while allowing retrieval is coherent; blocking retrieval means no citation, ever.
 
-### The `app/robots.ts` target (Phase 6 — documents intent, changes no enforcement)
+### The `app/robots.ts` per-bot list (built `6f4a1a8`, live since 2026-09-06 — documents intent, changes no enforcement)
 
-Once the zone allows the bots, `rtl-frontend-engineer` replaces the blanket allow with this per-bot
+Once the zone allowed the bots, `rtl-frontend-engineer` replaced the blanket allow with this per-bot
 list (reviewer `aeo-geo-strategist`; roster §3 row §6). Shape from `galbath.co.il/app/robots.ts:21-43`;
 Next serializes the named group as one `User-Agent:` line per bot over a single `Allow: /`:
 
@@ -85,8 +87,8 @@ rules: [
 ```
 
 Drop `CCBot` if the owner chose "allow retrieval, block training" — a bulk-corpus crawler. The doc
-comment must say the zone, not this file, decides. Backlog §1.3 (45 crawlable `index.txt` RSC
-payloads) is the one `Disallow` candidate to add here.
+comment must say the zone, not this file, decides. Backlog §1.3 (51 crawlable `index.txt` RSC
+payloads as of 2026-11-09) is the one `Disallow` candidate to add here.
 
 ## Gate 2 — extractability
 
@@ -112,13 +114,14 @@ An answer engine lifts a **contiguous, self-contained span**. Structure for that
 Other liftable shapes: a **definition** ("שער נגרר הוא…"), a **comparison table** (תיקון מול החלפה;
 נגרר / כנף / מתרומם by plot width and clearance), a **spec list** (which operator suits which gate weight).
 
-**Where the copy lives.** The 7 service pages have theirs since Sprint 5 (`225ff45`):
-`serviceDepth[slug].answer`, written in `content/services/<slug>.ts` and rendered as the first `<p>`
-after the `<h1>` under a question-form `answerHeading` (49–56 words; the answer-block warning lists
-no service page). Still to come: `cityContent[slug].answer` in `lib/content.ts` (`/new-city`,
-Phase 3) and guides whose first block is the answer (`/new-guide`, ADR 0003, Phase 4). The route
-must render it as the **first `<p>` after the `<h1>`** — what `content-depth.mjs` measures; on the
-location pages and posts the `PageHeader` subtitle still sits there.
+**Where the copy lives.** Services: `serviceDepth[slug].answer` in `content/services/<slug>.ts`
+(Sprint 5, `225ff45`). Locations: `cityContent[slug].answer` in `content/locations/<slug>.ts`
+(Sprint 6, `7c3f2db`). The indexes, `/אודות/`, `/blog/`, `/צור-קשר/` and the hub: their modules in
+`content/pages/` through `lib/page-content.ts`. Guides: the one `answer` block in the first two
+blocks of `content/guides/<slug>.ts` — built in Sprint 7 (`89439b7`); `lib/guides.ts` throws at
+module load on zero, two, a late one, or one outside 30–80 words. The route renders each as the
+**first `<p>` after the `<h1>`** — what `content-depth.mjs` measures. Only the posts still open with
+the `PageHeader` date (Sprint 7.3, ⏳ BLOCKED · owner 3.8).
 
 **Rendering rules:** the answer is in the HTML at first paint — not behind a tab, not client-fetched.
 The `Faq` component is native `<details>/<summary>` (N8): every answer is in the DOM at first paint,
@@ -127,18 +130,25 @@ no client JS, FAQPage parity kept. Keep new answer blocks to the same bar.
 ## Gate 3 — worth citing
 
 An assistant picks the source that answers most precisely. Generic reassurance loses to a competitor
-with a number. What this site lacks (backlog §6.3), and where each gets built:
+with a number. What this site lacked (backlog §6.3 — ✅ for the hub and guides #1–#4 in the repo since
+`89439b7`, 2026-11-09), and where each gets built:
 
 - A **fault → what-determines-the-price map** (motor, לוח פיקוד, עינית, שלט, מסילה/גלגלים) — not a
   price table: the per-gate ranges `/מחירון/` carried were authored estimates and left with the N14
   pivot (`af8ba4c`; business-facts §D, keyword-map §10). Say what moves the price; quote only the
   visit fee (`visitFeeRange`).
 - **תיקון מול החלפה**: cost drivers, downtime, expected remaining life, when each is right.
-- **Gate-type selection**: נגרר / כנף / מתרומם / זרוע by plot width, slope, clearance, traffic.
+- **Gate-type selection**: נגרר / כנף / מתרומם / זרוע by plot width, slope, clearance, traffic —
+  guide #4 `שער-נגרר-כנף-או-קונזולי` carries the sliding / swing / cantilever matrix since Sprint 7.
 - **Operator lifespan and what shortens it** — mechanism depth, no invented years.
 - **The self-fix boundary** — what an owner can safely check, where 230V work must stop.
-- **ת״י 900 חלק 21.03** — the strongest E-E-A-T angle available (keyword-map §12); its facts are
-  citable **only with the SII URL inline**.
+- **ת״י 900 חלק 21.03** — the strongest E-E-A-T angle available; guide #1 `תקן-900-שער-חשמלי`
+  since Sprint 7. Its facts are citable **only with the SII URL inline**, as verified in
+  `docs/research/2026-11-08-standards-and-law.md` (which outranks keyword-map §12): the "official
+  since October 2006" date is **refuted** and never stated; no primary list of required devices
+  exists, so photocells, a flashing light or safety edges are never "what ת״י 900 requires"; the
+  licence grade a gate motor needs is unverified. An answer block on the standard keeps the
+  "official in whole or in part" nuance inside itself.
 
 The blog gestures at several (`/blog/תקלות-נפוצות-בשערים-חשמליים/`,
 `/blog/תחזוקה-מונעת-לשערים-חשמליים/`) in reassurance prose without a number or a table. Substance is
@@ -172,14 +182,21 @@ phone `072-2587772`, hours, service area and description identical across schema
 
 ## llms.txt
 
-`templates/llms.txt` → `public/llms.txt` (Phase 6, backlog §6.5; `edge.mjs` warns while absent). A
+**BUILT in the repo since `89439b7` (2026-11-09; backlog §6.5 ✅ · repo) — 404 live until the next
+deploy.** It is not a hand-copied `public/` file: `app/llms.txt/route.ts` serves `buildLlmsTxt()` from
+`lib/llms.ts`, which builds it from `siteConfig`, `staticPages`, `services`, `locations` and the guides
+registry like `app/sitemap.ts` builds the sitemap; the fixed wording is `llmsCopy` in
+`lib/content.ts`, and `templates/llms.txt` is the shape it follows. `edge.mjs` → `llmsTxt true`; 39
+linked URLs, each byte-identical to a sitemap `<loc>`. A
 plain-language map: who the business is, the 7 services and 18 areas with **percent-encoded**
 canonical URLs (byte-identical to `sitemap.xml` `<loc>`), the key facts that are **true**, and a
 "notes for AI assistants" block naming what must _not_ be attributed — no warranty term, years,
 rating, licence or response-time promise. Adapted from `galbath.co.il/public/llms.txt`, NAP from the
-manifest. A pointer file, not a second website; update it in the change that adds a service, location
-or guide. Verify: `curl -sS -o /dev/null -w "%{http_code}" https://dangates.co.il/llms.txt`. Ship it
-before Gate 1 opens anyway — cheap and harmless.
+manifest. A pointer file, not a second website; a new service, location, static page or guide appears
+in it with no edit, because it reads the same registries — only a new fixed fact or note needs a
+`llmsCopy` change. Verify after the deploy:
+`curl -sS -o /dev/null -w "%{http_code}" https://dangates.co.il/llms.txt` → 200, after the Gate 1
+probe.
 
 ## Checklist
 
@@ -190,7 +207,8 @@ before Gate 1 opens anyway — cheap and harmless.
       the `<h1>` — `content-depth.mjs` 0 outside range; every number sourced (`claims-grep.mjs`).
 - [ ] Answers ship at first paint, not `display:none` (N8); one comparison table a competitor lacks.
 - [ ] Posts carry `datePublished` and a true `dateModified`; `author` Organization or absent — never a Person.
-- [ ] `public/llms.txt` published, percent-encoded, accurate — `edge.mjs` → `llmsTxt: true`.
+- [ ] `/llms.txt` (generated by `app/llms.txt/route.ts`) percent-encoded and accurate — `edge.mjs` →
+      `llmsTxt true` in the repo, and 200 on the live URL after the deploy.
 
 ## Gotchas
 

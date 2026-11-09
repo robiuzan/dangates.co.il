@@ -125,7 +125,7 @@ Full detail, access notes and the citation format: [references/sources.md](refer
 ## 7. Cannibalisation check — before a row is `candidate`
 
 - Equal to a service `name`, or shaped `{service} ב{city}` → belongs to the silo; never a guide
-  (content-calendar §1 rules; `lib/guides.ts` will throw on it in Phase 4).
+  (content-calendar §1 rules; `lib/guides.ts` throws on it since Sprint 7).
 - Same intent as one of the 11 posts or a scheduled guide → one row, target = that page, note "merge".
 - Two terms that differ only by number/definiteness → one row.
 - A symptom already scheduled (#2, #5, #6, #10, #11) → a phrasing note on that row, not a new row.

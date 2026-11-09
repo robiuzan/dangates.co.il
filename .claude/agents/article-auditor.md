@@ -26,24 +26,26 @@ node scripts/audit/schema.mjs                 # BreadcrumbList; author / aggrega
 node scripts/audit/links.mjs                  # orphans, one H1, heading order, breadcrumb on the page
 ```
 
-As of 2026-08-23 `content-depth.mjs` reports no `guide` key in `byType`: `routeType()` in
-`scripts/audit/lib/pages.mjs:139` already classifies `/מדריכים/<slug>/`, but the route family does
-not exist. `requiredTypes()` in `scripts/audit/schema.mjs:57-62` asks a `guide` only for
-`BreadcrumbList` until Phase 4 extends it — you check the article type and `FAQPage` by hand.
+As of 2026-11-09 (Sprint 7, `89439b7`) `content-depth.mjs` reports `guide` 4 pages, `belowFloor 0`,
+median 2395.5 unique / 900, and `guides-index` 870 / 250. `routeType()` in
+`scripts/audit/lib/pages.mjs` classifies `/מדריכים/` and `/מדריכים/<slug>/`; `requiredTypes()` in
+`scripts/audit/schema.mjs` still asks a `guide` only for `BreadcrumbList` — you check the article
+type (`TechArticle` for safety and component, `Article` otherwise) and `FAQPage` by hand.
 
 ## What exists today
 
-**No** `lib/guides.ts`, `lib/guide-types.ts`, `content/guides/`, `app/מדריכים/`,
-`components/article/` or `lib/authors.ts`. The only editorial model is
-`PostBlock = { type: "h" | "p" | "li"; text }` at `lib/posts.ts`. Phase 4 (ADR 0002 +
-`docs/decisions/0003-block-content-model.md`; backlog §3.8, §3.10, §6.2, §6.3 close with it) copies
-galbath's typed `Block` union and a registry whose rules **throw at module load** — listed under
-`/new-guide` "Verification": title or H2 = a service `name` or `{service} ב{city}`, no single
-`answer` in the first two blocks, an uncaptioned `table`, an `InlineLink.anchor` not verbatim in its
-paragraph, CTAs past the family cap, a slug missing from `relatedGuides`. Once it lands, a failed
-`npm run build` IS the finding — quote it, never re-derive it. **Until then** you audit a draft
-`content/guides/<slug>.ts` (`as const satisfies Guide`, shape per `/new-guide` `templates/`) or a
-markdown draft, applying every bar by hand and citing block index or heading. A guide with no row in
+**Built in Sprint 7 (`89439b7`, 2026-11-09; not deployed):** `lib/guide-types.ts` (galbath's typed
+`Block` union, ADR 0003), `lib/guides.ts` (the registry, `relatedGuides`, the reverse index),
+`content/guides/` (four guides: `תקן-900-שער-חשמלי`, `שער-חשמלי-רועש`, `מחסום-חניה-ועד-בית`,
+`שער-נגרר-כנף-או-קונזולי`), `app/מדריכים/` and `components/article/`; `lib/authors.ts` is the empty
+registry since Sprint 2. The registry's rules **throw at module load** — listed under `/new-guide`
+"Verification": under 900 words, title or H2 = a service `name` or `{service} ב{city}`, no single
+`answer` in the first two blocks, an uncaptioned `table`, a question another page owns, an
+`InlineLink.anchor` not verbatim in its paragraph, CTAs past the family cap, a slug missing from
+`relatedGuides`. A failed `npm run build` IS the finding — quote it, never re-derive it; what the
+throws cannot see (whether the body under an H2 answers it, a claim, the angle) is yours. The 11
+posts still use `PostBlock = { type: "h" | "p" | "li"; text }` in `lib/posts.ts`; backlog §3.8,
+§3.10 and the post half of §6.2 wait on owner-actions 3.8. A guide with no row in
 `docs/content-calendar.md` §2–§3 (the queue `/content-hub` admits to) is your first finding.
 
 ## Inputs you rely on
@@ -85,8 +87,8 @@ markdown draft, applying every bar by hand and citing block index or heading. A 
 6. **The link mesh and the reverse index.** 2–3 in-copy links with descriptive Hebrew anchors, each
    `InlineLink.anchor` verbatim in its paragraph, pointing at real routes; `relatedServices` right for
    the family (content-calendar §1 "hands off to"); and the reverse index actually surfaces the guide
-   — `guidesForService()` / `guidesForLocation()` / `relatedGuides` in `lib/guides.ts` (Phase 4; names
-   follow galbath's `lib/articles.ts`). Missing from the total `Record` is a throw; present on the
+   — `guidesForService()` / `guidesForLocation()` / `relatedGuides` in `lib/guides.ts` (built in Sprint
+   7, `89439b7`; names follow galbath's `lib/articles.ts`). Missing from the total `Record` is a throw; present on the
    wrong service is your finding. A guide names a region only through `loc.prefixed` (on every `locations` entry since Sprint 6), and makes no coverage claim about the five 🔶 entries.
 7. **Claims.** Every number, duration, guarantee, superlative and coverage word traced to
    `docs/business-facts.md` or `lib/content.ts`; anything on the 🔶 list below stated as fact is a
@@ -113,10 +115,19 @@ markdown draft, applying every bar by hand and citing block index or heading. A 
   **WhatsApp on `072-2587772`:** unconfirmed (owner-actions §3.7) — a guide does not promise it.
 - **Reviews, ratings, "המובילים", "הטובים ביותר":** never; `reviews` is empty and gated
   (`REVIEW_SOURCE_URL` in `lib/content.ts`). Competitor prices, ratings and review counts never appear in any form.
-- **ת״י 900 חלק 21.03, the ₪800,000 judgment, the fatality record, the criminal-offence framing:**
-  citable **only** with the sii.org.il URL in the paragraph's links or `sources` (keyword-map §12);
-  the 2006 date and the licensed-electrician question stay unverified without a sii.org.il / gov.il
-  link. חוק החשמל and בתים משותפים cite gov.il / nevo, never a competitor. **Brands** (BFT, Nice,
+- **ת״י 900 חלק 21.03 and the law — `docs/research/2026-11-08-standards-and-law.md` is the
+  reference** (read on primary sources 2026-11-08/09; it outranks keyword-map §12). SII's statements
+  — the criminal-offence line, the ₪800,000 award, the cover that "may" be lost — are citable
+  **only** attributed to SII, with the sii.org.il URL in the paragraph's links or `sources`; the
+  deaths and injuries are news headlines SII quotes, never findings. **Stop-ship if stated:** the
+  "official since October 2006" date (refuted) or any first-declaration date; a single voltage
+  ceiling; photocells, a flashing light, force limitation, safety edges or a manual release as a
+  requirement of ת״י 900 or of the law (no primary list exists); a licence grade for a gate motor
+  (unverified); **any majority for a gate or a parking barrier** (no section of חוק המקרקעין sets
+  one); §8(א)'s quorum without its notice condition and §8(ב); §12(ב) cut before "מסוג או שיעור שלא
+  פורשו". חוק החשמל, חוק התקנים and חוק המקרקעין cite the statute text (he.wikisource with the
+  on-page "not the official publication" disclosure — owner-actions 3.10) or gov.il, never a
+  competitor. **Brands** (BFT, Nice,
   Somfy, Beninca) are market facts, never "what we service" until business-facts §C moves
   (content-calendar #16 is blocked on it).
 

@@ -1,6 +1,6 @@
 ---
 name: seo-metadata
-description: Per-route metadata for dangates — the Hebrew title and description formulas, the layout title template that appends the brand once (the doubled-suffix defect is fixed; the rule that keeps it fixed), self-referencing percent-escaped trailing-slash canonicals, og:url and the OG block, Search Console verification, and deriving sitemap.ts from the data arrays and the future guides registry instead of a hand-maintained list. Use when writing generateMetadata for a route, fixing duplicate or over-long titles, or auditing on-page SEO. Triggers: "set the metadata", "titles and descriptions", "canonical", "double brand suffix", "og:url", "sitemap", "one H1", "כותרות", "מטא".
+description: Per-route metadata for dangates — the Hebrew title and description formulas, the layout title template that appends the brand once (the doubled-suffix defect is fixed; the rule that keeps it fixed), self-referencing percent-escaped trailing-slash canonicals, og:url and the OG block, Search Console verification, and deriving sitemap.ts from the data arrays and the guides registry (built in Sprint 7) instead of a hand-maintained list. Use when writing generateMetadata for a route, fixing duplicate or over-long titles, or auditing on-page SEO. Triggers: "set the metadata", "titles and descriptions", "canonical", "double brand suffix", "og:url", "sitemap", "one H1", "כותרות", "מטא".
 ---
 
 # Per-route SEO metadata
@@ -59,7 +59,7 @@ second brand token to "work around" the template.
 | Location | `תיקון שערים חשמליים ${loc.prefixed}` — the city's own `cityContent.title` (Sprint 6) |
 | Static   | the page name — `מחירון תיקון שערים חשמליים`, `אזורי שירות`, `אודות`                  |
 | Article  | the question, **trimmed to fit** — the H1 keeps the full question, the title need not |
-| Guide    | the question form from the family template (`/new-guide`, Phase 4)                    |
+| Guide    | the question form from the family template (`/new-guide`; four guides since Sprint 7) |
 
 Keep the **rendered** title (subject + ` | דן שערים חשמליים`, 19 chars) under ~60. The 7 blog
 titles over budget are `Post.title` used verbatim; the fix is a separate `seoTitle` (or a shortened
@@ -144,9 +144,9 @@ trailing slash, `encodeURI`s the Hebrew, and uses **real content dates** for `<l
 (`services[].updated`, `locations[].updated` — per entry since Sprint 6 — in `lib/site-config.ts`, `staticPages[].updated`, `posts[].updated ?? date`).
 Never `new Date()` — bump the dates only for real copy edits.
 
-The registry: `staticPages` in `lib/site-config.ts` (typed `StaticPage`, optional `noindex`) is the one list of the nine static routes; `app/sitemap.ts` derives from it and `links.mjs` cross-checks it against the `app/` tree both ways (§1.4, done 2026-09-06 in `c047d4d`). Add a top-level page → add its row, or `links.mjs` fails naming the route. Still open: `navItems` hrefs lack the trailing slash (N10). Phase 4: the guides registry `lib/guides.ts` (ADR 0002) appends the `/מדריכים/` entries the same way. Never hand-maintain a second URL list.
+The registry: `staticPages` in `lib/site-config.ts` (typed `StaticPage`, optional `noindex`) is the one list of the static routes (ten indexable since the hub joined in Sprint 7, plus the `noindex` `/תודה/`); `app/sitemap.ts` derives from it and `links.mjs` cross-checks it against the `app/` tree both ways (§1.4, done 2026-09-06 in `c047d4d`). Add a top-level page → add its row, or `links.mjs` fails naming the route. `navItems` hrefs carry the trailing slash since N10 closed (2026-09-06). Since Sprint 7 (`89439b7`) the guides registry `lib/guides.ts` (ADR 0002) appends the `/מדריכים/` entries the same way (`guideList`, `<lastmod>` = each guide's `dateModified`). Never hand-maintain a second URL list.
 
-`links.mjs` asserts sitemap ↔ emitted-tree parity both ways and every `<lastmod>` as a real, non-future date; 45 URLs today.
+`links.mjs` asserts sitemap ↔ emitted-tree parity both ways and every `<lastmod>` as a real, non-future date; 50 URLs as of 2026-11-09 (45 before Sprint 7).
 
 ## Robots
 
