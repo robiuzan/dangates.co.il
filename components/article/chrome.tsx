@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CalendarDays, ChevronLeft, Clock } from "lucide-react";
-import { familyPillar, pillarLabels, type Guide } from "@/lib/guide-types";
+import { familyPillar, headingId, pillarLabels, type Guide } from "@/lib/guide-types";
+import { relatedAttr, type RelatedKind } from "@/lib/engagement";
 import { guidePath, readingMinutes } from "@/lib/guides";
 import { guidesCopy } from "@/lib/content";
 
@@ -48,7 +49,10 @@ export function SourcesList({ sources }: { sources: Guide["sources"] }) {
   if (!sources || sources.length === 0) return null;
   return (
     <div className="mt-10">
-      <h2 className="font-heading text-xl font-bold text-primary">
+      <h2
+        id={headingId(guidesCopy.sourcesHeading)}
+        className="scroll-mt-24 font-heading text-xl font-bold text-primary"
+      >
         {guidesCopy.sourcesHeading}
       </h2>
       <ul className="mt-4 list-disc space-y-2 ps-6 text-gray-700">
@@ -101,11 +105,14 @@ export function GuideCard({ guide }: { guide: Guide }) {
 export function LinkCardList({
   heading,
   links,
+  kind,
   columns = 2,
   className,
 }: {
   heading: string;
   links: readonly { href: string; label: string }[];
+  /** What the cards point at; the engagement leaf reports it on `related_click`. */
+  kind: RelatedKind;
   columns?: 2 | 3;
   className?: string;
 }) {
@@ -122,7 +129,7 @@ export function LinkCardList({
       >
         {links.map((l) => (
           <li key={l.href}>
-            <Link href={l.href} className={linkCardClass}>
+            <Link href={l.href} className={linkCardClass} {...relatedAttr(kind)}>
               {l.label}
               <ChevronLeft className="h-4 w-4 shrink-0" aria-hidden />
             </Link>
@@ -145,6 +152,7 @@ export function RelatedGuides({
     <LinkCardList
       heading={guidesCopy.reverseIndexHeading}
       links={guides.map((g) => ({ href: guidePath(g.slug), label: g.title }))}
+      kind="guide"
       className={className}
     />
   );

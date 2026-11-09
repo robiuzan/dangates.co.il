@@ -12,6 +12,8 @@ import {
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
+import { Toc } from "@/components/ui/Toc";
+import { buildToc } from "@/lib/toc";
 import { PricingTeaser } from "@/components/marketing/PricingTeaser";
 
 const pricingUrl = routeUrl("מחירון");
@@ -37,6 +39,30 @@ const nodes = [
 // interface to read the optional `items` / `after` uniformly.
 const drivers: readonly PriceDriver[] = pricingPageCopy.drivers;
 const { answer, quoteTips } = pricingPageCopy;
+
+// The table of contents under the answer block: the driver sections and the quote tips, linked by
+// the ids their wrappers already carry; shown only while the page's prose passes the bar.
+const toc = buildToc(
+  [
+    ...drivers.map((driver) => ({ id: driver.id, text: driver.heading })),
+    { id: "quote-tips", text: quoteTips.heading },
+  ],
+  [
+    answer.heading,
+    answer.text,
+    pricingPageCopy.subtitle,
+    ...drivers.flatMap((driver) => [
+      driver.heading,
+      ...driver.paragraphs,
+      ...(driver.items ?? []),
+      ...(driver.after ? [driver.after] : []),
+    ]),
+    quoteTips.heading,
+    quoteTips.intro,
+    ...quoteTips.items,
+    quoteTips.after,
+  ],
+);
 
 const listClass = "mt-4 list-disc space-y-2 ps-6 leading-relaxed text-gray-700";
 const h2Class = "font-heading text-2xl font-bold text-primary";
@@ -74,6 +100,7 @@ export default function PricingPage() {
               {pricingCtaCopy.whatsappLabel}
             </Button>
           </div>
+          <Toc items={toc} className="mt-8" />
         </div>
       </Section>
 

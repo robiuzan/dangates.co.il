@@ -29,11 +29,14 @@ import {
 import { serviceDepth } from "@/lib/service-depth";
 import { getPost } from "@/lib/posts";
 import { guidesForService } from "@/lib/guides";
+import { buildToc, headingId } from "@/lib/toc";
+import { relatedAttr } from "@/lib/engagement";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { businessNode, serviceNode, type JsonLd } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
+import { Toc } from "@/components/ui/Toc";
 import { RelatedGuides } from "@/components/article/chrome";
 import { Faq } from "@/components/marketing/Faq";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -88,6 +91,32 @@ export default function ServicePage({ params }: { params: { service: string } })
   // The reverse index: every guide that declares this service appears here, nothing to edit by hand.
   const guides = guidesForService(card.slug);
 
+  // The table of contents: every H2 of the article column after the answer block, in page order,
+  // gated on the prose length the column renders (lib/toc.ts).
+  const faqHeading = serviceDepthCopy.faqHeading(card.name);
+  const tocHeadings = [
+    ...depth.sections.map((section) => section.heading),
+    servicePageCopy.triggersHeading,
+    ...(depth.caveats.length > 0 ? [serviceDepthCopy.caveatsHeading] : []),
+    servicePageCopy.processHeading,
+    ...(depth.faqs.length > 0 ? [{ id: "faq", text: faqHeading }] : []),
+  ];
+  const toc = buildToc(tocHeadings, [
+    hasAnswer ? depth.answerHeading : "",
+    hasAnswer ? depth.answer : card.description,
+    ...depth.sections.flatMap((section) => [
+      section.heading,
+      ...section.paragraphs,
+      ...(section.list ?? []),
+    ]),
+    servicePageCopy.triggersHeading,
+    ...triggers,
+    ...depth.caveats,
+    servicePageCopy.processHeading,
+    ...processSteps.flatMap((step) => [step.title, step.body]),
+    ...depth.faqs.flatMap(({ q, a }) => [q, a]),
+  ]);
+
   // Handed to PageHeader, which renders them with the page's breadcrumb as ONE @graph. The
   // business node rides along because the Service's `provider` points at it. The FAQPage joins
   // only when the entry has questions, and carries exactly the { q, a } the <Faq> below shows.
@@ -134,9 +163,14 @@ export default function ServicePage({ params }: { params: { service: string } })
               <p className="text-lg leading-relaxed text-gray-700">{card.description}</p>
             )}
 
+            <Toc items={toc} />
+
             {depth.sections.map((section) => (
               <div key={section.heading}>
-                <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+                <h2
+                  id={headingId(section.heading)}
+                  className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
+                >
                   {section.heading}
                 </h2>
                 {section.paragraphs.map((para) => (
@@ -154,7 +188,10 @@ export default function ServicePage({ params }: { params: { service: string } })
               </div>
             ))}
 
-            <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+            <h2
+              id={headingId(servicePageCopy.triggersHeading)}
+              className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
+            >
               {servicePageCopy.triggersHeading}
             </h2>
             <ul className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -168,7 +205,10 @@ export default function ServicePage({ params }: { params: { service: string } })
 
             {depth.caveats.length > 0 && (
               <>
-                <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+                <h2
+                  id={headingId(serviceDepthCopy.caveatsHeading)}
+                  className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
+                >
                   {serviceDepthCopy.caveatsHeading}
                 </h2>
                 <ul className="mt-4 list-disc space-y-2 ps-6 text-gray-700">
@@ -179,7 +219,10 @@ export default function ServicePage({ params }: { params: { service: string } })
               </>
             )}
 
-            <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+            <h2
+              id={headingId(servicePageCopy.processHeading)}
+              className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
+            >
               {servicePageCopy.processHeading}
             </h2>
             <ol className="mt-4 space-y-3">
@@ -219,7 +262,7 @@ export default function ServicePage({ params }: { params: { service: string } })
               <div className="mt-10">
                 <Faq
                   items={depth.faqs}
-                  heading={serviceDepthCopy.faqHeading(card.name)}
+                  heading={faqHeading}
                   id="faq"
                   name={serviceDepthCopy.faqGroupName}
                   className="mx-0 mt-5 max-w-none"
@@ -262,7 +305,11 @@ export default function ServicePage({ params }: { params: { service: string } })
           <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {related.map((o) => (
               <li key={o.slug}>
-                <Link href={`/services/${o.slug}/`} className={linkCardClass}>
+                <Link
+                  href={`/services/${o.slug}/`}
+                  className={linkCardClass}
+                  {...relatedAttr("service")}
+                >
                   {o.name}
                   <ChevronLeft className="h-4 w-4" aria-hidden />
                 </Link>
@@ -278,7 +325,11 @@ export default function ServicePage({ params }: { params: { service: string } })
               <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {cities.map((c) => (
                   <li key={c.slug}>
-                    <Link href={`/locations/${c.slug}/`} className={linkCardClass}>
+                    <Link
+                      href={`/locations/${c.slug}/`}
+                      className={linkCardClass}
+                      {...relatedAttr("location")}
+                    >
                       {areaLinkLabel(c.prefixed)}
                       <ChevronLeft className="h-4 w-4" aria-hidden />
                     </Link>
@@ -296,7 +347,11 @@ export default function ServicePage({ params }: { params: { service: string } })
               <ul className="mt-5 grid gap-3 sm:grid-cols-2">
                 {relatedPosts.map((post) => (
                   <li key={post.slug}>
-                    <Link href={`/blog/${post.slug}/`} className={linkCardClass}>
+                    <Link
+                      href={`/blog/${post.slug}/`}
+                      className={linkCardClass}
+                      {...relatedAttr("post")}
+                    >
                       {post.title}
                       <ChevronLeft className="h-4 w-4" aria-hidden />
                     </Link>

@@ -488,6 +488,9 @@ export const headerMenuCopy = {
 /** app/layout.tsx — the skip link, first focusable element on every page; targets <main id="main">. */
 export const skipLinkLabel = "דלג לתוכן הראשי";
 
+/** The table of contents (engagement-ux): the landmark's accessible name and its summary line. */
+export const tocLabel = "תוכן העניינים";
+
 // ── Route & component copy (moved out of JSX per backlog N13) ──────────────
 // Verbatim from the route files and the three marketing components named in the sprint row —
 // wording is unchanged; only the location has moved. Sprint 4 is where any of this gets rewritten.

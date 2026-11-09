@@ -42,10 +42,12 @@ import { areaLinkLabel, guideWhatsappMessage, guidesCopy } from "@/lib/content";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { articleJsonLd, businessNode, type JsonLd } from "@/lib/jsonld";
 import { schemaTypeFor, type Guide } from "@/lib/guide-types";
-import { findGuide, guideList, guidePath, relatedGuidesOf } from "@/lib/guides";
+import { guidePath, relatedGuidesOf, wordCount } from "@/lib/guides";
+import { buildToc } from "@/lib/toc";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
+import { Toc } from "@/components/ui/Toc";
 import { ArticleBody } from "@/components/article/ArticleBody";
 import { ArticleMeta, LinkCardList, SourcesList } from "@/components/article/chrome";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -107,6 +109,19 @@ export function GuideView({ guide: g }: { guide: Guide }) {
     ...(faqItems.length > 0 ? [faqJsonLd(faqItems)] : []),
   ];
 
+  // The table of contents: the guide's H2s after the answer block (which it follows), the FAQ and
+  // the sources — the same headings the body renders, with the same ids.
+  const answerAt = g.blocks.findIndex((b) => b.kind === "answer");
+  const tocHeadings = [
+    ...g.blocks.slice(answerAt + 1).flatMap((b) => {
+      if (b.kind === "heading" && b.level === 2) return [b.text];
+      if (b.kind === "faq") return [guidesCopy.faqHeading];
+      return [];
+    }),
+    ...(g.sources && g.sources.length > 0 ? [guidesCopy.sourcesHeading] : []),
+  ];
+  const toc = answerAt === -1 ? [] : buildToc(tocHeadings, wordCount(g));
+
   const serviceLinks = g.relatedServices.flatMap((slug) => {
     const s = services.find((x) => x.slug === slug);
     return s ? [{ href: `/services/${s.slug}/`, label: s.name }] : [];
@@ -138,7 +153,11 @@ export function GuideView({ guide: g }: { guide: Guide }) {
           <div className="lg:col-span-2">
             <ArticleMeta guide={g} />
             <div className="mt-6">
-              <ArticleBody blocks={g.blocks} guideTitle={g.title} />
+              <ArticleBody
+                blocks={g.blocks}
+                guideTitle={g.title}
+                afterAnswer={<Toc items={toc} />}
+              />
               <SourcesList sources={g.sources} />
             </div>
           </div>
@@ -178,18 +197,21 @@ export function GuideView({ guide: g }: { guide: Guide }) {
           <LinkCardList
             heading={guidesCopy.relatedServicesHeading}
             links={serviceLinks}
+            kind="service"
             columns={3}
           />
           <LinkCardList
             className="mt-10"
             heading={guidesCopy.relatedLocationsHeading}
             links={locationLinks}
+            kind="location"
             columns={3}
           />
           <LinkCardList
             className="mt-10"
             heading={guidesCopy.moreGuidesHeading}
             links={moreGuides}
+            kind="guide"
           />
         </div>
       </Section>

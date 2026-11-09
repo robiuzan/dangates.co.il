@@ -18,6 +18,8 @@ import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageContentBlock } from "@/components/marketing/ContentSections";
 import { Section } from "@/components/ui/Section";
+import { Toc } from "@/components/ui/Toc";
+import { buildToc, headingId } from "@/lib/toc";
 import { TrustBar } from "@/components/marketing/TrustBar";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
@@ -49,6 +51,27 @@ const nodes = [
 
 export default function AboutPage() {
   const content = pageContent.about;
+  // After the answer block: every H2 of the page's prose, for as long as that prose passes the bar.
+  const toc = buildToc(
+    [
+      ...content.sections.map((section) => section.heading),
+      ...aboutSections.map((sec) => sec.title),
+      aboutValuesHeading,
+    ],
+    [
+      content.answerHeading,
+      content.answer,
+      ...content.sections.flatMap((section) => [
+        section.heading,
+        ...section.paragraphs,
+        ...(section.list ?? []),
+      ]),
+      aboutIntro,
+      ...aboutSections.flatMap((sec) => [sec.title, sec.body]),
+      aboutValuesHeading,
+      ...aboutValues.flatMap((v) => [v.title, v.body]),
+    ],
+  );
   return (
     <>
       <PageHeader
@@ -62,7 +85,7 @@ export default function AboutPage() {
         ]}
       />
 
-      <PageContentBlock content={content} />
+      <PageContentBlock content={content} afterAnswer={<Toc items={toc} />} />
 
       <Section tone="white">
         <div className="mx-auto max-w-3xl">
@@ -70,14 +93,20 @@ export default function AboutPage() {
 
           {aboutSections.map((sec) => (
             <div key={sec.title}>
-              <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+              <h2
+                id={headingId(sec.title)}
+                className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
+              >
                 {sec.title}
               </h2>
               <p className="mt-3 leading-relaxed text-gray-700">{sec.body}</p>
             </div>
           ))}
 
-          <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+          <h2
+            id={headingId(aboutValuesHeading)}
+            className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
+          >
             {aboutValuesHeading}
           </h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">

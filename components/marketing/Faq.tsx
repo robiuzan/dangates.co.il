@@ -79,7 +79,7 @@ export function Faq({ items, heading, id, name = "faq", className }: FaqProps) {
 
   if (!heading) return list;
   return (
-    <div id={id}>
+    <div id={id} className={id ? "scroll-mt-24" : undefined}>
       <h2 className="font-heading text-xl font-bold text-primary">{heading}</h2>
       {list}
     </div>

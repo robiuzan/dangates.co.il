@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { headingId, type Block, type InlineLink } from "@/lib/guide-types";
@@ -72,10 +73,13 @@ function withLinks(text: string, links?: readonly InlineLink[]): React.ReactNode
 export function ArticleBody({
   blocks,
   guideTitle,
+  afterAnswer,
 }: {
   blocks: readonly Block[];
   /** The guide's title, for the WhatsApp opener a CTA block prefills. */
   guideTitle: string;
+  /** Rendered directly after the answer block — where the table of contents goes. */
+  afterAnswer?: React.ReactNode;
 }) {
   return (
     <div>
@@ -137,7 +141,10 @@ export function ArticleBody({
 
           case "answer":
             return (
-              <AnswerBlock key={i} q={block.q} a={block.a} id={headingId(block.q)} />
+              <Fragment key={i}>
+                <AnswerBlock q={block.q} a={block.a} id={headingId(block.q)} />
+                {afterAnswer}
+              </Fragment>
             );
 
           case "faq":

@@ -7,6 +7,7 @@ import { manifest } from "@/lib/site-config";
 import { crumbLabels, postSeo } from "@/lib/content";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { articleJsonLd, businessNode } from "@/lib/jsonld";
+import { relatedAttr } from "@/lib/engagement";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -142,6 +143,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               <li key={o.slug}>
                 <Link
                   href={`/blog/${o.slug}`}
+                  {...relatedAttr("post")}
                   className="flex items-center justify-between gap-2 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 hover:border-secondary hover:text-secondary"
                 >
                   {o.title}

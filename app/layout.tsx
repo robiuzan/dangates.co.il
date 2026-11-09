@@ -11,6 +11,7 @@ import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
 import { gtmHeadSnippet, gtmNoScriptSrc } from "@ishub/site-kit/analytics";
 import { LiveDialogs, LiveHead, LiveTopBar } from "@/components/live/Live";
 import { NextUrlHeaderFix } from "@/components/NextUrlHeaderFix";
+import { EngagementEvents } from "@/components/engagement/EngagementEvents";
 import "./globals.css";
 import "@/lib/live/live-core.css";
 
@@ -128,6 +129,8 @@ export default function RootLayout({
         {/* Spacer so the fixed mobile CTA bar never overlaps footer content. */}
         <div className="h-16 lg:hidden" aria-hidden />
         <MobileCtaBar />
+        {/* Renders nothing: the six engagement events of docs/event-taxonomy.md, one leaf. */}
+        <EngagementEvents />
         {/* The seasonal card (a closed native <dialog>), last in <body>. */}
         <LiveDialogs />
       </body>

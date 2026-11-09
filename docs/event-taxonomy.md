@@ -57,17 +57,21 @@ container). `faq-more` fires no conversion event — the tag exists so `cta-cove
 
 ## Engagement events (Phase 5, `engagement-ux`)
 
-| Event            | Fires                                              | Parameters                                  | Purpose                                    |
-| ---------------- | -------------------------------------------------- | ------------------------------------------- | ------------------------------------------ |
-| `scroll_depth`   | 25 / 50 / 75 / 90 % of `<main>`                    | `percent`, `page`, `page_type`              | reading depth on guides and service pages  |
-| `engaged_time`   | 15 s, 45 s, 120 s of visible, focused time         | `seconds`, `page`, `page_type`              | dwell without inflating by background tabs |
-| `toc_click`      | click on a table-of-contents link                  | `page`, `target` (heading id)               | which sections readers jump to             |
-| `faq_open`       | `<details>` toggle open                            | `page`, `question` (the Q text, ≤ 80 chars) | which questions matter                     |
-| `related_click`  | click on a related service / location / guide card | `page`, `target` (path), `kind`             | mesh effectiveness                         |
-| `outbound_click` | click on an external link (SII, gov.il)            | `page`, `target_host`                       | citation value                             |
+All six are pushed by ONE client leaf, `components/engagement/EngagementEvents.tsx` (mounted in `app/layout.tsx`, wiring in `lib/hooks/useEngagementEvents.ts`): passive listeners, one rAF-throttled scroll handler, one delegated click listener. Every push also carries `site: "dangates"`. No PII, and no page text beyond the FAQ question.
+
+| Event            | Fires                                                                                   | Parameters                                  | Purpose                                    | Status (repo)                           |
+| ---------------- | --------------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------ | --------------------------------------- |
+| `scroll_depth`   | 25 / 50 / 75 / 90 % of `<main>`, each mark once per page view, only after a real scroll | `percent`, `page`, `page_type`              | reading depth on guides and service pages  | pushed by the site; no GTM tag yet (B2) |
+| `engaged_time`   | 15 s, 45 s, 120 s of visible, focused time, each mark once per page view                | `seconds`, `page`, `page_type`              | dwell without inflating by background tabs | pushed by the site; no GTM tag yet (B2) |
+| `toc_click`      | click on a table-of-contents link (`nav[data-toc]`)                                     | `page`, `target` (heading id)               | which sections readers jump to             | pushed by the site; no GTM tag yet (B2) |
+| `faq_open`       | a `<details>` in `<main>` toggled open by the reader (never on load, never the TOC)     | `page`, `question` (the Q text, ≤ 80 chars) | which questions matter                     | pushed by the site; no GTM tag yet (B2) |
+| `related_click`  | click on a related service / location / guide / post card (`data-related` on the link)  | `page`, `target` (path), `kind`             | mesh effectiveness                         | pushed by the site; no GTM tag yet (B2) |
+| `outbound_click` | click on an external link (SII, gov.il); a `data-cta` call or WhatsApp link is not one  | `page`, `target_host`                       | citation value                             | pushed by the site; no GTM tag yet (B2) |
 
 `page_type` ∈ `home | service | location | post | guide | pricing | about | contact | other`
-(same vocabulary as `scripts/audit/lib/pages.mjs routeType()`).
+(same vocabulary as `scripts/audit/lib/pages.mjs routeType()`). `kind` ∈ `service | location | guide | post`.
+
+The table of contents these events measure is built at render time (`lib/toc.ts` `buildToc`, `components/ui/Toc.tsx`) on pages whose own prose passes ~900 words and has four or more H2s: the four guides, the seven service pages, the city pages that pass the bar, and `/אודות/`. The bar is judged per page, so the set can change when copy does.
 
 ## Live-surface events (fleet live-kit, CLAUDE.md §14)
 

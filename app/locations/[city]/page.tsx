@@ -22,10 +22,13 @@ import {
 import { cityContent, isCityWritten } from "@/lib/city-content";
 import { nearby } from "@/lib/nearby";
 import { guidesForLocation } from "@/lib/guides";
+import { buildToc, headingId, type TocHeading } from "@/lib/toc";
+import { relatedAttr } from "@/lib/engagement";
 import { serviceDepth } from "@/lib/service-depth";
 import { businessNode, locationServiceJsonLd, type JsonLd } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
+import { Toc } from "@/components/ui/Toc";
 import { RelatedGuides } from "@/components/article/chrome";
 import { Faq } from "@/components/marketing/Faq";
 import {
@@ -107,6 +110,39 @@ export default function LocationPage({ params }: { params: { city: string } }) {
   // The reverse index: guides that name this city (and declare it) appear here by themselves.
   const guides = guidesForLocation(loc.slug);
 
+  // The table of contents: every H2 of the article column after the answer block, in page order,
+  // for the city pages whose prose passes the bar (lib/toc.ts) — some do, some do not.
+  const neighbourhoodsHeading = locationPageCopy.neighborhoodsHeading(
+    loc.prefixed,
+    loc.kind,
+  );
+  const servicesHeading = showRelevantOnly
+    ? locationPageCopy.relevantServicesHeading(loc.prefixed)
+    : locationServicesHeading(loc.prefixed);
+  const faqHeading = locationPageCopy.faqHeading(loc.prefixed);
+  const neighbourhoods = content.neighborhoods ?? [];
+  const tocHeadings: TocHeading[] = [
+    ...content.localNotes.map((section) => section.heading),
+    ...(neighbourhoods.length > 0 ? [neighbourhoodsHeading] : []),
+    servicesHeading,
+    ...(content.faqs.length > 0 ? [{ id: "faq", text: faqHeading }] : []),
+    ...(neighbours.length > 0 ? [locationPageCopy.nearbyHeading] : []),
+  ];
+  const toc = buildToc(tocHeadings, [
+    ...(written
+      ? [content.answerHeading, content.answer]
+      : [locationIntroParagraph1(loc.prefixed), locationIntroParagraph2(loc.prefixed)]),
+    ...content.localNotes.flatMap((section) => [section.heading, ...section.paragraphs]),
+    neighbourhoodsHeading,
+    ...neighbourhoods,
+    servicesHeading,
+    ...listed.map((s) => s.name),
+    faqHeading,
+    ...content.faqs.flatMap(({ q, a }) => [q, a]),
+    locationPageCopy.nearbyHeading,
+    ...neighbours.map((n) => areaLinkLabel(n.prefixed)),
+  ]);
+
   // Handed to PageHeader, which renders them with the breadcrumb as ONE @graph. The Service's
   // `provider` points at the business, so the business node rides along (never a LocalBusiness
   // per city — coverage is `areaServed`). The FAQPage joins only when the entry has questions, and
@@ -149,22 +185,26 @@ export default function LocationPage({ params }: { params: { city: string } }) {
             </>
           )}
 
+          <Toc items={toc} />
+
           <ContentSections sections={content.localNotes} />
 
-          <BulletedBlock
-            heading={locationPageCopy.neighborhoodsHeading(loc.prefixed, loc.kind)}
-            items={content.neighborhoods ?? []}
-          />
+          <BulletedBlock heading={neighbourhoodsHeading} items={neighbourhoods} />
 
-          <h2 className="mt-10 font-heading text-xl font-bold text-primary">
-            {showRelevantOnly
-              ? locationPageCopy.relevantServicesHeading(loc.prefixed)
-              : locationServicesHeading(loc.prefixed)}
+          <h2
+            id={headingId(servicesHeading)}
+            className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
+          >
+            {servicesHeading}
           </h2>
           <ul className="mt-5 grid gap-3 sm:grid-cols-2">
             {listed.map((s) => (
               <li key={s.slug}>
-                <Link href={`/services/${s.slug}`} className={linkCardClass}>
+                <Link
+                  href={`/services/${s.slug}`}
+                  className={linkCardClass}
+                  {...relatedAttr("service")}
+                >
                   {s.name}
                   <ChevronLeft className="h-4 w-4" aria-hidden />
                 </Link>
@@ -186,7 +226,7 @@ export default function LocationPage({ params }: { params: { city: string } }) {
             <div className="mt-10">
               <Faq
                 items={content.faqs}
-                heading={locationPageCopy.faqHeading(loc.prefixed)}
+                heading={faqHeading}
                 id="faq"
                 name={locationPageCopy.faqGroupName}
                 className="mx-0 mt-5 max-w-none"
@@ -196,13 +236,20 @@ export default function LocationPage({ params }: { params: { city: string } }) {
 
           {neighbours.length > 0 && (
             <>
-              <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+              <h2
+                id={headingId(locationPageCopy.nearbyHeading)}
+                className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
+              >
                 {locationPageCopy.nearbyHeading}
               </h2>
               <ul className="mt-5 grid gap-3 sm:grid-cols-2">
                 {neighbours.map((n) => (
                   <li key={n.slug}>
-                    <Link href={`/locations/${n.slug}/`} className={linkCardClass}>
+                    <Link
+                      href={`/locations/${n.slug}/`}
+                      className={linkCardClass}
+                      {...relatedAttr("location")}
+                    >
                       {areaLinkLabel(n.prefixed)}
                       <ChevronLeft className="h-4 w-4" aria-hidden />
                     </Link>

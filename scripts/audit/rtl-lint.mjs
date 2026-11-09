@@ -37,7 +37,13 @@ const USE_CLIENT_RX = /^(?:\s|\/\/[^\n]*\n|\/\*[\s\S]*?\*\/)*["']use client["']/
 
 const SOURCE_GLOBS = ["app/**/*.tsx", "components/**/*.tsx"];
 /** CLAUDE.md §7 — the components that are allowed to be client components today. */
-const KNOWN_CLIENT = new Set(["DesktopNav", "MobileMenu", "LeadForm", "Reveal"]);
+const KNOWN_CLIENT = new Set([
+  "DesktopNav",
+  "MobileMenu",
+  "LeadForm",
+  "Reveal",
+  "EngagementEvents",
+]);
 
 /** Every match of `rx` on `line`, optionally rejecting matches by their left context. */
 function matchesOn(line, rx, rejectPrefix = null) {
