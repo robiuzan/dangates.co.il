@@ -227,8 +227,11 @@ export interface TrustStat {
 /**
  * Trust stats for the trust bar — each one true from the data or a confirmed fact: the service
  * count from `services`, the hours from the manifest rows behind `siteConfig.hours`, the warranty
- * in the only wording business-facts §D allows, and the diagnose-before-quoting step the process
- * section already states. No experience, availability or coverage claim, and no count of areas.
+ * in the only wording business-facts §D allows, and the on-site diagnosis the homepage description
+ * already states. No experience, availability or coverage claim, and no count of areas.
+ * The fourth cell was "אבחון לפני מחיר" / "מסבירים מה העלות לפני שמתחילים" — a quote-before-work
+ * policy with no business-facts §D row (claims-verifier, Sprint 6 page review). It now says only
+ * what processSteps step 2 says the visit does.
  */
 export const trustStats: readonly TrustStat[] = [
   {
@@ -240,7 +243,7 @@ export const trustStats: readonly TrustStat[] = [
     label: `${siteConfig.hours.weekday} · ${siteConfig.hours.friday}`,
   },
   { value: "אחריות על העבודה", label: "על התיקון ועל ההתקנה" },
-  { value: "אבחון לפני מחיר", label: "מסבירים מה העלות לפני שמתחילים" },
+  { value: "אבחון במקום", label: "מסבירים מה התקלה ומה צריך לתקן" },
 ];
 
 /**
@@ -414,8 +417,11 @@ export const aboutValues = [
     body: "אם אחרי הביקור השער לא נפתח, לא נסגר או לא מגיב לשלט כמו שצריך, התקשרו אלינו ותארו מה קורה.",
   },
   {
-    title: "יושרה ושקיפות",
-    body: "מחיר הוגן והצעה שקופה מראש, בלי הפתעות ובלי עבודות מיותרות.",
+    // Was "יושרה ושקיפות" / "מחיר הוגן והצעה שקופה מראש, בלי הפתעות ובלי עבודות מיותרות" — a
+    // pricing-policy promise with no business-facts §D row (claims-verifier, Sprint 6 page review).
+    // Now only what processSteps step 4 and the WhyUs motor line already say the work does.
+    title: "תיקון לפי מה שנמצא",
+    body: "מתקנים את מה שנמצא באבחון. כשחלק קיים עדיין תקין, משאירים אותו במקומו.",
   },
   {
     title: "אבחון לפי המנגנון",
@@ -564,9 +570,12 @@ export const postSeo: Readonly<Record<string, PostSeo>> = {
   },
 };
 
-/** app/איזורי-שירות/page.tsx — the visible link label for one city, and its `ItemList` name. */
-export function areaLinkLabel(cityName: string): string {
-  return `שערים חשמליים ב${cityName}`;
+/**
+ * The visible link label for one location (areas index, service pages, location `nearby`), and its
+ * `ItemList` name. Takes the entry's `prefixed` value (`בתל אביב`, `באזור השרון`), never a bare name.
+ */
+export function areaLinkLabel(prefixed: string): string {
+  return `שערים חשמליים ${prefixed}`;
 }
 
 /** Shared WhatsApp click-to-chat opener, used wherever no service name is interpolated in. */
@@ -583,12 +592,14 @@ export const leadFormHeading = "קבלו הצעת מחיר חינם";
 
 /** components/marketing/Hero.tsx — homepage hero copy. */
 export const heroCopy = {
-  // The eyebrow and the points name the diagnosis rather than "מחיר לפני העבודה" — a wording
-  // choice, not a gate: business-facts has no row on explaining the cost before work starts, and
-  // the lead keeps that clause because it is content-standards §4's reference line.
+  // The eyebrow, the points and the lead name the diagnosis, not a pricing policy. The lead said
+  // "ומסביר מה התקלה ומה העלות לפני שמתחילים" (content-standards §4's reference line) — a
+  // quote-before-work commitment with no business-facts §D row, which left trustStats, aboutIntro
+  // and aboutValues earlier in Sprint 6. It now says what processSteps step 2 says the visit does
+  // (claims-verifier, Sprint 6 page review). Restore the clause only once §D confirms it.
   eyebrow: "תיקון · תחזוקה · התקנה · מרכז הארץ",
   h1: "דן שערים חשמליים – תיקון והתקנה מקצועית",
-  lead: "השער נתקע או לא נסגר עד הסוף? טכנאי מגיע לאבחון, בודק את המנוע, את לוח הפיקוד ואת העיניות, ומסביר מה התקלה ומה העלות לפני שמתחילים — עם אחריות על העבודה.",
+  lead: "השער נתקע או לא נסגר עד הסוף? טכנאי מגיע לאבחון, בודק את המנוע, את לוח הפיקוד ואת העיניות, ומסביר מה התקלה ומה צריך לתקן — עם אחריות על העבודה.",
   points: ["אבחון לפני תיקון", "אחריות על העבודה", "תיאום מועד בשעות הפעילות"],
   callLabel: "חייגו עכשיו:",
   whatsappLabel: "וואטסאפ",
@@ -602,9 +613,14 @@ export const heroCopy = {
  * business-facts §D row, and so did "מסבירים מה העלות לפני שמתחילים" (a quote-before-work
  * commitment, same missing row — claims-verifier, Sprint 5 page review). "אחריות על העבודה" is
  * the allowed warranty wording.
+ * The title closes every location page, the five whose coverage is 🔶 among them (business-facts
+ * §E: קריות, שרון, צפון, דרום, באר שבע), and the areas index, so it carries the bound those pages
+ * use — whether and when a visit is possible is checked on the phone — never a booking line. It was
+ * "דברו איתנו ונתאם ביקור" (local-seo-strategist, Sprint 6 page review — stop-ship).
  */
 export const finalCtaCopy = {
-  title: "שער או תריס חשמלי לא עובד כמו שצריך? דברו איתנו ונתאם ביקור.",
+  title:
+    "שער או תריס חשמלי לא עובד כמו שצריך? התקשרו, ספרו איפה הוא, ונבדוק אם ומתי אפשר להגיע.",
   body: `מאבחנים את התקלה, מסבירים מה נמצא ונותנים אחריות על העבודה. שעות הפעילות: ${siteConfig.hours.weekday}, ${siteConfig.hours.friday}.`,
   callLabel: "חייגו עכשיו:",
   whatsappLabel: "שלחו וואטסאפ",
@@ -696,15 +712,19 @@ export function serviceCtaCardTitle(serviceName: string): string {
   return `רוצים הצעת מחיר ל${serviceName}?`;
 }
 
-/** app/locations/[city]/page.tsx — <title> / meta description, per city. */
-export function locationPageTitle(cityName: string): string {
-  return `תיקון שערים חשמליים ב${cityName}`;
+/**
+ * app/locations/[city]/page.tsx — <title> / meta description, per city. These and the builders below
+ * are the FALLBACK for a city whose `cityContent` entry (lib/city-content.ts) has not been written.
+ * Each takes the entry's `prefixed` value (`בתל אביב`, `באזור השרון`) — never a bare name behind a `ב`.
+ */
+export function locationPageTitle(prefixed: string): string {
+  return `תיקון שערים חשמליים ${prefixed}`;
 }
 
-export function locationMetaDescription(cityName: string): string {
+export function locationMetaDescription(prefixed: string): string {
   // Names what the diagnosis checks instead of "מחיר לפני העבודה" — a wording choice for the
   // character budget, not a gate (business-facts has no row on it; see heroCopy).
-  return `תיקון והתקנת שערים חשמליים ב${cityName} — אבחון המנוע, לוח הפיקוד והעיניות, ואחריות על העבודה. שערים נגררים, שערי כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`;
+  return `תיקון והתקנת שערים חשמליים ${prefixed} — אבחון המנוע, לוח הפיקוד והעיניות, ואחריות על העבודה. שערים נגררים, שערי כנף, מתרוממים, חניה, זרוע ותריסי גלילה.`;
 }
 
 /**
@@ -714,26 +734,62 @@ export function locationMetaDescription(cityName: string): string {
 export const locationServiceType = "תיקון והתקנת שערים חשמליים";
 
 /** app/locations/[city]/page.tsx — PageHeader title / subtitle, per city. */
-export function locationHeroTitle(cityName: string): string {
-  return `${locationServiceType} ב${cityName}`;
+export function locationHeroTitle(prefixed: string): string {
+  return `${locationServiceType} ${prefixed}`;
 }
 
-export function locationHeroSubtitle(cityName: string): string {
-  return `שירות מקצועי לתיקון והתקנת שערים חשמליים ב${cityName} והסביבה — אבחון התקלה במקום, הסבר על העלות לפני שמתחילים ואחריות על העבודה.`;
+// The two fallbacks below render only for an unwritten `cityContent` entry (none since Sprint 6).
+// They used to say "…והסביבה" and "אנחנו נותנים שירות … והסביבה" (coverage, 🔶 for the regions and
+// באר שבע — business-facts §E) and "הסבר על העלות לפני שמתחילים" (no §D row), so an entry emptied
+// for any reason would have shipped a stronger claim than the written page (Sprint 6 page review).
+export function locationHeroSubtitle(prefixed: string): string {
+  return `תיקון והתקנת שערים חשמליים ${prefixed} — אבחון התקלה במקום ואחריות על העבודה.`;
 }
 
-/** app/locations/[city]/page.tsx — the two intro paragraphs, per city. */
-export function locationIntroParagraph1(cityName: string): string {
-  return `מחפשים תיקון או התקנה של שער חשמלי ב${cityName}? ב${siteConfig.name} מטפלים בשערים נגררים, בשערי כנף, בשערים מתרוממים, בשערים לחניה, בשערי זרוע, במחסומים ובתריסי גלילה חשמליים. כשמזמינים תיקון, כל ביקור מתחיל באבחון לפי סדר: חשמל, שלט ומקלט, עיניות ולוח פיקוד, ואז המנוע והמכניקה.`;
+/** app/locations/[city]/page.tsx — the two intro paragraphs, per city (fallback; see above). */
+export function locationIntroParagraph1(prefixed: string): string {
+  return `מחפשים תיקון או התקנה של שער חשמלי ${prefixed}? ב${siteConfig.name} מטפלים בשערים נגררים, בשערי כנף, בשערים מתרוממים, בשערים לחניה, בשערי זרוע, במחסומים ובתריסי גלילה חשמליים. כשמזמינים תיקון, כל ביקור מתחיל באבחון לפי סדר: חשמל, שלט ומקלט, עיניות ולוח פיקוד, ואז המנוע והמכניקה.`;
 }
 
-export function locationIntroParagraph2(cityName: string): string {
-  return `אנחנו נותנים שירות ללקוחות פרטיים, ועדי בתים ועסקים ב${cityName} והסביבה, ומתאמים איתם מועד בשעות הפעילות. השער תקוע, לא נסגר או שהמנוע לא מגיב? התקשרו, תארו את התקלה, ונבדוק יחד מתי אפשר להגיע לבדיקה ולתיקון.`;
+export function locationIntroParagraph2(prefixed: string): string {
+  return `השער תקוע, לא נסגר או שהמנוע לא מגיב? התקשרו בשעות הפעילות, ספרו באיזה יישוב השער ומה התקלה, ונבדוק יחד אם ומתי אפשר להגיע לבדיקה.`;
 }
 
-export function locationServicesHeading(cityName: string): string {
-  return `השירותים שלנו ב${cityName}`;
+export function locationServicesHeading(prefixed: string): string {
+  return `השירותים שלנו ${prefixed}`;
 }
+
+/**
+ * app/locations/[city]/page.tsx — the UI labels for the sections `cityContent` fills
+ * (lib/city-content.ts). Headings and link frames only; the per-city text lives in
+ * content/locations/<slug>.ts. A section whose data is empty renders nothing, so none of these
+ * shows on a page until its entry is written. The headings are neutral on purpose: none of them
+ * says the business serves a place, because that is unconfirmed for the regions and באר שבע
+ * (business-facts §E). Each takes the entry's `prefixed` value.
+ */
+export const locationPageCopy = {
+  /** The service block of a written entry: the gate types its housing makes relevant. */
+  relevantServicesHeading: (prefixed: string): string =>
+    `אילו סוגי שערים רלוונטיים ${prefixed}?`,
+  /** After the relevant services: the way out to the full list. */
+  allServicesLabel: "לכל השירותים שלנו",
+  /**
+   * Over `neighborhoods`; a region lists towns and areas, not neighbourhoods. The region form asks
+   * about the map, not about service: on the four region pages a list under "אילו ערים ואזורים יש…"
+   * read as "these are our towns", and their coverage is 🔶 (business-facts §E; claims-verifier,
+   * Sprint 6 page review).
+   */
+  neighborhoodsHeading: (prefixed: string, kind: "city" | "region"): string =>
+    kind === "region"
+      ? `אילו יישובים ואזורים נכללים ${prefixed} לפי המפה?`
+      : `אילו שכונות ואזורים יש ${prefixed}?`,
+  /** Over the city's FAQ; the questions themselves are `CityContent.faqs`. */
+  faqHeading: (prefixed: string): string => `שאלות נפוצות ${prefixed}`,
+  /** Stable name for the city FAQ's exclusive <details> group. */
+  faqGroupName: "location-faq",
+  /** Over the `nearby(slug)` links. */
+  nearbyHeading: "אילו ערים ואזורים קרובים?",
+} as const;
 
 /** app/אודות/page.tsx — metadata + copy. */
 export const aboutMetaDescription =
@@ -743,7 +799,7 @@ export const aboutHeroTitle = "אודות דן שערים חשמליים";
 export const aboutHeroSubtitle =
   "תיקון והתקנת שערים חשמליים — פתרון מותאם אישית לכל שער, עם דגש על איכות, מקצועיות ובטיחות.";
 
-export const aboutIntro = `ברוכים הבאים ל${siteConfig.name} — תיקון, תחזוקה והתקנה של שערים חשמליים ותריסי גלילה חשמליים. כל ביקור מתחיל באבחון: בודקים את המנוע, את לוח הפיקוד, את העיניות, את השלט והמקלט שלו, את המסילות או הצירים ואת אספקת החשמל. רק אחרי שברור מה התקלה, מסבירים מה העלות ומתחילים בעבודה. בסיום בודקים את השער מקצה לקצה — פתיחה, סגירה ועצירה כשהעינית מזהה מכשול — ונותנים אחריות על העבודה.`;
+export const aboutIntro = `ברוכים הבאים ל${siteConfig.name} — תיקון, תחזוקה והתקנה של שערים חשמליים ותריסי גלילה חשמליים. כל ביקור מתחיל באבחון: בודקים את המנוע, את לוח הפיקוד, את העיניות, את השלט והמקלט שלו, את המסילות או הצירים ואת אספקת החשמל. רק אחרי שברור מה התקלה, מסבירים מה נמצא ומתחילים בעבודה. בסיום בודקים את השער מקצה לקצה — פתיחה, סגירה ועצירה כשהעינית מזהה מכשול — ונותנים אחריות על העבודה.`;
 
 export const aboutValuesHeading = "הערכים שלנו";
 
@@ -772,8 +828,11 @@ export const contactMetaDescription =
   "צרו קשר עם דן שערים חשמליים לתיקון והתקנת שערים חשמליים במרכז הארץ. טלפון, וואטסאפ או טופס — נחזור אליכם בשעות הפעילות עם ייעוץ והצעת מחיר.";
 
 export const contactHeroTitle = "צור קשר";
+// Was "…ללא התחייבות … ולפני שמתחילים מסבירים מה העלות" — a no-obligation and a
+// quote-before-work policy, neither with a business-facts §D row (the same clause the Sprint 6 page
+// review took out of heroCopy.lead). It now says only what the visit does.
 export const contactHeroSubtitle =
-  "ייעוץ ראשוני בטלפון ללא התחייבות. אבחון במקום בתיאום מראש, ולפני שמתחילים מסבירים מה העלות.";
+  "ייעוץ ראשוני בטלפון. אבחון במקום בתיאום מראש, ובסופו מסבירים מה התקלה ומה צריך לתקן.";
 
 /**
  * The visible service-area line (Footer, /צור-קשר/) — copy, so it lives here, not in site-config.
@@ -805,8 +864,11 @@ export const contactPageCopy = {
  */
 export const areasPageCopy = {
   title: "אזורי שירות",
+  // Was "…ובאזורים שברשימה. בחרו את העיר או האזור שלכם, ותאמו איתנו ביקור לאבחון" — a booking
+  // promise for every listed area, 🔶 ones included, stronger than the page body (claims-verifier,
+  // Sprint 6 page review). Now the body's own bound: whether a visit is possible is told by phone.
   metaDescription:
-    "תיקון והתקנת שערים חשמליים במרכז הארץ ובאזורים שברשימה. בחרו את העיר או האזור שלכם, ותאמו איתנו ביקור לאבחון בשעות הפעילות.",
+    "עמודי הערים והאזורים: אילו שערים חשמליים נפוצים בכל מקום ולמה הם מתקלקלים. התקשרו, ספרו באיזה יישוב השער ומה התקלה, ונגיד לכם אם אפשר לתאם ביקור ומתי.",
   subtitle:
     "נותנים שירות במרכז הארץ ובאזורים שברשימה למטה. בחרו את העיר או האזור שלכם, או התקשרו ונבדוק יחד אם ומתי אפשר להגיע.",
 } as const;

@@ -1,11 +1,5 @@
 import type { MetadataRoute } from "next";
-import {
-  siteConfig,
-  services,
-  locations,
-  locationsUpdated,
-  staticPages,
-} from "@/lib/site-config";
+import { siteConfig, services, locations, staticPages } from "@/lib/site-config";
 import { posts } from "@/lib/posts";
 
 /**
@@ -22,7 +16,7 @@ import { posts } from "@/lib/posts";
  * <lastmod> is a real content date, never the build clock. Stamping `new Date()` gave all
  * 34 non-blog entries a fresh timestamp on every deploy — including deploys that changed
  * no copy at all — which teaches crawlers to ignore the field. The dates live next to the
- * content they describe (site-config for services/locations, `staticPages` here, `posts`
+ * content they describe (site-config for services and, per entry, locations; `staticPages`; `posts`
  * for the blog) and are bumped by hand when the copy actually changes.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -52,7 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const locationEntries: MetadataRoute.Sitemap = locations.map((c) => ({
     url: url(`locations/${c.slug}`),
-    lastModified: locationsUpdated,
+    lastModified: c.updated,
   }));
 
   const blogEntries: MetadataRoute.Sitemap = posts.map((p) => ({

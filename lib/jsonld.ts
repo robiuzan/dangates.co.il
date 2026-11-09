@@ -16,8 +16,8 @@
  * graph — every page that points at `#business` therefore carries `businessNode()`. And a
  * reference must never point at a node the page does not define (`#website` lives on `/` only).
  *
- * Nothing here is promoted into the vendored kit (golden rule 9). No copy is authored in this file
- * (the only Hebrew is region slugs used as keys): names and labels come from the caller or are read
+ * Nothing here is promoted into the vendored kit (golden rule 9). No copy is authored in this file:
+ * names and labels come from the caller or are read
  * from `lib/content.ts`; the business node reads `services` and `locations` from
  * `lib/site-config.ts`, so its catalog and its areaServed can never drift from the published pages.
  */
@@ -80,18 +80,17 @@ export function graph(...nodes: Array<JsonLd | null | undefined | false>): JsonL
 
 // ── places ───────────────────────────────────────────────────────────────────
 
-export type Place = { slug: string; name: string; kind?: "city" | "region" };
+export type Place = { slug: string; name: string; kind: "city" | "region" };
 
 /**
- * `kind` arrives with the Phase-3 location model (`/new-city`); today `locations` is `{ slug, name }`
- * only. Until then the four region entries are named here so a region is never typed as a `City`
- * (schema-graph §5). Delete this set when `kind` lands.
+ * `kind` comes from the `locations` entry (lib/site-config.ts): a region is an `AdministrativeArea`,
+ * never typed as a `City` (schema-graph §5).
  */
-const REGION_SLUGS: ReadonlySet<string> = new Set(["קריות", "שרון", "צפון", "דרום"]);
-
 export function placeNode(loc: Place): JsonLd {
-  const region = loc.kind ? loc.kind === "region" : REGION_SLUGS.has(loc.slug);
-  return { "@type": region ? "AdministrativeArea" : "City", name: loc.name };
+  return {
+    "@type": loc.kind === "region" ? "AdministrativeArea" : "City",
+    name: loc.name,
+  };
 }
 
 // ── nodes ────────────────────────────────────────────────────────────────────
@@ -126,7 +125,7 @@ export function businessNode(
     }),
     description: m.tagline ?? undefined,
     url: `${m.url}/`, // the kit emits the origin without the slash the export enforces
-    areaServed: locations.map(placeNode),
+    areaServed: locations.map((loc) => placeNode(loc)),
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: servicesIndexHeroTitle,

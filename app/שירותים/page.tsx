@@ -9,7 +9,9 @@ import {
   servicesIndexHeroTitle,
   servicesIndexHeroSubtitle,
 } from "@/lib/content";
+import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { PageContentBlock } from "@/components/marketing/ContentSections";
 import { ServicesGrid } from "@/components/marketing/ServicesGrid";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
@@ -37,17 +39,20 @@ const nodes = [
 ];
 
 export default function ServicesPage() {
+  const content = pageContent.servicesIndex;
   return (
     <>
       <PageHeader
         title={servicesIndexHeroTitle}
-        subtitle={servicesIndexHeroSubtitle}
+        // Once written, the answer block is the first paragraph in <main>, so the subtitle steps aside.
+        subtitle={isPageWritten(content) ? undefined : servicesIndexHeroSubtitle}
         nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
           { label: crumbLabels.services, href: "/שירותים/" },
         ]}
       />
+      <PageContentBlock content={content} />
       <ServicesGrid />
       <FinalCta />
     </>

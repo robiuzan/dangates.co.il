@@ -20,10 +20,10 @@ bar — is outside it and never counted) **minus every paragraph of ≥ 12 words
 | ----------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | Homepage                      | 800                       | 1765 ✅ (1781 total; 675 on 2026-08-24 after the reviews left — Sprint 4 added the answer block, the diagnosis section and real FAQ answers) |
 | Service page                  | 450                       | 1387 ✅ (7 of 7, range 1294–1542 — the Sprint 5 depth modules; 167–173 before, ~152 on 2026-08-23)                                           |
-| Location page                 | 350                       | ~139 ❌ (18 of 18, range 139–145; ~122)                                                                                                      |
+| Location page                 | 350                       | 842 ✅ (18 of 18, range 717–1022, as of 2026-11-09 — the Sprint 6 `cityContent` modules; 139–145 before, ~122 on 2026-08-23)                 |
 | Blog post                     | 900                       | ~513 ❌ (11 of 11, range 442–577)                                                                                                            |
 | Guide (`/מדריכים/`)           | 900                       | route family not built yet (Phase 4)                                                                                                         |
-| Index page (services / areas) | 250                       | `/שירותים/` 336 ✅ on the metric only — still the homepage teasers (see below) · `/איזורי-שירות/` 101 ❌ · `/blog/` 395 ✅                   |
+| Index page (services / areas) | 250                       | `/שירותים/` 1018 ✅ · `/איזורי-שירות/` 456 ✅ (Sprint 6 `content/pages/`; 336 and 101 before) · `/blog/` 400 ✅ — as of 2026-11-09           |
 | Pricing                       | 400                       | 914 ✅ (144 — the "what determines the price" pivot, N14; 945 before 4F cut the repeated visit band)                                         |
 | About                         | 500                       | 320 ❌ (277)                                                                                                                                 |
 | Contact, legal, thank-you     | no minimum                | fine as-is                                                                                                                                   |
@@ -81,8 +81,10 @@ If none of those can be said truthfully about a city, **that city does not warra
 The same test applies to service pages with the service name swapped — `תריסי גלילה חשמליים` is not
 even a gate, and since Sprint 5 its page is written with the shutter's own parts. The per-service
 content lives in `content/services/<slug>.ts`, typed and checked by `lib/service-depth.ts`
-(`serviceDepth`, built 2026-11-09 — `new-service`). The per-city `cityContent` in `lib/content.ts`
-**does not exist yet** (Phase 3, `new-city`).
+(`serviceDepth`, built 2026-11-09 — `new-service`). The per-city content lives in
+`content/locations/<slug>.ts`, typed and checked by `lib/city-content.ts` (`cityContent`, built
+2026-11-09 in Sprint 6 — `new-city`); `content-depth.mjs` → `locationMedianDelta 343.5`, 18 of 18 at or
+above the floor, as of 2026-11-09.
 
 ---
 
@@ -236,9 +238,9 @@ certification the business doesn't hold; a photo presented as our work that isn'
 ## 8. Hebrew grammar for locations
 
 `locations` mixes cities with **regions** — קריות, שרון, צפון, דרום — and templates interpolate a bare
-`ב${loc.name}`, producing `בשרון` and `בצפון`. Correct Hebrew is `באזור השרון` and `בצפון הארץ`. Add a
-`prefixed` field rather than hand-patching a string; see the `new-city` skill. The field does not exist
-yet (Phase 3).
+`ב${loc.name}`, producing `בשרון` and `בצפון`. Correct Hebrew is `באזור השרון` and `בצפון הארץ`. Every
+entry in `locations` (`lib/site-config.ts`) carries `kind`, `prefixed` and its own `updated` since
+Sprint 6 (2026-11-09); templates and `content/locations/*.ts` use `prefixed`, never a bare `ב` + name.
 
 ---
 

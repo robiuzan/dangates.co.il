@@ -2,10 +2,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import { faqJsonLd } from "@ishub/site-kit/seo";
 import { locations, manifest, type LocationSlug } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
 import {
   serviceCards,
+  areaLinkLabel,
   crumbLabels,
   locationPageTitle,
   locationMetaDescription,
@@ -15,10 +17,20 @@ import {
   locationIntroParagraph2,
   locationServicesHeading,
   locationServiceType,
+  locationPageCopy,
 } from "@/lib/content";
-import { businessNode, locationServiceJsonLd } from "@/lib/jsonld";
+import { cityContent, isCityWritten } from "@/lib/city-content";
+import { nearby } from "@/lib/nearby";
+import { serviceDepth } from "@/lib/service-depth";
+import { businessNode, locationServiceJsonLd, type JsonLd } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
+import { Faq } from "@/components/marketing/Faq";
+import {
+  AnswerBlock,
+  BulletedBlock,
+  ContentSections,
+} from "@/components/marketing/ContentSections";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 export function generateStaticParams(): { city: LocationSlug }[] {
@@ -32,17 +44,35 @@ function findLocation(param: string) {
   return locations.find((c) => c.slug.normalize("NFC") === target);
 }
 
+const linkCardClass =
+  "flex items-center justify-between gap-2 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 hover:border-secondary hover:text-secondary";
+
+/**
+ * Title, H1 and description: the city's own strings once written, the shared builders (switched to
+ * the entry's `prefixed`) for any field still empty. One function, so the metadata, the H1 and the
+ * `Service` node's name cannot drift apart.
+ */
+function pageStrings(loc: NonNullable<ReturnType<typeof findLocation>>) {
+  const content = cityContent[loc.slug];
+  return {
+    title: content.title !== "" ? content.title : locationPageTitle(loc.prefixed),
+    h1: content.h1 !== "" ? content.h1 : locationHeroTitle(loc.prefixed),
+    description:
+      content.metaDescription !== ""
+        ? content.metaDescription
+        : locationMetaDescription(loc.prefixed),
+  };
+}
+
 export function generateMetadata({ params }: { params: { city: string } }): Metadata {
   const loc = findLocation(params.city);
   if (!loc) return {};
   const url = routeUrl(`locations/${loc.slug}`);
-  const title = locationPageTitle(loc.name);
-  const description = locationMetaDescription(loc.name);
+  const { title, description } = pageStrings(loc);
   return {
     alternates: { canonical: url },
     // Bare subject only — app/layout.tsx already appends "| דן שערים חשמליים" via the
     // title template. Appending it here too is what shipped the doubled suffix on 25 pages.
-    // Shortened from "תיקון והתקנת…" so the rendered title stays under ~60 chars.
     title,
     description,
     openGraph: { ...ogBase, url, title, description },
@@ -53,23 +83,44 @@ export default function LocationPage({ params }: { params: { city: string } }) {
   const loc = findLocation(params.city);
   if (!loc) notFound();
 
+  const content = cityContent[loc.slug];
+  // An entry with an empty answer is a stub: the page keeps today's shared copy in its place.
+  const written = isCityWritten(content);
+  const { h1 } = pageStrings(loc);
+
+  // The services this city's housing makes relevant, plus — the reverse direction of the mesh —
+  // every service whose own page lists this city. A written entry with neither falls back to all.
+  const relevantSlugs = new Set<string>(content.services);
+  for (const [slug, depth] of Object.entries(serviceDepth)) {
+    if (depth.locations.some((l) => l === loc.slug)) relevantSlugs.add(slug);
+  }
+  const relevant = serviceCards.filter((s) => relevantSlugs.has(s.slug));
+  const showRelevantOnly = written && relevant.length > 0;
+  const listed = showRelevantOnly ? relevant : serviceCards;
+
+  const neighbours = written
+    ? nearby(loc.slug).flatMap((slug) => locations.find((l) => l.slug === slug) ?? [])
+    : [];
+
   // Handed to PageHeader, which renders them with the breadcrumb as ONE @graph. The Service's
   // `provider` points at the business, so the business node rides along (never a LocalBusiness
-  // per city — coverage is `areaServed`).
-  const nodes = [
+  // per city — coverage is `areaServed`). The FAQPage joins only when the entry has questions, and
+  // carries exactly the { q, a } the <Faq> below shows.
+  const nodes: JsonLd[] = [
     businessNode(manifest),
-    locationServiceJsonLd(
-      manifest,
-      { name: locationHeroTitle(loc.name), serviceType: locationServiceType },
-      loc,
-    ),
+    locationServiceJsonLd(manifest, { name: h1, serviceType: locationServiceType }, loc),
+    ...(content.faqs.length > 0
+      ? [faqJsonLd(content.faqs.map(({ q, a }) => ({ q, a })))]
+      : []),
   ];
 
   return (
     <>
       <PageHeader
-        title={locationHeroTitle(loc.name)}
-        subtitle={locationHeroSubtitle(loc.name)}
+        title={h1}
+        // Once written, the answer block below is the first paragraph in <main>, so the shared
+        // subtitle (a second paragraph above it) steps aside. A stub keeps it.
+        subtitle={written ? undefined : locationHeroSubtitle(loc.prefixed)}
         nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
@@ -80,27 +131,81 @@ export default function LocationPage({ params }: { params: { city: string } }) {
 
       <Section tone="white">
         <div className="mx-auto max-w-3xl">
-          <p className="text-lg leading-relaxed text-gray-700">
-            {locationIntroParagraph1(loc.name)}
-          </p>
-          <p className="mt-4 text-gray-700">{locationIntroParagraph2(loc.name)}</p>
+          {written ? (
+            <AnswerBlock heading={content.answerHeading} answer={content.answer} />
+          ) : (
+            <>
+              <p className="text-lg leading-relaxed text-gray-700">
+                {locationIntroParagraph1(loc.prefixed)}
+              </p>
+              <p className="mt-4 text-gray-700">
+                {locationIntroParagraph2(loc.prefixed)}
+              </p>
+            </>
+          )}
+
+          <ContentSections sections={content.localNotes} />
+
+          <BulletedBlock
+            heading={locationPageCopy.neighborhoodsHeading(loc.prefixed, loc.kind)}
+            items={content.neighborhoods ?? []}
+          />
 
           <h2 className="mt-10 font-heading text-xl font-bold text-primary">
-            {locationServicesHeading(loc.name)}
+            {showRelevantOnly
+              ? locationPageCopy.relevantServicesHeading(loc.prefixed)
+              : locationServicesHeading(loc.prefixed)}
           </h2>
           <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-            {serviceCards.map((s) => (
+            {listed.map((s) => (
               <li key={s.slug}>
-                <Link
-                  href={`/services/${s.slug}`}
-                  className="flex items-center justify-between gap-2 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 hover:border-secondary hover:text-secondary"
-                >
+                <Link href={`/services/${s.slug}`} className={linkCardClass}>
                   {s.name}
                   <ChevronLeft className="h-4 w-4" aria-hidden />
                 </Link>
               </li>
             ))}
           </ul>
+          {showRelevantOnly && (
+            <p className="mt-4">
+              <Link
+                href="/שירותים/"
+                className="font-semibold text-secondary underline underline-offset-4 hover:text-primary focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+              >
+                {locationPageCopy.allServicesLabel}
+              </Link>
+            </p>
+          )}
+
+          {content.faqs.length > 0 && (
+            <div className="mt-10">
+              <Faq
+                items={content.faqs}
+                heading={locationPageCopy.faqHeading(loc.prefixed)}
+                id="faq"
+                name={locationPageCopy.faqGroupName}
+                className="mx-0 mt-5 max-w-none"
+              />
+            </div>
+          )}
+
+          {neighbours.length > 0 && (
+            <>
+              <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+                {locationPageCopy.nearbyHeading}
+              </h2>
+              <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                {neighbours.map((n) => (
+                  <li key={n.slug}>
+                    <Link href={`/locations/${n.slug}/`} className={linkCardClass}>
+                      {areaLinkLabel(n.prefixed)}
+                      <ChevronLeft className="h-4 w-4" aria-hidden />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       </Section>
 

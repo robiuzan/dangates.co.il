@@ -271,6 +271,17 @@ Sprint 5):
 hebrew-editor → claims-verifier, local-seo-strategist, seo-auditor. Owner answers 3.5 and 3.6 decide
 the four region entries and באר שבע; the rest proceeds on what is confirmed.
 
+**Decision recorded 2026-11-09 (Sprint 6 page review, local-seo-strategist):** the five 🔶 entries
+(קריות, שרון, צפון, דרום, באר שבע) ship as **bounded geography-and-mechanism pages**, not reverted to
+stubs — the stub builders carried the stronger claim ("אנחנו נותנים שירות … והסביבה"), and those
+builders were softened the same day. Their depth carries **no coverage claim** until owner-actions
+3.6 is answered: every answer block and meta description ends on the bound (whether and when a
+visit is possible is checked by phone), never a booking line; דרום leaves אילת, הערבה and מצפה רמון
+out of its list and FAQs. The business-facts §E row stays 🔶 and its Value column the owner's. Still
+open on the same question: the `Service` node with `areaServed` that `locationServiceJsonLd` emits
+on those five, unchanged since Sprint 2 (claims-verifier — a code change for rtl-frontend-engineer
+once 3.6 is answered, or earlier by decision).
+
 | #   | Task                                                                                                                                                                   | Backlog   | Standard                                         |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------ |
 | 6.1 | `cityContent` for all 18: three or more true local items each (named areas, the local gate reality, travel and scheduling at that distance, a city-specific FAQ)       | §3.1 §5.3 | content-standards §2 · local-seo-il              |
@@ -369,18 +380,18 @@ Each row is short once the asset exists and impossible before; each fires on the
 
 ## 13. Explicitly not in this plan
 
-| Not doing                       | Why                                                                                                           | Revisit when                                                                              |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| English / i18n                  | No demand evidence — Search Console is unverified; the old `/en/` was abandoned and is a stub to `/`          | Two quarters of GSC data show non-Hebrew demand (accessibility-and-i18n §7)               |
-| Server-side GTM                 | A running server on an architecture whose point is "nothing to operate"; solves a gap this site does not have | data-tracking-infrastructure §5.2 conditions                                              |
-| Geolocation personalisation     | The 18 location pages are the personalisation; `Permissions-Policy` disables the API; no cloaking risk        | mobile-ux-and-personalization §9                                                          |
-| Trust badges                    | Self-issued, unverifiable; no licence, insurance or certification exists to badge                             | business-facts §C flips to ✅ (eeat-and-trust §5.2)                                       |
-| `Review` / `AggregateRating`    | Nothing sourced; the fabricated set left the repo 2026-08-17 and the live domain 2026-09-06                   | B3 delivers reviews, quoted verbatim (eeat-and-trust §4.2)                                |
-| `Offer` schema                  | No sourced price: the authored ranges left with N14 (Sprint 4.2), the visit band is 🔶, real prices are ❌    | Only on a sourced price in business-facts §D; never on authored numbers (schema-graph §4) |
-| A 19th city / 8th service       | 18 locations fail the doorway test (delta 2–3, 2026-11-09); the 7 services pass it since `225ff45`            | Sprint 6 exits green (Sprint 5's service criteria met 2026-11-09)                         |
-| Session recording               | Would capture name and phone typed into the form                                                              | Never while the form collects PII — which is always (data-tracking-infrastructure §3.1)   |
-| An edge Worker / Pages Function | The deploy uploads `out/` only; a Worker is a fleet ops change, not a repo change                             | A fleet decision, recorded in the fleet's docs                                            |
-| A Next.js major bump for N17    | The three advisories are build-time only on a static export                                                   | The next planned major                                                                    |
+| Not doing                       | Why                                                                                                                                                                                                              | Revisit when                                                                              |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| English / i18n                  | No demand evidence — Search Console is unverified; the old `/en/` was abandoned and is a stub to `/`                                                                                                             | Two quarters of GSC data show non-Hebrew demand (accessibility-and-i18n §7)               |
+| Server-side GTM                 | A running server on an architecture whose point is "nothing to operate"; solves a gap this site does not have                                                                                                    | data-tracking-infrastructure §5.2 conditions                                              |
+| Geolocation personalisation     | The 18 location pages are the personalisation; `Permissions-Policy` disables the API; no cloaking risk                                                                                                           | mobile-ux-and-personalization §9                                                          |
+| Trust badges                    | Self-issued, unverifiable; no licence, insurance or certification exists to badge                                                                                                                                | business-facts §C flips to ✅ (eeat-and-trust §5.2)                                       |
+| `Review` / `AggregateRating`    | Nothing sourced; the fabricated set left the repo 2026-08-17 and the live domain 2026-09-06                                                                                                                      | B3 delivers reviews, quoted verbatim (eeat-and-trust §4.2)                                |
+| `Offer` schema                  | No sourced price: the authored ranges left with N14 (Sprint 4.2), the visit band is 🔶, real prices are ❌                                                                                                       | Only on a sourced price in business-facts §D; never on authored numbers (schema-graph §4) |
+| A 19th city / 8th service       | the 18 locations pass the measured doorway proxy since Sprint 6 (`locationMedianDelta 343.5`, 18 of 18 above the floor, 2026-11-09) but await local-seo-strategist sign-off; the 7 services pass since `225ff45` | Sprint 6 exits green (Sprint 5's service criteria met 2026-11-09)                         |
+| Session recording               | Would capture name and phone typed into the form                                                                                                                                                                 | Never while the form collects PII — which is always (data-tracking-infrastructure §3.1)   |
+| An edge Worker / Pages Function | The deploy uploads `out/` only; a Worker is a fleet ops change, not a repo change                                                                                                                                | A fleet decision, recorded in the fleet's docs                                            |
+| A Next.js major bump for N17    | The three advisories are build-time only on a static export                                                                                                                                                      | The next planned major                                                                    |
 
 ---
 

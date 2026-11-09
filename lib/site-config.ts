@@ -109,8 +109,8 @@ export const siteConfig = {
  * 2026-09-06: bumped on all seven because each page gained visible copy — the
  * "מתי כדאי לפנות אלינו?" heading and its own per-service trigger list (backlog §3.3). Nothing else
  * in that release was a copy edit: og:url, GTM in <head>, data-cta, the font preloads and the
- * route-file copy move were metadata, infrastructure or a verbatim refactor, so `locationsUpdated`
- * and the `staticPages` dates deliberately did not move. The lead-form error block is client-only
+ * route-file copy move were metadata, infrastructure or a verbatim refactor, so the location
+ * `updated` dates and the `staticPages` dates deliberately did not move. The lead-form error block is client-only
  * and absent from the crawled bytes, so /צור-קשר/ did not move either. **No script catches a stale
  * date** — `links.mjs` asserts a <lastmod> is a real, non-future date, not that it is current — so
  * this judgement is part of the pre-deploy check in `/deploy-dangates`.
@@ -132,40 +132,143 @@ export type ServiceSlug = (typeof services)[number]["slug"];
 
 /**
  * Local-SEO location matrix (live-site locations silo) — מרכז הארץ + ארצי.
- * Drives `app/locations/[city]` (`תיקון שערים חשמליים ב[עיר]`). All 18 cities normalized
+ * Drives `app/locations/[city]` (`תיקון שערים חשמליים [prefixed]`). All 18 entries normalized
  * to `/locations/<he-slug>/` (old root-level URLs are 301-redirected — see REDIRECTS.md).
+ *
+ * `kind`      "city" or "region". Four entries are regions (קריות, שרון, צפון, דרום): schema types
+ *             them `AdministrativeArea`, never `City` (lib/jsonld.ts `placeNode`).
+ * `prefixed`  the name WITH its preposition — `בתל אביב`, `באזור השרון`, `בצפון הארץ`. Every
+ *             template that used to interpolate a bare `ב${name}` reads this instead, because the
+ *             bare form is wrong Hebrew for the regions (content-standards §8). Grammar, not copy.
+ * `updated`   ISO date this entry's page copy last changed — its own sitemap <lastmod>. Bump it ONLY
+ *             for real copy edits to that page (its content/locations/<slug>.ts or a rewrite of a
+ *             template it renders), never for styling, metadata or analytics work. It replaced the
+ *             single shared `locationsUpdated`, true only while all 18 rendered from one template.
+ *             All 18 start at the shared date they inherited (2026-07-13); the copy step moves the
+ *             ones it rewrites. 2026-11-09: all 18 moved — each page gained its own
+ *             content/locations/<slug>.ts copy (Sprint 6), written that day.
+ *
+ * Keep this block's entries as `name: "…"` lines — scripts/audit/gsc-ingest.mjs reads them by regex.
  */
 export const locations = [
-  { slug: "תל-אביב", name: "תל אביב" },
-  { slug: "ירושלים", name: "ירושלים" },
-  { slug: "חיפה", name: "חיפה" },
-  { slug: "ראשון-לציון", name: "ראשון לציון" },
-  { slug: "פתח-תקווה", name: "פתח תקווה" },
-  { slug: "נתניה", name: "נתניה" },
-  { slug: "חולון", name: "חולון" },
-  { slug: "כפר-סבא", name: "כפר סבא" },
-  { slug: "מודיעין", name: "מודיעין" },
-  { slug: "רחובות", name: "רחובות" },
-  { slug: "יבנה", name: "יבנה" },
-  { slug: "אשדוד", name: "אשדוד" },
-  { slug: "באר-שבע", name: "באר שבע" },
-  { slug: "קריות", name: "קריות" },
-  { slug: "אשקלון", name: "אשקלון" },
-  { slug: "צפון", name: "צפון" },
-  { slug: "דרום", name: "דרום" },
-  { slug: "שרון", name: "שרון" },
+  {
+    slug: "תל-אביב",
+    name: "תל אביב",
+    kind: "city",
+    prefixed: "בתל אביב",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "ירושלים",
+    name: "ירושלים",
+    kind: "city",
+    prefixed: "בירושלים",
+    updated: "2026-11-09",
+  },
+  { slug: "חיפה", name: "חיפה", kind: "city", prefixed: "בחיפה", updated: "2026-11-09" },
+  {
+    slug: "ראשון-לציון",
+    name: "ראשון לציון",
+    kind: "city",
+    prefixed: "בראשון לציון",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "פתח-תקווה",
+    name: "פתח תקווה",
+    kind: "city",
+    prefixed: "בפתח תקווה",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "נתניה",
+    name: "נתניה",
+    kind: "city",
+    prefixed: "בנתניה",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "חולון",
+    name: "חולון",
+    kind: "city",
+    prefixed: "בחולון",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "כפר-סבא",
+    name: "כפר סבא",
+    kind: "city",
+    prefixed: "בכפר סבא",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "מודיעין",
+    name: "מודיעין",
+    kind: "city",
+    prefixed: "במודיעין",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "רחובות",
+    name: "רחובות",
+    kind: "city",
+    prefixed: "ברחובות",
+    updated: "2026-11-09",
+  },
+  { slug: "יבנה", name: "יבנה", kind: "city", prefixed: "ביבנה", updated: "2026-11-09" },
+  {
+    slug: "אשדוד",
+    name: "אשדוד",
+    kind: "city",
+    prefixed: "באשדוד",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "באר-שבע",
+    name: "באר שבע",
+    kind: "city",
+    prefixed: "בבאר שבע",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "קריות",
+    name: "קריות",
+    kind: "region",
+    prefixed: "בקריות",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "אשקלון",
+    name: "אשקלון",
+    kind: "city",
+    prefixed: "באשקלון",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "צפון",
+    name: "צפון",
+    kind: "region",
+    prefixed: "בצפון הארץ",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "דרום",
+    name: "דרום",
+    kind: "region",
+    prefixed: "בדרום הארץ",
+    updated: "2026-11-09",
+  },
+  {
+    slug: "שרון",
+    name: "שרון",
+    kind: "region",
+    prefixed: "באזור השרון",
+    updated: "2026-11-09",
+  },
 ] as const;
 
 export type LocationSlug = (typeof locations)[number]["slug"];
-
-/**
- * ISO date the location copy last changed — the sitemap <lastmod> for all 18 city pages.
- * One date, not eighteen: every city renders from the same template
- * (`app/locations/[city]/page.tsx`) with only the name interpolated, so they always change
- * together. Bump it when that template's copy changes; per-city dates would be false
- * precision until a city gets bespoke copy.
- */
-export const locationsUpdated = "2026-07-13";
+export type LocationKind = (typeof locations)[number]["kind"];
 
 /**
  * A top-level route whose copy is hand-written in its own `page.tsx`.
@@ -194,15 +297,19 @@ export type StaticPage = {
  * describe and a tenth top-level page would ship absent from it. Keeping them here puts
  * every sitemap-eligible route in one file, and `scripts/audit/links.mjs` now cross-checks
  * this array against the `app/` tree — so drift fails at the registry, naming the route.
+ *
+ * 2026-11-09 (Sprint 6): /שירותים/, /איזורי-שירות/ and /אודות/ gained their content/pages/ copy;
+ * those three plus / and /צור-קשר/ also show the trust bar, whose cost-before-work line was
+ * softened that day (`trustStats` in lib/content.ts) — five copy edits, five dates moved.
  */
 export const staticPages: readonly StaticPage[] = [
-  { path: "", updated: "2026-07-13" },
-  { path: "שירותים", updated: "2026-07-13" },
-  { path: "איזורי-שירות", updated: "2026-07-13" },
+  { path: "", updated: "2026-11-09" },
+  { path: "שירותים", updated: "2026-11-09" },
+  { path: "איזורי-שירות", updated: "2026-11-09" },
   { path: "מחירון", updated: "2026-07-13" },
   { path: "blog", updated: "2026-07-13" },
-  { path: "אודות", updated: "2026-07-13" },
-  { path: "צור-קשר", updated: "2026-07-13" },
+  { path: "אודות", updated: "2026-11-09" },
+  { path: "צור-קשר", updated: "2026-11-09" },
   { path: "מדיניות-פרטיות", updated: "2026-11-08" },
   { path: "הצהרת-נגישות", updated: "2026-07-13" },
   // The post-submit page: registered so the parity check knows it is deliberate, kept out of the

@@ -14,7 +14,9 @@ import {
   aboutIntro,
   aboutValuesHeading,
 } from "@/lib/content";
+import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { PageContentBlock } from "@/components/marketing/ContentSections";
 import { Section } from "@/components/ui/Section";
 import { TrustBar } from "@/components/marketing/TrustBar";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -46,17 +48,21 @@ const nodes = [
 ];
 
 export default function AboutPage() {
+  const content = pageContent.about;
   return (
     <>
       <PageHeader
         title={aboutHeroTitle}
-        subtitle={aboutHeroSubtitle}
+        // Once written, the answer block is the first paragraph in <main>, so the subtitle steps aside.
+        subtitle={isPageWritten(content) ? undefined : aboutHeroSubtitle}
         nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
           { label: crumbLabels.about, href: "/אודות/" },
         ]}
       />
+
+      <PageContentBlock content={content} />
 
       <Section tone="white">
         <div className="mx-auto max-w-3xl">

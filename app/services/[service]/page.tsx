@@ -275,7 +275,7 @@ export default function ServicePage({ params }: { params: { service: string } })
                 {cities.map((c) => (
                   <li key={c.slug}>
                     <Link href={`/locations/${c.slug}/`} className={linkCardClass}>
-                      {areaLinkLabel(c.name)}
+                      {areaLinkLabel(c.prefixed)}
                       <ChevronLeft className="h-4 w-4" aria-hidden />
                     </Link>
                   </li>

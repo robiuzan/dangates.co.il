@@ -97,7 +97,7 @@ must never append the brand again.** (Fixed 2026-08-17 on all 26 offending pages
 Keep the rendered title under ~60 characters (`node scripts/audit/titles.mjs` warns past it).
 
 **Region entries.** For קריות / שרון / צפון / דרום the bare `ב{name}` is grammatically wrong — use
-`prefixed` (`בצפון הארץ`, `באזור השרון`). The field does not exist yet; it lands in Phase 3.1.
+`prefixed` (`בצפון הארץ`, `באזור השרון`). The field exists on every `locations` entry in `lib/site-config.ts` since Sprint 6 (2026-11-09).
 
 **Symptom / component / brand / comparison pages** are built with `/new-guide <family> <slug>` under
 `/מדריכים/` (Phase 4) in the order set by [content-calendar.md](content-calendar.md) — never as ad-hoc
@@ -131,8 +131,9 @@ every per-gate price and 24/7 availability are all 🔶.
 
 ## 6. The service × location matrix
 
-18 locations × 7 services = 126 cells. **Do not build them.** The 18 location pages currently differ by
-**3 words**; publishing 126 variations of that is the doorway pattern.
+18 locations × 7 services = 126 cells. **Do not build them.** The 18 location pages carry their own copy since
+Sprint 6 (`locationMedianDelta 343.5`, 2026-11-09 — they differed by 3 words before); 126 cells would
+still be thin variations of them, which is the doorway pattern.
 
 Order of operations: (1) all 18 pass the doorway test, (2) each earns Tier-2 depth, (3) only then a
 service × location tier.
