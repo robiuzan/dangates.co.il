@@ -7,7 +7,9 @@
  * ready. The owner answered owner-actions 3.6 on 2026-11-09: חיפה, אשקלון and אזור השרון are
  * served; the קריות, צפון הארץ, דרום הארץ and באר שבע are not, and their pages were retired — their
  * old URLs 301 here, so a reader from one of them may land on this page. The answer named no other
- * listed page, so this page never says every listed area is served. Being served is still not a promise:
+ * listed page, so this page never says every listed area is served: it names the service area only
+ * as `serviceAreaLine` does (מרכז הארץ and the listed places), always beside the per-address check
+ * by phone, and says that an unlisted place outside מרכז הארץ is outside it. Being served is still not a promise:
  * this page may NOT state a response or arrival time, same-day or emergency availability, a travel
  * fee, any price, or how jobs are scheduled or prioritised, and it may not name any retired area or
  * invite its residents to call. No national coverage (lexicon id national-coverage): the business
@@ -30,7 +32,10 @@ export const page: PageContent = {
       paragraphs: [
         "רוב עמודי הערים מתארים את השערים שנפוצים בעיר ואת הסיבות לתקלות שלהם. בעיר של בנייני מגורים אלה בעיקר שערי חניה משותפים, שערים מתרוממים בירידה לחניון ומחסומים. בשכונות של בתים צמודי קרקע אלה שערים נגררים ושערי כנף בכניסה לחצר.",
         "גם הסביבה משנה את התמונה. ליד הים, המלח שבאוויר מאכל חלקי פלדה: פס שיניים ממתכת, צירים, ברגים ומסילות. באזורים יבשים אבק נכנס למסילה ולמנגנון, ושמש ישירה מחממת את ארון לוח הפיקוד. העמוד מקשר בין התנאים המקומיים לתקלות שאתם עשויים לראות בשער שלכם.",
-        "ברוב העמודים האלה תמצאו גם שאלות שנוגעות רק לאותה עיר ואת סוגי השערים שמתאימים לבנייה בה. כל עמוד מקשר לעמודים של מקומות סמוכים, ועמוד שאין לו מקום סמוך באתר מקשר לעמוד הקרוב ביותר אליו. בחלק מהעמודים מופיעות גם שכונות ואזורים בתוך העיר. העמוד לא מפרט זמני הגעה ולא מחירים.",
+        // Every city page links to its nearby pages (lib/nearby.ts → nearbyPairs), so the links are
+        // not under «ברוב»; and they are neighbours, not "the closest" — only חיפה's single link is
+        // documented as its nearest page.
+        "ברוב העמודים האלה תמצאו גם שאלות שנוגעות רק לאותה עיר ואת סוגי השערים שמתאימים לבנייה בה. כל עמוד מקשר גם לעמודים של מקומות שכנים, או, כשאין לו שכן באתר, לעמוד הקרוב אליו ביותר. בחלק מהעמודים מופיעות גם שכונות ואזורים בתוך העיר. העמוד לא מפרט זמני הגעה ולא מחירים.",
       ],
     },
     {
@@ -43,7 +48,10 @@ export const page: PageContent = {
     {
       heading: "מה אם היישוב שלכם לא מופיע ברשימה?",
       paragraphs: [
-        "אנחנו לא נותנים שירות בכל אזור בארץ, ולכן התשובה אם נוכל להגיע תלויה בכתובת. אם היישוב שלכם במרכז הארץ ואין לו עמוד באתר, זה אומר רק שלא כתבנו עליו עמוד, ולא שהתשובה שלילית. התקשרו ושאלו.",
+        // The retired קריות, צפון, דרום and באר שבע URLs 301 here (owner-actions 3.6), so this section
+        // must not invite a reader from an unserved area to call: the invitation is bounded to מרכז
+        // הארץ, and the service area is the site's own serviceAreaLine (מרכז הארץ and the listed areas).
+        "אנחנו לא נותנים שירות בכל אזור בארץ. אזור השירות שלנו הוא מרכז הארץ והמקומות שמופיעים ברשימה, וגם בתוכו בודקים בשיחה אם נוכל להגיע לכתובת מסוימת, ומתי. אם היישוב שלכם במרכז הארץ ואין לו עמוד באתר, זה אומר רק שלא כתבנו עליו עמוד, ואפשר לשאול עליו בטלפון. יישוב מחוץ למרכז הארץ שאינו ברשימה נמצא מחוץ לאזור השירות.",
       ],
     },
     {

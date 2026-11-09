@@ -153,7 +153,7 @@ not deployed):** the hub and the first four guides shipped in `89439b7` — the 
 gate, a car-park barrier in a shared building, and sliding vs swing vs cantilever — each over the
 900-word floor (median 2395.5 unique then, 2470.5 with the table of contents), plus `llms.txt`. Every legal and standards fact in them was
 read on sii.org.il, gov.il or the statute text first: the "official since October 2006" date turned
-out to be wrong and is left out, and no law sets a special majority for a gate. **Blocked on you:**
+out to be wrong and is left out, and no section of the law sets a majority for the general assembly's own decision on a gate or a barrier (the separate §59ג accessibility route is named as such). **Blocked on you:**
 the post rewrite and the keep / fold / redirect moves (§3.8), whether the statute text read on
 he.wikisource is a good enough source (§3.10), and whether you install cantilever gates (§3.9).
 

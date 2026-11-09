@@ -9,7 +9,8 @@
  * What it may NOT say (docs/business-facts.md §B–§E): any job done here, any technician, travel or
  * response time, availability hours, a price, or service in the bay towns north of the city
  * (the קריות), which are not served and have no page — so "בחיפה עצמה" in the answer block is a true
- * boundary. Being served is not a booking promise: the answer and the meta description ask the
+ * boundary, and the meta description says it too (it read "במפרץ חיפה", which takes in the קריות —
+ * audit 2026-11-09 L5). Being served is not a booking promise: the answer and the meta description ask the
  * reader to call and check when a visit is possible, the same bound `finalCtaCopy` closes the page
  * with. Neighbourhoods are limited to ones that are certainly inside Haifa.
  *
@@ -26,7 +27,7 @@ export const city: CityContent = {
   title: "תיקון שערים חשמליים בחיפה",
   h1: "תיקון שערים חשמליים בחיפה",
   metaDescription:
-    "תיקון והתקנה של שערים חשמליים בחיפה: שערים נגררים על מדרונות הכרמל, שערי חניה בבנייני מגורים ומחסומים במפרץ חיפה ובפארק מת״ם. התקשרו ובדקו מתי אפשר להגיע.",
+    "תיקון והתקנה של שערים חשמליים בחיפה עצמה: שערים נגררים על מדרונות הכרמל, שערי חניה בבנייני מגורים ומחסומים בפארק מת״ם. התקשרו ובדקו מתי אפשר להגיע.",
   answerHeading: "האם אתם מתקנים שערים חשמליים בחיפה?",
   // The one link below this page's FAQ is נתניה (lib/nearby.ts): the nearest page on the site, not a
   // close town, so the shared "אילו ערים ואזורים קרובים?" would misdescribe it.

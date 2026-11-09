@@ -56,7 +56,19 @@ Status key: VERIFIED (primary source read) · PARTLY (source says less than the 
 
 ## C. בית משותף — חוק המקרקעין, התשכ״ט-1969 (wikisource consolidated; knesset PDF https://fs.knesset.gov.il/6/law/6_lsr_208977.pdf)
 
-- ⛔ No section sets a majority for a gate or parking barrier. Never state one.
+- ⛔ No section sets a majority for the general assembly's own decision to install a gate or a
+  parking barrier for the building. Never state one. (Corrected 2026-11-09: this line read "no
+  section sets a majority for a gate or parking barrier", which is broader than the statute — see
+  §59ג below.)
+- §59ג (VERIFIED 2026-11-09, he.wikisource raw wikitext): an owner who is, or whose family member
+  living with them or whose tenant is, a person with a disability "רשאי … לבצע התאמה ברכוש המשותף"
+  from parts א׳–ג׳ of the second schedule, on conditions that include a permit where one is needed, a
+  signed medical form, reasonable use left to the other owners, the work "על חשבון בעל הדירה" (ב)(4)
+  and written notice to the building's representatives at least 40 days ahead (ב)(5). §59ג(ג): part
+  א׳ needs no consent of the other owners; part ב׳ "טעון הסכמת רוב בעלי הדירות"; part ג׳ needs the
+  owners of sixty percent of the apartments. Part ב׳ item 1 is "התאמת פתח או שער כניסה לחצר הבית,
+  תוך שינוי מבנה הפתח או השער … כגון … התקנת שער"; part ג׳ covers preparing or allocating a parking
+  spot. It is a separate route from an assembly decision — the committee guide names it only as that.
 - Model bylaws (apply under §64 where the building's own bylaws are silent), VERIFIED wording:
   §5(א) the general assembly decides "דרכי ניהולו של הרכוש המשותף והשימוש בו"; §12(א) "יתקבלו ברוב
   דעות"; §13(ב) one vote per apartment.
@@ -83,5 +95,6 @@ Status key: VERIFIED (primary source read) · PARTLY (source says less than the 
 - All of §C read on the he.wikisource consolidated text (raw wikitext, 2026-11-09), not the official
   Reshumot publication — the copy must keep saying so.
 - Safe framing for guide #3: what the law's model bylaws say about assembly decisions, that the building's
-  own registered bylaws may differ, that no statute section sets a gate-specific majority, and that a
+  own registered bylaws may differ, that no statute section sets a majority for the assembly's own
+  barrier or gate decision (§59ג's accessibility route is separate), and that a
   disputed or binding decision is a question for a lawyer or the מפקח על רישום מקרקעין — never legal advice.

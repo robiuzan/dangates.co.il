@@ -113,6 +113,38 @@
       "row": "Owner / founder name",
       "status": "unconfirmed",
       "note": "No person may be named until business-facts §B carries the name and permission."
+    },
+    {
+      "id": "quote-before-work",
+      "pattern": "מסביר(?:ים)? (?:לכם )?(?:מה התקלה ו)?מה (?:ה)?עלות|מה (?:ה)?עלות לפני|הסבר על העלות לפני|הצעת מחיר (?:שקופה|חינם|לפני (?:ש|העבודה|התיקון))|הצעה שקופה|מחיר שקוף|מחיר לפני העבודה|אבחון לפני מחיר|(?:בלי|ללא) הפתעות|ייעוץ והצעת מחיר|המחיר נקבע באבחון",
+      "section": "D",
+      "row": "What the price includes / excludes",
+      "status": "unconfirmed",
+      "note": "Added in P1 after the 2026-11-09 audit (H2, M4); widened in the P1 fix pass (the contact meta and the מודיעין answer). When a quote is given and whether it binds has no business-facts row of its own (owner-actions 3.4). Explains what the fault is and what needs fixing is the model (processSteps step 2); say what the price depends on, never when it is given or that it is transparent."
+    },
+    {
+      "id": "no-obligation",
+      "pattern": "(?:ללא|בלי|אין) (?:התחייבות|מחויבות)|(?:ייעוץ|אבחון|ביקור|בדיקה|הצעת מחיר) (?:חינם|ללא עלות|ללא תשלום)|בחינם",
+      "section": "D",
+      "row": "Is the visit fee waived on repair",
+      "status": "unconfirmed",
+      "note": "Added in P1 after the 2026-11-09 audit (H2, M4). Whether a visit, a diagnosis or a quote is free or binding is unconfirmed (owner-actions 3.4); name what the caller gets, not the terms."
+    },
+    {
+      "id": "durability-promise",
+      "pattern": "להבטחת תוצאות|תוצאות (?:לאורך|מובטחות)|(?:ה|ל)?(?:תיקון|תיקונים|עבודה|עבודות|התקנה|התקנות) (?:עמיד(?:ים|ה|ות)?|שמחזיק(?:ים|ה|ות)?)|(?:עמיד(?:ים|ה)?|שמחזיק(?:ים|ה|ות)?) לאורך (?:זמן|שנים)|מבטיח(?:ים|ה|ות)? [^.]{0,30}לאורך (?:זמן|שנים)|עמידות לאורך זמן",
+      "section": "D",
+      "row": "Warranty scope + exclusions",
+      "status": "unconfirmed",
+      "note": "Added in P1 after the 2026-11-09 audit (M1, M4). A durability promise reads as a warranty-scope promise. Describe the method (match the part to the gate, check what wore it out), never how long the repair lasts. Advice that a maintained part lasts longer is not a promise and does not match. Widened in fix pass 2 (claims-verifier): a service that guarantees smooth operation for years, and the heading עמידות לאורך זמן."
+    },
+    {
+      "id": "price-list-pointer",
+      "pattern": "במחירון|למחירון|ב-מחירון|מחירוני|מחירון(?:ים)? (?:המלא|שלנו|שערים|שירותי|השירותים)|מחירי התחזוקה|תמחור תיקונים",
+      "section": "D",
+      "row": "Real price range per service",
+      "status": "unconfirmed",
+      "note": "Added in the P1 fix pass (audit 2026-11-09 M2). /מחירון/ lists no per-service price since N14 (af8ba4c), only the visit band; a line that sends readers to a full price list or to published maintenance prices is false. Point at what the page explains: בעמוד המחירון באתר מוסבר מה קובע את העלות."
     }
   ]
 }

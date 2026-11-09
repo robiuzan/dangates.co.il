@@ -40,10 +40,16 @@ strings apply the same patterns yourself (next section) and note the gap as a ca
 ## Checks — each with how you detect it
 
 1. **Register (§4).** Tone אמין · מקצועי · רגוע · ענייני · נגיש; first person "אנחנו", reader "אתם".
-   Favour: אבחון מהיר · טכנאי באותו היום · שירות חירום · אחריות על העבודה · מחיר שקוף · בלי הפתעות ·
-   התאמה אישית לשער · חלקי חילוף מקוריים. Avoid: "זול", unevidenced superlatives, exclamation spam,
-   jargon, "פתרון קסם", "המובילים בישראל". Calibrate against the reference line: _"השער נתקע או לא נסגר
-   עד הסוף? טכנאי מגיע לאבחון, מסביר מה התקלה ומה העלות לפני שמתחילים — עם אחריות על העבודה."_
+   Favour: אבחון לפני תיקון · מסבירים מה התקלה ומה צריך לתקן · בודקים לפי סדר (חשמל, שלט ומקלט,
+   עיניות, לוח פיקוד, מנוע) · מה קובע את המחיר · אחריות על העבודה · התאמה אישית לשער · תיאום מועד
+   בשעות הפעילות · מה אפשר לבדוק בעצמכם, ואיפה עוצרים. Avoid: "זול", unevidenced superlatives,
+   exclamation spam, jargon, "פתרון קסם", "המובילים בישראל". Never suggest the phrases in §4's
+   "Avoid — gated, not style" bullet ("אבחון מהיר", "טכנאי באותו היום", "שירות חירום", "מחיר שקוף",
+   "בלי הפתעות", "מסבירים מה העלות לפני שמתחילים", "ללא התחייבות", "חלקי חילוף מקוריים", durability
+   promises, a full-price-list pointer): each is a §6 claim, so route it to `claims-verifier` instead
+   of favouring it. Calibrate against the reference line: _"השער נתקע או לא נסגר עד הסוף? טכנאי מגיע
+   לאבחון, בודק את המנוע, את לוח הפיקוד ואת העיניות, ומסביר מה התקלה ומה צריך לתקן — עם אחריות על
+   העבודה."_
    Detect: read every sentence; `grep -nE 'זול|פתרון קסם|המובילים|!!'` for the mechanical half.
 2. **Mechanics (§7).** Abbreviations take גרש `׳` / גרשיים `״` (`רח׳`, `ח״פ`, `ת״י`), never `'`/`"`;
    no Latin curly quotes U+2018/2019/201C/201D; `₪` **after** the number (`800 ₪`); ranges use an

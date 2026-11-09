@@ -152,14 +152,26 @@ above the floor, as of 2026-11-09 at `2b0d802` (343.5 over 18 at `7c3f2db`).
 - **Person:** "אנחנו" / דן שערים חשמליים. Address the reader as "אתם" (plural formal).
 - **Reading level:** clear for a homeowner or a ועד בית member aged 30–70, with depth where it builds
   trust. Sentences ≤ 25 words; an H2 at least every 200 words (`hebrew-editor` checks).
-- **Favour:** אבחון מהיר · טכנאי באותו היום · שירות חירום · אחריות על העבודה · מחיר שקוף · בלי הפתעות ·
-  התאמה אישית לשער · חלקי חילוף מקוריים.
+- **Favour:** אבחון לפני תיקון · מסבירים מה התקלה ומה צריך לתקן · בודקים לפי סדר (חשמל, שלט ומקלט,
+  עיניות, לוח פיקוד, מנוע) · מה קובע את המחיר · אחריות על העבודה · התאמה אישית לשער · תיאום מועד
+  בשעות הפעילות · מה אפשר לבדוק בעצמכם, ואיפה עוצרים.
 - **Avoid:** "זול", superlatives without evidence, exclamation spam, heavy jargon, "פתרון קסם",
   "המובילים בישראל" (unprovable — and `claims-grep.mjs` fails on it).
+- **Avoid — gated, not style:** each of these states a business fact that `docs/business-facts.md`
+  does not confirm, so it is a §6 claim, never a phrase to favour. Speed and availability: "אבחון
+  מהיר", "טכנאי באותו היום", "שירות חירום" (§E — the site handles urgent faults within the published
+  hours only). Pricing policy: "מחיר שקוף", "בלי הפתעות", "מסבירים מה העלות לפני שמתחילים", "ללא
+  התחייבות", and any line on when a quote is given or whether it binds (§D, owner-actions 3.4 — say
+  what the price depends on instead). Parts and outcomes: "חלקי חילוף מקוריים" (§C), "תיקונים
+  עמידים", "שמחזיקים לאורך זמן" (§D — a durability promise reads as a warranty scope; describe the
+  method). A pointer to a price list ("המחירון המלא"): `/מחירון/` explains what determines the price
+  and shows one number, the visit band. Mains work as the business's own: a new supply line to the
+  gate is an electrician's work ("עבודה של חשמלאי, לא של טכנאי שערים"), never a licence claim.
 - **Emoji:** a `✓` inside a UI element is fine. **Never in body copy** — the migrated blog uses 📌 and 💡
-  as structure (42 of them, `spam-grep.mjs`); strip them rather than imitating them.
-- **Reference line for the register:** _"השער נתקע או לא נסגר עד הסוף? טכנאי מגיע לאבחון, מסביר מה
-  התקלה ומה העלות לפני שמתחילים — עם אחריות על העבודה."_
+  as structure (`spam-grep.mjs` counts them); strip them rather than imitating them.
+- **Reference line for the register:** _"השער נתקע או לא נסגר עד הסוף? טכנאי מגיע לאבחון, בודק את
+  המנוע, את לוח הפיקוד ואת העיניות, ומסביר מה התקלה ומה צריך לתקן — עם אחריות על העבודה."_ It names
+  the diagnosis and the allowed warranty wording, and states no price policy, availability or outcome.
 
 ---
 
@@ -215,6 +227,17 @@ until confirmed. The owner has said most of these are **not coming**, so write a
 - Absolute workmanship promises: "ללא פשרות", "מצוינות בכל…", "שום חלק לא מוחלף לפני…" — never
   permitted; describe the check order instead (lexicon id `workmanship-absolute` since `9195c9b`,
   which matches the first two kinds; the rest is `claims-verifier` judgment)
+- Pricing policy — when a quote is given, whether it binds, no-obligation or free terms, a visit fee
+  credited against the repair — and durability promises about the work (lexicon ids
+  `quote-before-work`, `no-obligation`, `durability-promise`, mapped to the §D rows "What the price
+  includes / excludes", "Is the visit fee waived on repair" and "Warranty scope + exclusions"; the
+  ids match the phrasings the 2026-11-09 audit found; a credited visit fee, a binding quote, a price
+  ceiling and a quote by phone are `claims-verifier` judgment). Say what the price depends on and how
+  the work is done, never when the price is given or how long the repair lasts
+- A pointer to a full or published price list ("בקרו במחירון המלא", "מחירון השירותים שלנו") —
+  `/מחירון/` explains what determines the price and shows only the visit band since N14 (lexicon id
+  `price-list-pointer`, mapped to the §D row "Real price range per service"). Write "בעמוד המחירון
+  באתר מוסבר מה קובע את העלות"
 
 **The claim lexicon is mechanical.** `scripts/audit/claims.json` maps each of those phrases to its
 business-facts row and status; the PostToolUse hook (`.claude/hooks/post-edit-lint.ps1`) warns the
