@@ -23,13 +23,6 @@ interface ServiceMeta {
    * service page, so shortening it lowers the doorway delta (content-depth.mjs) — keep its length.
    */
   description: string;
-  /**
-   * The meta description, 120–160 chars with terminal punctuation (backlog §2.4), set only where
-   * `description` falls outside that band. Absent → `description` is already in band and serves.
-   * Read as `metaDescription ?? description` by generateMetadata in the service route
-   * (app/services/[service]/page.tsx), for both the description and its openGraph block.
-   */
-  metaDescription?: string;
   icon: IconName;
 }
 
@@ -39,30 +32,24 @@ const serviceMeta: Record<ServiceSlug, ServiceMeta> = {
     tagline: "אמינות ועמידות לכל שער",
     description:
       "שערים נגררים מתאימים לבתים פרטיים, לעסקים ולמתחמים תעשייתיים, כשיש לאורך הגדר מקום שהשער יחליק אליו. אנחנו מתקינים ומתקנים אותם: החלפת פס שיניים שנשחק, מעצורי קצה וגלגלים, יישור המסילה והתאמת המנוע למשקל השער ולרוחב הכניסה.",
-    metaDescription:
-      "תיקון והתקנה של שערים נגררים לבתים פרטיים, לעסקים ולמתחמים תעשייתיים — החלפת פס שיניים שנשחק, מעצורי קצה וגלגלים, יישור המסילה והתאמת המנוע למשקל השער.",
     icon: "MoveHorizontal",
   },
   "שערי-כנף": {
     tagline: "פתרון אלגנטי וחזק",
     description:
       "שערי כנף נפתחים על צירים, פנימה או החוצה, ומתאימים לבתים פרטיים, למתחמים מסחריים ולמוסדות, כשיש מרחב פתיחה לפני השער. אנחנו מתקינים ומתקנים אותם: כיוון צירים, תיקון כנף כבדה ששוקעת ונגררת על הקרקע, ובחירת מנוע לפי רוחב הכנף ומשקלה.",
-    metaDescription:
-      "התקנה ותיקון של שערי כנף לבתים פרטיים, למתחמים מסחריים ולמוסדות — כיוון צירים, תיקון כנף כבדה ששוקעת ונגררת על הקרקע, ובחירת מנוע לפי רוחב הכנף ומשקלה.",
     icon: "DoorOpen",
   },
   "שערים-מתרוממים": {
     tagline: "טכנולוגיה מתקדמת ומדויקת",
     description:
-      "שער מתרומם עולה כלפי מעלה במקום לנוע הצידה, ולכן מתאים לכניסה צרה שאין בה מקום לגרירה או לפתיחת כנפיים. אנחנו מתכננים, מתקינים ומתקנים שערים מתרוממים: החלפת קפיצים, כיוון האיזון, תיקון המנוע והתאמת השער לגובה הפתח.",
-    metaDescription:
-      "תכנון, התקנה ותיקון של שערים מתרוממים, לכניסה צרה שאין בה מקום לגרירה הצידה או לפתיחת כנפיים — החלפת קפיצים, כיוון האיזון ותיקון המנוע.",
+      "שער מתרומם עולה כלפי מעלה במקום לנוע הצידה, ולכן מתאים לכניסה צרה שאין בה מקום לגרירה או לפתיחת כנפיים. אנחנו מתקינים ומתקנים שערים מתרוממים: החלפת קפיצים וכבלים, כיוון האיזון, יישור המסילות ותיקון המנוע.",
     icon: "ArrowUpDown",
   },
   "שערים-לחניה": {
     tagline: "שליטה נוחה בכניסה לחניה",
     description:
-      "שערים לחניה לבית, לבניין או לעסק — תכנון, התקנה, תחזוקה ותיקון של השלט, העינית, המנוע ולוח הפיקוד, כדי שהכניסה לחניה תיפתח ותיסגר בלי עיכוב.",
+      "שערים לחניה בבניין משותף או בחניון של עסק — התקנה ותיקון של המנוע, לוח הפיקוד, העיניות ומנורת האזהרה, ושל השלטים שכל הדיירים פותחים בהם את השער.",
     icon: "Car",
   },
   "שער-זרוע": {
@@ -75,14 +62,12 @@ const serviceMeta: Record<ServiceSlug, ServiceMeta> = {
     tagline: "ביטחון ונוחות לבית ולעסק",
     description:
       "תריסי גלילה חשמליים מופעלים במנוע צינורי שיושב בתוך ציר הגלילה, ונשלטים במתג על הקיר או בשלט. אנחנו מתקינים תריסים חשמליים, ומתקנים ומתחזקים תריסים קיימים: תיקון מנוע שלא מגיב או תריס שנעצר באמצע, החזרת שלבים שיצאו מהמסילה וכיוון נקודות העצירה.",
-    metaDescription:
-      "התקנה, תיקון ותחזוקה של תריסי גלילה חשמליים לבית ולמשרד — תיקון מנוע שלא מגיב ותריס שנעצר באמצע, החזרת שלבים שיצאו מהמסילה וכיוון נקודות העצירה.",
     icon: "Blinds",
   },
   "שערים-לדירה": {
     tagline: "פתרונות לבנייני מגורים",
     description:
-      "שערים חשמליים לדירות ולבנייני מגורים — פתרונות התקנה ותיקון המותאמים לכניסות משותפות ולחניות של בנייני מגורים, עם דגש על נוחות, בטיחות ושליטה קלה לכל הדיירים.",
+      "שער ודלת הכניסה לבניין מגורים — התקנה ותיקון של הנעילה החשמלית, מחזיר הדלת, הקודן והחיבור לאינטרקום, כדי שהכניסה המשותפת תיפתח לדיירים ותינעל אחריהם.",
     icon: "Building2",
   },
 };
@@ -92,8 +77,6 @@ export interface ServiceCard {
   name: string;
   tagline: string;
   description: string;
-  /** See `ServiceMeta.metaDescription`. */
-  metaDescription?: string;
   icon: IconName;
 }
 
@@ -193,27 +176,36 @@ export const differentiators = [
   },
 ] as const;
 
-/** End-to-end service process (gate repair & installation). */
+/**
+ * End-to-end service process — rendered on the homepage (`Process`) AND on all 7 service pages,
+ * one of which is the rolling-shutters page. So every step names only what a gate and a shutter
+ * share (the mechanism, the motor, the way it is operated, its stop points and safety devices):
+ * "השער", "לוח הפיקוד" and "העינית" were false on /services/תריסי-גלילה-חשמליים/ (Sprint 5
+ * review). The gate-specific detail lives in each page's own depth entry (content/services/).
+ * Steps 2–3 state no pricing policy: "הצעת מחיר שקופה", "מסביר ... מה העלות לפני שמתחילים" and
+ * "אתם מחליטים אם להמשיך" are a quote-before-work commitment with no business-facts §D row
+ * (claims-verifier, Sprint 5 page review — stop-ship). They say only what the visit does.
+ */
 export const processSteps = [
   {
     title: "פנייה וייעוץ",
     body: "מתקשרים או משאירים פרטים, מתארים את התקלה או הצורך ומקבלים ייעוץ ראשוני.",
   },
   {
-    title: "אבחון והצעת מחיר",
-    body: "טכנאי מגיע לבדיקה, מאבחן את מצב השער והמנוע ומוסר הצעת מחיר שקופה.",
+    title: "אבחון והסבר",
+    body: "טכנאי מגיע לבדיקה, מאבחן את המנגנון ואת המנוע, ומסביר מה התקלה ומה צריך לתקן.",
   },
   {
-    title: "אישור ותיאום",
-    body: "מאשרים את העבודה ומתאמים מועד נוח בשעות הפעילות. תקלה דחופה? אמרו זאת בשיחה, ונבדוק יחד מתי אפשר להגיע.",
+    title: "תיאום העבודה",
+    body: "מתאמים מועד נוח בשעות הפעילות. תקלה דחופה? אמרו זאת בשיחה, ונבדוק יחד מתי אפשר להגיע.",
   },
   {
-    title: "ביצוע מקצועי",
-    body: "מתקנים את מה שנמצא באבחון, או מתקינים את השער החדש עם המנוע, לוח הפיקוד והעיניות.",
+    title: "ביצוע העבודה",
+    body: "מתקנים את מה שנמצא באבחון, או מתקינים מערכת חדשה: מנוע, אמצעי הפעלה ואמצעי בטיחות שמתאימים לה.",
   },
   {
     title: "בדיקה ואחריות",
-    body: "בודקים את השער מקצה לקצה — פתיחה, סגירה, עצירה כשהעינית מזהה מכשול ותגובה לשלט — ונותנים אחריות על העבודה.",
+    body: "בודקים מקצה לקצה — פתיחה וסגירה מלאות, נקודות העצירה, אמצעי הבטיחות והתגובה לשלט או למתג — ונותנים אחריות על העבודה.",
   },
 ] as const;
 
@@ -603,10 +595,17 @@ export const heroCopy = {
   formSubtitle: "השאירו פרטים ונחזור אליכם עם פתרון — ללא התחייבות.",
 } as const;
 
-/** components/marketing/FinalCta.tsx — sitewide closing CTA copy. */
+/**
+ * components/marketing/FinalCta.tsx — sitewide closing CTA copy. It closes the rolling-shutters
+ * page too, so the headline names both (it said "השער תקוע" there — Sprint 5 review). "ייעוץ
+ * והצעת מחיר שקופה — ללא התחייבות" left the body: a no-obligation / quote policy with no
+ * business-facts §D row, and so did "מסבירים מה העלות לפני שמתחילים" (a quote-before-work
+ * commitment, same missing row — claims-verifier, Sprint 5 page review). "אחריות על העבודה" is
+ * the allowed warranty wording.
+ */
 export const finalCtaCopy = {
-  title: "השער תקוע או לא נסגר? דברו איתנו ונתאם ביקור.",
-  body: `ייעוץ והצעת מחיר שקופה — ללא התחייבות. מאבחנים את התקלה, מסבירים מה העלות לפני שמתחילים ונותנים אחריות על העבודה. שעות הפעילות: ${siteConfig.hours.weekday}, ${siteConfig.hours.friday}.`,
+  title: "שער או תריס חשמלי לא עובד כמו שצריך? דברו איתנו ונתאם ביקור.",
+  body: `מאבחנים את התקלה, מסבירים מה נמצא ונותנים אחריות על העבודה. שעות הפעילות: ${siteConfig.hours.weekday}, ${siteConfig.hours.friday}.`,
   callLabel: "חייגו עכשיו:",
   whatsappLabel: "שלחו וואטסאפ",
 } as const;
@@ -631,11 +630,66 @@ export const homeFaqHeading = {
 /** app/services/[service]/page.tsx — static section copy shared by all 7 service pages. */
 export const servicePageCopy = {
   triggersHeading: "מתי כדאי לפנות אלינו?",
-  processHeading: "איך אנחנו עובדים",
-  ctaSubtitle: "ביקור, אבחון והצעה שקופה — ללא התחייבות.",
+  // Question form (content-standards §4); the steps under it are `processSteps`.
+  processHeading: "מה קורה מהפנייה ועד סוף העבודה?",
+  // Was "ביקור, אבחון והצעה שקופה — ללא התחייבות." — a no-obligation policy with no
+  // business-facts §D row; a cost-before-work clause has no row either (see processSteps).
+  ctaSubtitle: "ביקור טכנאי ואבחון של התקלה.",
   whatsappLabel: "וואטסאפ",
-  relatedHeading: "שירותים נוספים",
 } as const;
+
+/**
+ * app/services/[service]/page.tsx — the UI labels for the sections `serviceDepth` fills
+ * (lib/service-depth.ts). Headings and link frames only; the per-service text itself lives in
+ * content/services/<slug>.ts. A section whose data is empty renders nothing, so none of these
+ * shows on a page until its depth entry is written.
+ */
+export const serviceDepthCopy = {
+  /** Caveats: when this gate type is the wrong answer, what shortens motor life. */
+  caveatsHeading: "מה כדאי לדעת לפני שמחליטים?",
+  relatedServicesHeading: "שירותים קשורים",
+  // Every service's list holds cities only — never קריות, שרון, צפון, דרום or באר שבע, whose
+  // coverage is unconfirmed (business-facts §E) — so the heading may ask about cities. Question
+  // form (content-standards §4), and it promises nothing beyond the published location pages.
+  locationsHeading: "מחפשים שירות בעיר שלכם?",
+  relatedPostsHeading: "מאמרים קשורים",
+  /** Visible heading of the per-service FAQ; the questions themselves are `ServiceDepth.faqs`. */
+  faqHeading: (serviceName: string): string => `שאלות נפוצות על ${serviceName}`,
+  /** Stable name for the per-service FAQ's exclusive <details> group. */
+  faqGroupName: "service-faq",
+} as const;
+
+/**
+ * The technician-visit line on a service page: the band from `visitFeeRange` is rendered between
+ * `before` and `after` as an LTR island, then `linkLabel` links to /מחירון/. 🔶 confirm —
+ * business-facts §D: the band is still current. It is a visit-and-diagnosis fee only, so the
+ * line states no repair price and does not say whether the fee is credited against the repair.
+ */
+export const serviceVisitBandCopy = {
+  before: (serviceName: string): string => `ביקור טכנאי ואבחון ל${serviceName} עולה `,
+  after: ". מחיר התיקון עצמו תלוי בחלק שנכשל ובעבודה שנדרשת סביבו. ",
+  /** The no-number form, for a service the band does not cover: no price, only what drives it. */
+  withoutBand: "מחיר התיקון תלוי בחלק שנכשל ובעבודה שנדרשת סביבו. ",
+  linkLabel: "מה קובע את המחיר בעמוד המחירון",
+  href: "/מחירון/",
+} as const;
+
+/**
+ * Whether the published visit band covers a service. Its source is the live-site FAQ on a gate
+ * visit ("עלות ביקור טכנאי לבדיקת שער"), so the six gate pages may print it. No source covers a
+ * shutter visit, so that page shows `serviceVisitBandCopy.withoutBand` instead.
+ * 🔶 confirm — business-facts §D: does the visit band also cover a rolling-shutter visit? Until
+ * the owner answers, the shutters entry stays `false`. A total record, so a new service must decide.
+ */
+export const serviceVisitBandApplies: Record<ServiceSlug, boolean> = {
+  "שערים-נגררים": true,
+  "שערי-כנף": true,
+  "שערים-מתרוממים": true,
+  "שערים-לחניה": true,
+  "שער-זרוע": true,
+  "תריסי-גלילה-חשמליים": false,
+  "שערים-לדירה": true,
+};
 
 /** app/services/[service]/page.tsx — the sticky CTA card title, per service. */
 export function serviceCtaCardTitle(serviceName: string): string {

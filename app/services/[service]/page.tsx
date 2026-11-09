@@ -2,8 +2,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Check, ChevronLeft, MessageCircle, Phone } from "lucide-react";
+import { faqJsonLd } from "@ishub/site-kit/seo";
 import {
   services,
+  locations,
   type ServiceSlug,
   siteConfig,
   manifest,
@@ -15,15 +17,23 @@ import {
   processSteps,
   serviceTriggers,
   servicePageCopy,
+  serviceDepthCopy,
+  serviceVisitBandCopy,
+  serviceVisitBandApplies,
+  visitFeeRange,
+  areaLinkLabel,
   serviceCtaCardTitle,
   serviceWhatsappMessage,
   crumbLabels,
 } from "@/lib/content";
+import { serviceDepth } from "@/lib/service-depth";
+import { getPost } from "@/lib/posts";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { businessNode, serviceNode } from "@/lib/jsonld";
+import { businessNode, serviceNode, type JsonLd } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
+import { Faq } from "@/components/marketing/Faq";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 export function generateStaticParams(): { service: ServiceSlug }[] {
@@ -37,12 +47,15 @@ function findCard(param: string) {
   return serviceCards.find((c) => c.slug.normalize("NFC") === target);
 }
 
+const linkCardClass =
+  "flex items-center justify-between gap-2 rounded-xl border border-gray-100 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:border-secondary hover:text-secondary";
+
 export function generateMetadata({ params }: { params: { service: string } }): Metadata {
   const card = findCard(params.service);
   if (!card) return {};
   const url = routeUrl(`services/${card.slug}`);
   // The meta line is its own field: `description` is the page's unique paragraph, not a snippet.
-  const description = card.metaDescription ?? card.description;
+  const description = serviceDepth[card.slug].metaDescription;
   return {
     alternates: { canonical: url },
     // Bare subject only — app/layout.tsx already appends "| דן שערים חשמליים" via the
@@ -57,24 +70,42 @@ export default function ServicePage({ params }: { params: { service: string } })
   const card = findCard(params.service);
   if (!card) notFound();
 
-  const others = serviceCards.filter((c) => c.slug !== card.slug).slice(0, 4);
+  const depth = serviceDepth[card.slug];
+  // An entry with an empty answer keeps the card's paragraph and tagline in its place.
+  const hasAnswer = depth.answer !== "";
   const triggers = serviceTriggers[card.slug];
+
+  // Declared relevance, never array order.
+  const related = depth.relatedServices.flatMap(
+    (slug) => serviceCards.find((c) => c.slug === slug) ?? [],
+  );
+  const cities = depth.locations.flatMap(
+    (slug) => locations.find((l) => l.slug === slug) ?? [],
+  );
+  const relatedPosts = depth.relatedPosts.flatMap((slug) => getPost(slug) ?? []);
+
   // Handed to PageHeader, which renders them with the page's breadcrumb as ONE @graph. The
-  // business node rides along because the Service's `provider` points at it.
-  const nodes = [
+  // business node rides along because the Service's `provider` points at it. The FAQPage joins
+  // only when the entry has questions, and carries exactly the { q, a } the <Faq> below shows.
+  const nodes: JsonLd[] = [
     businessNode(manifest),
     serviceNode(manifest, {
       name: card.name,
       description: card.description,
       slug: card.slug,
     }),
+    ...(depth.faqs.length > 0
+      ? [faqJsonLd(depth.faqs.map(({ q, a }) => ({ q, a })))]
+      : []),
   ];
 
   return (
     <>
       <PageHeader
         title={card.name}
-        subtitle={card.tagline}
+        // Once written, the answer block below is the first paragraph in <main>, so the tagline
+        // (a second paragraph above it) steps aside. A stub keeps it.
+        subtitle={hasAnswer ? undefined : card.tagline}
         nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
@@ -86,7 +117,38 @@ export default function ServicePage({ params }: { params: { service: string } })
       <Section tone="white">
         <div className="grid gap-10 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <p className="text-lg leading-relaxed text-gray-700">{card.description}</p>
+            {hasAnswer ? (
+              <>
+                <h2 className="font-heading text-xl font-bold text-primary">
+                  {depth.answerHeading}
+                </h2>
+                <p className="mt-3 text-lg leading-relaxed text-gray-700">
+                  {depth.answer}
+                </p>
+              </>
+            ) : (
+              <p className="text-lg leading-relaxed text-gray-700">{card.description}</p>
+            )}
+
+            {depth.sections.map((section) => (
+              <div key={section.heading}>
+                <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+                  {section.heading}
+                </h2>
+                {section.paragraphs.map((para) => (
+                  <p key={para} className="mt-4 leading-relaxed text-gray-700">
+                    {para}
+                  </p>
+                ))}
+                {section.list && section.list.length > 0 && (
+                  <ul className="mt-4 list-disc space-y-2 ps-6 text-gray-700">
+                    {section.list.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
 
             <h2 className="mt-10 font-heading text-xl font-bold text-primary">
               {servicePageCopy.triggersHeading}
@@ -99,6 +161,19 @@ export default function ServicePage({ params }: { params: { service: string } })
                 </li>
               ))}
             </ul>
+
+            {depth.caveats.length > 0 && (
+              <>
+                <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+                  {serviceDepthCopy.caveatsHeading}
+                </h2>
+                <ul className="mt-4 list-disc space-y-2 ps-6 text-gray-700">
+                  {depth.caveats.map((c) => (
+                    <li key={c}>{c}</li>
+                  ))}
+                </ul>
+              </>
+            )}
 
             <h2 className="mt-10 font-heading text-xl font-bold text-primary">
               {servicePageCopy.processHeading}
@@ -115,6 +190,38 @@ export default function ServicePage({ params }: { params: { service: string } })
                 </li>
               ))}
             </ol>
+
+            {hasAnswer && (
+              <p className="mt-6 text-gray-700">
+                {serviceVisitBandApplies[card.slug] ? (
+                  <>
+                    {serviceVisitBandCopy.before(card.name)}
+                    <span className="ltr">{visitFeeRange}</span>
+                    {serviceVisitBandCopy.after}
+                  </>
+                ) : (
+                  serviceVisitBandCopy.withoutBand
+                )}
+                <Link
+                  href={serviceVisitBandCopy.href}
+                  className="font-semibold text-secondary underline underline-offset-4 hover:text-primary focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+                >
+                  {serviceVisitBandCopy.linkLabel}
+                </Link>
+              </p>
+            )}
+
+            {depth.faqs.length > 0 && (
+              <div className="mt-10">
+                <Faq
+                  items={depth.faqs}
+                  heading={serviceDepthCopy.faqHeading(card.name)}
+                  id="faq"
+                  name={serviceDepthCopy.faqGroupName}
+                  className="mx-0 mt-5 max-w-none"
+                />
+              </div>
+            )}
           </div>
 
           {/* Sticky CTA card */}
@@ -143,24 +250,57 @@ export default function ServicePage({ params }: { params: { service: string } })
           </aside>
         </div>
 
-        {/* Related services */}
+        {/* Related services, cities and posts — declared per service in lib/service-depth.ts */}
         <div className="mt-14 border-t border-gray-100 pt-10">
           <h2 className="font-heading text-xl font-bold text-primary">
-            {servicePageCopy.relatedHeading}
+            {serviceDepthCopy.relatedServicesHeading}
           </h2>
           <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {others.map((o) => (
+            {related.map((o) => (
               <li key={o.slug}>
-                <Link
-                  href={`/services/${o.slug}`}
-                  className="flex items-center justify-between gap-2 rounded-xl border border-gray-100 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:border-secondary hover:text-secondary"
-                >
+                <Link href={`/services/${o.slug}/`} className={linkCardClass}>
                   {o.name}
                   <ChevronLeft className="h-4 w-4" aria-hidden />
                 </Link>
               </li>
             ))}
           </ul>
+
+          {cities.length > 0 && (
+            <>
+              <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+                {serviceDepthCopy.locationsHeading}
+              </h2>
+              <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {cities.map((c) => (
+                  <li key={c.slug}>
+                    <Link href={`/locations/${c.slug}/`} className={linkCardClass}>
+                      {areaLinkLabel(c.name)}
+                      <ChevronLeft className="h-4 w-4" aria-hidden />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          {relatedPosts.length > 0 && (
+            <>
+              <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+                {serviceDepthCopy.relatedPostsHeading}
+              </h2>
+              <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                {relatedPosts.map((post) => (
+                  <li key={post.slug}>
+                    <Link href={`/blog/${post.slug}/`} className={linkCardClass}>
+                      {post.title}
+                      <ChevronLeft className="h-4 w-4" aria-hidden />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       </Section>
 

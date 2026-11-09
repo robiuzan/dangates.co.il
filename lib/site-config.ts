@@ -114,15 +114,18 @@ export const siteConfig = {
  * and absent from the crawled bytes, so /צור-קשר/ did not move either. **No script catches a stale
  * date** — `links.mjs` asserts a <lastmod> is a real, non-future date, not that it is current — so
  * this judgement is part of the pre-deploy check in `/deploy-dangates`.
+ *
+ * 2026-11-09: bumped on all seven because each page gained its own depth copy (Sprint 5,
+ * content/services/<slug>.ts via lib/service-depth.ts) — a substantive copy edit on every one.
  */
 export const services = [
-  { slug: "שערים-נגררים", name: "שערים נגררים", updated: "2026-09-06" },
-  { slug: "שערי-כנף", name: "שערי כנף", updated: "2026-09-06" },
-  { slug: "שערים-מתרוממים", name: "שערים מתרוממים", updated: "2026-09-06" },
-  { slug: "שערים-לחניה", name: "שערים לחניה", updated: "2026-09-06" },
-  { slug: "שער-זרוע", name: "שער זרוע", updated: "2026-09-06" },
-  { slug: "תריסי-גלילה-חשמליים", name: "תריסי גלילה חשמליים", updated: "2026-09-06" },
-  { slug: "שערים-לדירה", name: "שערים לדירה", updated: "2026-09-06" },
+  { slug: "שערים-נגררים", name: "שערים נגררים", updated: "2026-11-09" },
+  { slug: "שערי-כנף", name: "שערי כנף", updated: "2026-11-09" },
+  { slug: "שערים-מתרוממים", name: "שערים מתרוממים", updated: "2026-11-09" },
+  { slug: "שערים-לחניה", name: "שערים לחניה", updated: "2026-11-09" },
+  { slug: "שער-זרוע", name: "שער זרוע", updated: "2026-11-09" },
+  { slug: "תריסי-גלילה-חשמליים", name: "תריסי גלילה חשמליים", updated: "2026-11-09" },
+  { slug: "שערים-לדירה", name: "שערים לדירה", updated: "2026-11-09" },
 ] as const;
 
 export type ServiceSlug = (typeof services)[number]["slug"];

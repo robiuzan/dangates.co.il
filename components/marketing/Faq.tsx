@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 /**
  * FAQ as native disclosures (backlog N8) — a server component: no "use client", no state, no
@@ -23,11 +24,31 @@ export interface FaqItem {
   moreAt?: { href: string; label: string };
 }
 
-export function Faq({ items }: { items: readonly FaqItem[] }) {
-  return (
-    <div className="mx-auto mt-10 max-w-3xl divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-white">
+export interface FaqProps {
+  items: readonly FaqItem[];
+  /**
+   * Optional H2 rendered above the list, inside a wrapper that carries `id`. The homepage omits it
+   * (its heading is a SectionHeading outside this component) and gets the unchanged markup.
+   */
+  heading?: string;
+  /** Anchor id for the heading wrapper; only used together with `heading`. */
+  id?: string;
+  /** The `name` of the <details> group — one open at a time per name. Default "faq". */
+  name?: string;
+  /** Extra classes for the list box; merged over the homepage defaults (centred, `mt-10`). */
+  className?: string;
+}
+
+export function Faq({ items, heading, id, name = "faq", className }: FaqProps) {
+  const list = (
+    <div
+      className={cn(
+        "mx-auto mt-10 max-w-3xl divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-white",
+        className,
+      )}
+    >
       {items.map((item, i) => (
-        <details key={item.q} name="faq" open={i === 0} className="group">
+        <details key={item.q} name={name} open={i === 0} className="group">
           <summary className="flex min-h-11 w-full cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-start focus-visible:rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-secondary [&::-webkit-details-marker]:hidden">
             <h3 className="font-heading text-base font-semibold text-primary">
               {item.q}
@@ -53,6 +74,14 @@ export function Faq({ items }: { items: readonly FaqItem[] }) {
           </div>
         </details>
       ))}
+    </div>
+  );
+
+  if (!heading) return list;
+  return (
+    <div id={id}>
+      <h2 className="font-heading text-xl font-bold text-primary">{heading}</h2>
+      {list}
     </div>
   );
 }
