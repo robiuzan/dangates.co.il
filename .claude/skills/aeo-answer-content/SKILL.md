@@ -23,9 +23,11 @@ curl -sS https://dangates.co.il/robots.txt  # what actually serves — never rea
 As of 2026-11-09 (Sprint 7, `89439b7`): every page type but the 11 posts opens with a 40–60-word
 answer — `/` and `/מחירון/` since Sprint 4, the 7 services since Sprint 5, the locations (14 since `7ed1acd`), the
 indexes and `/אודות/` since Sprint 6, and `/blog/` (46 words), `/צור-קשר/` (55), the `/מדריכים/` hub
-(58) and the four guides (56–58) since Sprint 7; the proxy warns on post 11/11 only (1 word — the
-date; the rewrite is ⏳ owner-actions 3.8). `edge.mjs` → `llmsTxt true`; `faqPages 26` (30 until `7ed1acd` retired four location pages); `updated` on
-8 of 11 posts. (On 2026-08-23 it was 0 of 36, `llmsTxt false`, FAQPage on 1 page.) The `robots.txt`
+(58) and the four guides (56–58) since Sprint 7. The proxy warned on post 11/11 (1 word — the
+date) until `9886dd1` moved the date out of the first `<p>`; it is silent since, but the posts still
+open with generic 45–60-word scene-setting, not an answer (the rewrite is ⏳ owner-actions 3.8 —
+do not read the silent proxy as closure). `edge.mjs` → `llmsTxt true`; `faqPages 26` (30 until `7ed1acd` retired four location pages); `updated` on
+11 of 11 posts since `8768ce2`, both dates on the page since `9886dd1`. (On 2026-08-23 it was 0 of 36, `llmsTxt false`, FAQPage on 1 page.) The `robots.txt`
 note in `edge.mjs` is informational — it tells you to run the probe below.
 
 ## Gate 1 — reachability. Check this first.

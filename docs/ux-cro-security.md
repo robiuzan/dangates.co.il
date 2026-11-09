@@ -170,7 +170,8 @@ focus return since `60ce109` (§11.4 ✅), and each header disclosure the same, 
   declares; since Sprint 6 (`7c3f2db`) each location page links its neighbours from `lib/nearby.ts`
   (one list of pairs read both ways) and the services that fit it (§9.3 ✅). Related items
   by relevance, not `.slice(0, 4)` (§9.4): the service pages use declared `relatedServices` and
-  `relatedPosts` since Sprint 5; the post route still slices (Sprint 7.3). Every sibling receives at least one
+  `relatedPosts` since Sprint 5, and the post route ranks by shared rare stems through
+  `relatedPosts()` (`lib/related-posts.ts`) since `9886dd1` (`relatedPostTargets 11`). Every sibling receives at least one
   inbound related link; cards carry `data-related="service|location|guide|post"` for `related_click`.
 - `PageHeader` renders the trail **and** emits `BreadcrumbList` from the same `crumbs` array, mapping
   `{label, href}` to the kit's `{name, path}` through `schemaPath()`. Never add a second

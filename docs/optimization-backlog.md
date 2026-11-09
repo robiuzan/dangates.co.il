@@ -24,8 +24,10 @@ again 2026-11-09 after Sprint 7 (`89439b7`, the guides hub, four guides and `llm
 again 2026-11-09 after the owner answered 3.6 (the roster sync `8e8843d`, then `7ed1acd` retiring
 the four unserved location pages): still **1**, the same post floor — and again 2026-11-09 after
 the Sprint 6 header (`fd72698`) and the Sprint 8 TOC, engagement events and RSC-payload rules
-(`98e38f0` `2b0d802`): still **1**, the same post floor (`npm run audit -- --scope full` on the
-current `out/`, every other check 0).
+(`98e38f0` `2b0d802`): still **1**, the same post floor — and again 2026-11-09 after the
+[2026-11-09 full audit](audits/2026-11-09-full.md)'s pre-deploy polish (`8768ce2` `9886dd1`):
+still **1**, the same post floor (`npm run audit -- --scope full` on the current `out/`, every
+other check 0, and the `links` related-post warning and the `cta-coverage` naming warning gone).
 
 **Severity:** P0 = shipping something wrong or harmful · P1 = material ranking/conversion loss ·
 P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half a day · L = multi-day.
@@ -80,10 +82,16 @@ guides hub, first four guides and `llms.txt` (`89439b7`) have shipped in the rep
 3.6 answer closed the five 🔶 location entries on 2026-11-09 (`8e8843d` `7ed1acd`: four retired
 with 301s, שרון kept). The header's one-hop reach (§9.1, Sprint 6.5) shipped in `fd72698`, the TOC
 and the six engagement events (N20, Sprint 8.1) in `98e38f0`, and the RSC-payload rules (§1.3,
-Sprint 8.5) in `2b0d802`, all 2026-11-09. Not owner-blocked and still open: the reviewer sign-offs on
-record, and the deploy (with the guide dates set to the deploy day first — `deploy-dangates`). The post rewrite
-(§3.8, §3.10, §9.5, the post half of §6.2, §6.4 and §9.4) waits on owner-actions 3.8 — see
-"Suggested order of work" below.
+Sprint 8.5) in `2b0d802`, all 2026-11-09. The [2026-11-09 full audit](audits/2026-11-09-full.md)'s
+agent-fixable rows shipped the same day as the pre-deploy polish: `8768ce2` (the last unsourced
+policy, durability, price-list, mains-work and client-base lines; four new lexicon ids — §7.2,
+§7.3, §7.4) and `9886dd1` (honest far-neighbour headings, «אזור השרון», both dates on every post,
+related posts by relevance, the article `data-cta` names, `frame-ancestors` and an edge check on
+`_headers` — §9.3, §5.2, §6.4, §9.4, N21, §12.1). Not owner-blocked and still open: the deploy
+(with the guide dates set to the deploy day first — `deploy-dangates`), and the next content step,
+guide #5 «שער חשמלי לא נסגר עד הסוף» (audit H3, §6.3 — not started). The post rewrite (§3.8,
+§3.10, §9.5 and the post half of §6.2) waits on owner-actions 3.8 — see "Suggested order of work"
+below.
 
 ---
 
@@ -189,6 +197,16 @@ node scripts/audit/edge.mjs   # ✅ rscPayloadsDisallowed true · redirectRules 
 node scripts/audit/perf.mjs   # ✅ rscPayloads 47 · rscBytes 3511790 — the files stay; the "47 RSC payload files" warning still prints
 grep -c 'Disallow: /\*/index.txt' out/robots.txt   # 2 — the * group and the 11-bot AI-crawler group, each beside Allow: /
 ls out/index.txt                                     # present — soft navigation still has its payload
+```
+
+**Re-measured 2026-11-09 after `9886dd1`**, which stopped serialising the header's link lists twice
+into every payload (`components/layout/nav-context.ts`) and re-worded the `perf.mjs` warning from
+"crawlable duplicate copy" to the byte cost it now is:
+
+```bash
+node scripts/audit/perf.mjs   # ✅ rscPayloads 47 · rscBytes 3425964 (3511877 before) · outBytes 11509453
+# warning: "47 RSC payload files (index.txt) ship — 3.43 MB of the out/ byte budget (29.8%)"
+node scripts/audit/edge.mjs   # ✅ rscPayloadsDisallowed true · headerProblems 0
 ```
 
 The `perf.mjs` warning is a file count, not a crawl finding, and stays by design. Not live until the
@@ -387,8 +405,10 @@ node scripts/audit/content-depth.mjs
 ```
 
 ירושלים was asked by name in 3.6 and not answered by name, so its answer block and meta keep the
-bound (check by phone whether and when a visit is possible); business-facts §E is the owner's to
-fill. local-seo-strategist sign-off on the 14 is not on record (not owner-blocked).
+bound (check by phone whether and when a visit is possible) until the owner answers
+owner-actions 3.11 (added 2026-11-09); business-facts §E carries the blank 🔶 row "Is ירושלים
+served?" for the owner to fill. The local-seo-strategist sign-off on the 14 is on record in
+[docs/audits/2026-11-09-full.md](audits/2026-11-09-full.md) (§5.3), given on public knowledge only.
 
 ### 3.2 — P1 · L · [✅ DONE 2026-11-09] All 7 service pages carried 13–23 words their siblings lacked
 
@@ -500,8 +520,9 @@ domain. Deleted 2026-08-17; `spam-grep.mjs` → `relatedTails: 0`. The route ren
 
 Migration stripped every `<a>`. The posts say "היכנסו למחירון", "בקרו בעמוד צור קשר", "📌 למידע נוסף" as
 plain text — anchor text written, target obvious, link missing. `spam-grep.mjs` also counts the
-structural emoji those phrases hang off: 39 as of 2026-11-09 (re-run after 4F) (💡 ×31, 📌 ×4, 📞 ×3, 💬 ×1; 42
-before Sprint 4 rewrote three post sentences).
+structural emoji those phrases hang off: 28 as of 2026-11-09 after `8768ce2` (💡 ×22, 📞 ×3, 📌 ×2,
+💬 ×1 — 39 after 4F, 42 before Sprint 4 rewrote three post sentences). `8768ce2` also rewrote the
+six "full price list" pointers among the phrases (audit M2), since `/מחירון/` publishes one number.
 
 This is the cheapest internal-linking win on the site (§9.5) but needs the typed block model
 ([ADR 0003](decisions/0003-block-content-model.md), `new-article` skill). The block model itself
@@ -540,7 +561,8 @@ grep -c 'מקרי מבחן\|ניתוח נתונים\|הנתונים מראים' 
 ```
 
 The rest of the blog's structural debt is not this row: the ~42 dead link phrases (§3.8), the flat
-all-`<h2>` outline (§3.10) and the 39 emoji go with the block-model migration, Sprint 7.3. Commit
+all-`<h2>` outline (§3.10) and the 28 emoji (39 until `8768ce2`, `spam-grep.mjs`) go with the
+block-model migration, Sprint 7.3. Commit
 `9195c9b` (4F) rewrote this post's "שירות מהיר ואמין" CTA sentence and gave it `updated:
 "2026-11-09"` (§6.4).
 
@@ -859,6 +881,19 @@ left: `kind` is `"city"` ×13 and `"region"` ×1 (שרון, `באזור השרו
 nodes carry `AdministrativeArea` on שרון only. `grep` of every html/txt/xml in `out/` for `בשרון` →
 0 files.
 
+**The bare display name closed 2026-11-09** by commit `9886dd1` (audit L7). The one region's
+`name` is «אזור השרון» (the slug and URL stay `שרון`), so the header and footer labels, the
+breadcrumb, the areas list and the JSON-LD `AdministrativeArea` no longer read the bare «שרון»,
+which is also a personal name. Verified on the current `out/`:
+
+```bash
+# scratch read of every out/**/index.html: "@type":"AdministrativeArea","name":"אזור השרון" — 40 occurrences on 39 pages
+#   "name":"שרון" — 0 pages
+grep -rl '>שרון<' out --include=index.html | wc -l   # 0 (was the chrome label on every page)
+grep -o '>אזור השרון<' out/index.html | wc -l         # 4 — the full name in the homepage's chrome and areas list
+node scripts/audit/schema.mjs                         # ✅ 0 failures · danglingIds 0 · rawHebrewUrls 0
+```
+
 ### 5.3 — P1 · L · [✅ DONE 2026-11-09 · 14 of 14 · sign-off on record 2026-11-09] Doorway risk on all 18 location pages
 
 See §3.1. **No 15th location until the existing 14 pass by hand.** 7 × 14 = 98 cells; do not build
@@ -874,8 +909,8 @@ node scripts/audit/content-depth.mjs   # location 14 pages · belowFloor 0 · me
 # every page 292 (אשקלון) to 439 (ירושלים) tokens ahead of its nearest sibling; no location row in the failures
 ```
 
-The human half of the test — local-seo-strategist sign-off — is not on record (not owner-blocked),
-so the expansion cap stands.
+The human half of the test — local-seo-strategist sign-off — was not on record at `7ed1acd`; it is
+now (below). The expansion cap still stands: CLAUDE.md §12 and the first-hand layer (§7.5).
 
 Verified 2026-11-09 by `npm run audit -- --scope full` → content-depth `locationMedianDelta 343`,
 location 14 pages · `belowFloor 0`, no location row in the failures; the local-seo-strategist
@@ -955,7 +990,7 @@ was gone but the edge answered **403** to every AI-crawler signature (N18). The 
 owner's and can revert without a repo change — **re-probe before every AEO claim; a `robots.txt`
 read proves nothing.** §6.2–§6.5 are no longer capped by this item.
 
-### 6.2 — P1 · M · [PARTIAL 2026-11-09 · every page but the 11 posts done · posts ⏳ BLOCKED · owner 3.8] No page opens with an extractable answer block
+### 6.2 — P1 · M · [PARTIAL 2026-11-09 · every page but the 11 posts done · `/מחירון/` sections 2026-11-09 · posts ⏳ BLOCKED · owner 3.8] No page opens with an extractable answer block
 
 `content-depth.mjs` (as of 2026-08-23): 0 of 36 service, location and post pages open with a
 40–60-word paragraph — services open with 3–4 words, locations with 16–17, posts with 1. Spec:
@@ -1011,8 +1046,23 @@ post 11/11 only.
 
 The two legal pages and `/תודה/` are out of scope (no question to answer; the proxy skips them).
 
-**Still open:** the proxy warns on post 11/11 (1 word — the date), as of 2026-11-09. The posts'
-answer blocks come with the post rewrite (Sprint 7.3 / 7.6), ⏳ BLOCKED · owner 3.8.
+**`/מחירון/`'s question sections annotated 2026-11-09** after commit `8768ce2` (audit L4): every
+section under a question H2 now opens by answering it in "what determines the price" terms — the
+motor section says the price is set at the diagnosis and names the one published band — and no
+invented ₪ figure was added. Measured on the current `out/` (scratch read, whitespace word count of
+the first `<p>` under each H2): 46 (the answer block, also 46 by the audit's `tokens()`), 49, 40,
+48, 36, 36, 29, 33, 35, and 12 for the closing teaser — 7–28 on 9 of 10 before. `150–350` shows
+twice on the page; `content-depth.mjs` → pricing 1126 unique / 400.
+
+**The post proxy stopped warning 2026-11-09, without an answer block.** Commit `9886dd1` moved the
+post dates out of the `PageHeader` subtitle into `ArticleMeta` (`<span>`/`<time>`, not a `<p>`), so
+the first `<p>` after the H1 is now each post's own opening paragraph — 45–60 words on all 11
+(scratch read), inside the proxy's band. `content-depth.mjs` therefore prints no answer-block warning
+at all. Those openings are still the generic scene-setting content-standards §5 quotes as "Bad"
+(audit H1), so the posts' half stays open.
+
+**Still open:** real answer blocks on the 11 posts, as of 2026-11-09 — they come with the post
+rewrite (Sprint 7.3 / 7.6), ⏳ BLOCKED · owner 3.8. Do not read the silent proxy as closure.
 
 ### 6.3 — P1 · L · [✅ DONE 2026-11-09 · repo · the hub and guides #1–#4; #5–#16 planned] Nothing on the site is worth citing over a competitor
 
@@ -1050,9 +1100,18 @@ node scripts/audit/schema.mjs          # 0 failures, 0 warnings · faqPages 30 �
 **Not this row:** guides #5–#16 stay planned in content-calendar §2–§3 at the two-a-month cadence;
 none is live until the deploy, which first sets each guide's `datePublished` / `dateModified` to the
 deploy day (`deploy-dangates`); the article-auditor sign-off per guide is not on record in the repo
-(the commit message records the review pass's fixes).
+(the commit message records the review pass's fixes). `8768ce2` (2026-11-09) narrowed the
+committee guide's bylaw sentence to what the text says: no section sets a majority for the
+assembly's own decision to install a barrier, and §59ג is named only as the separate
+accessibility route (`grep -rl 'אף סעיף לא קובע רוב להחלטה על מחסום או על שער חניה' out
+--include=index.html | wc -l` → 0).
 
-### 6.4 — P2 · S · [PARTIAL 2026-11-09 · 8 of 11 posts] No freshness signal on the blog
+**Next content step — not started:** guide #5 «שער חשמלי לא נסגר עד הסוף — מה לבדוק, לפי הסדר»
+(content-calendar §2 row 5, audit H3). The tier-3 head symptom «שער חשמלי לא נסגר» has 0 question
+headings on any page; the guide needs no owner fact, and content-standards §5 already drafts its
+answer block. Route: `content-hub` → `new-guide symptom`.
+
+### 6.4 — P2 · S · [✅ DONE 2026-11-09 · 11 of 11 posts · both dates on the page] No freshness signal on the blog
 
 Until 2026-11-09 the `updated` field was wired into the sitemap and `BlogPosting.dateModified` but
 set on **0 of 11 posts**, so both pinned to the 2025 publish date — though Sprint 4 had edited
@@ -1069,11 +1128,26 @@ grep -o '"dateModified":"[^"]*"' out/blog/שער-חשמלי-חוסך-זמן/inde
 grep -o '"dateModified":"[^"]*"' out/blog/תקלות-נפוצות-בשערים-חשמליים/index.html   # 2025-09-30 (untouched)
 ```
 
-**Still open:** the page shows only the publish date (the post `PageHeader` subtitle formats
-`post.date`), and the three untouched posts get `updated` only with a real edit — Sprint 7.3,
-⏳ BLOCKED · owner 3.8 since 2026-11-09. Two posts still share a publish date. (The four guides
-carry their own `datePublished` / `dateModified` — to be set to the real deploy day before they
-first go live, `deploy-dangates`.)
+Until `9886dd1` the page showed only the publish date (the post `PageHeader` subtitle formatted
+`post.date`), and until `8768ce2` three posts carried no `updated`.
+
+**Closed 2026-11-09** by commits `8768ce2` and `9886dd1` (audit L3). `8768ce2` edited all 11 posts
+(the quote-before-work, durability and price-list lines, audit H2 / M1 / M2), so each carries an
+honest `updated: "2026-11-09"` — a real edit, never a bumped date. `9886dd1` renders the same two
+dates the `BlogPosting` node carries through the shared `ArticleMeta` (`components/article/chrome.tsx`,
+also used by the guides): «פורסם» with the publish date and «עודכן» with `updated`, each a `<time>`,
+the revised one only when it differs. Verified on the current `out/`:
+
+```bash
+grep -c '^    updated:' lib/posts.ts                                           # 11
+# every out/blog/<slug>/index.html: 2 <time> inside <main>, "dateModified":"2026-11-09" in the JSON-LD
+# out/blog/שער-חשמלי-לא-מגיב/: <time dateTime="2025-02-23"> after «פורסם», <time dateTime="2026-11-09"> after «עודכן»
+node scripts/audit/schema.mjs                                                  # ✅ 0 failures · 0 warnings
+```
+
+Two posts still share a publish date (2025-05-12), which is what the migrated record says. (The
+four guides carry their own `datePublished` / `dateModified` — to be set to the real deploy day
+before they first go live, `deploy-dangates`.)
 
 ### 6.5 — P2 · S · [✅ DONE 2026-11-09 · repo] No `llms.txt`
 
@@ -1177,6 +1251,28 @@ wc -l` → 0. The lexicon still
 has no pattern for team claims or for absolute promises outside `workmanship-absolute`'s four
 phrases — `claims-verifier` reads for them.
 
+**Second follow-up closed 2026-11-09** by commit `8768ce2` (the 2026-11-09 full audit, rows M1 and
+M4). The three durability promises are gone — `/אודות/` «…לתיקונים שמחזיקים לאורך זמן» (`aboutValues`)
+and the «תיקונים עמידים» lines on `/blog/שערים-חשמליים-השקעה/` and
+`/blog/החלפה-או-תיקון-שער-חשמלי/` now describe the method, not an outcome. content-standards §4
+stopped recommending gated phrases: its "Favour" list holds only method wording, and a new "Avoid —
+gated, not style" bullet names the speed, pricing-policy, parts, durability, price-list and
+mains-work phrases as §6 claims. The lexicon gained four ids — `quote-before-work`,
+`no-obligation`, `durability-promise` and `price-list-pointer`, each mapped to a §D row — so the
+class fails mechanically instead of coming back. Verified on the current `out/`:
+
+```bash
+node scripts/audit/claims-grep.mjs
+# ✅ pass · claimsChecked 18 (14 before) · failingClaims 0 · totalHits 1 (the gated rating row, 0 live)
+#    liveOccurrences: all 18 ids 0 — quote-before-work 0 · no-obligation 0 · durability-promise 0 · price-list-pointer 0
+#    commentHits 24 (explanatory comments recording the removals, skipped by design)
+# scratch read of out/**/index.html: «תיקונים עמידים» 0 pages · «שמחזיקים לאורך זמן» 0 (3 and 1 at a91e554)
+```
+
+Mutation-tested in the change (`8768ce2`, commit-time proof): the old `lib/content.ts` and
+`lib/posts.ts` lines hit each new id (quote-before-work 3, no-obligation 1, durability-promise 5),
+and seven neutral sentences — «שימון המסילה מאריך את חיי הגלגלים לאורך זמן» among them — hit none.
+
 ### 7.3 — P1 · M · [✅ DONE 2026-11-08 · resolved by the N14 pivot] Eight of nine published prices were authored estimates
 
 Until Sprint 4 they were published on `/מחירון/` as a price list a customer would quote back. Real
@@ -1184,6 +1280,24 @@ prices are **not coming** (business-facts §D), so the item was resolved by pivo
 drives the price ([keyword-map.md](keyword-map.md) §10) rather than by waiting — N14, commit
 `af8ba4c`. `priceRows` now holds only the technician-visit row, marked 🔶 (is the band current?).
 Verification is N14's.
+
+**Follow-up closed 2026-11-09** by commit `8768ce2` (the 2026-11-09 full audit, rows H2 and M2):
+the pivot's commercial-policy remainder. Four clauses stated a pricing policy no §D row confirms —
+quote-before-work on `/` (`differentiators`) and on two posts, and «ללא התחייבות» on the `/` hero
+form (`heroCopy.formSubtitle`); they now say what the technician explains (the fault and what needs
+fixing), the processSteps model. Six posts pointed to a "full price list" that has not existed since
+N14; they now say that the pricing page explains what determines the price. Both classes are lexicon ids since
+the same commit (§7.2). Verified on the current `out/`:
+
+```bash
+# scratch read of out/**/index.html — pages carrying each phrase (2 · 1 · 6 at a91e554):
+#   «מה העלות לפני שמתחילים» 0 · «ללא התחייבות» 0 · «נקבע באבחון» 0
+#   «המחירון המלא» / «המחירון שלנו» / «מחירוני התחזוקה» / «ב-מחירון שלנו» 0
+node scripts/audit/claims-grep.mjs   # quote-before-work 0 · no-obligation 0 · price-list-pointer 0 live
+```
+
+When a quote is given, whether it binds and whether the visit fee is credited stay 🔶
+(owner-actions 3.4); the copy states none of them.
 
 ### 7.4 — P2 · M · [✅ DONE 2026-11-08 · registry + AboutPage] No person entity anywhere
 
@@ -1210,8 +1324,24 @@ node scripts/audit/schema.mjs
 # '"Person"' in any exported page → 0
 ```
 
-`/אודות/` is still under its 500-word floor (`content-depth.mjs`, §3.13) — the schema is in, the
-copy is Sprint 6.8.
+`/אודות/` was still under its 500-word floor then (`content-depth.mjs`, §3.13); Sprint 6.8
+(`7c3f2db`) took it over — about 1214 unique / 500 as of 2026-11-09.
+
+**Follow-up closed 2026-11-09** by commit `8768ce2` (the 2026-11-09 full audit, rows M3 and L9,
+which it filed under this row's entity and authority scope). The homepage FAQ installation answer
+(also in the `/` `FAQPage`) and `/מחירון/` no longer imply the business runs the mains cable itself:
+both draw the boundary the service pages already drew — a new supply line to the gate is an
+electrician's work, not a gate technician's, and is coordinated before the install — with no
+licence claim (licence ❌, business-facts §C). `/אודות/` says who the service is for instead of a
+client base wider than the documented audience («מפעלים וארגונים מוסדיים» is gone). Verified on the
+current `out/`:
+
+```bash
+# scratch read of out/**/index.html: «העברת כבל חשמל» 0 pages (1 at a91e554) · «מפעלים וארגונים» 0 (1)
+# out/index.html: the FAQPage acceptedAnswer for «כמה זמן לוקחת התקנה?» and its visible text both end
+#   «…הנחת קו חשמל חדש אליו היא עבודה של חשמלאי, לא של טכנאי שערים, וכדאי לתאם אותה לפני ההתקנה.»
+node scripts/audit/claims-grep.mjs   # licence 0 · certification 0 live
+```
 
 ### 7.5 — P1 · L · [NOT STARTED] The site has no photographs at all
 
@@ -1472,7 +1602,23 @@ node scripts/audit/links.mjs   # ✅ orphans 0 · notInChrome 0 · brokenLinks 0
 
 The header half of §9 is §9.1, closed in the same change set.
 
-### 9.4 — P2 · S · [PARTIAL 2026-11-09 · service half done] Related items are selected by array order
+**Far-pair headings closed 2026-11-09** by commit `9886dd1` (audit L6). A pair over about 30 km in
+a straight line stays only where a page would otherwise fall under the 2–4 neighbours
+content-standards §3 block 5 asks for — today חיפה–נתניה and ירושלים–רחובות — and the page on
+**each** side now carries a `CityContent.nearbyHeading` that does not call the far place close
+(`lib/nearby.ts` documents the rule). אשקלון–יבנה is under that distance and keeps the shared
+heading. Verified on the current `out/` (scratch read of each page's `<main>` H2s):
+
+```bash
+# חיפה      «איזה עמוד באתר הוא הקרוב ביותר לחיפה?»
+# נתניה     «אילו ערים ואזורים קרובים לנתניה, ואיזו עיר ברשימה רחוקה יותר?»
+# ירושלים   «אילו ערים קרובות לירושלים, ואיזו עיר ברשימה רחוקה יותר?»
+# רחובות    «אילו ערים קרובות לרחובות, ואיזו עיר ברשימה רחוקה יותר?»
+# אשקלון · יבנה  «אילו ערים ואזורים קרובים?» (the shared heading)
+node scripts/audit/links.mjs   # ✅ orphans 0 · brokenLinks 0 · notInChrome 0 · headingSkips 0
+```
+
+### 9.4 — P2 · S · [✅ DONE 2026-11-09 · service half `225ff45` · post half `9886dd1`] Related items are selected by array order
 
 Until Sprint 5 the `others` lists in `app/services/[service]/page.tsx` and `app/blog/[slug]/page.tsx`
 both took `.slice(0, 4)`, and `links.mjs` warned that 2 of 7 service pages and 6 of 11 posts
@@ -1489,12 +1635,22 @@ node scripts/audit/links.mjs   # relatedServiceTargets 7 — every service page 
 # related posts from the 7 service pages, measured on <main>: 9 of the 11 posts reached
 ```
 
-**Still open:** the post route's `others` list is still `posts.filter(…).slice(0, 4)`; `links.mjs`
-still warns "post pages: the first 4 related links on every page come from the same 5 array-leading
-siblings; 6 of 11 post pages receive no related link" (`relatedPostTargets 5`, re-measured
-2026-11-09 at `2b0d802`; `98e38f0` tagged the related cards with `data-related` for
-`related_click` but did not change the selection). Not owner-blocked in itself, but it is carried in Sprint 7.3, which
-rewrites the post route and is ⏳ BLOCKED · owner 3.8; it can be split out if the wait runs long.
+Until `9886dd1` the post route's `others` list was `posts.filter(…).slice(0, 4)`, and `links.mjs`
+warned "post pages: the first 4 related links on every page come from the same 5 array-leading
+siblings; 6 of 11 post pages receive no related link" (`relatedPostTargets 5` at `2b0d802`;
+`98e38f0` had tagged the cards with `data-related` for `related_click` without changing the
+selection). It was carried in Sprint 7.3, but it was never owner-blocked, so it was split out.
+
+**The post half closed 2026-11-09** by commit `9886dd1` (audit M7): `relatedPosts(slug)` in
+`lib/related-posts.ts` ranks the other posts by the rare word stems they share (title, excerpt and
+headings, weighted), deterministically, then repairs the set so every post is reached from at least
+one other; a module-load check throws on a self-link, a duplicate, a wrong count or an unreached
+post, so `next build` fails first. Verified on the current `out/`:
+
+```bash
+node scripts/audit/links.mjs   # ✅ relatedPostTargets 11 (5 before) · relatedServiceTargets 7 · orphans 0
+                               #    no post-page monotony warning — links prints no warning at all
+```
 
 ### 9.5 — P1 · M · [⏳ BLOCKED · owner 3.8] The blog contains zero links
 
@@ -1577,9 +1733,25 @@ grep -n framer package.json               # (no matches)
 
 ### 10.4 — [✅ HOLDS] Build hygiene is clean — keep it
 
-`perf.mjs`: `out/` ≈ 5.4 MB in 170 files, largest chunk 173 kB, 0 source maps, 0 dev-build files.
-This fleet has previously shipped ~14 MB of dev-only chunks from a polluted `.next/`. Always build
-from a clean `.next/`.
+`perf.mjs` (2026-08-23): `out/` ≈ 5.4 MB in 170 files, largest chunk 173 kB, 0 source maps, 0
+dev-build files. This fleet has previously shipped ~14 MB of dev-only chunks from a polluted
+`.next/`. Always build from a clean `.next/`.
+
+**Re-measured 2026-11-09 after `9886dd1`** (audit L1, the headroom watch). The export grew with
+the content sprints to 11,689,499 B — 97.4% of `thresholds.json` → `perf.maxOutBytes` (12,000,000)
+— and the RSC payloads were most of the growth. `9886dd1` passes the header's link lists through
+one context (`components/layout/nav-context.ts`) instead of serialising them twice into every
+page's payload (`out/index.txt`: 14 service label/href pairs → 7, the commit's own proof). Still a
+watch, not a failure:
+
+```bash
+node scripts/audit/perf.mjs   # ✅ outBytes 11509453 (95.9% of 12000000 — ≈490 KB headroom) · outFiles 143
+                              #    rscPayloads 47 · rscBytes 3425964 · jsFiles 33 · jsTotalBytes 783384
+                              #    largestJsBytes 172834 · sourceMaps 0 · devBuildFiles 0 (edge.mjs)
+```
+
+The next change that adds bytes to every page (chrome, live-kit lines) is the one to price first;
+raising `maxOutBytes` is a deliberate threshold decision, never a side effect.
 
 ### 10.5 — n/a · There is no image work to do
 
@@ -1691,6 +1863,22 @@ the whole set — HSTS `max-age=31536000`, the report-only CSP, `X-Frame-Options
 On the apex the zone rule still wins where both speak (HSTS reads `15552000`, the narrower
 `Permissions-Policy`). **Zone rule disabled 2026-11-08** (the Transform Rule `ishub baseline security headers`; the HSTS setting in SSL/TLS was never enabled, so it was not the HSTS source) and the apex then matched the repo (HSTS `31536000`, wider `Permissions-Policy`, report-only CSP). **Still open (owner):** delete the zone rule once satisfied, then the apex
 shows the repo's values ([owner-actions.md](owner-actions.md) §1.3).
+
+**Guarded in the repo 2026-11-09** by commit `9886dd1` (audit L13). Until then nothing in CI
+noticed if `_headers` lost a header, and the CSP had no `frame-ancestors`. The report-only CSP now
+carries `frame-ancestors 'self'`, mirroring `X-Frame-Options: SAMEORIGIN` (the header still does
+the blocking; the directive takes over when the CSP is enforced, §12.2). `edge.mjs` parses
+`public/_headers` and the built `out/_headers` and **fails** unless the `/*` rule sends HSTS,
+`X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy` and a CSP with
+`frame-ancestors` — a header named only in a comment does not count. Verified on the current
+`out/`:
+
+```bash
+node scripts/audit/edge.mjs   # ✅ headerProblems 0 · headersFile true · redirectRules 80 · rscPayloadsDisallowed true
+# commit-time mutation tests (9886dd1): drop HSTS, drop frame-ancestors, HSTS only in a comment → each exits 1
+```
+
+Not live until the next deploy; the zone-rule deletion stays the owner's (§1.3).
 
 ### 12.2 — P2 · M · [PARTIAL 2026-09-06] Report-only CSP ships; enforcing waits on observation
 
@@ -2169,18 +2357,28 @@ The bar is judged per page, so the TOC set moves when copy does (the other 9 cit
 property to receive them wait on **B2** (owner-actions 2.4) — Sprint 8.2. Not live until the next
 deploy.
 
-### N21 — P3 · S · [NOT STARTED] Six article `data-cta` values are off the `{placement}-{action}` convention
+### N21 — P3 · S · [✅ DONE 2026-11-09] Six article `data-cta` values are off the `{placement}-{action}` convention
 
 Filed 2026-11-09 by [docs/audits/2026-11-09-full.md](audits/2026-11-09-full.md) (row L11,
 cro-engagement-auditor). `cta-coverage.mjs` warns "6 data-cta value(s) off the {location}-{action}
 convention": `article-quote-whatsapp`, `article-quote-call`, `article-inline-whatsapp`,
-`article-inline-call` (`components/article/blocks.tsx:165`, `:174`) and `article-aside-call`,
-`article-aside-whatsapp` (`components/article/GuideView.tsx:174`, `:183`). All six are tagged and
-counted (`missingDataCta 0`), so this is naming only — but a GTM trigger written to the convention
-misses them. Rename per placement and update [event-taxonomy.md](event-taxonomy.md) in the same
-change. Proof: `node scripts/audit/cta-coverage.mjs` → no off-convention warning.
+`article-inline-call` (the guide `cta` block in `components/article/blocks.tsx`) and
+`article-aside-call`, `article-aside-whatsapp` (the sticky aside card in
+`components/article/GuideView.tsx`). All six were tagged and counted (`missingDataCta 0`), so this
+was naming only — but a GTM trigger written to the convention would miss them.
 
-### N22 — P2 · S · [NOT STARTED] The trust ledger still describes the August state
+**Closed 2026-11-09** by commit `9886dd1`: the placement is one word, so each value is exactly two
+segments like `header-call` — `articleinline-call`, `articleinline-whatsapp`, `articlequote-call`,
+`articlequote-whatsapp`, `articleaside-call`, `articleaside-whatsapp` — and
+[event-taxonomy.md](event-taxonomy.md) records the rename in the same change (a trigger on "starts
+with `article`" still catches all six and `article-contact`). Verified on the current `out/`:
+
+```bash
+node scripts/audit/cta-coverage.mjs   # ✅ ctaElements 144 · withDataCta 144 · missingDataCta 0 · distinctValues 34
+                                      #    no off-convention warning (6 values before)
+```
+
+### N22 — P2 · S · [✅ DONE 2026-11-09 · prose, citations and question rows] The trust ledger still describes the August state
 
 Filed 2026-11-09 by [docs/audits/2026-11-09-full.md](audits/2026-11-09-full.md) (row L10,
 eeat-trust-auditor and local-seo-strategist). [business-facts.md](business-facts.md) prose and
@@ -2196,6 +2394,25 @@ retired — while ירושלים, the one place still bounded, has no row (§5.4
 `around-the-clock 0`; `grep -c ירושלים docs/business-facts.md` → 0. Fix the prose and citations
 and add the 🔶 ירושלים §E row; the Value and Status columns stay the owner's. Proof:
 `npm run audit:env` (citations resolve) and a re-read against the §2 numbers of the latest report.
+
+**Closed 2026-11-09** by the docs pass after `9886dd1` (the pre-deploy polish, implementation-sprints
+§10a). In business-facts: the line-number citations are identifiers now (the comment above
+`priceRows`; the post `שער-חשמלי-לא-מגיב`); §B, §C, §D, §E, §F, §G and the §I blog bullet describe
+what the site says today, with the old state in one clause each (the experience line, the licence
+words, the authored price list, the ⛔ price-range row explained without touching its Status,
+«פריסה ארצית» and 24/7, 47 pages, 28 emoji, 0 curly quotes); §E gains the blank-Value 🔶 row
+"Is ירושלים served?" and one line saying the owner answered 3.6 in chat on 2026-11-09 and the Value
+cells await the owner's own entry; §B points at owner-actions 3.12. No Value or Status cell changed.
+Verified:
+
+```bash
+git diff -- docs/business-facts.md   # every changed table row keeps its Value and Status cells byte-identical;
+                                     # the one added row has an empty Value and Status 🔶
+grep -c ירושלים docs/business-facts.md   # 3 lines (0 before)
+node scripts/audit/spam-grep.mjs     # emojiCount 28 · curlyQuotes 0 — the numbers §G now quotes
+node scripts/audit/a11y.mjs          # pages 47 · imgCount 0 — the numbers §F now quotes
+npm run audit:env                    # 0 failures — every citation resolves
+```
 
 ---
 
@@ -2253,14 +2470,14 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    in `9195c9b` (4F), with the roster `shortPitch` cleared in `ad2f1ab`; audit still 8, home 1549
    unique, `claims-grep` 0 over 14 claims. Partial by design: §3.13 (about and both indexes —
    closed in Sprint 6.8, `7c3f2db`), §6.2 (locations closed in Sprint 6, the rest but the posts in
-   Sprint 7; the posts with Sprint 7.3, ⏳ owner 3.8), §6.4 (8 of 11 posts dated; the rest with
-   Sprint 7.3). ~~The manifest `areaServed` phrase in the client bundle (B5)~~ — gone with the
+   Sprint 7; the posts with Sprint 7.3, ⏳ owner 3.8), §6.4 (8 of 11 posts dated then; all 11 and
+   both dates on the page since item 9a, `8768ce2` `9886dd1`). ~~The manifest `areaServed` phrase in the client bundle (B5)~~ — gone with the
    roster sync `8e8843d` (2026-11-09, owner-actions 3.6). Open: the deploy.
 7. ~~**Sprint 5 — service depth:** §3.2 · §6.2 and §4.13 for the 7 service pages · §9.4 service
    half · §2.4 re-derived inside the 120–160 window~~ — shipped in the repo 2026-11-09 (commit
    `225ff45`): service `belowFloor 0`, `serviceMedianDelta 438`, `faqPages 8`,
-   `relatedServiceTargets 7`, `titles.mjs` 0 warnings; audit 8 → 5. Partial: §9.4 (the post route
-   still `.slice(0, 4)` → Sprint 7.3) and §9.3 (service → city done; the location side closed in
+   `relatedServiceTargets 7`, `titles.mjs` 0 warnings; audit 8 → 5. Partial then: §9.4 (the post
+   route's `.slice(0, 4)` — closed in `9886dd1`, item 9a) and §9.3 (service → city done; the location side closed in
    Sprint 6.7, `7c3f2db`). Open: reviewer sign-off on record, and the deploy.
 8. **Sprint 6 — locations + navigation:** ~~§2.3 · §5.2 · §3.13 (indexes and about) · §9.2 · the
    rest of §9.3~~ — shipped in the repo 2026-11-09 (commit `7c3f2db`): location `belowFloor 0`,
@@ -2273,19 +2490,27 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    on 3.5). ~~§9.1 header reach to the 7 services and 14 locations (row 6.5)~~ — shipped in the
    repo 2026-11-09 (commit `fd72698`): 21 service and location hrefs in the homepage `<header>`,
    `notInChrome 0`, `orphans 0`, `clientComponents` 4 with `DesktopNav`; §9.2 and §9.3 re-verified
-   (14 of 14 footer locations, 0 asymmetric mesh edges); audit still 1. **Next:** local-seo-strategist
-   and claims-verifier sign-off on record, the owner's GBP service area set to the same 14 places
-   (gbp-runbook §2, B3), then the deploy.
+   (14 of 14 footer locations, 0 asymmetric mesh edges); audit still 1. The local-seo-strategist
+   sign-off is on record in the 2026-11-09 full audit (§5.3 ✅). **Next:** the owner's GBP service
+   area set to the same 14 places (gbp-runbook §2, B3), whether ירושלים is served (owner-actions
+   3.11), then the deploy.
 9. **Phase 4 — guides hub + block model:** ~~§6.3 the hub and guides #1–#4 · §6.5 `llms.txt` ·
    §6.2 for `/blog/`, `/צור-קשר/`, the hub and the guides~~ — shipped in the repo 2026-11-09
    (Sprint 7, commit `89439b7`): guide `belowFloor 0` (median 2395.5 unique / 900), `faqPages 30`,
    `orphans 0`, `sitemapUrls 50`, `edge.mjs` → `llmsTxt true`; audit still 1 (the post floor) —
    after `7ed1acd`: `faqPages 26`, `sitemapUrls 46`, audit still 1.
-   **⏳ BLOCKED · owner 3.8:** §3.8 · §3.10 · §9.5 · §6.2 for the posts · the rest of §6.4 · the post
-   half of §9.4 (not owner-blocked in itself; it rides with the post route rewrite) and the
-   content-calendar §4 keep / fold / 301 moves (Sprint 7.3, 7.4). Open and not blocked: guides #5–#8
-   at the two-a-month cadence, the reviewer sign-offs on record, and the deploy — guide dates set to
-   the deploy day first.
+   **⏳ BLOCKED · owner 3.8:** §3.8 · §3.10 · §9.5 · §6.2 for the posts and the content-calendar §4
+   keep / fold / 301 moves (Sprint 7.3, 7.4) — §6.4 and the post half of §9.4 were never
+   owner-blocked and closed in item 9a. Open and not blocked: **guide #5 «שער חשמלי לא נסגר עד
+   הסוף» next** (audit H3, not started), then #6–#8 at the two-a-month cadence; the reviewer
+   sign-offs on record; and the deploy — guide dates set to the deploy day first.
+   9a. ~~**Pre-deploy polish — the 2026-11-09 full audit's agent-fixable rows:** §7.3 (H2, M2) · §7.2
+   (M1, M4) · §7.4 (M3, L9) · §6.2 `/מחירון/` (L4) · §6.4 (L3) · §9.3 (L6) · §9.4 post half (M7) ·
+   §5.2 (L7) · §10.4 (L1) · §12.1 (L13) · N21 (L11) · N22 (L10)~~ — shipped in the repo 2026-11-09
+   (commits `8768ce2` `9886dd1`, then this docs pass; implementation-sprints §10a):
+   `claimsChecked 18`, every id 0 live, `relatedPostTargets 11`, no `links` or `cta-coverage`
+   warning, `headerProblems 0`, `outBytes 11509453`; audit still 1 (the post floor). Owner rows
+   added: owner-actions 1.5 (training crawlers, B13), 3.11 (ירושלים, B11), 3.12 (ח״פ, B12).
 10. ~~**Phase 5 — engagement + CRO:** §8.1 · §8.3 · §8.4/N3 · §8.5 · N8 · §13.4–13.5 · §10.2 · N19~~
     — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 closed
     in `fba5957`, the form alert's buttons now `size="lg"`); `a11y.mjs`, `rtl-lint.mjs` and

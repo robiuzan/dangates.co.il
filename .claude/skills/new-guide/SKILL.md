@@ -159,7 +159,10 @@ unknown slug in any related array · a `moreAt` with no matching guide. Rebuild 
   case name), the insurance cover that "may" be lost; the deaths and injuries are news headlines SII
   quotes, never verified findings. Each needs the SII URL in `sources` and beside the sentence.
 - **Committee family — verified 2026-11-09** (same file, §C): **no section of חוק המקרקעין sets a
-  majority for a gate or a parking barrier — never state or imply one.** Quote the model bylaws
+  majority for the general assembly's own decision to install a gate or a parking barrier for the
+  building — never state or imply one.** §59ג is a separate accessibility route (an owner's
+  adjustment at their own cost; part ב׳ of the second schedule, which includes a yard-entrance gate,
+  needs "הסכמת רוב בעלי הדירות"): name it only as that route (narrowed 2026-11-09, `8768ce2`). Quote the model bylaws
   (§5(א), §12(א) "ברוב דעות", §13(ב)), say the building's registered bylaws may differ, state the §8(א)
   quorum only with its notice condition and §8(ב), never cut §12(ב) before "מסוג או שיעור שלא פורשו",
   and leave whether a cost binds an objecting owner to a lawyer or the מפקח על רישום מקרקעין. The

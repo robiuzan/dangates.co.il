@@ -210,8 +210,9 @@ Every service page, location page, post and guide carries, in this order:
 - **Answers in the DOM at first paint** — `<details>/<summary>`, not `display:none` (N8); never mark up an unrendered answer.
 - **Captioned tables**, definition blocks ("שער נגרר הוא…") and comparison blocks — the formats
   assistants lift; every guide family carries one required table (`new-guide`).
-- **`dateModified` from a real `updated` field** — real on 8 of 11 posts since `9195c9b`
-  (2026-11-09), still pinned to `datePublished` on the 3 untouched ones (backlog §6.4, PARTIAL). `מעודכן 2026` in a title only where `updated` is real.
+- **`dateModified` from a real `updated` field** — real on 11 of 11 posts since `8768ce2`
+  (2026-11-09; 8 since `9195c9b`), and shown on the page beside the publish date since `9886dd1`
+  (backlog §6.4 ✅). `מעודכן 2026` in a title only where `updated` is real.
 
 ### 4.4 Gate 4 — citability
 

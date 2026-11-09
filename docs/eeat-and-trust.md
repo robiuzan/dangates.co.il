@@ -190,8 +190,9 @@ and fails any `Person` author in `out/`. Omitting a signal is legitimate; invent
 
 `updated` on `services` and on each `locations` entry (the shared `locationsUpdated` went in Sprint 6, `7c3f2db`), the `staticPages` registry in `lib/site-config.ts` (backlog §1.4, done 2026-09-06) and a post's `updated` feed the
 sitemap `lastmod`. `BlogPosting.dateModified` follows `post.updated ?? post.date` since `02a3144`
-(schema-graph §6); since `9195c9b` (2026-11-09) 8 of 11 posts carry a real `updated` — the ones
-Sprint 4 edited — and the other three keep their publish date (backlog §6.4, PARTIAL). Dates move **only on a substantive copy edit** — never for
+(schema-graph §6); since `8768ce2` (2026-11-09) all 11 posts carry a real `updated` (8 since
+`9195c9b`; `8768ce2` edited the other three), and since `9886dd1` the page shows both dates
+(backlog §6.4 ✅). Dates move **only on a substantive copy edit** — never for
 styling, metadata or analytics work, never to fake freshness. Price bands and standards citations age
 fastest — schedule their re-read.
 

@@ -70,11 +70,11 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
    push carries PII; `related_click` reads `data-related` on the cards. GA4 is unprovisioned and no
    container tag consumes any of it (§13.7, owner, B2) — say so once, under owner-blocked, not per
    finding.
-8. **Related-link monotony (§9.4, PARTIAL).** Since Sprint 5 (`225ff45`) the service pages render
-   declared `relatedServices`, cities and posts (`relatedServiceTargets 7`, no service-page
-   warning). The post route's `others` list in `app/blog/[slug]/page.tsx` still takes
-   `.slice(0, 4)` in array order; `links.mjs` warns which post pages receive no related link at all
-   (Sprint 7.3). Location pages link their neighbours from `nearbyPairs` in `lib/nearby.ts` since
+8. **Related-link monotony (§9.4 ✅).** Since Sprint 5 (`225ff45`) the service pages render
+   declared `relatedServices`, cities and posts (`relatedServiceTargets 7`). The post route took
+   `.slice(0, 4)` in array order until `9886dd1` (2026-11-09); it now reads `relatedPosts()` in
+   `lib/related-posts.ts`, which ranks by shared rare stems and reaches every post
+   (`relatedPostTargets 11`, no `links.mjs` warning). A monotony warning coming back is a regression. Location pages link their neighbours from `nearbyPairs` in `lib/nearby.ts` since
    Sprint 6 (`7c3f2db`, §9.3 ✅ — `/internal-linking`).
 9. **Honest-trust gate.** Any CTA block, badge or microcopy that leans on "אחריות מלאה", "24/7",
    "ניסיון רב שנים" or a rating is a `claims-grep.mjs` hit, not a conversion asset — cross-reference

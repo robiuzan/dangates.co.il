@@ -18,11 +18,12 @@ node scripts/audit/perf.mjs            # or: npm run audit -- --scope perf   (--
 
 `perf.mjs` owns the numbers: `out/` weight, JS chunks, font preloads, RSC payloads, unused
 dependencies, `"use client"` inventory, `<img>` count. It refuses a stale `out/` via `run-all.mjs`
-— **rebuild before asserting** (backlog N12). As of 2026-11-09 (at `2b0d802`) `perf.mjs` **passes**
-(re-run, do not copy): `out/` 11.69 MB in 143 files against the 12 MB `maxOutBytes` (the live-kit
-surfaces added ≈1.15 MB in 2026-10; ≈0.3 MB headroom left) · JS 783 KB in 33 chunks, largest
+— **rebuild before asserting** (backlog N12). As of 2026-11-09 (at `9886dd1`) `perf.mjs` **passes**
+(re-run, do not copy): `out/` 11.51 MB (11509453 B) in 143 files against the 12 MB `maxOutBytes`
+(the live-kit surfaces added ≈1.15 MB in 2026-10; ≈0.49 MB headroom left — 11.69 MB at `2b0d802`,
+until the header menus stopped being serialised twice into every RSC payload) · JS 783 KB in 33 chunks, largest
 173 KB (within the §10.4 budget) · 6 `.woff2` with **2 font preloads** (§10.1 closed) ·
-`unusedDeps []` (§10.3 closed) · 47 `index.txt` RSC payloads, 3.51 MB — kept for soft navigation
+`unusedDeps []` (§10.3 closed) · 47 `index.txt` RSC payloads, 3.43 MB (3.51 MB at `2b0d802`) — kept for soft navigation
 and disallowed in `robots.txt` since `2b0d802` (§1.3 ✅) · **5 client components** (§10.2; 3 until
 2026-11-09) · 0 `<img>` (§10.5).
 

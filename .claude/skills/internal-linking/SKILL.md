@@ -25,13 +25,13 @@ The homepage updates strip is inside `<main>` and counts: it is content on one p
 
 ## Current state (as of 2026-11-09, at `2b0d802`, after the Sprint 6 header `fd72698` — re-run before quoting)
 
-| Finding                                                                                                                                                   | Anchor                                                                                           | Metric                                                                                                                                                 |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ✅ The header reaches all 7 services and 14 locations in one hop since `fd72698` — two disclosures from `headerMenus`, the same groups in the mobile menu | `lib/nav.ts` `headerMenus` / `headerLinks`; `components/layout/DesktopNav.tsx`, `MobileMenu.tsx` | 21 service and location hrefs in the homepage `<header>`; `chromeLinks: 31` (unchanged — the footer already carried them); backlog §9.1 ✅, Sprint 6.5 |
-| ✅ All locations in the chrome since `7c3f2db` — the footer renders `locations.map` (14 since `7ed1acd`)                                                  | `components/layout/Footer.tsx`                                                                   | `notInChrome: 0` (6 before: אשקלון, באר שבע, דרום, צפון, קריות, שרון), `orphans: 0` — backlog §9.2 ✅                                                  |
-| ✅ The service ↔ location mesh both ways: service → 5–6 cities (Sprint 5); location → 2–4 neighbours and 4–7 services (Sprint 6)                          | `ServiceDepth.locations`; `nearbyPairs` in `lib/nearby.ts`; `cityContent.services`               | backlog §9.3 ✅ — measured on `<main>`; 13 of 14 locations receive 2–4 neighbour links, חיפה 1 (`7ed1acd`); 0 asymmetric edges after `fd72698`         |
-| Related posts on the post pages by array order — the same 5 leading siblings absorb every related link                                                    | `app/blog/[slug]/page.tsx` `.slice(0, 4)`; the service route uses declared lists since `225ff45` | `relatedServiceTargets: 7` ✅ (2 of 7 never linked until Sprint 5), `relatedPostTargets: 5` (6 of 11 never linked)                                     |
-| Blog in-copy links: zero — 42 anchor-shaped phrases survived migration as dead text                                                                       | `lib/posts.ts` (the 42 emoji lines `spam-grep.mjs` counts)                                       | backlog §3.8, §9.5                                                                                                                                     |
+| Finding                                                                                                                                                              | Anchor                                                                                            | Metric                                                                                                                                                      |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✅ The header reaches all 7 services and 14 locations in one hop since `fd72698` — two disclosures from `headerMenus`, the same groups in the mobile menu            | `lib/nav.ts` `headerMenus` / `headerLinks`; `components/layout/DesktopNav.tsx`, `MobileMenu.tsx`  | 21 service and location hrefs in the homepage `<header>`; `chromeLinks: 31` (unchanged — the footer already carried them); backlog §9.1 ✅, Sprint 6.5      |
+| ✅ All locations in the chrome since `7c3f2db` — the footer renders `locations.map` (14 since `7ed1acd`)                                                             | `components/layout/Footer.tsx`                                                                    | `notInChrome: 0` (6 before: אשקלון, באר שבע, דרום, צפון, קריות, שרון), `orphans: 0` — backlog §9.2 ✅                                                       |
+| ✅ The service ↔ location mesh both ways: service → 5–6 cities (Sprint 5); location → 2–4 neighbours and 4–7 services (Sprint 6)                                     | `ServiceDepth.locations`; `nearbyPairs` in `lib/nearby.ts`; `cityContent.services`                | backlog §9.3 ✅ — measured on `<main>`; 13 of 14 locations receive 2–4 neighbour links, חיפה 1 (`7ed1acd`); 0 asymmetric edges after `fd72698`              |
+| ✅ Related posts on the post pages by relevance since `9886dd1` — `.slice(0, 4)` by array order until then, the same 5 leading siblings absorbing every related link | `relatedPosts()` in `lib/related-posts.ts`; the service route uses declared lists since `225ff45` | `relatedServiceTargets: 7` ✅ (2 of 7 never linked until Sprint 5), `relatedPostTargets: 11` ✅ (5 until `9886dd1`; 6 of 11 never linked) — backlog §9.4 ✅ |
+| Blog in-copy links: zero — ~42 anchor-shaped phrases survived migration as dead text                                                                                 | `lib/posts.ts` (the emoji lines `spam-grep.mjs` counts — 28 since `8768ce2`)                      | backlog §3.8, §9.5                                                                                                                                          |
 
 Posts and guides are reached only via indexes and related links (the `links.mjs` info line) — by
 design, not a gap. Breadcrumbs are **not** a finding any more: `PageHeader` emits `BreadcrumbList` on all 45 nested
@@ -100,9 +100,11 @@ The service half is done (Sprint 5, `225ff45`): the service route renders
 `lib/service-depth.ts` throws on a self-reference, a duplicate or an unknown post slug. A total
 `Record<ServiceSlug, …>` means a service with no entry fails typecheck instead of silently
 inheriting the first four. `relatedServiceTargets: 7`, and the service-page monotony warning is
-gone. **Left:** the post route's `.slice(0, 4)` — a `relatedServices` / `related` field on posts (the
-guides have theirs since Sprint 7; the posts' waits on Sprint 7.3, ⏳ BLOCKED · owner 3.8). Proof: `relatedPostTargets` = every surviving post, and the
-post-page monotony warning disappears.
+gone. The post half followed in `9886dd1` (2026-11-09) without waiting for the post rewrite:
+`relatedPosts(slug)` in `lib/related-posts.ts` ranks the other posts by the rare word stems they
+share, deterministically, repairs the set so every post is reached, and throws at module load on a
+self-link, a duplicate, a wrong count or an unreached post. Proof: `relatedPostTargets 11` (every
+post) and no post-page monotony warning (`links.mjs` prints none).
 
 ## 5. Contextual in-copy links
 
@@ -170,7 +172,7 @@ stubs were deleted for real 301s in 2026-09 (ADR 0004).
 - [ ] All 7 services and 14 locations reachable in one hop from the header, from the data arrays (✅ since `fd72698`).
 - [ ] Footer renders all 14 locations — no `slice` (✅ since `7c3f2db`).
 - [ ] Every service page links 4–6 locations (✅ since Sprint 5); every location page links 2–4 nearby, both ways (one link only where no other published place is near — חיפה).
-- [ ] Related services and posts come from declared adjacency, not `.slice(0, 4)` (✅ on service pages; posts left).
+- [ ] Related services and posts come from declared adjacency, not `.slice(0, 4)` (✅ on service pages since `225ff45`, on post pages since `9886dd1`).
 - [ ] The blog's plain-text link references are real links (after the block-model migration).
 - [ ] Guides declare `relatedServices`; the reverse index places them on service pages.
 - [ ] Breadcrumbs render and emit exactly one `BreadcrumbList` from the same array.

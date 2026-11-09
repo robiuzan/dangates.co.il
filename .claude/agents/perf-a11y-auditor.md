@@ -53,14 +53,14 @@ today's figures only as "as of" context and re-measure before asserting any of t
    `LeadForm` and `Reveal` are justified. A sixth needs a reason in the ledger (`rtl-lint.mjs`
    `KNOWN_CLIENT`) in the same change.
 4. **Dead weight.** `perf.mjs` → `unusedDeps` reads `[]` since `framer-motion` was uninstalled 2026-09-06 (§10.3 closed). Anything it lists again is the same finding — and an animation library would also bypass the global reduced-motion rule that `Reveal` honours.
-5. **RSC payloads (§1.3 ✅ since `2b0d802`).** 47 `index.txt` files, 3.51 MB (2026-11-09) beside every
+5. **RSC payloads (§1.3 ✅ since `2b0d802`).** 47 `index.txt` files, 3.43 MB (2026-11-09 at `9886dd1`; 3.51 MB before it serialised the header menus once) beside every
    `index.html` — kept, because soft navigation fetches them, and disallowed in both `robots.txt`
    groups (`edge.mjs` → `rscPayloadsDisallowed true`). The `perf.mjs` file-count warning stays by
    design; flag only a regression of the robots rule or a strip that breaks soft navigation. Not a
    JS-budget item.
-6. **Output hygiene.** `out/` is 11.69 MB in 143 files (2026-11-09; ~7.8 MB in 137 on 2026-11-08)
-   against the 12 MB `maxOutBytes`, with no dev-only chunks (`edge.mjs` → `devBuildFiles: 0`) — the
-   ≈0.3 MB headroom is the number to watch. This fleet once shipped ~14 MB of `main.js` / `fallback/*` from a polluted
+6. **Output hygiene.** `out/` is 11.51 MB in 143 files (2026-11-09 at `9886dd1`; 11.69 MB at
+   `2b0d802`, ~7.8 MB in 137 on 2026-11-08) against the 12 MB `maxOutBytes`, with no dev-only chunks
+   (`edge.mjs` → `devBuildFiles: 0`) — the ≈0.49 MB headroom is the number to watch. This fleet once shipped ~14 MB of `main.js` / `fallback/*` from a polluted
    `.next/`; if it returns, **report the root cause, not the size** — a blind purge breaks the 404 route.
 7. **CLS.** Sound — no media; the sticky bar's spacer is in `app/layout.tsx`. Confirm both hold.
 

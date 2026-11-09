@@ -123,8 +123,11 @@ posts still use `PostBlock = { type: "h" | "p" | "li"; text }` in `lib/posts.ts`
   "official since October 2006" date (refuted) or any first-declaration date; a single voltage
   ceiling; photocells, a flashing light, force limitation, safety edges or a manual release as a
   requirement of ת״י 900 or of the law (no primary list exists); a licence grade for a gate motor
-  (unverified); **any majority for a gate or a parking barrier** (no section of חוק המקרקעין sets
-  one); §8(א)'s quorum without its notice condition and §8(ב); §12(ב) cut before "מסוג או שיעור שלא
+  (unverified); **any majority for the general assembly's own decision to install a gate or a parking barrier for
+  the building** (no section of חוק המקרקעין or the model bylaws sets one — corrected 2026-11-09 from
+  the broader "any majority for a gate": §59ג's separate accessibility route, part ב׳ of the second
+  schedule, does need "הסכמת רוב בעלי הדירות" for a yard-entrance gate, and a guide may name it only
+  as that route); §8(א)'s quorum without its notice condition and §8(ב); §12(ב) cut before "מסוג או שיעור שלא
   פורשו". חוק החשמל, חוק התקנים and חוק המקרקעין cite the statute text (he.wikisource with the
   on-page "not the official publication" disclosure — owner-actions 3.10) or gov.il, never a
   competitor. **Brands** (BFT, Nice,

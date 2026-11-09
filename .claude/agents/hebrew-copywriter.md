@@ -83,7 +83,8 @@ CityContent`), typed and checked by `cityContent` in `lib/city-content.ts` (buil
 per-entry `updated` on `locations`; `cityContent`; `nearbyPairs`. **Built in Sprint 7 (`/new-guide` describes it):** the typed block model (`lib/guide-types.ts`,
 ADR 0003) and one `content/guides/<slug>.ts` per guide under `/מדריכים/`, registered in
 `lib/guides.ts` — external facts per `docs/research/2026-11-08-standards-and-law.md` (no October-2006
-date, no device list as law, no gate majority). The 11 posts stay on `PostBlock` until owner-actions
+date, no device list as law, no majority for the assembly's own barrier decision — §59ג only as the
+separate accessibility route). The 11 posts stay on `PostBlock` until owner-actions
 3.8. When a task targets a field that does not exist yet, write the copy in the skill's
 template shape and hand the wiring to `rtl-frontend-engineer` — do not invent a different shape.
 

@@ -32,13 +32,13 @@ service page that explains is a worse guide.
 
 ## Five pillars
 
-| Pillar        | `pillar`    | Family       | Owns (one topic per URL)                                                                                                                                           | Hands off to                                              |
-| ------------- | ----------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
-| תקלות         | `faults`    | `symptom`    | לא נסגר · לא נפתח · לא מגיב לשלט · נתקע · רועש/חורק · הפסקת חשמל ושחרור חירום — DIY diagnosis first, then the safety gate (keyword-map §11.3)                      | the gate-type service page the symptom lives on, one city |
-| רכיבים        | `parts`     | `component`  | מנוע · שלט + שכפול · עינית · לוח פיקוד · גלגלים/מסילה/פס שיניים · מפסק גבול · קבל הנעה · חיישן כביש · סוללת גיבוי — role, failure modes, replace-or-repair         | `/מחירון/` (what drives the price), the service           |
-| בחירה         | `choice`    | `comparison` | קונזולי/נגרר/כנף · לתקן או להחליף · מינוע שער קיים · brands (BFT, Nice, Somfy, Beninca — 🔶, see below)                                                            | the two or three services being compared                  |
-| בטיחות ותקנים | `safety`    | `safety`     | ת״י 900 חלק 21.03 — scope, official status, the building rule, what SII says and advises, the devices gates are usually built with (never as law), periodic checks | every service; `/אודות/` (`knowsAbout`, `eeat-build`)     |
-| ועד בית       | `committee` | `committee`  | shared car parks, barrier decisions under the model bylaws (no statute sets a gate majority), which costs are voted on, B2B procurement                            | שער-זרוע · שערים-לחניה · שערים-לדירה · `/צור-קשר/`        |
+| Pillar        | `pillar`    | Family       | Owns (one topic per URL)                                                                                                                                                                                           | Hands off to                                              |
+| ------------- | ----------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| תקלות         | `faults`    | `symptom`    | לא נסגר · לא נפתח · לא מגיב לשלט · נתקע · רועש/חורק · הפסקת חשמל ושחרור חירום — DIY diagnosis first, then the safety gate (keyword-map §11.3)                                                                      | the gate-type service page the symptom lives on, one city |
+| רכיבים        | `parts`     | `component`  | מנוע · שלט + שכפול · עינית · לוח פיקוד · גלגלים/מסילה/פס שיניים · מפסק גבול · קבל הנעה · חיישן כביש · סוללת גיבוי — role, failure modes, replace-or-repair                                                         | `/מחירון/` (what drives the price), the service           |
+| בחירה         | `choice`    | `comparison` | קונזולי/נגרר/כנף · לתקן או להחליף · מינוע שער קיים · brands (BFT, Nice, Somfy, Beninca — 🔶, see below)                                                                                                            | the two or three services being compared                  |
+| בטיחות ותקנים | `safety`    | `safety`     | ת״י 900 חלק 21.03 — scope, official status, the building rule, what SII says and advises, the devices gates are usually built with (never as law), periodic checks                                                 | every service; `/אודות/` (`knowsAbout`, `eeat-build`)     |
+| ועד בית       | `committee` | `committee`  | shared car parks, barrier decisions under the model bylaws (no statute sets a majority for the assembly's own barrier decision; §59ג is a separate accessibility route), which costs are voted on, B2B procurement | שער-זרוע · שערים-לחניה · שערים-לדירה · `/צור-קשר/`        |
 
 `brand` is a family of the בחירה pillar and is **🔶 blocked**: a brand page is honest only for a brand
 the business actually services (keyword-map §9 warning; business-facts §C "manufacturer training /
@@ -57,7 +57,9 @@ all); photocells, a flashing light, force limitation, safety edges or a manual r
 requirement of ת״י 900 or of the law (no primary list exists — describe them as common devices and
 how they work); which licence grade a gate motor needs (חוק החשמל §6(א) — electrical work is
 licensed — is verified, the grade is not). **The committee pillar:** no section of חוק המקרקעין sets
-a majority for a gate or a parking barrier — never state or imply one (research §C). `claims-verifier`
+a majority for the general assembly's own decision to install a gate or a parking barrier for the
+building — never state or imply one; §59ג's accessibility route (part ב׳ needs "הסכמת רוב בעלי
+הדירות") is separate and is named only as that (research §C, narrowed 2026-11-09). `claims-verifier`
 checks every external fact against the source, never a competitor; statute wording read on
 he.wikisource says so on the page (owner-actions 3.10).
 

@@ -93,10 +93,11 @@ profile does not show.
 
 ## B. Identity & history — blocks the experience claim
 
-`trustStats` leads with **"ניסיון רב שנים"** and `differentiators` repeats **"שנות ניסיון רבות"**, while
-the manifest carries `foundedYear: null`, so there is no `foundingDate` in the JSON-LD. The claim is
-vague rather than false — which is better than an invented number — but it is still unsourced, and no
-human being is named anywhere on the site.
+Until Sprint 4 (`1796ee7`, 2026-11-08) `trustStats` led with **"ניסיון רב שנים"** and
+`differentiators` repeated **"שנות ניסיון רבות"** — vague rather than false, but unsourced. Both are
+gone: the copy describes what a repair involves instead (`claims-grep.mjs` → `experience 0`,
+`founded 0` live, as of 2026-11-09). The manifest carries `foundedYear: null`, so there is no
+`foundingDate` in the JSON-LD, and no human being is named anywhere on the site.
 
 | Field                      | Why it's needed                                                                     | Lands in             | Value | Status |
 | -------------------------- | ----------------------------------------------------------------------------------- | -------------------- | ----- | ------ |
@@ -107,10 +108,18 @@ human being is named anywhere on the site.
 | Owner's years in the trade | The experience half of E-E-A-T                                                      | content.ts `team`    |       | 🔶     |
 | Technician count / names   | "צוות מקצועי" is claimed with nobody behind it                                      | content.ts `team`    |       | 🔶     |
 
+The ח.פ. / ע.מ. number and the legal entity name are asked for in
+[owner-actions.md](owner-actions.md) 3.12 (added 2026-11-09, audit M6); the `/אודות/` slot renders
+nothing until their rows here are ✅.
+
 ## C. Credentials — an electrical trade with no stated licence
 
-Gate motors are 230V equipment. `רישיון`, `תעודה`, `מוסמך`, `ביטוח` and `חשמלאי` appear **nowhere** in
-the repo. For this trade specifically, that absence is conspicuous to a careful customer.
+Gate motors are 230V equipment. No licence, certificate, qualification or insurance is claimed
+anywhere (`claims-grep.mjs` → `licence 0`, `certification 0`, `insurance 0` live, as of
+2026-11-09). The word `חשמלאי` appears only as a boundary — a new supply line to the gate is
+"עבודה של חשמלאי, לא של טכנאי שערים" on the service pages, and since `8768ce2` on the homepage FAQ
+and `/מחירון/` too — never as a credential of this business. For this trade specifically, the
+absence of a stated licence is conspicuous to a careful customer.
 
 | Field                                                          | Why it's needed                                                                     | Lands in                                    | Value | Status |
 | -------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------- | ----- | ------ |
@@ -122,14 +131,21 @@ the repo. For this trade specifically, that absence is conspicuous to a careful 
 
 ## D. Commercial terms — the price list is authored, not sourced
 
-`lib/content.ts:152-156` records that only the **150–350 ₪ technician visit fee** came from the live
-FAQ; every per-gate repair and install range below it is an **estimate authored to be honest where
-exact figures are unknown**. Those estimates are published on `/מחירון/` as a price list, which is what
-a customer will quote back on the phone.
+Only the **150–350 ₪ technician visit fee** came from the live FAQ. Until the N14 pivot (`af8ba4c`,
+2026-11-08) every per-gate repair and install range below it was an **estimate authored to be honest
+where exact figures are unknown**, published on `/מחירון/` as a price list a customer would quote
+back on the phone. The pivot deleted them: the comment above `priceRows` in `lib/content.ts` records
+why, `priceRows` holds only the visit band (`visitFeeRange`), and the page explains what determines
+the price. The ⛔ on the "Real price range per service" row records what shipped until then; no
+authored price ships now, and the Status cell is the owner's to change. Since `8768ce2`
+(2026-11-09) the copy also states no pricing policy — not when a quote is given, whether it binds,
+or that a request carries no obligation (`claims-grep.mjs` → `quote-before-work 0`,
+`no-obligation 0`, `price-list-pointer 0` live).
 
-"אחריות מלאה" is claimed across `trustStats`, `ServicesGrid`, the location template and the FAQ with
-**no duration, no scope and no exclusions** anywhere. "מלאה" is a stronger word than "בכתב" and should
-be backed or softened.
+"אחריות מלאה" was claimed across `trustStats`, `ServicesGrid`, the location template and the FAQ
+until `1796ee7` (2026-11-08) softened it to "אחריות על העבודה" — still with **no duration, no scope
+and no exclusions**, which is all the site may say until the rows below are answered
+(`warranty-full 0`, `warranty-term 0` and, since `8768ce2`, `durability-promise 0` live).
 
 | Field                                    | Why it's needed                                         | Lands in                  | Value | Status |
 | ---------------------------------------- | ------------------------------------------------------- | ------------------------- | ----- | ------ |
@@ -143,28 +159,41 @@ be backed or softened.
 
 ## E. Coverage & availability — two unbounded promises
 
-`schema.areaServed` claims **מרכז הארץ ופריסה ארצית** while the location set spans קריות and באר שבע.
-**24/7 emergency availability** is claimed in `Hero`, `trustStats`, `siteConfig.hours.emergency`,
-`/איזורי-שירות/` and on every location page. Both are promises the business will be held to at 03:00.
+Until 2026-11-09 the manifest `schema.areaServed` claimed **מרכז הארץ ופריסה ארצית** while the
+location set spanned קריות to באר שבע; since the roster sync `8e8843d` it reads "מרכז הארץ
+והאזורים שמופיעים באתר", and the JSON-LD lists the 14 published places instead. Until Sprint 4
+(`1796ee7`) **24/7 emergency availability** was claimed in `Hero`, `trustStats`,
+`siteConfig.hours.emergency`, `/איזורי-שירות/` and on every location page; the site now promises
+urgent-fault handling only within the published hours (`claims-grep.mjs` → `around-the-clock 0`,
+`national-coverage 0`, `response-time 0` live, as of 2026-11-09). Both were promises the business
+would be held to at 03:00.
 
-Separately, `locations` contains **קריות, שרון, צפון, דרום** — regions, not cities — and templates
-interpolate a bare `ב${loc.name}`, producing `בשרון` and `בצפון` where correct Hebrew is `באזור השרון`
-and `בצפון הארץ`.
+Separately, `locations` held **קריות, שרון, צפון, דרום** — regions, not cities — and templates
+interpolated a bare `ב${loc.name}`, producing `בשרון` and `בצפון`. Sprint 6 (`7c3f2db`) added `kind`
+and `prefixed`; `7ed1acd` retired קריות, צפון, דרום and באר שבע with 301s, leaving one region whose
+display name is «אזור השרון» since `9886dd1`. ירושלים is the one published place still bounded
+(call to check whether and when a visit is possible): the owner has not named it.
 
-| Field                                                | Why it's needed                                                  | Lands in                   | Value | Status |
-| ---------------------------------------------------- | ---------------------------------------------------------------- | -------------------------- | ----- | ------ |
-| Is 24/7 emergency service real, and where?           | Claimed sitewide; sets a response expectation                    | content.ts + Roster        |       | 🔶     |
-| Real response-time capability per area               | Same-day is implied for all 18 locations                         | content.ts                 |       | 🔶     |
-| Is "פריסה ארצית" true?                               | It's in the schema; a false `areaServed` is a liability          | Roster `schema.areaServed` |       | 🔶     |
-| Are קריות/שרון/צפון/דרום/באר שבע genuinely served?   | Whether those pages should exist at all                          | `lib/site-config.ts`       |       | 🔶     |
-| If yes — as regions, or specific cities within them? | Drives the `kind: "city" \| "region"` flag and the Hebrew prefix | `lib/site-config.ts`       |       | 🔶     |
-| Travel / call-out fee by distance                    | באר שבע and קריות are not local calls                            | content.ts                 |       | 🔶     |
+| Field                                                | Why it's needed                                                                   | Lands in                   | Value | Status |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------- | -------------------------- | ----- | ------ |
+| Is 24/7 emergency service real, and where?           | Claimed sitewide until `1796ee7`; sets a response expectation                     | content.ts + Roster        |       | 🔶     |
+| Real response-time capability per area               | Same-day was implied for all 18 location pages until Sprint 4                     | content.ts                 |       | 🔶     |
+| Is "פריסה ארצית" true?                               | It was in the manifest `areaServed` until `8e8843d`                               | Roster `schema.areaServed` |       | 🔶     |
+| Are קריות/שרון/צפון/דרום/באר שבע genuinely served?   | Whether those pages should exist at all                                           | `lib/site-config.ts`       |       | 🔶     |
+| If yes — as regions, or specific cities within them? | Drives the `kind: "city" \| "region"` flag and the Hebrew prefix                  | `lib/site-config.ts`       |       | 🔶     |
+| Travel / call-out fee by distance                    | The far published places (חיפה, אשקלון) are not local calls                       | content.ts                 |       | 🔶     |
+| Is ירושלים served?                                   | 3.6 did not name it; the page stays bounded and the JSON-LD `areaServed` lists it | `lib/site-config.ts`       |       | 🔶     |
+
+The owner answered owner-actions 3.6 in chat on 2026-11-09 (not served: קריות, צפון, דרום, באר
+שבע; served: חיפה, אשקלון, שרון; no national coverage) — the Value cells above await the owner's
+own entry. ירושלים is asked separately in owner-actions 3.11.
 
 ## F. Media — the site has no photographs at all
 
-The built output contains **zero `<img>` tags across all 45 pages**. The header logo renders as text;
-`public/dangates-logo.png` is not referenced by the app. There is no photograph of a gate, a job, a
-vehicle or a person anywhere on the site.
+The built output contains **zero `<img>` tags across all 47 pages** (`a11y.mjs` → `imgCount 0`,
+`pages 47`, as of 2026-11-09). The header logo renders as text; `public/dangates-logo.png` reaches
+only the JSON-LD `logo` (since `02a3144`), never the page. There is no photograph of a gate, a job,
+a vehicle or a person anywhere on the site.
 
 For a physical trade this is a first-order trust and conversion gap, and it is also the reason there is
 no imagery provenance to audit. Cloudflare Image Transformations **are enabled on this zone** (verified:
@@ -205,11 +234,14 @@ Shooting notes matter more than volume here — eight useful photos beat forty u
 are gone — `node scripts/audit/spam-grep.mjs` → `spamHits: 0`, `relatedTails: 0`, `fusedWords: 0`,
 and the PostToolUse hook re-checks every edit to the file.
 
-**Remaining debt** (none of it needs an owner answer; it needs the Phase 4 block model and an
-editorial pass): ~42 "📌 link" phrases whose links were lost in migration, a flat all-`<h2>` heading
-hierarchy, 4 Latin curly quotes (`lib/posts.ts:848-849`), 42 structural emoji, an empty `מקרי מבחן`
-section (`:416-418`), and two "הטובה ביותר" superlatives (`:319`, `:557`) that
-`claims-grep.mjs` fails as never-permitted (content-standards §6).
+**Remaining debt** (it needs the block model and an editorial pass, which waits on the approval row
+below — owner-actions 3.8): the ~42 "📌 link" phrases whose links were lost in migration (the six
+"full price list" pointers among them were rewritten in `8768ce2`), a flat all-`<h2>` heading
+hierarchy, 28 structural emoji (`spam-grep.mjs` → `emojiCount 28`, as of 2026-11-09; 42 on
+2026-08-17), no answer blocks, and one unclocked "שירות מהיר ואמין" in the post
+`שער-חשמלי-לא-מגיב`. Gone since this list was written: the 4 Latin curly quotes and the empty
+`מקרי מבחן` section (`74a92d1`), and the two "הטובה ביותר" superlatives (`1796ee7`) —
+`curlyQuotes 0`, `superlative 0` live.
 
 | Field                                     | Why it's needed                                                            | Lands in          | Value | Status |
 | ----------------------------------------- | -------------------------------------------------------------------------- | ----------------- | ----- | ------ |
@@ -246,11 +278,13 @@ Drafted 2026-10-12 and **approved by the owner the same day** on the fleet wordi
 - WhatsApp goes to **+972556601006**, the owner's own WhatsApp (as on 3locksmiths), because
   072-2587772 is not on WhatsApp. The roster sync of 2026-10-12 carries it to `site.config.json`
   → `contact.whatsappE164`; it also fixes the sticky bar's WhatsApp link, which led nowhere.
-- The flagged claims in the migrated blog posts are OK for now and get fixed later — an **open
-  backlog item, not done** (owner-actions 3.8; the posts still carry their 🔶 claims).
+- The flagged claims in the migrated blog posts are OK for now and get fixed later — fixed in the
+  repo since then (`1796ee7`, `9195c9b`, `8768ce2`; backlog §7.2): `claims-grep.mjs` → every id 0
+  live as of 2026-11-09. The wider rewrite is still owner-actions 3.8.
 - When the privacy page (`/מדיניות-פרטיות/`) is rewritten, it should mention the status-file read
   (`https://imgquarry.com/status/fleet.json`) and the values the live surfaces keep in browser
-  storage — an **open item** (backlog §8.2).
+  storage — the page was rewritten to name both in `68a4a7f` (2026-11-08); backlog §8.2 stays
+  PARTIAL on B2 and B10 only.
 
 | Field                                                                           | Why it's needed                                                                                                                                                                                                                          | Lands in                                      | Value                                                                                                                                                              | Status |
 | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |

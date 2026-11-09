@@ -101,8 +101,10 @@ trust the page was written to build.
   Build-enforced since Sprint 7 (`89439b7`): `lib/guides.ts` throws "N CTA blocks; the cap for
   <family> is <cap>" at module load from `familyCtaCap` (the galbath `lib/articles.ts` pattern).
   On the other page types the cap stays a review rule for `cro-engagement-auditor`.
-- Every CTA anchor carries `data-cta` as `{location}-{action}` (`article-inline-call`,
-  `article-aside-whatsapp`) — `cta-coverage.mjs` fails otherwise, and GTM reads nothing else.
+- Every CTA anchor carries `data-cta` as `{placement}-{action}`, exactly two segments
+  (`articleinline-call`, `articleaside-whatsapp` — renamed from `article-inline-call` /
+  `article-aside-whatsapp` in `9886dd1`, N21) — `cta-coverage.mjs` fails on a missing tag and warns
+  on an off-convention name, and GTM reads nothing else.
 - 🔶 Never promise a response time in a CTA ("תוך שעה", "מיד") — business-facts §E.
 - Service pages today: the per-service `serviceTriggers` bullets (shared by all seven until `cfff52f`)
   are the unresolved-variable block; the sticky CTA card (`service-call`, `service-whatsapp`) sits
@@ -135,7 +137,8 @@ applies unchanged: static export, no backend, ~dozens of clicks a month cannot i
 before the banner on purpose — the last objection handler — and `FinalCta` must never be the only
 exit: a reader still deciding needs a lateral link. Related services by relevance — the service
 pages use declared `relatedServices`, cities and posts since Sprint 5 (`225ff45`); the post route's
-`others` list still takes `.slice(0, 4)` (Sprint 7.3). Locations all 14 — the footer renders them
+`others` list comes from `relatedPosts()` (`lib/related-posts.ts`) since `9886dd1`, by relevance
+rather than `.slice(0, 4)`. Locations all 14 — the footer renders them
 all and each location page links its `nearby` neighbours since Sprint 6 (`7c3f2db`), and the header
 reaches every service and location in one hop since `fd72698` (Sprint 6.5, `/internal-linking`). Each
 related card carries `data-related` (`relatedAttr()` in `lib/engagement.ts`) for `related_click`. "More guides" is the `relatedGuides` list on each guide since Sprint 7 (`89439b7`).

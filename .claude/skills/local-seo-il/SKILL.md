@@ -21,7 +21,8 @@ As of 2026-11-09 (at `2b0d802`) every location page clears the measured proxy: 7
 words against a 350 floor and a doorway delta of 292–439 against 120 (`locationMedianDelta 343`,
 14 pages); the 7 services pass since Sprint 5 (`225ff45`). Before Sprint 6 (`7c3f2db`) the
 locations scored a delta of 2–3 on 122–145 words — one template with the city name swapped. What is
-left is the human half of the test (local-seo-strategist sign-off, not on record); the five 🔶
+left was the human half of the test — the local-seo-strategist sign-off, on record since the
+2026-11-09 full audit (public knowledge only; the first-hand layer is §7.5); the five 🔶
 entries were resolved by the owner's 3.6 answer (§4). Quote the script, not this paragraph.
 
 ## 1. NAP consistency
@@ -70,7 +71,7 @@ interpolated a bare `ב${loc.name}`, producing `בשרון` and `בצפון` whe
 `lib/site-config.ts` now carries the two fields (since `7c3f2db`, 2026-11-09):
 
 ```ts
-{ slug: "שרון", name: "שרון", kind: "region", prefixed: "באזור השרון", updated: "2026-11-09" }
+{ slug: "שרון", name: "אזור השרון", kind: "region", prefixed: "באזור השרון", updated: "2026-11-09" }
 { slug: "תל-אביב", name: "תל אביב", kind: "city", prefixed: "בתל אביב", updated: "2026-11-09" }
 ```
 
@@ -121,7 +122,8 @@ unwritten everywhere until owner-actions 3.5 is answered.
    `keyword-research` (a row in keyword-map §13 with a source URL, never an invented volume).
 
 No 15th location until step 1 is done — the measured half is (2026-11-09) and owner-actions 3.6 is
-answered; the local-seo-strategist sign-off is not on record. Never re-add one of the four retired
+answered; the local-seo-strategist sign-off is on record (2026-11-09 full audit), but 0 of 14 pages
+carry a first-hand element and ירושלים is unanswered (owner-actions 3.11). Never re-add one of the four retired
 places unless the owner reverses that answer. Scaling a doorway pattern multiplies risk, not reach.
 
 ## 6. Coverage honesty

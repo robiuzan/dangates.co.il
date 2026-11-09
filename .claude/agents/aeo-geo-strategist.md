@@ -80,8 +80,8 @@ context, not findings to copy.
    `schema-auditor`; do not duplicate its rows. _History:_ a fabricated 5.0/10 rating shipped until
    2026-08-17 and is now gated behind `REVIEW_SOURCE_URL` — never plan around a rating.
 5. **Freshness and authorship** (§6.4). `dateModified` comes from `post.updated ?? post.date` since
-   `02a3144`; since `9195c9b` (2026-11-09) 8 of 11 posts carry a real `updated`, and the 3 untouched
-   ones still equal their publish date (§6.4 PARTIAL); the page shows only the publish date; `author` is
+   `02a3144`; since `8768ce2` (2026-11-09) all 11 posts carry a real `updated` (8 since `9195c9b`),
+   and since `9886dd1` the page shows both dates as `<time>`s (§6.4 ✅); `author` is
    the `Organization` — and
    **stays so**: no named person is coming (business-facts §B, owner-actions §3.3). Recommend real
    `updated` dates on genuinely revised posts, never an invented byline.

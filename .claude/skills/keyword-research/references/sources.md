@@ -60,7 +60,9 @@ evidence of demand, never of a requirement.
 חוק החשמל תשי״ד-1954 and the Ministry of Labour licensing grades evidence the `legal` intent
 (`חשמלאי מוסמך לשער חשמלי`, `רישיון להתקנת שער`). For the ועד בית guide (content-calendar #3, shipped in
 Sprint 7) the law text was read (he.wikisource consolidated text, research §C): **no section of חוק
-המקרקעין sets a majority for a gate or a parking barrier** — an evidence cell never states one, and a
+המקרקעין sets a majority for the general assembly's own decision to install a gate or a parking
+barrier** (§59ג's accessibility route is separate — research §C, narrowed 2026-11-09) — an evidence
+cell never states one, and a
 term like `רוב להתקנת מחסום` is a question the guide answers by saying so. Whether wikisource is an
 acceptable source is owner-actions 3.10. Ampere thresholds in secondary sources are unverified
 (keyword-map §12) — do not carry them into a term's evidence cell as fact.

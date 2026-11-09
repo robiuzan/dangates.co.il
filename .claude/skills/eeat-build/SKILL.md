@@ -25,8 +25,11 @@ As of 2026-11-09 `claims-grep` passes: `failingClaims 0`, every `liveOccurrences
 `totalHits 1` (the gated `rating` row in `Reviews.tsx`, 0 live). Sprint 4 (`1796ee7`) took it there
 from 5 failing claims on 2026-08-24 — `warranty-full` 77 live on 41 pages, `around-the-clock` 75 on
 42, `experience` 9 on 3, `national-coverage` 7 on 4, two `superlative` hits in the posts. Keep every
-bucket at 0. Since `9195c9b` (4F) the lexicon has 14 ids: `workmanship-absolute` catches
-"ללא פשרות", "בלי פשרות", "מצוינות בכל" and "למצוינות". It still has no pattern for team claims
+bucket at 0. Since `8768ce2` (2026-11-09) the lexicon has 18 ids (`claimsChecked 18`):
+`workmanship-absolute` (4F, `9195c9b`) catches "ללא פשרות", "בלי פשרות", "מצוינות בכל" and
+"למצוינות", and `quote-before-work`, `no-obligation`, `durability-promise` and `price-list-pointer`
+catch the pricing-policy, no-obligation, durability and "full price list" lines the 2026-11-09 audit
+found (H2, M1, M2). It still has no pattern for team claims
 ("צוות מומחים") or for other absolute promises (like the "שום חלק לא מוחלף…" line 4F took off `/`)
 — those are `claims-verifier` judgment. The numbers move; the script is the truth.
 

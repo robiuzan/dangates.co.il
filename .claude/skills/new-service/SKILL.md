@@ -23,7 +23,8 @@ script's `--json` gives only per-type medians; per-page values need a scratch ru
 
 An edit must keep all seven above the floor and the delta. The cap in CLAUDE.md §12 now waits only on
 the locations: no eighth service until the 14 location pages pass the doorway test too (the measured
-proxy passes; the local-seo-strategist sign-off is not on record).
+proxy passes, and the local-seo-strategist sign-off is on record since the 2026-11-09 full audit; the
+first-hand layer, §7.5, is still 0 of 14).
 
 ## The data model — built
 

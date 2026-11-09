@@ -59,8 +59,9 @@ sibling of the same type does not. `content-depth.mjs` computes it pairwise; the
 template) and the services scored **13–23**; both failed by an order of magnitude. The services
 score 404–468 since their depth modules shipped in Sprint 5 (`225ff45`), and the 14 locations
 292–439 (`locationMedianDelta 343`) since theirs shipped in Sprint 6 (`7c3f2db`) and four unserved
-ones were retired in `7ed1acd` (owner-actions 3.6), as of 2026-11-09. The human half is still open:
-no local-seo-strategist sign-off is on record. The five 🔶 entries that shipped as bounded pages
+ones were retired in `7ed1acd` (owner-actions 3.6), as of 2026-11-09. The human half was open until the 2026-11-09 full audit put the
+local-seo-strategist sign-off on record for all 14 (public knowledge only — the first-hand criteria
+below are met on none). The five 🔶 entries that shipped as bounded pages
 until 3.6 was answered are resolved — קריות, צפון, דרום and באר שבע retired with 301s, שרון kept.
 
 ```bash

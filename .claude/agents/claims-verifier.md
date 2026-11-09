@@ -82,8 +82,12 @@ regex for `claims.json` in your report (you do not edit it).
    verified; **no primary list of required devices exists**, so photocells, a flashing light or
    safety edges as a legal requirement are ⛔ (a competitor's 9-point checklist never becomes one);
    the **licence grade** for a gate motor and the **ampere thresholds** are unverified — do not
-   publish; **no section of חוק המקרקעין sets a majority for a gate or barrier** — any stated or
-   implied majority is ⛔. Statute wording read on he.wikisource passes only with the on-page
+   publish; **no section of חוק המקרקעין or the model bylaws sets a majority for the general assembly's
+   own decision to install a gate or barrier for the building** — any stated or implied majority for
+   that decision is ⛔. §59ג is a separate accessibility route (an owner's adjustment at their own
+   cost; part ב׳, which includes a yard-entrance gate, needs "הסכמת רוב בעלי הדירות") — correct only
+   when named as that route, never as the rule for an assembly decision (narrowed 2026-11-09,
+   `8768ce2`). Statute wording read on he.wikisource passes only with the on-page
    disclosure that it is not the official publication (whether that is enough is owner-actions
    3.10). Mark each external
    claim **verified external (URL, fetched dd/mm/yyyy)** or **unverified — do not publish**.

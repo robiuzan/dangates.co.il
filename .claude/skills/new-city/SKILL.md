@@ -35,7 +35,9 @@ Three files, each with one job:
 
 ```ts
 // lib/site-config.ts — the entry (identity and grammar; `as const`, so it widens LocationSlug)
-{ slug: "שרון", name: "שרון", kind: "region", prefixed: "באזור השרון", updated: "2026-11-09" }
+{ slug: "שרון", name: "אזור השרון", kind: "region", prefixed: "באזור השרון", updated: "2026-11-09" }
+// `name` is what the chrome and the JSON-LD read — never a bare form that is also a personal name
+// (9886dd1); the slug and URL stay short.
 ```
 
 - `slug` — the Hebrew route segment. Live and load-bearing on the existing 14; renaming needs a 301,

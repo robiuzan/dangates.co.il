@@ -55,7 +55,7 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
 5. **Sitemap and robots.** `links.mjs` diffs sitemap ↔ emitted tree both ways (`sitemapUrls 46`, 2026-11-09). the static routes are the `staticPages` registry in `lib/site-config.ts` and `links.mjs` cross-checks it against the `app/` tree (`staticRoutesRegistered`; §1.4 done 2026-09-06) — an unregistered new route now fails the check instead of going silently absent. Fetch the **live** `/robots.txt` and compare to `out/robots.txt`;
    AI-crawler reachability itself belongs to `aeo-geo-strategist` — do not duplicate it.
 6. **Legacy URLs — §1.1, closed in the repo 2026-09-06.** `public/_redirects` carries 80 real 301 rules (72 until `7ed1acd` added the four retired location pages, each to `/איזורי-שירות/`) and the 37 meta-refresh stubs are deleted (`edge.mjs` → `redirectRules 80 · stubs 0 · redirectsFile true · foreignStubs 0 · deadHostArtifacts 0`, 2026-11-09); the Houston promo stub (N4), `.github/workflows/deploy.yml`, `public/CNAME` and `public/.htaccess` went with them, so there is no second origin to duplicate the site. Each stub used to return **200** with `noindex` **and** a canonical — a combination Google says not to use. What you still audit: the drift check (§1.6) — `npm run redirects && git status --porcelain public/` must be empty — and whether the 301s are actually **live** — the original 72 are since the 2026-10-12/13 deploys (probed 2026-11-08); the 8 for the retired location pages are not until the next deploy (probe `/locations/קריות/` → `301`). A `200` on a legacy URL post-deploy means a static file is shadowing its rule.
-7. **RSC payloads (§1.3 ✅ since `2b0d802`).** `perf.mjs` → 47 `index.txt` files (3.51 MB, 2026-11-09)
+7. **RSC payloads (§1.3 ✅ since `2b0d802`).** `perf.mjs` → 47 `index.txt` files (3.43 MB, 2026-11-09 at `9886dd1`)
    ship beside every page — kept, because soft navigation fetches them — and `robots.txt` disallows
    them in both groups (`Disallow: /index.txt`, `Disallow: /*/index.txt`; `edge.mjs` →
    `rscPayloadsDisallowed true`). They allowed crawling until then. Not live until the next deploy;
@@ -75,8 +75,9 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
    `7c3f2db` → `notInChrome: 0`, `chromeLinks: 31` with 14 locations (2026-11-09; §9.2 ✅; it sliced to 12 before); the header
    reaches every service and location in one hop since `fd72698` (§9.1 ✅ — 21 hrefs in the homepage
    `<header>`; `links.mjs` cannot tell header from footer, so grep it); related posts on the
-   post pages are `.slice(0, 4)` by array order (the `others` list in `app/blog/[slug]/page.tsx`;
-   the service pages use declared lists since `225ff45`, §9.4 PARTIAL); the blog contains zero
+   post pages come from `relatedPosts()` (`lib/related-posts.ts`) since `9886dd1` — `.slice(0, 4)` by
+   array order until then — and the service pages use declared lists since `225ff45` (§9.4 ✅,
+   `relatedPostTargets 11`, `relatedServiceTargets 7`); the blog contains zero
    links (§9.5); the mesh runs both ways since `7c3f2db` — service → city and location → neighbours
    and services (§9.3 ✅). Trailing slashes are clean since 2026-09-06 (N10 closed): 0 un-slashed internal hrefs across all exported pages.
 10. **Anchors and alt.** The export carries **zero `<img>`** — there is no alt surface; refer that to
