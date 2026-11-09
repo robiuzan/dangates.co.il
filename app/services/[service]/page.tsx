@@ -41,13 +41,15 @@ export function generateMetadata({ params }: { params: { service: string } }): M
   const card = findCard(params.service);
   if (!card) return {};
   const url = routeUrl(`services/${card.slug}`);
+  // The meta line is its own field: `description` is the page's unique paragraph, not a snippet.
+  const description = card.metaDescription ?? card.description;
   return {
     alternates: { canonical: url },
     // Bare subject only — app/layout.tsx already appends "| דן שערים חשמליים" via the
     // title template. Appending it here too is what shipped the doubled suffix on 25 pages.
     title: card.name,
-    description: card.description,
-    openGraph: { ...ogBase, url, title: card.name, description: card.description },
+    description,
+    openGraph: { ...ogBase, url, title: card.name, description },
   };
 }
 

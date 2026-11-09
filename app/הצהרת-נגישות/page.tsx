@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { manifest, siteConfig } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { legalPageNames } from "@/lib/content";
+import { accessibilityMetaDescription, legalPageNames } from "@/lib/content";
 import { pageNode } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 
 const a11yUrl = routeUrl("הצהרת-נגישות");
-const a11yDescription = "הצהרת הנגישות של אתר דן שערים חשמליים בהתאם לתקן הישראלי.";
+const a11yDescription = accessibilityMetaDescription;
 
 export const metadata: Metadata = {
   alternates: { canonical: a11yUrl },

@@ -4,15 +4,14 @@ import { ChevronLeft } from "lucide-react";
 import { posts } from "@/lib/posts";
 import { manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { crumbLabels } from "@/lib/content";
+import { blogIndexMetaDescription, crumbLabels } from "@/lib/content";
 import { itemListJsonLd } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 const blogUrl = routeUrl("blog");
-const blogDescription =
-  "טיפים מקצועיים וחדשות מהתחום — מדריכים על תיקון, תחזוקה, בטיחות ושדרוג של שערים חשמליים, מאת דן שערים חשמליים.";
+const blogDescription = blogIndexMetaDescription;
 
 export const metadata: Metadata = {
   alternates: { canonical: blogUrl },

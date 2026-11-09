@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { posts, getPost, type PostBlock } from "@/lib/posts";
+import { posts, getPost, type Post, type PostBlock } from "@/lib/posts";
 import { manifest } from "@/lib/site-config";
-import { crumbLabels } from "@/lib/content";
+import { crumbLabels, postSeo } from "@/lib/content";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { articleJsonLd, businessNode } from "@/lib/jsonld";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -15,20 +15,39 @@ export function generateStaticParams(): { slug: string }[] {
   return posts.map((p) => ({ slug: p.slug }));
 }
 
+// `Post.slug` is a plain string, so the map cannot be typed against a slug union. A key that names
+// no real post (a typo, a renamed or removed post) throws at module load, which fails the build.
+for (const key of Object.keys(postSeo)) {
+  const target = key.normalize("NFC");
+  if (!posts.some((p) => p.slug.normalize("NFC") === target)) {
+    throw new Error(`postSeo has a key that is not a post slug: ${key}`);
+  }
+}
+
+/** The <title> subject and meta description for one post; each falls back to the post's own field. */
+function postMeta(post: Post): { title: string; description: string } {
+  const seo = postSeo[post.slug];
+  return {
+    title: seo?.title ?? post.title,
+    description: seo?.description ?? post.excerpt,
+  };
+}
+
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const post = getPost(params.slug);
   if (!post) return {};
   const url = routeUrl(`blog/${post.slug}`);
+  const { title, description } = postMeta(post);
   return {
     alternates: { canonical: url },
-    title: post.title,
-    description: post.excerpt,
+    title,
+    description,
     openGraph: {
       ...ogBase,
       type: "article",
       url,
-      title: post.title,
-      description: post.excerpt,
+      title,
+      description,
     },
   };
 }
@@ -93,7 +112,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       type: "BlogPosting",
       path: `/blog/${post.slug}/`,
       headline: post.title,
-      description: post.excerpt,
+      description: postMeta(post).description,
       datePublished: post.date,
       dateModified: post.updated ?? post.date,
       isPartOf: { path: "/blog/", name: crumbLabels.blog },

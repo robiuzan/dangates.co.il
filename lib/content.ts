@@ -18,7 +18,18 @@ export type IconName =
 
 interface ServiceMeta {
   tagline: string;
+  /**
+   * The page's opening paragraph and the grid card text. It is the only paragraph unique to each
+   * service page, so shortening it lowers the doorway delta (content-depth.mjs) — keep its length.
+   */
   description: string;
+  /**
+   * The meta description, 120–160 chars with terminal punctuation (backlog §2.4), set only where
+   * `description` falls outside that band. Absent → `description` is already in band and serves.
+   * Read as `metaDescription ?? description` by generateMetadata in the service route
+   * (app/services/[service]/page.tsx), for both the description and its openGraph block.
+   */
+  metaDescription?: string;
   icon: IconName;
 }
 
@@ -27,19 +38,25 @@ const serviceMeta: Record<ServiceSlug, ServiceMeta> = {
   "שערים-נגררים": {
     tagline: "אמינות ועמידות לכל שער",
     description:
-      "שערים נגררים הם הבחירה האידיאלית לבתים פרטיים, עסקים ומתחמים תעשייתיים — עמידים, בטוחים וניתנים להתאמה אישית לפי צורכי הלקוח. אנו מספקים התקנה ותיקון מקצועיים של שערים נגררים, עם דגש על איכות ללא פשרות ושימוש בטכנולוגיות מתקדמות.",
+      "שערים נגררים מתאימים לבתים פרטיים, לעסקים ולמתחמים תעשייתיים, כשיש לאורך הגדר מקום שהשער יחליק אליו. אנחנו מתקינים ומתקנים אותם: החלפת פס שיניים שנשחק, מעצורי קצה וגלגלים, יישור המסילה והתאמת המנוע למשקל השער ולרוחב הכניסה.",
+    metaDescription:
+      "תיקון והתקנה של שערים נגררים לבתים פרטיים, לעסקים ולמתחמים תעשייתיים — החלפת פס שיניים שנשחק, מעצורי קצה וגלגלים, יישור המסילה והתאמת המנוע למשקל השער.",
     icon: "MoveHorizontal",
   },
   "שערי-כנף": {
     tagline: "פתרון אלגנטי וחזק",
     description:
-      "שערי כנף משלבים בטיחות, נוחות ואסתטיקה — פתרון עמיד ויעיל המאפשר שליטה מרחוק ותחזוקה מינימלית, לבתים פרטיים, מתחמים מסחריים ומוסדות. אנו מספקים ייצור, התקנה ותיקון של שערי כנף, כולל כיוון הצירים.",
+      "שערי כנף נפתחים על צירים, פנימה או החוצה, ומתאימים לבתים פרטיים, למתחמים מסחריים ולמוסדות, כשיש מרחב פתיחה לפני השער. אנחנו מייצרים, מתקינים ומתקנים אותם: כיוון צירים, תיקון כנף כבדה ששוקעת ונגררת על הקרקע, ובחירת מנוע לפי רוחב הכנף ומשקלה.",
+    metaDescription:
+      "ייצור, התקנה ותיקון של שערי כנף לבתים פרטיים, למתחמים מסחריים ולמוסדות — כיוון צירים, תיקון כנף כבדה ששוקעת ונגררת על הקרקע, ובחירת מנוע לפי רוחב הכנף ומשקלה.",
     icon: "DoorOpen",
   },
   "שערים-מתרוממים": {
     tagline: "טכנולוגיה מתקדמת ומדויקת",
     description:
-      "שערים מתרוממים הם פתרון חכם לחיסכון במקום ולשליטה נוחה בכניסה. אנו מתמחים בשערים מתרוממים לכל שימוש, עם פתרון המבוסס על טכנולוגיה מתקדמת ומותאם אישית לצורך שלכם — מהתכנון ועד ההתקנה והתיקון.",
+      "שער מתרומם עולה כלפי מעלה במקום לנוע הצידה, ולכן מתאים לכניסה צרה שאין בה מקום לגרירה או לפתיחת כנפיים. אנחנו מתכננים, מתקינים ומתקנים שערים מתרוממים: החלפת קפיצים, כיוון האיזון, תיקון המנוע והתאמת השער לגובה הפתח.",
+    metaDescription:
+      "תכנון, התקנה ותיקון של שערים מתרוממים, לכניסה צרה שאין בה מקום לגרירה הצידה או לפתיחת כנפיים — החלפת קפיצים, כיוון האיזון ותיקון המנוע.",
     icon: "ArrowUpDown",
   },
   "שערים-לחניה": {
@@ -73,6 +90,8 @@ export interface ServiceCard {
   name: string;
   tagline: string;
   description: string;
+  /** See `ServiceMeta.metaDescription`. */
+  metaDescription?: string;
   icon: IconName;
 }
 
@@ -466,6 +485,80 @@ export const legalPageNames = {
   privacy: "מדיניות פרטיות",
   accessibility: "הצהרת נגישות",
 } as const;
+
+/**
+ * app/הצהרת-נגישות/page.tsx — <meta name="description"> (backlog §2.4). Names only what that
+ * page lists under "מה הונגש באתר" and its contact paragraph; no compliance claim beyond it.
+ * Read by the metadata of that route (a11yDescription in app/הצהרת-נגישות/page.tsx).
+ */
+export const accessibilityMetaDescription =
+  "הצהרת הנגישות של אתר דן שערים חשמליים: מה הונגש באתר — ניווט במקלדת, ניגודיות, טקסט חלופי וקוראי מסך — ואיך פונים אלינו אם נתקלתם בקושי.";
+
+/**
+ * app/blog/page.tsx — <meta name="description"> (backlog §2.4). Lists the subjects the 11 posts
+ * actually cover. Read by the metadata of the blog index (blogDescription in app/blog/page.tsx).
+ */
+export const blogIndexMetaDescription =
+  "מדריכים מעשיים על שערים חשמליים: תקלות נפוצות ומה בודקים לבד, תחזוקה מונעת, בטיחות, שדרוג לשער חכם, ומתי לתקן שער קיים ומתי להחליף אותו.";
+
+/** One post's SEO overrides — see `postSeo`. */
+export interface PostSeo {
+  /** The <title> subject. The layout template appends the brand, so ≤ 41 chars keeps it ≤ 60. */
+  title?: string;
+  /** Replaces `Post.excerpt` as the meta description; 120–160 chars, terminal punctuation. */
+  description?: string;
+}
+
+/**
+ * app/blog/[slug]/page.tsx — per-post SEO title and description, keyed by `Post.slug` (backlog
+ * §2.4–§2.6). `Post.title` stays the H1 and is never shortened here: it is the question in full,
+ * and the live registers quote one of them. A post absent from this map, or a field absent from
+ * its entry, keeps `post.title` / `post.excerpt`. `Post.excerpt` still feeds the blog index card.
+ * Every title is unique sitewide; no speed, availability, coverage, warranty or price promise.
+ * Read by `generateMetadata` (title, description, openGraph) in app/blog/[slug]/page.tsx, which
+ * also throws at module load on a key that is not a post slug.
+ */
+export const postSeo: Readonly<Record<string, PostSeo>> = {
+  "שערים-חשמליים-השקעה": {
+    title: "האם שער חשמלי הוא השקעה משתלמת?",
+    description:
+      "האם שער חשמלי משתלם? מה הוא נותן לבית ולעסק באבטחה ובנוחות, מה כדאי לדעת לפני ההתקנה, ומתי נכון לתקן שער קיים ומתי לשדרג אותו.",
+  },
+  "תקלות-נפוצות-בשערים-חשמליים": {
+    title: "תקלות נפוצות בשער חשמלי ומה בודקים לבד",
+  },
+  "שדרוג-לשער-חשמלי-חכם": {
+    title: "האם כדאי לשדרג לשער חשמלי חכם?",
+    description:
+      "מה ההבדל בין שער חשמלי רגיל לשער חכם, למי השדרוג מתאים, האם הוא משתלם ומה לבדוק לפני שבוחרים מערכת — עם שאלות שכדאי לשאול לפני ההחלטה.",
+  },
+  "בטיחות-שער-חשמלי-3-שלבים": {
+    title: "בטיחות שער חשמלי ב-3 שלבים פשוטים",
+  },
+  "שער-חשמלי-חוסך-זמן": {
+    description:
+      "האם שער חשמלי באמת חוסך זמן? מה הוא חוסך בכל כניסה ויציאה, מה הוא דורש בתחזוקה ובתיקונים, ואיך שומרים על השער יעיל לאורך זמן.",
+  },
+  "תחזוקה-מונעת-לשערים-חשמליים": {
+    description:
+      "תחזוקה מונעת לשער חשמלי, שלב אחר שלב: מה לבדוק בבדיקה התקופתית, איך לנקות ולשמן, איך בודקים את העיניות, ומה משתנה בין שער מתכת לשער עץ.",
+  },
+  "חשיבות-תחזוקת-שערים-חשמליים": {
+    description:
+      "למה תחזוקה שוטפת מאריכה את חיי השער החשמלי: ניקוי, שימון, בדיקת מערכת החשמל, מתי להזמין טכנאי ואיך תחזוקה נכונה משפרת את הבטיחות.",
+  },
+  "החלפה-או-תיקון-שער-חשמלי": {
+    title: "שער חשמלי: לתקן או להחליף?",
+  },
+  "שער-חשמלי-לא-מגיב": {
+    title: "שער חשמלי לא מגיב? מה בודקים קודם",
+  },
+  "שער-חשמלי-שעובד-כמו-חדש": {
+    title: "איך שומרים על שער חשמלי כמו חדש?",
+    description:
+      "איך שומרים על שער חשמלי במצב טוב לאורך שנים: ניקוי המסילות, שימון החלקים הנעים, בדיקת מערכת החשמל, ומה עושים כשהשער רועש או נעצר באמצע.",
+  },
+};
 
 /** app/איזורי-שירות/page.tsx — the visible link label for one city, and its `ItemList` name. */
 export function areaLinkLabel(cityName: string): string {
