@@ -10,6 +10,8 @@
  *   - llms.txt present — public/llms.txt, or out/llms.txt emitted by app/llms.txt/route.ts (Sprint 7); out/robots.txt quoted (what this file says is not what the edge does)
  *   - .env.example ↔ process.env usage drift; stale cPanel comment in next.config.mjs
  *   - out/ carries no source maps and no dev-only React/Next chunks
+ *   - out/robots.txt disallows the RSC payload files (root and nested index.txt, anchored) in every user-agent group, or
+ *     public/_headers sends X-Robots-Tag: noindex for them (backlog §1.3)
  *
  * Usage: node scripts/audit/edge.mjs [--json]
  */
@@ -96,6 +98,44 @@ function envUsed() {
 }
 
 // ── the check ───────────────────────────────────────────────────────────────
+
+/** The two Disallow patterns that cover every RSC payload without touching /robots.txt or /llms.txt. */
+const RSC_DISALLOWS = ["/index.txt", "/*/index.txt"];
+
+/** Groups of a robots.txt: the user agents that share a block, and that block's Disallow values. */
+function robotsGroups(lines) {
+  const groups = [];
+  let cur = null;
+  let inAgents = false;
+  for (const raw of lines) {
+    const m = /^\s*([A-Za-z-]+)\s*:\s*(.*?)\s*$/.exec(raw);
+    if (!m) continue;
+    const key = m[1].toLowerCase();
+    if (key === "user-agent") {
+      if (!cur || !inAgents) {
+        cur = { agents: [], disallow: [] };
+        groups.push(cur);
+      }
+      cur.agents.push(m[2]);
+      inAgents = true;
+    } else if (cur) {
+      inAgents = false;
+      if (key === "disallow") cur.disallow.push(m[2]);
+    }
+  }
+  return groups;
+}
+
+/** True when public/_headers sends X-Robots-Tag: noindex under a path that ends in index.txt. */
+function rscNoindexHeader() {
+  if (!exists("public/_headers")) return false;
+  const blocks = readSrc("public/_headers").split(/\r?\n(?=\S)/);
+  return blocks.some(
+    (b) =>
+      /^\S*index\.txt\s*$/.test((b.split(/\r?\n/)[0] ?? "").trim()) &&
+      /^\s+x-robots-tag:.*noindex/im.test(b),
+  );
+}
 
 export function run() {
   const r = new Report(
@@ -201,6 +241,7 @@ export function run() {
   const hasLlms = exists("public/llms.txt") || existsSync(path.join(OUT, "llms.txt"));
   if (!hasLlms) r.warn("no public/llms.txt", undefined, "backlog §6.5");
   const robotsFile = path.join(OUT, "robots.txt");
+  let rscRule = false;
   if (!existsSync(robotsFile))
     r.fail("out/robots.txt missing from the export", undefined, "backlog §6.1");
   else {
@@ -210,6 +251,20 @@ export function run() {
       lines.slice(0, 10).join("\n"),
       "backlog §6.1",
     );
+    const noindexHeader = rscNoindexHeader();
+    const unprotected = robotsGroups(lines).filter(
+      (g) => !RSC_DISALLOWS.every((d) => g.disallow.includes(d)),
+    );
+    rscRule = unprotected.length === 0 && robotsGroups(lines).length > 0;
+    if (!rscRule && !noindexHeader)
+      r.fail(
+        "the RSC index.txt payloads are crawlable: out/robots.txt does not disallow them for every user agent and public/_headers sends no X-Robots-Tag for them",
+        unprotected.length
+          ? "groups missing a rule: " +
+              unprotected.map((g) => g.agents.join(", ")).join(" | ")
+          : "out/robots.txt has no user-agent group",
+        "backlog §1.3",
+      );
   }
 
   // 5. .env.example drift
@@ -272,6 +327,7 @@ export function run() {
   r.metric("deadHostArtifacts", dead.length);
   r.metric("foreignStubs", foreign.length);
   r.metric("llmsTxt", hasLlms);
+  r.metric("rscPayloadsDisallowed", rscRule);
   r.metric("envDocumented", documented?.length ?? 0);
   r.metric("envUsed", used.length);
   r.metric("sourceMaps", maps.length);

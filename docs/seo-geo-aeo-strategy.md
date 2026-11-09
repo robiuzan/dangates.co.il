@@ -192,7 +192,8 @@ curl -sS -A "Mozilla/5.0 (compatible; ClaudeBot/1.0; +claudebot@anthropic.com)" 
 
 `app/robots.ts` allows every AI crawler declaratively (`AI_CRAWLERS`, the fleet-wide per-bot list — live since the Sprint 0 deploy on 2026-09-06). `robots.txt` returned `200 Allow: /` **even while the edge refused
 every AI UA**, so a robots-only check is a false pass in either direction (N18). The one `Disallow`
-candidate is the 45 crawlable RSC `index.txt` payloads (backlog §1.3). Enforcement is the zone's.
+is the crawlable RSC `index.txt` payloads (backlog §1.3, `RSC_PAYLOAD_DISALLOW` in `app/robots.ts`).
+Enforcement is the zone's.
 
 ### 4.3 Gate 3 — the extraction contract
 

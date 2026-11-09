@@ -154,7 +154,7 @@ wholesale rather than merging, and `url: null` does not typecheck). `titles.mjs`
 **`notFoundClaimsUrl` must be `false`** — it fails if the 404 declares either a canonical or an
 `og:url`. Any future identity tag on this page needs the same treatment.
 
-### 1.3 — P1 · M · [NOT STARTED] 47 RSC payload files ship to production as crawlable duplicates
+### 1.3 — P1 · M · [✅ DONE 2026-11-09 — repo side, not deployed] 47 RSC payload files ship to production as crawlable duplicates
 
 `perf.mjs` → `rscPayloads: 45`, `rscBytes` ≈ 1.43 MB (as of 2026-08-23); `rscPayloads 51`,
 `rscBytes` 3.54 MB after the Sprint 7 hub and guides (`89439b7`); `rscPayloads 47`, `rscBytes`
@@ -162,8 +162,19 @@ wholesale rather than merging, and `url: null` does not typecheck). `titles.mjs`
 RSC payload beside every `index.html`. They contain the full readable copy of every page, sit at
 crawlable URLs, and `robots.txt` allows them.
 
-**Fix:** disallow `/*/index.txt` in the Cloudflare-side robots policy, or strip them from `out/` as a
-post-build step. Confirm nothing references them first.
+**Decision (2026-11-09, Sprint 8R): keep the files, disallow them in `app/robots.ts`.** Deleting them is
+ruled out: commit `1ac37ff` keeps link clicks soft, and in a static export a soft navigation fetches the
+target's `index.txt`, so a strip would turn every internal link into a full reload (and lose History
+Change page views, `data-tracking-infrastructure`). `RSC_PAYLOAD_DISALLOW` in `app/robots.ts` adds
+`Disallow: /index.txt` and `Disallow: /*/index.txt` to the `*` group **and** the named AI-crawler group
+(a bot matching a named group ignores `*`), beside the unchanged `Allow: /`. There is no `$` anchor, because the router fetches `index.txt?_rsc=...` and a pattern matches path plus query; the rules still keep
+`/robots.txt`, `/sitemap.xml` and a future `/llms.txt` out of reach. The row's "Cloudflare-side" wording
+was stale: the managed `robots.txt` has been off since 2026-08-23, so the repo file is the place.
+Trade-off: a disallowed URL cannot show an `X-Robots-Tag: noindex`, so the robots rule and a `_headers`
+noindex would conflict; the rule is the one mechanism, and it stops the fetch itself. A disallowed URL can
+still be listed bare if something links to it, and nothing does. Proof: `edge.mjs` →
+`rscPayloadsDisallowed true` (fails if any `out/robots.txt` group lacks either rule and `_headers` sends no
+noindex for them); `perf.mjs` → `rscPayloads` unchanged (the files stay).
 
 ### 1.4 — P2 · S · [✅ DONE 2026-09-06] `staticPages` in the sitemap was a hand-maintained array of 9
 

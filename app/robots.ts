@@ -36,12 +36,26 @@ const AI_CRAWLERS = [
   "CCBot",
 ];
 
-// Static /robots.txt — allow all crawling and point to the sitemap.
+/**
+ * The RSC payload files Next writes beside every index.html (backlog §1.3). They stay in out/ —
+ * a soft link click fetches the target's index.txt, so deleting them would turn every internal
+ * link into a full reload — but they carry the full copy of each page at a crawlable URL, so
+ * they are disallowed here. There is deliberately no trailing dollar-sign anchor: the router
+ * fetches /x/index.txt?_rsc=..., and a pattern matches path plus query, so an anchored rule
+ * would miss the real request. /robots.txt, /sitemap.xml and a future /llms.txt contain no
+ * "/index.txt" and stay reachable.
+ * A bot that matches a named group ignores the star group, so every group repeats the rule.
+ * Trade-off: a disallowed URL can never show an X-Robots-Tag noindex, so this is the one
+ * mechanism, not a pair; it stops the fetch, which is what the backlog row's goal needs.
+ */
+const RSC_PAYLOAD_DISALLOW = ["/index.txt", "/*/index.txt"];
+
+// Static /robots.txt — allow all crawling except the RSC payloads, and point to the sitemap.
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: "*", allow: "/" },
-      { userAgent: AI_CRAWLERS, allow: "/" },
+      { userAgent: "*", allow: "/", disallow: RSC_PAYLOAD_DISALLOW },
+      { userAgent: AI_CRAWLERS, allow: "/", disallow: RSC_PAYLOAD_DISALLOW },
     ],
     sitemap: `${siteConfig.domain}/sitemap.xml`,
   };

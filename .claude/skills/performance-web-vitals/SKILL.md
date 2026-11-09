@@ -21,8 +21,8 @@ dependencies, `"use client"` inventory, `<img>` count. It refuses a stale `out/`
 — **rebuild before asserting** (backlog N12). As of 2026-11-08 `perf.mjs` **passes** (re-run, do not
 copy): `out/` 7.8 MB in 137 files (the live-kit surfaces added ≈1.15 MB in 2026-10) · JS 757 KB in
 30 chunks, largest 173 KB (within the §10.4 budget) · 6 `.woff2` with **2 font preloads** (§10.1
-closed) · `unusedDeps []` (§10.3 closed) · 46 `index.txt` RSC payloads, 2.24 MB — the one open perf
-item (§1.3) · **3 client components** (§10.2 closed) · 0 `<img>` (§10.5).
+closed) · `unusedDeps []` (§10.3 closed) · 46 `index.txt` RSC payloads, 2.24 MB — kept for soft navigation and
+disallowed in `robots.txt` (§1.3) · **3 client components** (§10.2 closed) · 0 `<img>` (§10.5).
 
 The script reads the artifact; it does not run a browser. For field numbers run Lighthouse / PSI
 against the **live** URL, mobile profile, on a service page, a location page and a blog post (the
@@ -91,14 +91,15 @@ were four until Sprint 3 (`Faq` → `<details>` in `7cfcf4c`, `Header` split int
 
 `framer-motion@^11` was a dependency **imported nowhere**; it was uninstalled 2026-09-06 (§10.3, commit `13a6bdc`) and `perf.mjs` now reports `unusedDeps []`. It never reached the bundle — the cost was install time, audit surface and the temptation to animate around the CSS reduced-motion reset. Do not add it back: `Reveal` already covers motion with an `IntersectionObserver` and a CSS transition, and `unusedDeps` will flag anything new that lands installed-but-unimported.
 
-## RSC payloads — 45 `index.txt` files (§1.3)
+## RSC payloads — the `index.txt` files (§1.3, decided 2026-11-09)
 
-Next writes one `index.txt` beside every `index.html`: the RSC payload `next/link` prefetches for
-client-side navigation. They are 2.24 MB of crawlable duplicate copy (46 files, 2026-11-08). Two options, decided in the
-backlog row, not as a drive-by: a post-build step in `package.json` that strips `out/**/index.txt`
-(a script step, never a hand delete — `out/` is a protected path), after verifying that navigation
-falls back cleanly to full page loads; or `Disallow: /*/index.txt` in `app/robots.ts`, which keeps
-prefetch and only removes them from the index. Whichever ships, `perf.mjs` `rscPayloads` is the proof.
+Next writes one `index.txt` beside every `index.html`: the RSC payload `next/link` fetches for
+client-side navigation. They stay: commit `1ac37ff` deliberately keeps link clicks soft, and deleting the
+payloads would make every internal link a full reload. What changed is that they are no longer crawlable
+targets: `RSC_PAYLOAD_DISALLOW` in `app/robots.ts` disallows `/index.txt` and `/*/index.txt` in every
+user-agent group. A `_headers` noindex would conflict (a disallowed URL never shows it), so there is
+one mechanism. Proof: `edge.mjs` → `rscPayloadsDisallowed true`; `perf.mjs` `rscPayloads` still counts
+the files (the warn stays by design — they are shipped weight, not crawl exposure).
 
 ## Build hygiene — keep dev chunks out of `out/`
 

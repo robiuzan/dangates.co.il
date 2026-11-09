@@ -87,8 +87,8 @@ rules: [
 ```
 
 Drop `CCBot` if the owner chose "allow retrieval, block training" — a bulk-corpus crawler. The doc
-comment must say the zone, not this file, decides. Backlog §1.3 (51 crawlable `index.txt` RSC
-payloads as of 2026-11-09) is the one `Disallow` candidate to add here.
+comment must say the zone, not this file, decides. Backlog §1.3 is done here: `RSC_PAYLOAD_DISALLOW`
+in `app/robots.ts` is the one `Disallow`, repeated in every group; add no other.
 
 ## Gate 2 — extractability
 

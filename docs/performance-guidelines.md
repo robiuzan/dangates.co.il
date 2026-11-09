@@ -155,11 +155,9 @@ target. One change removed a client component and closed N8; keep it that way.
   CSS — do not reinstall it.
 - **45 RSC `index.txt` payloads**, 1,434,799 bytes as of 2026-08-24 (§1.3) — one beside every
   `index.html` for `next/link` prefetch; not on the JS budget, but crawlable duplicates of every
-  page's copy. Decide in the backlog row: strip `out/**/index.txt` as a post-build step in
-  `package.json` (a script, never a hand delete — `out/` is protected) after confirming navigation
-  falls back to full loads, or `Disallow: /*/index.txt` in `app/robots.ts` — the backlog row still
-  says "Cloudflare-side"; the managed `robots.txt` has been off since 2026-08-23 (cloudflare-runbook
-  step 1), so the repo file is the place.
+  page's copy. Decided 2026-11-09 (backlog §1.3): the files stay, because a soft link click fetches
+  them (`1ac37ff`), and `app/robots.ts` disallows `/index.txt` and `/*/index.txt` for every user agent;
+  `edge.mjs` → `rscPayloadsDisallowed` proves it, `perf.mjs` `rscPayloads` still counts the files.
 
 ### 2.4 The `"use client"` ledger and the rules
 
