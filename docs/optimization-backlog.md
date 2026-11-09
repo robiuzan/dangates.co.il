@@ -14,7 +14,8 @@ checks; where a script exists it is the measurement.
 (`npm run audit` → 37 failures across 10 checks; `npm run audit:env` → 0 dead citations), and again
 2026-11-08 after Sprints 2 and 3 on a clean rebuild (`npm run audit -- --scope full` → 15 across
 `content-depth` 10 and `claims-grep` 5), and again 2026-11-09 after Sprint 4 (`1796ee7` `af8ba4c`
-`74a92d1`): `npm run audit -- --scope full` → **8** failures, all in one check (`content-depth` 8).
+`74a92d1`): `npm run audit -- --scope full` → **8** failures, all in one check (`content-depth` 8) —
+unchanged after the roster sync `ad2f1ab` and the review follow-up `9195c9b` (4F), re-run 2026-11-09.
 
 **Severity:** P0 = shipping something wrong or harmful · P1 = material ranking/conversion loss ·
 P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half a day · L = multi-day.
@@ -320,9 +321,19 @@ grep -o '<details' out/index.html | wc -l             # 10
 node scripts/audit/links.mjs                        # brokenLinks 0 · orphans 0 — every moreAt target exists
 ```
 
-`content-depth.mjs` → home 1535 unique words / 800 (`belowFloor 0`). **Open, not this row:** the
-re-review of change set B left five `hebrew-editor` should-fix items on these answers and the
-pricing copy, and one `claims-verifier` should-fix on the diagnosis intro (Sprint 4 Exit).
+`content-depth.mjs` → home 1535 unique words / 800 (`belowFloor 0`) at `af8ba4c`. **The review
+findings closed 2026-11-09** by commit `9195c9b` (Sprint 4 change set 4F, row 4.9): the five
+`hebrew-editor` should-fix items change set B's re-review left on these answers and the pricing copy
+and the one `claims-verifier` should-fix on the diagnosis intro. `faqs[0]` opens with its answer
+("משך התיקון תלוי בתקלה"), `faqs[1]` speaks as the business, `faqs[4]` asks its visit-fee questions
+once, and the intro states the check order instead of an absolute promise. Verified on the current
+`out/` (`<main>`, scripts stripped):
+
+```bash
+# out/index.html: 'שאלו כשקובעים' 0 · 'שום חלק לא' 0 · '150–350 ₪' 2 (faqs[4] + the PricingTeaser row)
+node scripts/audit/schema.mjs          # ✅ 0 failures · faqPages 1 — the FAQPage still matches the visible faqs
+node scripts/audit/content-depth.mjs   # home 1788 words · 1549 unique / 800 · belowFloor 0
+```
 
 ### 3.6 — P0 · S · [✅ DONE] Injected adult-spam was live in a blog post
 
@@ -344,7 +355,7 @@ domain. Deleted 2026-08-17; `spam-grep.mjs` → `relatedTails: 0`. The route ren
 
 Migration stripped every `<a>`. The posts say "היכנסו למחירון", "בקרו בעמוד צור קשר", "📌 למידע נוסף" as
 plain text — anchor text written, target obvious, link missing. `spam-grep.mjs` also counts the
-structural emoji those phrases hang off: 39 as of 2026-11-09 (💡 ×31, 📌 ×4, 📞 ×3, 💬 ×1; 42
+structural emoji those phrases hang off: 39 as of 2026-11-09 (re-run after 4F) (💡 ×31, 📌 ×4, 📞 ×3, 💬 ×1; 42
 before Sprint 4 rewrote three post sentences).
 
 This is the cheapest internal-linking win on the site (§9.5) but needs the typed block model
@@ -379,7 +390,9 @@ grep -c 'מקרי מבחן\|ניתוח נתונים\|הנתונים מראים' 
 ```
 
 The rest of the blog's structural debt is not this row: the ~42 dead link phrases (§3.8), the flat
-all-`<h2>` outline (§3.10) and the 39 emoji go with the block-model migration, Sprint 7.3.
+all-`<h2>` outline (§3.10) and the 39 emoji go with the block-model migration, Sprint 7.3. Commit
+`9195c9b` (4F) rewrote this post's "שירות מהיר ואמין" CTA sentence and gave it `updated:
+"2026-11-09"` (§6.4).
 
 ### 3.12 — P2 · S · [✅ DONE 2026-11-08] Latin curly quotes instead of Hebrew גרשיים
 
@@ -409,8 +422,11 @@ node scripts/audit/content-depth.mjs
 # pricing  945 words ·  945 unique · floor 400 · belowFloor 0   (144 on 2026-08-23)
 ```
 
-**Still open — Sprint 6.8:** `/אודות/` 307/500, `/איזורי-שירות/` 98/250, `/שירותים/` 113/250
-(229 of its 342 words in shared blocks).
+Commit `9195c9b` (4F, 2026-11-09) moved both by design and kept them over their floors: home 1788
+words · 1549 unique; pricing 914 · 914 unique, after the visit band's repeats were cut to two.
+
+**Still open — Sprint 6.8**, as of 2026-11-09 (`content-depth.mjs`): `/אודות/` 317/500,
+`/איזורי-שירות/` 98/250, `/שירותים/` 120/250 (239 of its 359 words in shared blocks).
 
 ---
 
@@ -521,7 +537,8 @@ Until 2026-11-08 `{"@type":"AdministrativeArea","name":"מרכז הארץ ופר
 (Sprint 2 change set B, row 2.5). The business node's `areaServed` is the 18 published locations as
 `placeNode()` entries — `City` ×14 and `AdministrativeArea` ×4 for קריות, שרון, צפון and דרום — so
 it can never drift from the location pages. The manifest phrase itself is untouched and still
-owner-gated (§5.4, business-facts §E, Track B B5); only the graph stopped repeating it. Verified
+owner-gated (§5.4, business-facts §E, Track B B5) and still ships in the client JS bundle; only the
+graph stopped repeating it. Verified
 after a clean rebuild:
 
 ```bash
@@ -578,8 +595,9 @@ the trailing slash the export enforces (`schema.mjs` warned ×12). `author` stay
 **Closed 2026-11-08** by commit `02a3144` (Sprint 2 change set A, row 2.7). `articleJsonLd()` takes
 `dateModified` from `post.updated ?? post.date` (as `app/sitemap.ts` already did), gives the post
 `@id` `{pageUrl}#article` and `isPartOf` a full `Blog` node for `/blog/`, and the business `url`
-carries the trailing slash. No post has an `updated` value yet, so `dateModified` equals
-`datePublished` on all 11 — correct, not a miss. Verified after a clean rebuild:
+carries the trailing slash. No post had an `updated` value then, so `dateModified` equalled
+`datePublished` on all 11; since `9195c9b` (2026-11-09) 8 posts carry one and their
+`dateModified` follows it (§6.4). Verified after a clean rebuild:
 
 ```bash
 node scripts/audit/schema.mjs   # ✅ 0 warnings · post: BlogPosting 11 · Blog 11
@@ -629,8 +647,16 @@ owner-actions 3.5–3.6). Until Sprint 4 both were claimed sitewide (`claims-gre
 done:** the JSON-LD has emitted the 18 published locations instead of the phrase since `02a3144`
 (§4.8), and `1796ee7` (Sprint 4.1) took both out of the copy — `claims-grep.mjs` →
 `around-the-clock 0`, `national-coverage 0` live as of 2026-11-09; the footer and `/צור-קשר/` read
-`serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר"). What stays blocked is the roster value
-and the owner's answer (B5).
+`serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר"). The roster `shortPitch` stopped
+claiming national coverage, 24/7, speed and a full warranty in `ad2f1ab` (2026-11-09). What stays
+blocked is the roster `areaServed` value and the owner's answer (B5, owner-actions 3.6): no page or
+JSON-LD node renders the phrase, but `site.config.json` is bundled whole into the client JS, so it
+still ships once in `out/_next/static/`:
+
+```bash
+grep -rl 'פריסה ארצית' out/_next/static | wc -l    # 1 — areaServed:"מרכז הארץ ופריסה ארצית"
+grep -rl 'אחריות מלאה\|24/7' out/_next/static | wc -l  # 0 since ad2f1ab
+```
 
 ### 5.5 — P2 · S · [NOT STARTED] No geo signals
 
@@ -669,7 +695,9 @@ content-standards §5. Closed by Phases 3–4 page by page.
 **`/` and `/מחירון/` closed 2026-11-08** by commit `af8ba4c` (Sprint 4 rows 4.2 and 4.4): the first
 `<p>` after the H1 is `homeAnswerBlock` on the homepage and `pricingPageCopy.answer` on the pricing
 page. Measured with the audit's own `tokens()` on that paragraph (the proxy itself covers only
-service, location, post and guide pages): `/` 46 words, `/מחירון/` 45 words. **Still open:** the
+service, location, post and guide pages): `/` 46 words, `/מחירון/` 45 words. Commit `9195c9b`
+(4F, 2026-11-09) made `homeAnswerBlock` self-contained (the areas list and the WhatsApp button named
+outright): `/` 52 words, `/מחירון/` still 45, both inside 40–60. **Still open:** the
 proxy warns on service 7/7 (3–4 words, Sprint 5.2), location 18/18 (19–20 words, Sprint 6) and
 post 11/11 (1 word — the date, Sprint 7.6), as of 2026-11-09.
 
@@ -680,10 +708,26 @@ data, no DIY/licensed boundary. The blog circles all five and answers none with 
 **Fix (Phase 4):** the `/מדריכים/` hub ([ADR 0002](decisions/0002-guides-hub-route.md)), first eight
 guides in [content-calendar.md](content-calendar.md) §2, each gated by `article-auditor`.
 
-### 6.4 — P2 · S · [NOT STARTED] No freshness signal on the blog
+### 6.4 — P2 · S · [PARTIAL 2026-11-09 · 8 of 11 posts] No freshness signal on the blog
 
-The `updated` field exists and is wired into the sitemap but is set on **0 of 11 posts**;
-`BlogPosting.dateModified` pins to the publish date; every post is dated 2025 and two share a date.
+Until 2026-11-09 the `updated` field was wired into the sitemap and `BlogPosting.dateModified` but
+set on **0 of 11 posts**, so both pinned to the 2025 publish date — though Sprint 4 had edited
+several bodies.
+
+**The edited half closed 2026-11-09** by commit `9195c9b` (Sprint 4 change set 4F, row 4.9): each
+post Sprint 4 or 4F actually edited carries an honest `updated` — `2026-11-08` on six, `2026-11-09` on
+`שער-חשמלי-חוסך-זמן` and `שער-חשמלי-שעובד-כמו-חדש` (4F edited both). The three untouched posts keep
+their publish date. Verified on the current `out/`:
+
+```bash
+grep -c '^    updated:' lib/posts.ts                                  # 8
+grep -o '"dateModified":"[^"]*"' out/blog/שער-חשמלי-חוסך-זמן/index.html   # 2026-11-09
+grep -o '"dateModified":"[^"]*"' out/blog/תקלות-נפוצות-בשערים-חשמליים/index.html   # 2025-09-30 (untouched)
+```
+
+**Still open:** the page shows only the publish date (the post `PageHeader` subtitle formats
+`post.date`), and the three untouched posts get `updated` only with a real edit — Sprint 7.3. Two
+posts still share a publish date.
 
 ### 6.5 — P2 · S · [NOT STARTED] No `llms.txt`
 
@@ -733,13 +777,29 @@ grep -rlE 'פריסה ארצית|24/7|אחריות מלאה|ניסיון רב' o
 grep -rl 'הצוות המומחה\|צוות דן שערים' out --include=index.html | wc -l          # 0
 ```
 
-**Left, and why it is not this row:** three unclocked speed phrases in the posts ("שירות מהיר ואמין"
-in `שער-חשמלי-חוסך-זמן` and `שער-חשמלי-לא-מגיב`, "מקצועי, מהיר ואמין" in
-`שער-חשמלי-שעובד-כמו-חדש`) — permitted by eeat-and-trust §1.4, flagged `consider` by the
-eeat-trust-auditor, and they go with the post rewrites (Sprint 7.3). The lexicon has no pattern for
-team claims or for absolute workmanship promises; the change set B re-review found one of the
-latter on `/` ("ושום חלק לא מוחלף לפני שברור שהוא מקור התקלה", `homeDiagnosisCopy.intro`), open in
-the Sprint 4 Exit.
+**Follow-up closed 2026-11-09** by commits `ad2f1ab` (roster sync) and `9195c9b` (Sprint 4 change
+set 4F, row 4.9). The roster `shortPitch` — bundled into the client JS with the rest of
+`site.config.json`, though no page rendered it — no longer says "שירות מהיר ואמין, אחריות מלאה
+וזמינות 24/7 לחירום, בפריסה ארצית". 4F removed the absolute workmanship promise the change set B
+re-review found on `/` ("ושום חלק לא מוחלף…", `homeDiagnosisCopy.intro`), the `aboutValues` /
+`aboutSections` lines ("מצוינות", "ללא פשרות", "עד שהשער עובד"), "ציוד מתקדם", the swing-gate
+"מייצרים", the final CTA's "עוד היום", the form success state's "בהקדם" / "מענה מיידי", and two
+of the three post speed phrases; the lexicon gained `workmanship-absolute`
+(`ללא פשרות|בלי פשרות|מצוינות בכל|למצוינות`). Verified on the current `out/`:
+
+```bash
+node scripts/audit/claims-grep.mjs
+# ✅ pass · claimsChecked 14 · failingClaims 0 · totalHits 1 · every liveOccurrences 0
+#    (workmanship-absolute 0 live; its 1 source hit is an explanatory comment, skipped by design)
+grep -rl 'אחריות מלאה\|24/7' out/_next/static | wc -l                       # 0
+grep -rl --include=index.html 'בהקדם\|מענה מיידי\|מייצרים' out | wc -l       # 0
+```
+
+**Left, and why it is not this row:** one unclocked speed phrase, "שירות מהיר ואמין" in the
+`שער-חשמלי-לא-מגיב` checklist — permitted by eeat-and-trust §1.4, it goes with the post rewrites
+(Sprint 7.3); the manifest `areaServed` phrase in the client bundle (§5.4, B5). The lexicon still
+has no pattern for team claims or for absolute promises outside `workmanship-absolute`'s four
+phrases — `claims-verifier` reads for them.
 
 ### 7.3 — P1 · M · [✅ DONE 2026-11-08 · resolved by the N14 pivot] Eight of nine published prices were authored estimates
 
@@ -1500,6 +1560,10 @@ node scripts/audit/content-depth.mjs                    # pricing 945 unique / 4
 node scripts/audit/schema.mjs                           # ✅ 0 failures — no Offer, /מחירון/ a plain WebPage
 ```
 
+Commit `9195c9b` (4F, 2026-11-09) cut the page's five repeats of the visit band to two, both from
+`visitFeeRange` / `priceRows` (`'150–350 ₪'` ×2 in `<main>` of `out/מחירון/index.html`); pricing
+now 914 unique / 400, `belowFloor 0`.
+
 ### N15 — P2 · S · [✅ DONE 2026-11-08] No transparency surface beyond a phone number
 
 Until Sprint 4: `grep -rnE 'ח\.פ\.|ע\.מ\.|תלונ|ביטול עסקה|החזר כספי' lib app` → nothing. No legal
@@ -1632,16 +1696,19 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    homepage FAQ · §6.2 homepage and pricing answer blocks · N15 · §7.6 · §2.4–2.6 descriptions and
    titles · §3.11–3.12 blog debris~~ — shipped in the repo 2026-11-08 (commits `1796ee7` `af8ba4c`
    `74a92d1`): `claims-grep.mjs` 0, home 1535 unique / 800, `titles.mjs` 0 warnings,
-   `curlyQuotes 0`; audit 15 → 8. Partial by design: §3.13 (about and both indexes → Sprint 6.8),
-   §4.13 (service FAQs → 5.3), §6.2 (services, locations, posts → Sprints 5–7). Open: the change
-   set B reviewer should-fix items (Sprint 4 Exit) and the deploy.
+   `curlyQuotes 0`; audit 15 → 8. ~~The 4B / 4C reviewer should-fix items~~ — closed 2026-11-09
+   in `9195c9b` (4F), with the roster `shortPitch` cleared in `ad2f1ab`; audit still 8, home 1549
+   unique, `claims-grep` 0 over 14 claims. Partial by design: §3.13 (about and both indexes →
+   Sprint 6.8), §4.13 (service FAQs → 5.3), §6.2 (services, locations, posts → Sprints 5–7), §6.4
+   (8 of 11 posts dated; the rest with Sprint 7.3). Open: the deploy, and the manifest `areaServed`
+   phrase in the client bundle (B5).
 7. **Sprint 5 — service depth (next):** §3.2 · §6.2 and §4.13 for the 7 service pages · §9.4 ·
    §2.4 re-derived inside the 120–160 window. Then **Sprint 6 — locations + navigation:** §3.1 (the
    decision on whether this domain ranks) · §2.3 · §5.2 · §5.5 copy half · §9.1–9.3 · the rest of
    §3.13. Acceptance: `content-depth.mjs` floors + delta (the 8 failures left), `links.mjs` 0
    orphans and `notInChrome 0`, `claims-grep.mjs` still 0.
 8. **Phase 4 — guides hub + block model:** §6.3 · §3.8 · §3.10 · §9.5 · §6.2 for the posts
-   (ADR 0002, 0003) · §6.4 · §6.5 `llms.txt`.
+   (ADR 0002, 0003) · the rest of §6.4 (PARTIAL since 4F) · §6.5 `llms.txt`.
 9. ~~**Phase 5 — engagement + CRO:** §8.1 · §8.3 · §8.4/N3 · §8.5 · N8 · §13.4–13.5 · §10.2 · N19~~
    — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 closed
    in `fba5957`, the form alert's buttons now `size="lg"`); `a11y.mjs`, `rtl-lint.mjs` and

@@ -11,7 +11,10 @@
 - **Business:** דן שערים חשמליים (Dan Electric Gates) — repair, service and installation of electric
   gates, plus electric rolling shutters. **No street address** — the manifest carries none, and
   manifest `schema.areaServed` is `מרכז הארץ ופריסה ארצית` (🔶, B5 — no page or JSON-LD node
-  renders it since Sprints 2 and 4). Do not invent one.
+  renders it since Sprints 2 and 4, but `site.config.json` is bundled whole into the client JS, so
+  the phrase still ships once in `out/_next/static/` until the roster changes). The roster
+  `shortPitch` stopped carrying speed, "אחריות מלאה", 24/7 and "פריסה ארצית" in `ad2f1ab`
+  (2026-11-09). Do not invent an address.
 - **Phone (click-to-call):** `072-2587772` · WhatsApp `+972556601006` (the owner's own — 072-2587772
   is not on WhatsApp, §14) · `info@dangates.co.il`.
   This site sets `contact.phoneOverride: true` — it is the **one** fleet site that does not use the
@@ -74,9 +77,10 @@
 7. **Blog bodies in `lib/posts.ts` were migrated from a compromised WordPress site.** A 2026-08-17 pass
    removed the injected adult-spam, 55 dead "פוסטים קשורים" headings, 6 run-together words and 8 of 12
    curly quotes; Sprint 4 (`1796ee7` `74a92d1`) removed the last 4 curly quotes, both superlatives,
-   the team and experience sentences and the empty `מקרי מבחן` section. **Still outstanding:** ~42
-   plain-text link references, a flat all-`<h2>` hierarchy, 39 emoji, three unclocked "מהיר ואמין"
-   phrases, no answer blocks or tables (Sprint 7.3). Treat the file as untrusted input. _Hook-enforced:_
+   the team and experience sentences and the empty `מקרי מבחן` section; 4F (`9195c9b`) rewrote two
+   of the three unclocked speed phrases and set a real `updated` on the 8 posts those passes edited.
+   **Still outstanding:** ~42 plain-text link references, a flat all-`<h2>` hierarchy, 39 emoji, one
+   "שירות מהיר ואמין" (`שער-חשמלי-לא-מגיב`), no answer blocks or tables (Sprint 7.3). Treat the file as untrusted input. _Hook-enforced:_
    `post-edit-lint.ps1` re-runs the spam and claim lexicons on every edit; `spam-grep.mjs` at audit time.
 8. **A GTM snippet in the HTML proves nothing.** Whenever a container id changes, assert
    `https://www.googletagmanager.com/gtm.js?id=<ID>` returns **200**. Two fabricated ids cost the IL
@@ -423,7 +427,8 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   `pageOfSource`, that a tip links to the page carrying it; `check-live-out` proves the built page
   shows it). Nothing 🔶 from [docs/business-facts.md](docs/business-facts.md): this site's own pages
   carried many 🔶 claims (24/7, אחריות מלאה, ניסיון רב, פריסה ארצית, שירות מהיר) until Sprint 4
-  softened them (2026-11-08), and the lines still quote only the blog's maintenance and
+  softened them (2026-11-08) and the roster `shortPitch` until `ad2f1ab` (2026-11-09) — only the
+  manifest `areaServed` phrase is left, in the client bundle (B5) — and the lines still quote only the blog's maintenance and
   troubleshooting advice — no price, warranty, speed, hours,
   availability, coverage, credentials, staff, counts or reviews. Calm / no-card pages and this
   site's own ⛔ claim stems: `live.config.mjs` (mutation-tested — re-test after any edit). Both
@@ -470,10 +475,11 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   claims** (OK for now, fixed later, the owner said): fixed in `1796ee7` (backlog §7.2 ✅) — the two
   superlatives, the experience line ("צוות מנוסה עם ניסיון רב בתחום") and the three team /
   guarantee sentences (`הצוות המומחה`, `צוות דן שערים`, "…לפתור את הבעיה במהירות"), with no
-  register-quoted sentence touched (live-out: 13 quoted pieces shown). **Still open:** three
-  unclocked speed phrases ("שירות מהיר ואמין" on `שער-חשמלי-חוסך-זמן` and `שער-חשמלי-לא-מגיב`,
-  "מקצועי, מהיר ואמין" on `שער-חשמלי-שעובד-כמו-חדש`) — allowed by eeat-and-trust §1.4, left for the
-  post rewrites (Sprint 7.3, owner-actions 3.8); and the privacy page — rewritten 2026-11-08
+  register-quoted sentence touched (live-out: 13 quoted pieces shown). 4F (`9195c9b`, 2026-11-09)
+  rewrote the speed phrases on `שער-חשמלי-חוסך-זמן` and `שער-חשמלי-שעובד-כמו-חדש`, again with
+  live-out showing all 13 pieces. **Still open:** one unclocked "שירות מהיר ואמין" on
+  `שער-חשמלי-לא-מגיב` — allowed by eeat-and-trust §1.4, left for the post rewrites (Sprint 7.3,
+  owner-actions 3.8); and the privacy page — rewritten 2026-11-08
   (`68a4a7f`) to name the status-file read and the four browser-storage values, its copy signed
   off (`fba5957`); backlog §8.2 stays PARTIAL on B2 and B10 only.
 - **Before the first deploy (owner, in the kit README's order):** add the three origins (apex, www, `.pages.dev`) to the status switch's CORS list — without it the

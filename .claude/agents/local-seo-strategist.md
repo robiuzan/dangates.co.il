@@ -64,7 +64,9 @@ number below is "as of 2026-08-23" context for reading the output, not a finding
    `prefixed` field (content-standards §8), not a hand-patched string.
 6. **Coverage honesty** (§5.4, blocked on the owner). The manifest `schema.areaServed` still says
    `מרכז הארץ ופריסה ארצית`, but no page renders it: the JSON-LD `areaServed` is the 18 published
-   locations (`d8edb28`) and the copy says `serviceAreaLine` (`1796ee7`). `claims-grep.mjs` →
+   locations (`d8edb28`) and the copy says `serviceAreaLine` (`1796ee7`). It still ships once in the
+   client JS bundle (the manifest is bundled whole) until the roster changes (B5); the roster
+   `shortPitch` dropped its "פריסה ארצית" and 24/7 in `ad2f1ab`. `claims-grep.mjs` →
    `around-the-clock 0`, `national-coverage 0` live as of 2026-11-09 (42 and 4 pages on 2026-08-23);
    the footer and every CTA read the same `siteConfig.hours` (§7.6 ✅). A promise the business cannot
    keep at 03:00 in באר שבע is a liability, not a keyword — flag any that comes back. Route the open

@@ -27,12 +27,15 @@ node scripts/audit/claims-grep.mjs        # every gated phrase in source and in 
 node scripts/audit/spam-grep.mjs          # emoji, curly quotes, fused words, spam tokens in lib/posts.ts
 ```
 
-As of 2026-11-09 for context only: all 18 locations sit at 127–133 unique words against a 350 floor
-with a doorway delta of 2–3 tokens (threshold 120); all 7 services at 164–170 against 450, delta 28–46;
+As of 2026-11-09 (after 4F) for context only: all 18 locations sit at 136–142 unique words against a
+350 floor with a doorway delta of 2–3 tokens (threshold 120); all 7 services at 167–173 against 450,
+delta 28–50;
 all 11 posts under the 900 floor; no service, location or post page opens with a 40–60-word answer
 block (`/` and `/מחירון/` do, since Sprint 4); `claims-grep.mjs` passes — the five gated phrases it
 failed on 2026-08-23 ("ניסיון רב שנים", "אחריות מלאה", "פריסה ארצית", 24/7, two superlatives) were
-softened in `1796ee7`; `spam-grep.mjs` is clean of spam and curly quotes, with 39 body-copy emoji
+softened in `1796ee7`, and 4F (`9195c9b`) took out the absolute workmanship lines ("ללא פשרות",
+"מצוינות", "שום חלק לא מוחלף…") and the form's "בהקדם" — the lexicon now fails the first two
+(`workmanship-absolute`); `spam-grep.mjs` is clean of spam and curly quotes, with 39 body-copy emoji
 still to strip.
 
 ## Inputs — the acceptance bar
@@ -58,7 +61,8 @@ entries of the same kind before adding one, so tone, length and structure match.
 - `lib/content.ts` is what you write into today: the `serviceMeta` map (taglines, descriptions and
   `metaDescription` behind `serviceCards`), `faqs` (the single homepage FAQ), `aboutValues`,
   `aboutSections`, `pricingPageCopy` and `homeDiagnosisCopy` (never a number beyond
-  `visitFeeRange`), `postSeo`, and the softened claim lines in `differentiators`/`trustStats`.
+  `visitFeeRange`), `postSeo`, the form's states (`leadFormSuccessCopy` since 4F) and the softened
+  claim lines in `differentiators`/`trustStats`.
 - `lib/posts.ts` is the 11 migrated posts on the flat `PostBlock = {type: "h" | "p" | "li"; text}` —
   every heading renders `<h2>`, a link cannot be expressed, and 42 link phrases survive as plain text.
 - `reviews` is empty by design (`lib/content.ts` records why). A one-line caution, not a live

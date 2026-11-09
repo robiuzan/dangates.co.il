@@ -25,9 +25,10 @@ As of 2026-11-09 `claims-grep` passes: `failingClaims 0`, every `liveOccurrences
 `totalHits 1` (the gated `rating` row in `Reviews.tsx`, 0 live). Sprint 4 (`1796ee7`) took it there
 from 5 failing claims on 2026-08-24 — `warranty-full` 77 live on 41 pages, `around-the-clock` 75 on
 42, `experience` 9 on 3, `national-coverage` 7 on 4, two `superlative` hits in the posts. Keep every
-bucket at 0. The lexicon has no pattern for team claims ("צוות מומחים") or absolute workmanship
-promises ("שום חלק לא מוחלף…") — those are `claims-verifier` judgment. The numbers move; the script
-is the truth.
+bucket at 0. Since `9195c9b` (4F) the lexicon has 14 ids: `workmanship-absolute` catches
+"ללא פשרות", "בלי פשרות", "מצוינות בכל" and "למצוינות". It still has no pattern for team claims
+("צוות מומחים") or for other absolute promises (like the "שום חלק לא מוחלף…" line 4F took off `/`)
+— those are `claims-verifier` judgment. The numbers move; the script is the truth.
 
 ## What is not coming — and what is
 
@@ -55,22 +56,24 @@ Sprint 4.1 rewrote every hit the lexicon flagged, after N13 had moved the copy o
 "אחריות מלאה" → **אחריות על העבודה** (never a term or "בכתב"); "ניסיון רב שנים" → mechanism depth
 (step 2); 24/7 → the hours (step 3); "פריסה ארצית" → the published areas (step 4); both "הטובה ביותר"
 superlatives and the posts' team and guarantee sentences rewritten. `claims-grep.mjs` → 0 live on
-every claim. **Still open:** the roster `shortPitch` still carries "שירות מהיר ואמין, אחריות מלאה
-וזמינות 24/7 לחירום, בפריסה ארצית" — no page and no JSON-LD node renders it (`businessNode` uses the
-tagline as `description`), but the synced manifest is bundled into a client JS chunk, so the string
-ships under `out/_next/static/`. The fix is a **roster** edit
-(`Israeli services sites/roster/sites/dangates.json`), then sync — never the synced file (golden
-rule 2, hook-blocked). New copy goes in `lib/content.ts` (golden rule 6), so each claim stays one
-edit.
+every claim. **The roster half closed 2026-11-09** (`ad2f1ab`): the `shortPitch` that carried
+"שירות מהיר ואמין, אחריות מלאה וזמינות 24/7 לחירום, בפריסה ארצית" now reads only what the pages say
+(diagnosis before repair, אחריות על העבודה, מרכז הארץ). No page or JSON-LD node rendered it
+(`businessNode` uses the tagline as `description`), but the synced manifest is bundled into a client
+JS chunk, so it shipped under `out/_next/static/` — `grep -rl 'אחריות מלאה\|24/7' out/_next/static`
+→ 0 now. That was a **roster** edit (`Israeli services sites/roster/sites/dangates.json`), then sync
+— never the synced file (golden rule 2, hook-blocked); the same path handles `schema.areaServed`
+(step 4). New copy goes in `lib/content.ts` (golden rule 6), so each claim stays one edit.
 
 **2. Rewrite `trustStats` and `differentiators` as things a customer can see (§B, §D) — done in
 `1796ee7`.** `trustStats` (typed `readonly TrustStat[]`, 4 items for `TrustBar`'s `<dl>`) states
 what the data proves — the service count from `publishedCounts`, the hours label from
 `siteConfig.hours`, the warranty only as "אחריות על העבודה", no count of areas; `differentiators` (6, `WhyUs`) lead with diagnosis before repair, scheduling
 within the hours and אחריות על העבודה. The rule stays: **every item names something observable
-during one visit**, or a number derived from data. Open as `consider` (eeat-trust-auditor, change
-set 4A): the "כל סוגי השערים והמנגנונים" title is wider than its body's four mechanism families, and
-the `Users` / `Award` icons still carry the meaning of the removed "צוות מומחים" / "ניסיון" items.
+during one visit**, or a number derived from data. 4F (`9195c9b`) retitled the over-wide
+"כל סוגי השערים והמנגנונים" item "מנגנון אחר לכל סוג שער" and replaced "ציוד מתקדם" with "תיקון לפי
+החלק שנכשל". Still open as `consider` (eeat-trust-auditor, change set 4A): the `Users` / `Award`
+icons still carry the meaning of the removed "צוות מומחים" / "ניסיון" items.
 Register: content-standards §4.
 
 **3. Bound the hours (§7.6 · row §E "Is 24/7 emergency service real, and where?") — done in
@@ -85,8 +88,10 @@ cities" → the wording lives on those location pages only (Phase 3 `cityContent
 **4. Coverage (row §E "Is פריסה ארצית true?") — copy half done.** The footer and `/צור-קשר/` say
 `serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר", in `lib/content.ts` since `1796ee7`) and the
 copy names the published areas. Since `d8edb28` `businessNode` (`/schema-structured-data`) emits the
-18 real places as `areaServed`. The phrase survives only in the roster — `schema.areaServed` and
-`shortPitch` (step 1) — and stays a roster question (B5).
+18 real places as `areaServed`. The phrase survives only in the roster `schema.areaServed`
+(`shortPitch` was cleared in `ad2f1ab`, step 1): no page or node shows it, but it ships once in the
+client bundle (`grep -rl 'פריסה ארצית' out/_next/static` → 1). It stays a roster question (B5,
+owner-actions 3.6).
 
 **5. `lib/authors.ts` — an empty registry with a data-only path (§7.4 · row §B).** Copy
 `c:/Users/robiu/antigravity/Projects/galbath.co.il/lib/authors.ts` and retarget its header: brand
@@ -117,8 +122,8 @@ organisation (§7.4): no "מאת" line, no byline component — `date` / `update
 signal (`/aeo-answer-content`).
 
 **6. `/אודות/` to the 500-word floor with `AboutPage` + `knowsAbout` (§B, §C, §D).** `content-depth.mjs`
-measures 307 unique words against 500 as of 2026-11-09 (`thresholds.json` `"about": 500`; 277 on
-2026-08-24). Its copy lives in `lib/content.ts` since N13 (`aboutMetaDescription`, `aboutIntro`) and
+measures 317 unique words against 500 as of 2026-11-09, after 4F (`thresholds.json`
+`"about": 500`; 277 on 2026-08-24, 307 before 4F). Its copy lives in `lib/content.ts` since N13 (`aboutMetaDescription`, `aboutIntro`) and
 carries none of the four claims since `1796ee7`. The rewrite (Sprint 6.8) goes into `aboutSections` /
 `aboutValues` and an About-specific answer block, in this order:
 
@@ -175,7 +180,8 @@ rows that move when a fact arrives.
 ## Checklist
 
 - [ ] `claims-grep.mjs` → 0 failures; `licence` / `insurance` / `founded` / `named-person` still 0.
-- [ ] Roster `shortPitch` softened and synced; `site.config.json` untouched by hand (open — step 1).
+- [x] Roster `shortPitch` softened and synced; `site.config.json` untouched by hand (`ad2f1ab`).
+- [ ] Roster `schema.areaServed` bounded once the owner answers 3.6 (B5 — step 4).
 - [x] `trustStats` (4) and `differentiators` (6) name observable things; no copy left in JSX (`1796ee7`).
 - [x] Footer hours and every CTA agree; `hours.emergency` gone (`1796ee7`) — a 24/7 line only once §E is ✅.
 - [ ] `lib/authors.ts` exists, empty, header intact; `schema.mjs` reports the gate closed.

@@ -52,7 +52,9 @@ app/**/page.tsx  →  components/{ui,layout,marketing,forms}/**
 bug (`.claude/rules/content-data.md`, `rtl-markup.md`). The site has **no street address** — the
 manifest carries none; do not invent one. The manifest's `schema.areaServed` is still the phrase
 `"מרכז הארץ ופריסה ארצית"` (owner-gated, B5), but since Sprint 2 the graph emits the 18 published
-locations instead.
+locations instead. `site.config.json` is bundled whole into the client JS, so that phrase still
+ships once under `out/_next/static/`; the roster `shortPitch` was cleared of its claims in
+`ad2f1ab` (2026-11-09).
 
 **The richer data model does not exist yet:** `kind` / `prefixed` / per-entry `updated` on locations,
 `cityContent`, `serviceDepth` (Phase 3 — `/new-city`, `/new-service` are the spec); the typed block

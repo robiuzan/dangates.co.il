@@ -175,8 +175,8 @@ why `locationServiceJsonLd` lives in `lib/jsonld.ts` (§8), not in the kit.
 `app/blog/[slug]/page.tsx` emits `BlogPosting` through `articleJsonLd()` in one `@graph` with the
 business node and the breadcrumb. Since `02a3144` (2026-11-08) it carries `headline`, `description`,
 `@id` `{pageUrl}#article`, `url` and `mainEntityOfPage` percent-encoded with the slash,
-`datePublished`, `dateModified` from `post.updated ?? post.date` (no post has `updated` yet, so the
-two are equal), `isPartOf` a full `Blog` node for `/blog/`, `image` (the OG card), `inLanguage`, and
+`datePublished`, `dateModified` from `post.updated ?? post.date` (8 of 11 posts carry `updated`
+since `9195c9b`, 2026-11-09; on the other three the two are equal), `isPartOf` a full `Blog` node for `/blog/`, `image` (the OG card), `inLanguage`, and
 `author` and `publisher` → `#business`.
 
 | Was (until 2026-11-08)                            | Now                                                                          |

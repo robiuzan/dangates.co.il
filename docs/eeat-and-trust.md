@@ -67,10 +67,14 @@ Is the claim in lib/site-config.ts, lib/content.ts, or a ✅ row of business-fac
   audit time.
 - **Audit time** — `node scripts/audit/claims-grep.mjs` scans the copy files _and_ every route and
   component, then counts live occurrences in visible `<main>` text of `out/` (scripts stripped). A
-  claim with no source hit but live text still fails; a claim that reaches the page **only through
-  JSON-LD** — `shortPitch` → the business node's `description` — is unmeasured by `claims-grep.mjs`
-  and by `schema.mjs`. That path is a roster edit (`eeat-build` step 1) that only `claims-verifier`
-  and `schema-auditor` catch by reading the graph.
+  claim with no source hit but live text still fails; a claim that reaches the export **only through
+  JSON-LD or the client bundle** is unmeasured by `claims-grep.mjs` and by `schema.mjs`.
+  `site.config.json` is bundled whole into a JS chunk, so every roster string ships even when no
+  page renders it: the `shortPitch` carried four 🔶 claims there until `ad2f1ab` (2026-11-09; the
+  business node has used the tagline, not the pitch, since Sprint 2), and the manifest `areaServed`
+  "מרכז הארץ ופריסה ארצית" still does — 1 chunk in `out/_next/static/`, owner item B5. Both are
+  roster edits (`eeat-build` steps 1 and 4) that only `claims-verifier` and `schema-auditor` catch,
+  by reading the graph and grepping the bundle.
 - **Review** — `claims-verifier` maps every fact in a diff to its row: OK · 🔶 mark + row · ⛔ remove.
   **A live 🔶 or ⛔ claim is stop-ship**; existing debt (§7.2) does not license one more occurrence.
 
@@ -178,8 +182,9 @@ and fails any `Person` author in `out/`. Omitting a signal is legitimate; invent
 ### 3.4 Editorial freshness
 
 `updated` on `services`, `locationsUpdated`, the `staticPages` registry in `lib/site-config.ts` (backlog §1.4, done 2026-09-06) and a post's `updated` feed the
-sitemap `lastmod`. `BlogPosting.dateModified` is pinned to `post.date` today and follows `updated`
-once backlog §6.4 lands (schema-graph §6). Dates move **only on a substantive copy edit** — never for
+sitemap `lastmod`. `BlogPosting.dateModified` follows `post.updated ?? post.date` since `02a3144`
+(schema-graph §6); since `9195c9b` (2026-11-09) 8 of 11 posts carry a real `updated` — the ones
+Sprint 4 edited — and the other three keep their publish date (backlog §6.4, PARTIAL). Dates move **only on a substantive copy edit** — never for
 styling, metadata or analytics work, never to fake freshness. Price bands and standards citations age
 fastest — schedule their re-read.
 

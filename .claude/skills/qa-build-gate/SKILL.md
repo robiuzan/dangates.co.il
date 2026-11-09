@@ -62,26 +62,29 @@ table against the baseline below. Every inline grep the old gate carried now liv
 weight/preloads → `perf.mjs`, `_redirects`/`_headers`/dead hosts → `edge.mjs`, blog debris →
 `spam-grep.mjs`, unconfirmed claims → `claims-grep.mjs`.
 
-### Known baseline — as of 2026-11-09 (post-Sprint 4), `npm run audit` exits 8
+### Known baseline — as of 2026-11-09 (post-Sprint 4 and 4F), `npm run audit` exits 8
 
-Re-cut from `npm run audit -- --scope full --json` on 2026-11-09 against the `out/` built from
-`74a92d1`, after Sprint 4 (`1796ee7` `af8ba4c` `74a92d1`). The previous baseline was 15 on
-2026-11-08 (26 on 2026-09-06, 37 on 2026-08-23); `claims-grep` 5 → 0 moved to ✅, `content-depth`
-10 → 8 (the home and pricing floors pass), and nothing moved the wrong way.
+Re-cut from `npm run audit -- --scope full --json` on 2026-11-09 against the current `out/` (source
+tree at `9195c9b`), after Sprint 4 (`1796ee7` `af8ba4c` `74a92d1`), the roster sync `ad2f1ab` and
+the review follow-up 4F (`9195c9b`). The previous baseline was 15 on 2026-11-08 (26 on 2026-09-06,
+37 on 2026-08-23); `claims-grep` 5 → 0 moved to ✅, `content-depth` 10 → 8 (the home and pricing
+floors pass). 4F kept the count at 8 and moved content only by design (home unique 1535 → 1549,
+pricing 945 → 914, the services index 113 → 120, about 307 → 317, locations 127–133 → 136–142,
+services 164–170 → 167–173); every check still fails or passes exactly as before.
 
-| Check                 | Fails | What is failing                                                                                                                                                                                                      | Expected until                                                        |
-| --------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `content-depth`       | 8     | floors: about 307/500, areas index 98/250, services index 113/250, 18 locations 127–133/350, 7 services 164–170/450, 11 posts 439–574/900 · doorway delta < 120 on all 18 locations (2–3) and all 7 services (28–46) | Sprint 5 (§3.2), Sprint 6 (§3.1, §3.13), posts Sprint 7 (§3.8, §3.10) |
-| `claims-grep`         | 0     | ✅ since `1796ee7` (§7.2, §7.6) — `failingClaims` 5 → 0, every `liveOccurrences` 0; `totalHits 1` is the gated rating row in `Reviews.tsx`                                                                           | keep at 0                                                             |
-| `schema`              | 0     | ✅ since `d8edb28` (§4.2, §4.4–§4.9, §4.12, N2) — `danglingIds` 18 → 0, `rawHebrewUrls` 18 → 0, `WebSite` on `/`, `Service` on 18 locations; 0 warnings                                                              | keep at 0                                                             |
-| `a11y`                | 0     | ✅ since `68a4a7f` (§11.1–§11.3, N11, §8.1) — every contrast pair ≥ 5.42:1, lists intact, per-field `aria-invalid`; 0 warnings                                                                                       | keep at 0                                                             |
-| `rtl-lint`            | 0     | ✅ since `7cfcf4c` (§11.5) — `bannedUtilities` 3 → 0, `hexLiterals` 7 → 0                                                                                                                                            | keep at 0                                                             |
-| `titles`              | 0     | ✅ since `13a6bdc` (§1.5) — `ogUrlMissing` 45 → 0; 0 warnings since `74a92d1` (§2.4–§2.6, 24 → 0)                                                                                                                    | keep at 0                                                             |
-| `cta-coverage`        | 0     | ✅ since `fee7f69` (§13.2) — `missingDataCta` 24 → 0; the `/מחירון/` warning gone since `68a4a7f` (§8.5)                                                                                                             | keep at 0                                                             |
-| `perf`                | 0     | ✅ since `13a6bdc` (§10.1, §10.3) — `fontPreloads` 0 → 2, `unusedDeps` → `[]`; the RSC-payload warning (§1.3) stays                                                                                                  | keep at 0                                                             |
-| `edge`                | 0     | ✅ since `a0e0fe2` (§1.1 ADR 0004, §12.1, §12.4/N5, N4) — 37 stubs → 72 real 301 rules, `_headers` owned, 0 dead-host artifacts; the `llms.txt` warning (§6.5) stays                                                 | keep at 0                                                             |
-| `export`              | 0     | pass — asserts `out/` is a current build of the source tree (N12)                                                                                                                                                    | keep at 0                                                             |
-| `links` · `spam-grep` | 0     | pass — their metrics are the regression watch-list below                                                                                                                                                             | keep at 0                                                             |
+| Check                 | Fails | What is failing                                                                                                                                                                                                                                                                | Expected until                                                        |
+| --------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `content-depth`       | 8     | floors: about 317/500, areas index 98/250, services index 120/250, 18 locations 136–142/350, 7 services 167–173/450, 11 posts 439–574/900 · doorway delta < 120 on all 18 locations (2–3, median 2) and all 7 services (28–50, median 43)                                      | Sprint 5 (§3.2), Sprint 6 (§3.1, §3.13), posts Sprint 7 (§3.8, §3.10) |
+| `claims-grep`         | 0     | ✅ since `1796ee7` (§7.2, §7.6) — `failingClaims` 5 → 0, every `liveOccurrences` 0 over `claimsChecked 14` (`workmanship-absolute` added in `9195c9b`); `totalHits 1` is the gated rating row in `Reviews.tsx`. It reads `<main>` text only — see the bundle note under Step 3 | keep at 0                                                             |
+| `schema`              | 0     | ✅ since `d8edb28` (§4.2, §4.4–§4.9, §4.12, N2) — `danglingIds` 18 → 0, `rawHebrewUrls` 18 → 0, `WebSite` on `/`, `Service` on 18 locations; 0 warnings                                                                                                                        | keep at 0                                                             |
+| `a11y`                | 0     | ✅ since `68a4a7f` (§11.1–§11.3, N11, §8.1) — every contrast pair ≥ 5.42:1, lists intact, per-field `aria-invalid`; 0 warnings                                                                                                                                                 | keep at 0                                                             |
+| `rtl-lint`            | 0     | ✅ since `7cfcf4c` (§11.5) — `bannedUtilities` 3 → 0, `hexLiterals` 7 → 0                                                                                                                                                                                                      | keep at 0                                                             |
+| `titles`              | 0     | ✅ since `13a6bdc` (§1.5) — `ogUrlMissing` 45 → 0; 0 warnings since `74a92d1` (§2.4–§2.6, 24 → 0)                                                                                                                                                                              | keep at 0                                                             |
+| `cta-coverage`        | 0     | ✅ since `fee7f69` (§13.2) — `missingDataCta` 24 → 0; the `/מחירון/` warning gone since `68a4a7f` (§8.5)                                                                                                                                                                       | keep at 0                                                             |
+| `perf`                | 0     | ✅ since `13a6bdc` (§10.1, §10.3) — `fontPreloads` 0 → 2, `unusedDeps` → `[]`; the RSC-payload warning (§1.3) stays                                                                                                                                                            | keep at 0                                                             |
+| `edge`                | 0     | ✅ since `a0e0fe2` (§1.1 ADR 0004, §12.1, §12.4/N5, N4) — 37 stubs → 72 real 301 rules, `_headers` owned, 0 dead-host artifacts; the `llms.txt` warning (§6.5) stays                                                                                                           | keep at 0                                                             |
+| `export`              | 0     | pass — asserts `out/` is a current build of the source tree (N12)                                                                                                                                                                                                              | keep at 0                                                             |
+| `links` · `spam-grep` | 0     | pass — their metrics are the regression watch-list below                                                                                                                                                                                                                       | keep at 0                                                             |
 
 The ✅ rows are green **in the repo**. Sprint 1 is live (the 2026-10-12/13 deploys, probed
 2026-11-08); Sprints 2, 3 and 4 are not deployed yet. `edge` in particular measures files, not
@@ -98,8 +101,9 @@ gate even though the check itself still passes): `links` → `orphans 0`, `broke
 `titles` → `pages 46`, `uniqueTitles 46`, `uniqueDescriptions 46` ·
 `titles` → 0 warnings (since `74a92d1`) ·
 `spam-grep` → `spamHits 0`, `fusedWords 0`, `relatedTails 0`, `curlyQuotes 0`, `emojiCount 39` ·
-`claims-grep` → `failingClaims 0`, `totalHits 1`, every `liveOccurrences` value 0 ·
-`content-depth` → home `belowFloor 0` (1535 unique), pricing `belowFloor 0` (945 unique) ·
+`claims-grep` → `failingClaims 0`, `totalHits 1`, `claimsChecked 14`, every `liveOccurrences`
+value 0 · `content-depth` → home `belowFloor 0` (1549 unique), pricing `belowFloor 0` (914 unique),
+`locationMedianDelta 2`, `serviceMedianDelta 43`, `sharedParagraphs 8` ·
 `schema` → `pagesWithJsonLd 45`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 1` · `perf` →
 `largestJsBytes 172834`, `clientComponents 3` (`LeadForm`, `MobileMenu`, `Reveal`), `fontPreloads 2`,
 `unusedDeps []`, `devBuildFiles 0`, `sourceMaps 0` · `rtl-lint` → `bannedUtilities 0`,
@@ -132,6 +136,14 @@ grep -rl 'דן שערים חשמליים | דן שערים חשמליים' out -
 find public -name index.html | wc -l                                               # 0 — stubs gone (ADR 0004); anything > 0 means one came back
 grep -c ' 301$' public/_redirects                                                  # 72 — the real 301s that replaced them
 ```
+
+**The client bundle is not in any script's scope.** `claims-grep` reads `<main>` text, and
+`site.config.json` is bundled whole into a JS chunk, so a roster string no page renders still
+ships. Since `ad2f1ab` (2026-11-09) the roster `shortPitch` carries none of the four claims;
+`grep -rl 'אחריות מלאה\|24/7' out/_next/static | wc -l` → 0, and
+`grep -rl 'פריסה ארצית' out/_next/static | wc -l` → 1, the manifest `areaServed`
+"מרכז הארץ ופריסה ארצית" — expected until the owner answers B5 (owner-actions 3.6); any other hit
+is a new roster claim.
 
 Do not grep for a bare `"author"` here: all 11 `BlogPosting` nodes carry an `Organization` author by
 design (CLAUDE.md §8), so that count is 11, not 0. The invented-byline assertion is `Person` = 0.

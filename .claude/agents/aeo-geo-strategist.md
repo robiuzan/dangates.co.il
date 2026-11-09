@@ -63,7 +63,8 @@ context, not findings to copy.
    (`/aeo-answer-content` Gate 1).
 2. **Answer blocks** (§6.2). `content-depth.mjs` answer-block proxy — as of 2026-11-09, 0 of 36
    service, location and post pages open with a 40–60-word paragraph (services open with 3–4 words,
-   locations 19–20, posts 1); `/` (46 words) and `/מחירון/` (45) have one since `af8ba4c` — the proxy
+   locations 19–20, posts 1); `/` and `/מחירון/` have one since `af8ba4c` (52 and 45 words after
+   4F, `9195c9b`, made the homepage block self-contained) — the proxy
    does not cover them, so read them. Spec: content-standards §5, buyer vocabulary עינית /
    לוח פיקוד. Closed page by page in Phases 3–4, never by a sitewide template paragraph (that is a
    shared block `content-depth.mjs` subtracts).
@@ -79,7 +80,8 @@ context, not findings to copy.
    `schema-auditor`; do not duplicate its rows. _History:_ a fabricated 5.0/10 rating shipped until
    2026-08-17 and is now gated behind `REVIEW_SOURCE_URL` — never plan around a rating.
 5. **Freshness and authorship** (§6.4). `dateModified` comes from `post.updated ?? post.date` since
-   `02a3144`, but `updated` is set on 0 of 11 posts, so it still equals the publish date; `author` is
+   `02a3144`; since `9195c9b` (2026-11-09) 8 of 11 posts carry a real `updated`, and the 3 untouched
+   ones still equal their publish date (§6.4 PARTIAL); the page shows only the publish date; `author` is
    the `Organization` — and
    **stays so**: no named person is coming (business-facts §B, owner-actions §3.3). Recommend real
    `updated` dates on genuinely revised posts, never an invented byline.

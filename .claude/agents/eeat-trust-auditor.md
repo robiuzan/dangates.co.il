@@ -52,14 +52,18 @@ context for reading the output, never a finding to copy.
    `claims-grep.mjs` as of 2026-11-09: `failingClaims 0`, every `liveOccurrences` value 0 (on
    2026-08-23: `warranty-full` "אחריות מלאה" 77× on 41 pages · `around-the-clock` 75× on 42 ·
    `experience` 9× on 3 · `national-coverage` 7× on 4). Any return of one is **Critical**. The
-   lexicon does not catch team claims ("צוות מומחים", "הצוות המומחה"), absolute workmanship promises
-   ("שום חלק לא מוחלף לפני…" — live on `/` in `homeDiagnosisCopy.intro`, flagged by the 4B
-   re-review) or unclocked speed ("שירות מהיר ואמין" on three posts — allowed by eeat-and-trust
-   §1.4): read for them by hand. The backing facts are **not coming** (business-facts §B, §D), so
+   lexicon's `workmanship-absolute` id (added in 4F, `9195c9b`) catches only "ללא פשרות", "בלי
+   פשרות", "מצוינות בכל" and "למצוינות"; it does not catch team claims ("צוות מומחים", "הצוות
+   המומחה"), other absolute workmanship promises (the "שום חלק לא מוחלף לפני…" line the 4B re-review
+   flagged on `/` was removed in 4F) or unclocked speed ("שירות מהיר ואמין", left on one post,
+   `שער-חשמלי-לא-מגיב` — allowed by eeat-and-trust §1.4): read for them by hand. The backing facts are **not coming** (business-facts §B, §D), so
    the resolution stays softening: "אחריות על העבודה", mechanism depth (`/eeat-build`), 24/7 and
    פריסה ארצית bounded to what the owner confirms (§E). Never propose replacing a vague claim with a
-   specific unsourced one. Also check the roster `shortPitch` (it still carries all three claims and
-   ships inside a client JS chunk, though no page renders it — a roster fix, `/eeat-build` step 1).
+   specific unsourced one. Also check the client bundle: `site.config.json` ships whole inside a
+   JS chunk, though no page renders most of it. The roster `shortPitch` carried "אחריות מלאה", 24/7,
+   speed and "פריסה ארצית" there until `ad2f1ab` (2026-11-09); today the only hit is the manifest
+   `areaServed` "מרכז הארץ ופריסה ארצית" (`grep -rl 'פריסה ארצית' out/_next/static` → 1) —
+   expected until B5, a roster fix (`/eeat-build` step 4). Any other hit is a finding.
 3. **Prices** (§7.3 ✅ by the N14 pivot, `af8ba4c`). `priceRows` now holds only the ₪150–350 visit
    band (`visitFeeRange`, 🔶 whether current — business-facts §D); `/מחירון/` explains what moves the
    price and shows no other number. Flag any new number, any per-service range, and any stated
@@ -85,8 +89,9 @@ context for reading the output, never a finding to copy.
 8. **Blog integrity** (golden rule 7). _History:_ the injected spam, 55 dead "פוסטים קשורים" tails and
    fused words are gone (`spam-grep.mjs` → 0), and Sprint 4 removed both superlatives, the team and
    guarantee sentences, the empty `מקרי מבחן` run with its data-less "הנתונים מראים בבירור" paragraph
-   and the last curly quotes (`claims-grep.mjs` 0, `curlyQuotes 0`). Still live: 39 structural emoji,
-   ~42 dead link phrases and the three unclocked speed phrases — Sprint 7.3.
+   and the last curly quotes (`claims-grep.mjs` 0, `curlyQuotes 0`); 4F rewrote two of the three
+   unclocked speed phrases. Still live: 39 structural emoji, ~42 dead link phrases and one "שירות
+   מהיר ואמין" on `שער-חשמלי-לא-מגיב` — Sprint 7.3.
 9. **Transparency surface** (N15 ✅ since `af8ba4c`). No address — **correct** for a service-area
    business, do not flag it. `/צור-קשר/#complaints` covers complaints, cancellation and invoice
    questions on the existing channels, linked from the footer, with no response-time promise. No ח.פ.

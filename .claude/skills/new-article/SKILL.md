@@ -26,15 +26,15 @@ As of 2026-08-23 the repo and `out/` are clean of injected spam (`spamHits: 0`, 
 `relatedTails: 0` — the 55 dead "פוסטים קשורים" headings and the 6 run-together words are gone; the
 PostToolUse hook re-checks every edit). What remains, all in `lib/posts.ts`:
 
-| Debt                                                                                                         | Where                                                                   | Backlog   |
-| ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- | --------- |
-| ~42 link phrases ("📌 למידע נוסף…", "היכנסו למחירון", "בקרו בעמוד צור קשר") as plain text                    | the 39 emoji lines `spam-grep.mjs` counts (💡 ×31, 📌 ×4, 📞 ×3, 💬 ×1) | §3.8      |
-| Three unclocked speed phrases ("שירות מהיר ואמין", "מקצועי, מהיר ואמין") — allowed, but the last on the site | `שער-חשמלי-חוסך-זמן`, `שער-חשמלי-לא-מגיב`, `שער-חשמלי-שעובד-כמו-חדש`    | §7.2 note |
-| Every heading renders `<h2>` — 15–31 sibling H2s per post, the source outline is gone                        | `app/blog/[slug]/page.tsx` (`renderBlocks`)                             | §3.10     |
-| No post opens with an answer block; all 11 are under the 900-word floor (439–574 unique)                     | `content-depth.mjs` post rows                                           | §6.2      |
-| No post carries `updated:` — every `<lastmod>` is the 2025 publish date                                      | `grep -n "updated:" lib/posts.ts` → nothing                             | §6.4      |
+| Debt                                                                                                                            | Where                                                                   | Backlog   |
+| ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------- |
+| ~42 link phrases ("📌 למידע נוסף…", "היכנסו למחירון", "בקרו בעמוד צור קשר") as plain text                                       | the 39 emoji lines `spam-grep.mjs` counts (💡 ×31, 📌 ×4, 📞 ×3, 💬 ×1) | §3.8      |
+| One unclocked speed phrase ("שירות מהיר ואמין", a checklist item) — allowed, but the last on the site; 4F rewrote the other two | `שער-חשמלי-לא-מגיב`                                                     | §7.2 note |
+| Every heading renders `<h2>` — 15–31 sibling H2s per post, the source outline is gone                                           | `app/blog/[slug]/page.tsx` (`renderBlocks`)                             | §3.10     |
+| No post opens with an answer block; all 11 are under the 900-word floor (439–574 unique)                                        | `content-depth.mjs` post rows                                           | §6.2      |
+| 3 of 11 posts carry no `updated:` (the ones no pass has edited); the page shows only the publish date                           | `grep -c "^    updated:" lib/posts.ts` → 8 since `9195c9b`              | §6.4      |
 
-The first three are fixable today inside the flat model. The rest need the block model.
+The first two and the last are fixable today inside the flat model. The rest need the block model.
 
 ## The model today, and its ceiling
 
@@ -69,10 +69,10 @@ and nothing else — the guide is written to the `/new-guide` bar, not pasted.
 ## Operation A — clean a post today (flat model)
 
 1. Fix the row you came for (the quotes, superlatives and empty section this step once named were
-   fixed in Sprint 4). Keep `date`; set `updated` to today's ISO date on any body edit — Sprint 4
-   edited seven post bodies without setting it (`grep -c "updated:" lib/posts.ts` → 0 as of
-   2026-11-09, backlog §6.4) — so `app/sitemap.ts` (`p.updated ?? p.date`) and, after Phase 2,
-   `dateModified` move.
+   fixed in Sprint 4). Keep `date`; set `updated` to today's ISO date on any body edit, so
+   `app/sitemap.ts` (`p.updated ?? p.date`) and `dateModified` (`articleJsonLd`) move. Sprint 4
+   edited post bodies without setting it; 4F (`9195c9b`, 2026-11-09) backfilled the honest dates —
+   `grep -c "^    updated:" lib/posts.ts` → 8 (backlog §6.4).
 2. Do **not** strip the 42 emoji link phrases yet — they mark where the real links go when the post
    migrates. Leave the emoji count to the migration.
 3. Re-run `spam-grep.mjs` and `grep -rniE 'onlyfans|leaked|casino|porn|allgatesrepair' lib/posts.ts`

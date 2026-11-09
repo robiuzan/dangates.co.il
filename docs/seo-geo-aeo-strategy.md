@@ -199,8 +199,8 @@ Every service page, location page, post and guide carries, in this order:
 - **Answers in the DOM at first paint** — `<details>/<summary>`, not `display:none` (N8); never mark up an unrendered answer.
 - **Captioned tables**, definition blocks ("שער נגרר הוא…") and comparison blocks — the formats
   assistants lift; every guide family carries one required table (`new-guide`).
-- **`dateModified` from a real `updated` field** — pinned to `datePublished` on 11 of 11 posts today
-  (backlog §6.4). `מעודכן 2026` in a title only where `updated` is real.
+- **`dateModified` from a real `updated` field** — real on 8 of 11 posts since `9195c9b`
+  (2026-11-09), still pinned to `datePublished` on the 3 untouched ones (backlog §6.4, PARTIAL). `מעודכן 2026` in a title only where `updated` is real.
 
 ### 4.4 Gate 4 — citability
 
@@ -292,20 +292,20 @@ full`** report carries the Δ on every script above (baseline 2026-08-24).
 
 ## 7. Enforcement map
 
-| Rule                                                                                                              | Enforced by                                                                                                                                            |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| One query family = one URL; no guide in the silos' phrase space                                                   | `article-auditor` by hand → `lib/guides.ts` module-load throws (not yet → backlog §6.3, ADR 0003)                                                      |
-| No service × location matrix; no 19th city / 8th service                                                          | `local-seo-il`, `content-hub` doctrine; CLAUDE.md §12 — judgment, not mechanical                                                                       |
-| Doorway delta ≥ 120; word floors; answer block 40–60 words                                                        | `content-depth.mjs` (`thresholds.json`) — the answer block warns until Phase 3 copy lands (backlog §6.2); `local-seo-strategist` reads new city pages  |
-| One Q/A per `FAQPage` sitewide; answers rendered                                                                  | `schema.mjs` parity; `<details>` not yet → N8                                                                                                          |
-| `#business` defined on every page; `WebSite`; escaped URLs                                                        | `schema.mjs` — fails on all three today (backlog §4.4, §4.9, §4.7)                                                                                     |
-| `Review` / `AggregateRating` / `Person` / `Offer` absent until sourced; no address; `sameAs` only from the roster | `schema.mjs`; `Reviews.tsx` gate on `REVIEW_SOURCE_URL`; `schema-auditor` (backlog §4.11 HOLDS); `guard-protected-paths.ps1` denies `site.config.json` |
-| Buyer vocabulary; region grammar (`prefixed`)                                                                     | `hebrew-editor` review; `prefixed` not yet → backlog §5.2 (`new-city`, Phase 3)                                                                        |
-| Unconfirmed claims (24/7, ארצית, אחריות מלאה, ניסיון)                                                             | `claims-grep.mjs` (`claims.json`); `post-edit-lint.ps1` at edit time; `claims-verifier`                                                                |
-| Title brand once; canonical = sitemap; one H1; orphans; chrome reach                                              | `titles.mjs`, `links.mjs`                                                                                                                              |
-| Gate 1 re-probed live, full UA string, never inferred; no zone mutation by an agent                               | `aeo-answer-content` checklist; `aeo-geo-strategist` brief; `guard-destructive-ops.ps1` — the probe is manual (🔶 no script probes the live edge)      |
-| `llms.txt` present and in sync; `dateModified` from a real `updated`                                              | `edge.mjs` `llmsTxt` (presence only; not yet → backlog §6.5); not yet → backlog §6.4 (`new-article`, `articleJsonLd` in Phase 2)                       |
-| No volume / CPC / difficulty without a source; GSC numbers only via the script; citations in this file resolve    | `keyword-research` §2 rule; `gsc-ingest.mjs` `--write` refuses the fixture (backlog §15.3); `env-doctor.mjs` (`npm run audit:env`)                     |
+| Rule                                                                                                              | Enforced by                                                                                                                                                                              |
+| ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| One query family = one URL; no guide in the silos' phrase space                                                   | `article-auditor` by hand → `lib/guides.ts` module-load throws (not yet → backlog §6.3, ADR 0003)                                                                                        |
+| No service × location matrix; no 19th city / 8th service                                                          | `local-seo-il`, `content-hub` doctrine; CLAUDE.md §12 — judgment, not mechanical                                                                                                         |
+| Doorway delta ≥ 120; word floors; answer block 40–60 words                                                        | `content-depth.mjs` (`thresholds.json`) — the answer block warns until Phase 3 copy lands (backlog §6.2); `local-seo-strategist` reads new city pages                                    |
+| One Q/A per `FAQPage` sitewide; answers rendered                                                                  | `schema.mjs` parity; `<details>` not yet → N8                                                                                                                                            |
+| `#business` defined on every page; `WebSite`; escaped URLs                                                        | `schema.mjs` — fails on all three today (backlog §4.4, §4.9, §4.7)                                                                                                                       |
+| `Review` / `AggregateRating` / `Person` / `Offer` absent until sourced; no address; `sameAs` only from the roster | `schema.mjs`; `Reviews.tsx` gate on `REVIEW_SOURCE_URL`; `schema-auditor` (backlog §4.11 HOLDS); `guard-protected-paths.ps1` denies `site.config.json`                                   |
+| Buyer vocabulary; region grammar (`prefixed`)                                                                     | `hebrew-editor` review; `prefixed` not yet → backlog §5.2 (`new-city`, Phase 3)                                                                                                          |
+| Unconfirmed claims (24/7, ארצית, אחריות מלאה, ניסיון)                                                             | `claims-grep.mjs` (`claims.json`); `post-edit-lint.ps1` at edit time; `claims-verifier`                                                                                                  |
+| Title brand once; canonical = sitemap; one H1; orphans; chrome reach                                              | `titles.mjs`, `links.mjs`                                                                                                                                                                |
+| Gate 1 re-probed live, full UA string, never inferred; no zone mutation by an agent                               | `aeo-answer-content` checklist; `aeo-geo-strategist` brief; `guard-destructive-ops.ps1` — the probe is manual (🔶 no script probes the live edge)                                        |
+| `llms.txt` present and in sync; `dateModified` from a real `updated`                                              | `edge.mjs` `llmsTxt` (presence only; not yet → backlog §6.5); `articleJsonLd` since `02a3144`, real on 8 of 11 posts since `9195c9b` — no script checks it (backlog §6.4, `new-article`) |
+| No volume / CPC / difficulty without a source; GSC numbers only via the script; citations in this file resolve    | `keyword-research` §2 rule; `gsc-ingest.mjs` `--write` refuses the fixture (backlog §15.3); `env-doctor.mjs` (`npm run audit:env`)                                                       |
 
 ---
 

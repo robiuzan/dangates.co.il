@@ -71,8 +71,11 @@ honestly, and soon — rather than waiting.
 **Update 2026-11-09:** done in the repo (Sprint 4, `1796ee7` `af8ba4c` `74a92d1`) — the work
 carries "אחריות על העבודה" with no term, the hours replace 24/7, the copy names the published areas
 instead of "פריסה ארצית", `/מחירון/` explains what determines the price instead of listing eight
-authored ranges, and `node scripts/audit/claims-grep.mjs` reports 0 live claims. None of it is on
-the domain until the next deploy.
+authored ranges, and `node scripts/audit/claims-grep.mjs` reports 0 live claims. The roster short
+pitch, which carried all four claims inside the site's JavaScript, was cleared the same day
+(`ad2f1ab`), and the reviewers' last findings closed in `9195c9b`. One phrase is left: the
+manifest's service area, "מרכז הארץ ופריסה ארצית", still in that JavaScript until you answer
+owner-actions 3.6. None of it is on the domain until the next deploy.
 
 Everything below is sequenced accordingly.
 

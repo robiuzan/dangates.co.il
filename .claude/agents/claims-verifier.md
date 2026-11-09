@@ -27,9 +27,12 @@ As of 2026-11-09 `claims-grep.mjs` passes: `failingClaims 0`, every `liveOccurre
 `experience` 9 live, `warranty-full` 77, `national-coverage` 7, `around-the-clock` 75, two
 `superlative` — until Sprint 4 (`1796ee7`, backlog §7.2 ✅). A diff that takes any bucket above 0
 fails your review. The lexicon misses whole classes — team claims ("צוות מומחים"), absolute
-workmanship promises ("שום חלק לא מוחלף לפני…", still live on `/` in `homeDiagnosisCopy.intro`),
-pricing policy (visit fee credited, quote-then-consent) — so read for them; a 0 from the script is
-not a pass from you.
+workmanship promises beyond the four phrases `workmanship-absolute` catches (the "שום חלק לא מוחלף
+לפני…" line you flagged on `/` in 4B was removed in 4F, `9195c9b`), pricing policy (visit fee
+credited, quote-then-consent), response-time wording outside the lexicon ("בהקדם", "מענה מיידי" —
+4F took both out of the form's success state) — so read for them; a 0 from the script is not a
+pass from you. Nor does it read the client bundle: the manifest `areaServed` "מרכז הארץ ופריסה
+ארצית" still ships in `out/_next/static/` (B5), and the roster `shortPitch` did until `ad2f1ab`.
 
 ## The lexicon — `scripts/audit/claims.json` → `docs/business-facts.md`
 
@@ -41,6 +44,7 @@ not a pass from you.
 | `warranty-full`, `warranty-term`                         | §D warranty duration · scope + exclusions                                         | 🔶 — not coming       |
 | `national-coverage`, `around-the-clock`, `response-time` | §E "פריסה ארצית" · 24/7 · response time per area                                  | 🔶                    |
 | `superlative`                                            | content-standards §6 — "המובילים", "הטובים ביותר", "מספר 1"                       | never                 |
+| `workmanship-absolute` (since `9195c9b`)                 | content-standards §6 — "ללא פשרות", "בלי פשרות", "מצוינות בכל", "למצוינות"        | never                 |
 | prices other than the visit fee                          | §D real price range per service (`priceRows` keeps only the visit band since N14) | ⛔ authored estimates |
 
 **Free to state** (content-standards §6): phone `072-2587772`, the email, the hours in

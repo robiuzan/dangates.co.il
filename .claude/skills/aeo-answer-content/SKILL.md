@@ -22,7 +22,8 @@ curl -sS https://dangates.co.il/robots.txt  # what actually serves — never rea
 
 As of 2026-08-23: **0 of 36** service, location and post pages open with a 40–60-word paragraph
 (services 3–4 words, locations 16–17, posts 1 — the first `<p>` is the `PageHeader` subtitle or a
-date); `edge.mjs` → `llmsTxt: false`; FAQPage on 1 page; `updated` set on 0 of 11 posts. The
+date); `edge.mjs` → `llmsTxt: false`; FAQPage on 1 page; `updated` set on 0 of 11 posts (8 of 11
+since `9195c9b`, 2026-11-09; `/` and `/מחירון/` have had answer blocks since Sprint 4). The
 `robots.txt` note in `edge.mjs` is informational — it tells you to run the probe below.
 
 ## Gate 1 — reachability. Check this first.
@@ -145,10 +146,11 @@ citations than ten reassuring pages.
 ## Freshness and authorship
 
 Assistants discount undated, unattributed content. The 11 posts emit `datePublished` and
-`dateModified` (`articleJsonLd`, from `updated ?? date` since `02a3144`), but `updated` is set on
-0 of 11 (backlog §6.4) — Sprint 4 edited seven post bodies without setting it — so `dateModified`
-still equals the publish date — a freshness signal that says nothing. Set `updated`
-only for a real copy change (`/new-article`).
+`dateModified` (`articleJsonLd`, from `updated ?? date` since `02a3144`). Until 4F (`9195c9b`,
+2026-11-09) `updated` was set on 0 of 11 although Sprint 4 had edited post bodies; now 8 carry an
+honest `updated` (2026-11-08 or 2026-11-09) and `dateModified` follows it, while the three untouched
+posts keep their publish date (backlog §6.4, PARTIAL). The page itself still shows only the publish
+date. Set `updated` only for a real copy change (`/new-article`).
 
 **Authorship: no person, by design** — the owner intake says no name is coming (owner-actions §3.3).
 `BlogPosting.author` is the `Organization` (`#business`, from `articleJsonLd` in `lib/jsonld.ts`

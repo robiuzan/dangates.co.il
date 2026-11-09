@@ -117,7 +117,9 @@ availability has the same exposure. Both are 🔶 in `docs/business-facts.md` §
 site writes around them since Sprints 2 and 4: the JSON-LD `areaServed` is the 18 published
 locations (`d8edb28`), and the copy carries neither phrase (`1796ee7` — `claims-grep.mjs`
 `national-coverage 0`, `around-the-clock 0` live). `claims-grep.mjs` fails either in new copy; the
-roster value waits on the owner (B5).
+roster `areaServed` value waits on the owner (B5) and, because the manifest is bundled into the
+client JS, still ships once under `out/_next/static/` — the roster `shortPitch` stopped repeating
+"פריסה ארצית" and 24/7 in `ad2f1ab`.
 
 ## 7. Schema for a service-area business
 

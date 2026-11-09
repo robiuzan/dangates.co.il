@@ -13,19 +13,19 @@ bar — is outside it and never counted) **minus every paragraph of ≥ 12 words
 ≥ 3 routes** (the shared `FinalCta` lead, the service teasers, the process steps). That is exactly what
 `content-depth.mjs` computes; the floors live in `scripts/audit/thresholds.json` and mirror this table.
 
-"Today" is the script's median for the type as of **2026-11-09** (after Sprint 4; the 2026-08-23
-value in brackets where it moved). Re-run before quoting.
+"Today" is the script's median for the type as of **2026-11-09** (after Sprint 4 and its 4F
+follow-up, `9195c9b`; the 2026-08-23 value in brackets where it moved). Re-run before quoting.
 
 | Page type                     | Minimum unique body words | Today (`content-depth.mjs`)                                                                                                                  |
 | ----------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Homepage                      | 800                       | 1535 ✅ (1764 total; 675 on 2026-08-24 after the reviews left — Sprint 4 added the answer block, the diagnosis section and real FAQ answers) |
-| Service page                  | 450                       | ~167 ❌ (7 of 7, range 164–170; ~152)                                                                                                        |
-| Location page                 | 350                       | ~127 ❌ (18 of 18, range 127–133; ~122)                                                                                                      |
-| Blog post                     | 900                       | ~512 ❌ (11 of 11, range 439–574)                                                                                                            |
+| Homepage                      | 800                       | 1549 ✅ (1788 total; 675 on 2026-08-24 after the reviews left — Sprint 4 added the answer block, the diagnosis section and real FAQ answers) |
+| Service page                  | 450                       | ~170 ❌ (7 of 7, range 167–173; ~152)                                                                                                        |
+| Location page                 | 350                       | ~136 ❌ (18 of 18, range 136–142; ~122)                                                                                                      |
+| Blog post                     | 900                       | ~510 ❌ (11 of 11, range 439–574)                                                                                                            |
 | Guide (`/מדריכים/`)           | 900                       | route family not built yet (Phase 4)                                                                                                         |
-| Index page (services / areas) | 250                       | `/שירותים/` 113 ❌ (342 total — 229 in shared blocks) · `/איזורי-שירות/` 98 ❌ · `/blog/` 392 ✅                                             |
-| Pricing                       | 400                       | 945 ✅ (144 — the "what determines the price" pivot, N14)                                                                                    |
-| About                         | 500                       | 307 ❌ (277)                                                                                                                                 |
+| Index page (services / areas) | 250                       | `/שירותים/` 120 ❌ (359 total — 239 in shared blocks) · `/איזורי-שירות/` 98 ❌ · `/blog/` 392 ✅                                             |
+| Pricing                       | 400                       | 914 ✅ (144 — the "what determines the price" pivot, N14; 945 before 4F cut the repeated visit band)                                         |
+| About                         | 500                       | 317 ❌ (277)                                                                                                                                 |
 | Contact, legal, thank-you     | no minimum                | fine as-is                                                                                                                                   |
 
 A block rendered identically on another route earns no credit anywhere — a service page that reuses
@@ -190,6 +190,9 @@ until confirmed. The owner has said most of these are **not coming**, so write a
 - Licences, insurance, certifications, association membership
 - Any named person
 - Superlatives: "המובילים", "הטובים ביותר", "מספר 1" — never permitted
+- Absolute workmanship promises: "ללא פשרות", "מצוינות בכל…", "שום חלק לא מוחלף לפני…" — never
+  permitted; describe the check order instead (lexicon id `workmanship-absolute` since `9195c9b`,
+  which matches the first two kinds; the rest is `claims-verifier` judgment)
 
 **The claim lexicon is mechanical.** `scripts/audit/claims.json` maps each of those phrases to its
 business-facts row and status; the PostToolUse hook (`.claude/hooks/post-edit-lint.ps1`) warns the
