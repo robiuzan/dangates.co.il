@@ -72,8 +72,8 @@ Is the claim in lib/site-config.ts, lib/content.ts, or a ✅ row of business-fac
   `site.config.json` is bundled whole into a JS chunk, so every roster string ships even when no
   page renders it: the `shortPitch` carried four 🔶 claims there until `ad2f1ab` (2026-11-09; the
   business node has used the tagline, not the pitch, since Sprint 2), and the manifest `areaServed`
-  "מרכז הארץ ופריסה ארצית" still does — 1 chunk in `out/_next/static/`, owner item B5. Both are
-  roster edits (`eeat-build` steps 1 and 4) that only `claims-verifier` and `schema-auditor` catch,
+  "מרכז הארץ ופריסה ארצית" until the roster sync `8e8843d` (2026-11-09, owner item B5 — it reads
+  "מרכז הארץ והאזורים שמופיעים באתר" now; `out/_next/static/` 0). Both were roster edits (`eeat-build` steps 1 and 4) that only `claims-verifier` and `schema-auditor` catch,
   by reading the graph and grepping the bundle.
 - **Review** — `claims-verifier` maps every fact in a diff to its row: OK · 🔶 mark + row · ⛔ remove.
   **A live 🔶 or ⛔ claim is stop-ship**; existing debt (§7.2) does not license one more occurrence.
@@ -97,7 +97,7 @@ reason. Do not remove, relax or work around any of it. The only restore path is 
 | המובילים · הטובים ביותר · מספר 1 · הכי טוב       | never                             | Delete. No owner answer unlocks a superlative                                                                                                                                                                            | content-standards §6          |
 | הבעלים X · המייסד X · הטכנאי שלנו X              | unconfirmed — nothing until §B ✅ | No byline, no `Person`. `Organization` as author                                                                                                                                                                         | §B (❌)                       |
 | זמינות 24/7 · מסביב לשעון · תוך שעה · באותו היום | bound or remove                   | Only `siteConfig.hours.weekday` / `.friday` and the manifest `openingHoursSpecification`; `hours.emergency` is itself the 🔶 string and goes, or is marked, per `eeat-build` step 3. "מענה מהיר" without a clock is fine | §E (🔶)                       |
-| פריסה ארצית · בכל הארץ                           | bound or remove                   | Name מרכז הארץ and the 18 published areas; the manifest `areaServed` phrase is a roster question                                                                                                                         | §E (🔶)                       |
+| פריסה ארצית · בכל הארץ                           | remove — refuted                  | Name מרכז הארץ and the 14 published areas; the owner answered owner-actions 3.6 on 2026-11-09 (not served: קריות, צפון, דרום, באר שבע), and the manifest `areaServed` dropped the phrase in `8e8843d`                    | §E (❌ national coverage)     |
 | A price stated as a fact                         | blocked                           | The 150–350 ₪ visit band — sourced from the live-site FAQ (`priceRows`), currency 🔶 (§D) — and no other number; everything else as _what drives the price_ (§5.1 pricing row · N14)                                     | §D (❌ / 🔶)                  |
 
 ---
@@ -122,7 +122,7 @@ Same position, angle, framing and time of day; no wide-angle on the "after" only
 "before" worse than it was. Hebrew caption labelled לפני / אחרי with the same city · gate type · month
 the `alt` carries. An `ImageObject` (`contentUrl`, `width`, `height`, Hebrew `caption`) on the page's
 own node — the `Service` or the guide's article node (the `site-images` skill; the article node per
-schema-graph §6) — never one generic photo on 18 location nodes.
+schema-graph §6) — never one generic photo on 14 location nodes.
 
 ### 2.3 Case notes — one true sentence per job
 

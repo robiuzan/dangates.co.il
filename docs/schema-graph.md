@@ -41,9 +41,9 @@ yet); until then 18 locations and 8 statics carried only the breadcrumb.
 | ------------------------ | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/`                      | one `@graph`: `GeneralContractor` + `WebSite` + `FAQPage`          | ✅ one `@graph`: business + `WebSite` `#website` + `FAQPage`                                                                                                                                                                                                                                                                                             |
 | `/services/{slug}/` ×7   | `Service` + `BreadcrumbList` + `FAQPage` from the per-service FAQs | ✅ business + `Service` (encoded `url`, `@id` `#service`, `provider` → `#business`) + `FAQPage` (4–5 Q/As, since `225ff45`, §4.13) + breadcrumb                                                                                                                                                                                                          |
-| `/locations/{slug}/` ×18 | `Service` with local `areaServed` + `BreadcrumbList` + `FAQPage`   | ✅ business + `Service` with `areaServed` `City` / `AdministrativeArea` from `kind` (§5) + `FAQPage` (3 Q/As, since `7c3f2db`) + breadcrumb                                                                                                                                                                                                              |
+| `/locations/{slug}/` ×14 | `Service` with local `areaServed` + `BreadcrumbList` + `FAQPage`   | ✅ business + `Service` with `areaServed` `City` / `AdministrativeArea` from `kind` (§5) + `FAQPage` (3 Q/As, since `7c3f2db`) + breadcrumb                                                                                                                                                                                                              |
 | `/שירותים/`              | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (7) + breadcrumb                                                                                                                                                                                                                                                                                                        |
-| `/איזורי-שירות/`         | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (18) + breadcrumb                                                                                                                                                                                                                                                                                                       |
+| `/איזורי-שירות/`         | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (14 since `7ed1acd`; 18 before) + breadcrumb                                                                                                                                                                                                                                                                            |
 | `/blog/`                 | `CollectionPage` (or `Blog`) + `BreadcrumbList`                    | ✅ `CollectionPage` + `ItemList` (11) + breadcrumb                                                                                                                                                                                                                                                                                                       |
 | `/blog/{slug}/` ×11      | `BlogPosting` + `BreadcrumbList` (+ `FAQPage`)                     | ✅ business + `BlogPosting` (§6) + breadcrumb, one `@graph`; no FAQ                                                                                                                                                                                                                                                                                      |
 | `/מדריכים/{slug}/`       | `TechArticle`/`Article` + `FAQPage` + `BreadcrumbList`             | ✅ since `89439b7` (2026-11-09, not deployed): business + `TechArticle` (safety) or `Article` (symptom, committee, comparison) with `author` → `#business` and `citation` from `sources`, + `FAQPage` + `BreadcrumbList`, one `@graph`; the hub `/מדריכים/` is `CollectionPage` + `ItemList`. `schema.mjs` still requires only the breadcrumb on a guide |
@@ -56,12 +56,14 @@ yet); until then 18 locations and 8 statics carried only the breadcrumb.
 
 **What is left** — none of it is a `schema.mjs` failure:
 
-1. `FAQPage` on 26 of 45 pages since Sprint 6 (`/`, the 7 services and the 18 locations, 98
-   questions, none marked up twice — backlog §4.13 ✅; `schema.mjs` → `faqPages 26`, 2026-11-09).
+1. `FAQPage` on 26 of 46 pages since `7ed1acd` (`/`, the 7 services, the 14 locations and the 4
+   guides, 103 questions, none marked up twice — backlog §4.13 ✅; `schema.mjs` → `faqPages 26`,
+   2026-11-09; 30 with the 18 locations after Sprint 7).
 2. `sameAs` is empty until the GBP exists (§5.1, Track B B3); `hasMap` follows it.
 3. The Rich Results Test on one route per type runs after the next deploy (§9 below).
-4. The `Service` + `areaServed` node on the five 🔶 entries (קריות, שרון, צפון, דרום, באר שבע)
-   waits on owner-actions 3.6 — whether those places are served (implementation-sprints §8).
+4. ~~The `Service` + `areaServed` node on the five 🔶 entries~~ — resolved 2026-11-09 on the
+   owner's 3.6 answer: קריות, צפון, דרום and באר שבע are not served and their pages (and nodes)
+   were retired in `7ed1acd`; שרון is served and keeps its `AdministrativeArea` node.
 
 ---
 
@@ -79,9 +81,9 @@ that references `#business`** (§4 rule 5).
 **Present and correct (2026-11-08):** `@type`, `name`, `alternateName`, `description` (the tagline —
 the roster pitch carries unconfirmed claims), `url` with the trailing slash, `telephone`, `email`,
 `priceRange`, two `OpeningHoursSpecification` entries, `knowsLanguage`, `logo`
-(`public/dangates-logo.png`), `image` (the manifest OG card), `areaServed` as the 18 published
-locations (`City` ×14, `AdministrativeArea` ×4 — never the roster phrase, which includes the
-unconfirmed "פריסה ארצית"), and `hasOfferCatalog` — an `OfferCatalog` of the 7 services as `Service`
+(`public/dangates-logo.png`), `image` (the manifest OG card), `areaServed` as the 14 published
+locations (`City` ×13, `AdministrativeArea` ×1 since `7ed1acd`; 18 before — never the roster phrase,
+which carried "פריסה ארצית" until the roster sync `8e8843d`, 2026-11-09), and `hasOfferCatalog` — an `OfferCatalog` of the 7 services as `Service`
 nodes by `@id`, no `Offer`, no price. On `/אודות/` only it also carries `knowsAbout` (the 7 services +
 תיקון שערים חשמליים, מנועי שערים, בטיחות שערים חשמליים, and since `89439b7` ת״י 900 חלק 21.03 — a
 subject the safety guide covers, never a compliance claim).
@@ -144,7 +146,7 @@ These are correctness rules, not preferences. Getting them wrong is worse than e
 
 ## 5. Location-page schema
 
-The 18 location pages are the largest substance gap by page count. Each should emit, in one `@graph`:
+The 14 location pages (18 until `7ed1acd`) are the largest substance gap by page count. Each should emit, in one `@graph`:
 
 - **`Service`** — `name: "תיקון שערים חשמליים {prefixed}"`,
   `serviceType: "תיקון שערים חשמליים"`, `provider: { "@id": ".../#business" }` (with the business
@@ -153,8 +155,8 @@ The 18 location pages are the largest substance gap by page count. Each should e
 - **`FAQPage`** from the city's `cityContent.faqs` — the same `{ q, a }` the page renders
   (content-standards §3; since `7c3f2db`, 3 per page).
 
-Use `City` for real cities and `AdministrativeArea` for the four region entries (קריות, שרון, צפון,
-דרום). Marking a region as a `City` is a factual error in the graph. Since Sprint 6 (`7c3f2db`,
+Use `City` for real cities and `AdministrativeArea` for a region entry — שרון, the one left since
+`7ed1acd` retired קריות, צפון and דרום (owner-actions 3.6). Marking a region as a `City` is a factual error in the graph. Since Sprint 6 (`7c3f2db`,
 2026-11-09) every `locations` entry carries `kind` and `prefixed`, and `placeNode()` in
 `lib/jsonld.ts` types the place from `kind` — the interim region-slug set is deleted. The regions
 shipped as `AdministrativeArea` since `d8edb28` either way.
@@ -228,7 +230,7 @@ Thin wrappers over the kit, each returning a node for the page's `@graph`. Built
 
 | Builder                              | Emits                                                                                                           |
 | ------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| `businessNode(m, { knowsAbout? })`   | `localBusinessJsonLd` + `logo`, `image`, `areaServed` (18 places), `hasOfferCatalog`, trailing-slash `url` (§3) |
+| `businessNode(m, { knowsAbout? })`   | `localBusinessJsonLd` + `logo`, `image`, `areaServed` (14 places), `hasOfferCatalog`, trailing-slash `url` (§3) |
 | `websiteJsonLd(m)`                   | `WebSite` `#website`, `name`, `inLanguage`, `publisher → #business` — homepage only                             |
 | `serviceNode(m, svc)`                | the kit's `Service` with an explicit encoded `url`, `@id` `#service`, `provider → #business`                    |
 | `locationServiceJsonLd(m, svc, loc)` | §5 — `Service` with an encoded `url` and a local `City`/`AdministrativeArea` via `placeNode()`                  |

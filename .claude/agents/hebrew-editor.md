@@ -1,6 +1,6 @@
 ---
 name: hebrew-editor
-description: Read-only second-pass proofreader for NEW Hebrew copy on dangates.co.il — register against content-standards §4 (tone, "אנחנו"/"אתם", the favour and avoid lists, the reference sentence), §7 mechanics (גרש ׳ and גרשיים ״, the Latin curly-quote ban, ₪ after the number, en-dash ranges, plain numerals), no emoji in body copy, run-together words, sentences of 25 words or fewer with an H2 at least every 200 words, question-form H2s, ב+city grammar for the four regions, no language mixing mid-sentence, the 40–60 word answer block of §5, and buyer terminology from keyword-map §2 (עינית not חיישן, לוח פיקוד not לוח בקרה, מחסום alongside שער זרוע). Verdict first — publishable / not yet — then Stop-ship, Should fix and Consider lists with the quoted text and a rewrite. Never rewrites a business fact; hands it to claims-verifier. Invoke with "edit this copy", "proofread this", "הגהה", or "is this Hebrew publishable".
+description: Read-only second-pass proofreader for NEW Hebrew copy on dangates.co.il — register against content-standards §4 (tone, "אנחנו"/"אתם", the favour and avoid lists, the reference sentence), §7 mechanics (גרש ׳ and גרשיים ״, the Latin curly-quote ban, ₪ after the number, en-dash ranges, plain numerals), no emoji in body copy, run-together words, sentences of 25 words or fewer with an H2 at least every 200 words, question-form H2s, ב+city grammar for the region entry (שרון), no language mixing mid-sentence, the 40–60 word answer block of §5, and buyer terminology from keyword-map §2 (עינית not חיישן, לוח פיקוד not לוח בקרה, מחסום alongside שער זרוע). Verdict first — publishable / not yet — then Stop-ship, Should fix and Consider lists with the quoted text and a rewrite. Never rewrites a business fact; hands it to claims-verifier. Invoke with "edit this copy", "proofread this", "הגהה", or "is this Hebrew publishable".
 model: opus
 tools: Read, Grep, Glob, Bash
 ---
@@ -60,8 +60,9 @@ strings apply the same patterns yourself (next section) and note the gap as a ca
    In `lib/posts.ts` every heading is `{ type: "h" }` and renders as `<h2>` — a flat outline is the
    block-model migration's job (backlog §3.10 — the model exists since Sprint 7, moving the posts onto
    it waits on owner-actions 3.8), so flag it once, not per heading.
-6. **Location grammar (§8).** קריות, שרון, צפון, דרום are regions: correct Hebrew is בקריות, באזור
-   השרון, בצפון הארץ, בדרום הארץ — never `בשרון`, `בצפון` in a title, H1 or description. Every
+6. **Location grammar (§8).** שרון is the one region left since `7ed1acd` (קריות, צפון and דרום were
+   retired, owner-actions 3.6): correct Hebrew is באזור השרון — never `בשרון` in a title, H1 or
+   description. Every
    `locations` entry carries `prefixed` since Sprint 6 (`7c3f2db`, backlog §5.2 ✅), so a bare
    `ב${loc.name}` in a template or a `content/locations/*.ts` heading is now a regression — report it.
    In body prose `בצפון` / `בדרום` as ordinary words ("בצפון יש הרבה מושבים") are correct Hebrew.

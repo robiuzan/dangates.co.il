@@ -1,13 +1,13 @@
 ---
 name: new-city
-description: Add or deepen a location page the data-driven way — the model is built (Sprint 6, 7c3f2db) — a locations entry in lib/site-config.ts with kind, prefixed and its own updated date, one typed content/locations/<slug>.ts module assembled and checked by cityContent in lib/city-content.ts (answer, local notes, neighbourhoods, city FAQs, services), a pair in lib/nearby.ts that links both pages, and the route, areas index, footer, link mesh, FAQPage, schema and sitemap following. Proof is scripts/audit/content-depth.mjs (350-word floor, doorway delta ≥ 120 — all 18 pass since 2026-11-09) and links.mjs. Use when editing a city page's copy, writing the owner-confirmed version of one of the five bounded 🔶 entries, or — only after the sign-off and owner-actions 3.6 — adding a city. Triggers: "add a city", "new location page", "cover <city>", "edit a city page", "this city page is thin", "doorway", "עמוד עיר", "אזור שירות חדש".
+description: Add or deepen a location page the data-driven way — the model is built (Sprint 6, 7c3f2db) — a locations entry in lib/site-config.ts with kind, prefixed and its own updated date, one typed content/locations/<slug>.ts module assembled and checked by cityContent in lib/city-content.ts (answer, local notes, neighbourhoods, city FAQs, services), a pair in lib/nearby.ts that links both pages, and the route, areas index, footer, link mesh, FAQPage, schema and sitemap following. Proof is scripts/audit/content-depth.mjs (350-word floor, doorway delta ≥ 120 — all 14 pass since 2026-11-09, after four unserved pages were retired on owner-actions 3.6) and links.mjs. Use when editing a city page's copy, or — only after the local-seo-strategist sign-off — adding a city the owner serves. Triggers: "add a city", "new location page", "cover <city>", "edit a city page", "this city page is thin", "doorway", "עמוד עיר", "אזור שירות חדש".
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 ---
 
 # Add or deepen a location page
 
-**Read this first: the model is built and all 18 pages pass the measured doorway proxy** (Sprint 6,
-commit `7c3f2db`, 2026-11-09). Measure before touching anything — never quote the numbers below
+**Read this first: the model is built and all 14 pages pass the measured doorway proxy** (Sprint 6,
+commit `7c3f2db`; four unserved pages retired in `7ed1acd`, both 2026-11-09). Measure before touching anything — never quote the numbers below
 without re-running:
 
 ```bash
@@ -16,17 +16,18 @@ node scripts/audit/links.mjs                  # chrome reach, orphans, breadcrum
 node scripts/audit/schema.mjs                 # Service + areaServed, FAQPage parity per location
 ```
 
-As of 2026-11-09: location `belowFloor 0`, unique 717–1022 against the **350** floor (median 842),
-`locationMedianDelta 343.5` against the **120** threshold in `scripts/audit/thresholds.json` (every
-page 288–428); `notInChrome 0`, `faqPages 26`. Before Sprint 6 every page carried 122–145 unique
+As of 2026-11-09 (after `7ed1acd`): location 14 pages, `belowFloor 0`, unique 714–1048 against the
+**350** floor (median 887), `locationMedianDelta 343` against the **120** threshold in
+`scripts/audit/thresholds.json` (every page 292–439); `notInChrome 0`, `faqPages 26`. Before Sprint 6 every page carried 122–145 unique
 words and a delta of 2–3 tokens — the city name was the only variable (backlog §3.1, §5.3).
 
-**What is still open:** five entries — קריות, שרון, צפון, דרום, באר שבע — ship as **bounded
-geography-and-mechanism pages** until the owner answers owner-actions 3.6 (Track B B5): no coverage,
-travel or scheduling claim, every answer block and meta description ending on "check by phone
-whether a visit is possible" (implementation-sprints §8, the 2026-11-09 decision). The `Service`
-node `locationServiceJsonLd` emits on them waits on the same answer. local-seo-strategist sign-off
-on the 18 is not on record, so **no 19th city yet** — `/local-seo-il` §5.
+**Owner-actions 3.6 is answered (2026-11-09).** The five 🔶 entries that shipped as bounded pages
+are resolved: קריות, צפון, דרום and באר שבע are not served — `7ed1acd` retired them, each with a 301
+to `/איזורי-שירות/` (`REDIRECTS.md` → `npm run redirects`) — and חיפה, אשקלון and שרון are served.
+The answer named no town inside the Sharon and did not name ירושלים, so those two pages keep the
+bound ("check by phone whether and when a visit is possible"). **Still open:** local-seo-strategist
+sign-off on the 14 is not on record, so **no 15th location yet** — `/local-seo-il` §5 — and none of
+the four retired places comes back unless the owner reverses 3.6.
 
 ## The data model — as built
 
@@ -37,10 +38,11 @@ Three files, each with one job:
 { slug: "שרון", name: "שרון", kind: "region", prefixed: "באזור השרון", updated: "2026-11-09" }
 ```
 
-- `slug` — the Hebrew route segment. Live and load-bearing on the existing 18; renaming needs a 301.
+- `slug` — the Hebrew route segment. Live and load-bearing on the existing 14; renaming needs a 301,
+  and so does retiring one (the four retired in `7ed1acd` point at `/איזורי-שירות/`).
 - `kind` — `"city" | "region"`. Drives `City` vs `AdministrativeArea` in `areaServed` through
-  `placeNode` in `lib/jsonld.ts` (schema-graph §5). Four entries are regions: קריות, שרון, צפון, דרום.
-- `prefixed` — the name with its preposition (`בתל אביב`, `באזור השרון`, `בצפון הארץ`). Every shared
+  `placeNode` in `lib/jsonld.ts` (schema-graph §5). One entry is a region since `7ed1acd`: שרון.
+- `prefixed` — the name with its preposition (`בתל אביב`, `באזור השרון`). Every shared
   builder in `lib/content.ts` (title, H1, description, intro, link labels) and every
   `content/locations/*.ts` module uses it — never a bare `ב${loc.name}` (content-standards §8).
 - `updated` — **per entry**, the page's own sitemap `<lastmod>` (`app/sitemap.ts` reads `c.updated`;
@@ -94,8 +96,8 @@ The half it cannot: `localNotes` needs **three or more** true, specific items (c
   parking barriers, moshav plots with long driveways and cable runs, coastal towns where salt air
   eats motors and tracks faster, hill towns with wind and slope.
 - A real job reference from that city (with permission), or a photo (coming — business-facts §F).
-- Travel and scheduling reality — **only once confirmed**. For the five 🔶 entries it is an open
-  question (business-facts §E, owner-actions 3.5–3.6), so their pages carry the bound instead.
+- Travel and scheduling reality — **only once confirmed**. It is unconfirmed for every page
+  (business-facts §E, owner-actions 3.5), so no page states a travel or response time.
 - A city-specific FAQ that would read oddly anywhere else.
 - What drives local pricing, if it differs — never an invented number (business-facts §D).
 
@@ -115,7 +117,8 @@ domain.
 
 ## Steps — adding a city (only after the cap lifts)
 
-1. **Check the cap** — `/local-seo-il` §5: the sign-off on record and owner-actions 3.6 answered.
+1. **Check the cap** — `/local-seo-il` §5: the sign-off on record (owner-actions 3.6 is answered),
+   and the owner confirms the new place is served — never one of the four retired in `7ed1acd`.
 2. **Entry** — append the `locations` row with `slug`, `name`, `kind`, `prefixed`, `updated`.
    Typecheck now fails on `cityContent` — that is the forcing function.
 3. **Content** — write `content/locations/<slug>.ts` and add it to `cityContent`.
@@ -142,11 +145,11 @@ in the answer-block warning; `links.mjs` → `orphans 0`, `notInChrome 0`; `sche
 
 `generateStaticParams` picks up the route · `/איזורי-שירות/` and `ServiceAreas` list it
 (`locations.map`) · `app/sitemap.ts` includes it with its own `<lastmod>` · the footer links it
-(`locations.map`, all 18 since `7c3f2db`) · the city select in the lead form offers it.
+(`locations.map`, all of them since `7c3f2db` — 14 since `7ed1acd`) · the city select in the lead form offers it.
 
 ## Checklist
 
-- [ ] The cap has lifted, or this is an edit to one of the 18.
+- [ ] The cap has lifted, or this is an edit to one of the 14.
 - [ ] `kind`, `prefixed`, `updated` set; no template or module uses a bare `ב${name}`.
 - [ ] ≥ 350 unique words in `<main>`; three or more genuinely local items.
 - [ ] `content-depth.mjs` doorway delta ≥ 120 vs the nearest sibling — measured, not assumed.
@@ -170,8 +173,8 @@ in the answer-block warning; `links.mjs` → `orphans 0`, `notInChrome 0`; `sche
 - Never rename a live slug without a 301. The city URLs already moved once (root → `/locations/`)
   and are held together by the generated `public/_redirects` rules (ADR 0004); a second move
   compounds the loss.
-- `prefixed` is grammar, not marketing: `בתל אביב`, `באזור השרון`, `בקריות`. Keep it to the preposition
+- `prefixed` is grammar, not marketing: `בתל אביב`, `באזור השרון`, `בחיפה`. Keep it to the preposition
   form the H1 formula expects (keyword-map §4). In body prose `בצפון` / `בדרום` as ordinary words
   ("בצפון יש הרבה מושבים") are fine; the title, H1 and description use `prefixed`.
 - An entry with `answer: ""` renders the shared fallback page — that is a stub, and it fails the
-  floor. Every one of the 18 is written today; keep it that way.
+  floor. Every one of the 14 is written today; keep it that way.

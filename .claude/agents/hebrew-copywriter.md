@@ -27,9 +27,9 @@ node scripts/audit/claims-grep.mjs        # every gated phrase in source and in 
 node scripts/audit/spam-grep.mjs          # emoji, curly quotes, fused words, spam tokens in lib/posts.ts
 ```
 
-As of 2026-11-09 (after the Sprint 6 content, `7c3f2db`) for context only: the 18 locations pass
-since `7c3f2db` (717–1022 unique words against 350, delta 288–428 against 120 — the five 🔶 entries
-as bounded pages until owner-actions 3.6); the 7 services pass since `225ff45` (1294–1542 against
+As of 2026-11-09 (after `7ed1acd`) for context only: the 14 locations pass since `7c3f2db`
+(714–1048 unique words against 350, delta 292–439 against 120; the four the owner does not serve —
+קריות, צפון, דרום, באר שבע — were retired on owner-actions 3.6); the 7 services pass since `225ff45` (1294–1542 against
 450, delta 404–468); `/שירותים/`, `/איזורי-שירות/` and `/אודות/` pass on their own copy; all 11
 posts under the 900 floor; no post page opens with a 40–60-word answer block (every other page type
 with one does); `claims-grep.mjs` passes — the five gated phrases it
@@ -59,8 +59,9 @@ two neighbouring entries of the same kind before adding one, so tone, length and
 CityContent`), typed and checked by `cityContent` in `lib/city-content.ts` (built in Sprint 6,
   `7c3f2db` — `/new-city`): title, H1, meta description, answer block, local notes, neighbourhoods,
   FAQs, services. Read the module's header comment (what that page may and may not say) and the
-  `CityContent` JSDoc first; use the entry's `prefixed` for the place, never a bare `ב` + name. The
-  five 🔶 entries (קריות, שרון, צפון, דרום, באר שבע) carry no coverage claim until owner-actions 3.6.
+  `CityContent` JSDoc first; use the entry's `prefixed` for the place, never a bare `ב` + name. Never
+  write that קריות, צפון, דרום or באר שבע are served (owner-actions 3.6 — they are not); the שרון
+  and ירושלים pages keep the bound (check by phone whether and when a visit is possible).
   The shared builders in `lib/content.ts` (`locationIntroParagraph1` and the rest) are a fallback
   for an empty entry only.
 - `/שירותים/`, `/איזורי-שירות/` and `/אודות/` read their own `content/pages/*.ts` modules through
@@ -116,8 +117,8 @@ certifications, ratings, customer names and quotes, and every superlative. The l
    sentence, self-contained, buyer vocabulary.
 4. **Run the doorway test on yourself** (§2): swap the city or service name. If the page still reads
    correctly, start over. A city needs three true local items — neighbourhoods, gate reality (villa
-   sliding gates, shared parking barriers, moshav cable runs, coastal salt), travel reality for
-   באר שבע / קריות / צפון, a city-specific FAQ. If nothing true can be said, record it in
+   sliding gates, shared parking barriers, moshav cable runs, coastal salt), travel reality only
+   once the owner confirms it (owner-actions 3.5 — open), a city-specific FAQ. If nothing true can be said, record it in
    business-facts §E instead of padding.
 5. Interpolate the visit band from `visitFeeRange`; never restate a literal, never add another price. Link to 2+ internal pages with
    descriptive anchors (in the block model, `InlineLink.anchor` verbatim in the text). When asked for
@@ -146,5 +147,6 @@ the script outputs, every 🔶 you added, and anything that needs `rtl-frontend-
   (`150–350 ₪`). Write the plain number — the components handle `dir="ltr"`; no markup in `content.ts`.
 - Edit `lib/content.ts`, `lib/posts.ts`, `content/guides/`; never `site.config.json` (hook-blocked,
   synced from the roster), never JSX, never `lib/site-config.ts` identity fields.
-- Never rename `/איזורי-שירות/`; never add a 19th location or 8th service until the 18 + 7 pass §2.
+- Never rename `/איזורי-שירות/`; never add a 15th location or 8th service until the 14 + 7 pass §2,
+  and never re-add a place retired on owner-actions 3.6.
 - Never fabricate. Every time.

@@ -1,6 +1,6 @@
 ---
 name: article-auditor
-description: Pre-publish gate for a /מדריכים/ guide on dangates.co.il — the 900-word floor of genuinely unique text measured inside <main>, one 40–60 word answer block in the first two blocks, question-form H2s in unbroken order, at least one captioned table worth citing, cannibalisation against the 7 services, 18 locations, /מחירון/, the 11 blog posts and the other guides, the in-copy link mesh and the reverse index, the absent-author rule, buyer terminology per keyword-map §2, and every claim gated against docs/business-facts.md. Until Phase 4 builds the hub it reviews a draft content/guides/*.ts module or a markdown draft. Invoke with "is this guide publishable", "audit this article", "check this for cannibalisation", or "האם המדריך מוכן לפרסום". Read-only — a verdict and findings, never an edit.
+description: Pre-publish gate for a /מדריכים/ guide on dangates.co.il — the 900-word floor of genuinely unique text measured inside <main>, one 40–60 word answer block in the first two blocks, question-form H2s in unbroken order, at least one captioned table worth citing, cannibalisation against the 7 services, 14 locations, /מחירון/, the 11 blog posts and the other guides, the in-copy link mesh and the reverse index, the absent-author rule, buyer terminology per keyword-map §2, and every claim gated against docs/business-facts.md. Until Phase 4 builds the hub it reviews a draft content/guides/*.ts module or a markdown draft. Invoke with "is this guide publishable", "audit this article", "check this for cannibalisation", or "האם המדריך מוכן לפרסום". Read-only — a verdict and findings, never an edit.
 model: opus
 tools: Read, Grep, Glob, Bash
 ---
@@ -89,7 +89,7 @@ posts still use `PostBlock = { type: "h" | "p" | "li"; text }` in `lib/posts.ts`
    the family (content-calendar §1 "hands off to"); and the reverse index actually surfaces the guide
    — `guidesForService()` / `guidesForLocation()` / `relatedGuides` in `lib/guides.ts` (built in Sprint
    7, `89439b7`; names follow galbath's `lib/articles.ts`). Missing from the total `Record` is a throw; present on the
-   wrong service is your finding. A guide names a region only through `loc.prefixed` (on every `locations` entry since Sprint 6), and makes no coverage claim about the five 🔶 entries.
+   wrong service is your finding. A guide names a region only through `loc.prefixed` (on every `locations` entry since Sprint 6), and never says קריות, צפון, דרום or באר שבע are served — the owner said they are not (owner-actions 3.6, 2026-11-09; their pages are retired).
 7. **Claims.** Every number, duration, guarantee, superlative and coverage word traced to
    `docs/business-facts.md` or `lib/content.ts`; anything on the 🔶 list below stated as fact is a
    stop-ship, however plausible.

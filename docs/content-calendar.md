@@ -23,7 +23,7 @@ would like but is written around; ❌ = not coming, never wait for it.
 
 ## 1. The five pillars
 
-The 7 service pages own "what we do, buy it"; the 18 location pages own "we do it near you". The hub
+The 7 service pages own "what we do, buy it"; the 14 location pages own "we do it near you". The hub
 owns **"what is wrong, what should I choose, what does the law require"** — the Tier-3/4 families in
 keyword-map §2 and §8 that no page on this site serves today.
 
@@ -146,7 +146,7 @@ moves no longer need batching — edit `REDIRECTS.md` and rerun `node scripts/ge
   months of the hub and #9–#16 within six. The constraint is drafting quality and the review chain,
   not the calendar.
 - **Phase dependency:** Phase 3 first (`cityContent`, `serviceDepth` — built in Sprint 5 — `prefixed`, the header and
-  footer reaching all 18 locations) so guides have deep pages to link down to; Phase 4 built the hub and
+  footer reaching all 14 locations) so guides have deep pages to link down to; Phase 4 built the hub and
   the block model (`89439b7`); moving the posts onto it waits on owner-actions 3.8; guides #5+ run
   alongside Phases 5–7.
 - **No seasonality is evidenced** for this trade. Symptom queries are urgent and year-round; do not
@@ -168,17 +168,19 @@ moves no longer need batching — edit `REDIRECTS.md` and rerun `node scripts/ge
    comparison or number. Any "no" means it is a paragraph on an existing page.
 2. **`article-auditor` gates publication**: 900 genuinely unique words, one 40–60 word answer block
    in the first two blocks, question-form H2s, at least one captioned citable table, no cannibalisation
-   against the 7 services, 18 locations, `/מחירון/` or another guide, reverse-index entry, link mesh.
+   against the 7 services, 14 locations, `/מחירון/` or another guide, reverse-index entry, link mesh.
 3. **Review chain for every draft:** `hebrew-editor` → `claims-verifier` → `article-auditor`. A live
    🔶/⛔ claim is stop-ship (`node scripts/audit/claims-grep.mjs`).
 4. **The dangates 🔶 list** the auditors apply: the ₪150–350 visit fee is the only sourced price and
    is itself 🔶 current; no per-job price; no warranty term ("אחריות על העבודה", never "מלאה" with a
    number); no licence, insurance or founding year; no named person — `author` stays the
    `Organization`; WhatsApp goes to `+972556601006`, never the lead number (owner-actions 3.7); 24/7
-   and "פריסה ארצית" are 🔶 and the site claims neither since `1796ee7`. External facts (ת״י 900, חוק החשמל, חוק המקרקעין) cite sii.org.il, gov.il or the statute text — never a competitor; statute wording read on he.wikisource says so on the page (owner-actions 3.10 asks whether that is enough), and no ⛔ line of [research/2026-11-08-standards-and-law.md](research/2026-11-08-standards-and-law.md) is ever stated.
+   is 🔶 and "פריסה ארצית" is ❌ (owner-actions 3.6, 2026-11-09 — קריות, צפון, דרום and באר שבע are
+   not served); the site claims neither since `1796ee7`, and no guide may name a retired place as
+   served. External facts (ת״י 900, חוק החשמל, חוק המקרקעין) cite sii.org.il, gov.il or the statute text — never a competitor; statute wording read on he.wikisource says so on the page (owner-actions 3.10 asks whether that is enough), and no ⛔ line of [research/2026-11-08-standards-and-law.md](research/2026-11-08-standards-and-law.md) is ever stated.
 5. **Every H2 in the hub is unique across all guides** — and the body under a similar heading is
    written from that guide's angle. The doorway test applies inside the hub exactly as it does across
-   the 18 location pages.
+   the 14 location pages.
 6. **Never rename a published slug without a 301.** Never add a `{service} ב{city}` cell.
 7. **Status moves only with evidence:** planned → drafting when the `content/guides/<slug>.ts` file
    exists; → review when the three reviewers are invoked; → published when `npm run gate` passes on

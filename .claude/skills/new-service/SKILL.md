@@ -21,7 +21,8 @@ script's `--json` gives only per-type medians; per-page values need a scratch ru
 `contentPages()` / `tokens()` helpers in `scripts/audit/lib/pages.mjs`.
 
 An edit must keep all seven above the floor and the delta. The cap in CLAUDE.md §12 now waits only on
-the locations: no eighth service until the 18 location pages pass the doorway test too.
+the locations: no eighth service until the 14 location pages pass the doorway test too (the measured
+proxy passes; the local-seo-strategist sign-off is not on record).
 
 ## The data model — built
 
@@ -117,7 +118,8 @@ stay differentiated: the shared car-park gate, the building's pedestrian entranc
 
 ## Steps
 
-1. **Cap** — no eighth service until the 18 locations pass `content-depth.mjs` as well. For a new
+1. **Cap** — no eighth service until the 14 locations pass the doorway test by hand as well
+   (`content-depth.mjs` passes them since `7c3f2db`). For a new
    one, append to `services` (flagship-first; the array drives grid order). No `priceRows` row —
    since N14 (`af8ba4c`) `priceRows` holds only the visit band.
 2. **`serviceMeta` + `serviceTriggers`** — `tagline`, `description`, a valid `IconName` (`ServicesGrid`
@@ -128,7 +130,8 @@ stay differentiated: the shared car-park gate, the building's pedestrian entranc
 4. **FAQs** — 3–5 questions this page answers and no other page asks. Never copy a homepage FAQ; the
    module-load check throws and `schema.mjs` fails a question marked up twice.
 5. **Links** — `relatedServices` by relevance, 4–6 published cities (rotate so every city sits on 2+
-   services; never קריות, שרון, צפון, דרום or באר שבע while business-facts §E is open), existing
+   services; only the 14 published locations — קריות, צפון, דרום and באר שבע are not served and
+   their pages are retired, owner-actions 3.6), existing
    posts only (`/internal-linking`).
 6. **Metadata** — `metaDescription` 120–160 characters, terminal punctuation, from the depth copy.
 7. **Gate** — `npm run gate`. Proof: `content-depth.mjs` → `service.belowFloor 0`, every delta ≥ 120,

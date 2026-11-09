@@ -35,7 +35,7 @@ removes them was deployed (11:06 UTC). Until then the site was one report away f
 action, and every other item on this page was secondary to that deploy. The fix itself is right,
 and it leaves the site with **no proof of work at all**:
 
-- **Zero photographs.** `grep -rho '<img' out --include=index.html | wc -l` → 0 across 45 pages. No
+- **Zero photographs.** `grep -rho '<img' out --include=index.html | wc -l` → 0 across 48 `index.html` files (2026-11-09). No
   gate, no job, no van, no person. The logo is text.
 - **No person.** No owner, founder or technician is named. For a trade that sends a stranger to your
   gate with 230V tools, anonymity costs conversions as much as it costs E-E-A-T.
@@ -45,8 +45,9 @@ The second problem is the one that decides whether the domain ranks: **the doorw
 Sprint 6 all 18 location pages were one template with the city name swapped — each carried 2–3
 tokens its nearest sibling lacked (`node scripts/audit/content-depth.mjs`, doorway proxy), on a
 median of 122 unique words against a 350-word floor. Sprint 6 gave each its own copy (`7c3f2db`,
-2026-11-09: 717–1022 unique words, delta 288–428); five of them (קריות, שרון, צפון, דרום, באר שבע)
-stay bounded until you say whether they are served (owner-actions 3.6). The 7 service pages differed
+2026-11-09: 717–1022 unique words, delta 288–428). You then answered owner-actions 3.6 the same
+day: קריות, צפון, דרום and באר שבע are not served, so their pages were retired with 301s
+(`7ed1acd`), and the 14 left measure 714–1048 unique words, delta 292–439. The 7 service pages differed
 by 13–23 tokens on ~152 words against 450 until Sprint 5 gave each its own depth copy (`225ff45`,
 2026-11-09: 1294–1542 unique words, delta 404–468). 41 of the 45 content pages were under their
 floor on 2026-08-23; 11 are as of 2026-11-09 (the 11 posts). Doorway clusters are an explicit Google spam policy and
@@ -77,9 +78,10 @@ carries "אחריות על העבודה" with no term, the hours replace 24/7, t
 instead of "פריסה ארצית", `/מחירון/` explains what determines the price instead of listing eight
 authored ranges, and `node scripts/audit/claims-grep.mjs` reports 0 live claims. The roster short
 pitch, which carried all four claims inside the site's JavaScript, was cleared the same day
-(`ad2f1ab`), and the reviewers' last findings closed in `9195c9b`. One phrase is left: the
-manifest's service area, "מרכז הארץ ופריסה ארצית", still in that JavaScript until you answer
-owner-actions 3.6. None of it is on the domain until the next deploy.
+(`ad2f1ab`), and the reviewers' last findings closed in `9195c9b`. The last phrase, the
+manifest's service area "מרכז הארץ ופריסה ארצית", left that JavaScript when you answered
+owner-actions 3.6 (roster sync `8e8843d`, 2026-11-09). None of it is on the domain until the next
+deploy.
 
 Everything below is sequenced accordingly.
 
@@ -120,19 +122,20 @@ coming), `Review`/`AggregateRating` (until the profile exists), `Person` (until 
 
 ### Phase 3 — Depth and navigation — the one that decides whether the domain ranks
 
-**Buys:** 18 location pages that each say three or more true local things — named areas, the local
+**Buys:** location pages (18 then, 14 since `7ed1acd`) that each say three or more true local things — named areas, the local
 gate reality, travel and scheduling at that distance, a city-specific FAQ — so a city name swap no
-longer produces a valid page; the four region entries (קריות, שרון, צפון, דרום) rendering correct
+longer produces a valid page; the region entries (four then, שרון alone since `7ed1acd`) rendering correct
 Hebrew (`באזור השרון`, not `בשרון`); 7 service pages that differentiate on the mechanics of each gate
 type, with their own "when to call" list (today the shutters page says "השער נתקע") and their own
-FAQ; a header that reaches all 7 services and 18 locations in one hop; a footer that stops omitting
-six locations; service ↔ location cross-links both ways; related links chosen by relevance instead
+FAQ; a header that reaches all 7 services and 14 locations in one hop; a footer that stops omitting
+locations; service ↔ location cross-links both ways; related links chosen by relevance instead
 of array order. The bar is [content-standards.md](content-standards.md); the doorway delta and word
 floors are measured, not assumed. **Where it stands (2026-11-09, in the repo, not deployed):** the
-service pages since `225ff45`; the 18 location pages, the region grammar, the full footer, the
-mesh and the three index pages since `7c3f2db` — location delta 288–428 against 120, `notInChrome
-0`. Still to do: the header (Sprint 6.5) and the post-page related links (Sprint 7.3, which waits on your approval of the post rewrite — §3.8). **Blocked on
-you:** the five bounded entries wait on your 3.6 answer; §3.5 makes the rest better.
+service pages since `225ff45`; the location pages, the region grammar, the full footer, the
+mesh and the three index pages since `7c3f2db`, and the four unserved pages retired in `7ed1acd` —
+14 location pages, delta 292–439 against 120, `notInChrome 0`. Still to do: the header (Sprint 6.5) and the post-page related links (Sprint 7.3, which waits on your approval of the post rewrite — §3.8). **From you:**
+your 3.6 answer is in (2026-11-09); setting your Google Business Profile service area to the same 14
+places is yours (gbp-runbook §2); §3.5 makes the rest better.
 
 ### Phase 4 — The guides hub and the block model
 
@@ -221,8 +224,9 @@ this is the summary, in the order it pays off.
    no watermark, permission for anything identifiable.
 5. **The GA4 property** (§2.4) — a measurement id; it is wired inside the shared container by hostname.
 6. **Four answers** (§3.5–3.8): is 24/7 real, where, and what response time you will stand behind;
-   which of קריות / שרון / צפון / דרום / באר שבע are genuinely served, as regions or cities; is
-   WhatsApp on the lead number real; and approval to rewrite the migrated blog posts per the calendar.
+   ~~which of קריות / שרון / צפון / דרום / באר שבע are genuinely served~~ (answered 2026-11-09: only
+   שרון); ~~is WhatsApp on the lead number real~~ (answered 2026-10-12); and approval to rewrite the
+   migrated blog posts per the calendar.
 7. **The `www` → apex redirect and the security-header rule** (§1.2, §1.3) — cleanup, not urgent.
 
 ---
@@ -232,11 +236,11 @@ this is the summary, in the order it pays off.
 Targets to judge the work against, each one measurable by a script or a screenshot — not traffic
 predictions, which nobody can honestly make without the baseline §4.1 provides.
 
-- **Zero pages under their word floor** (11 of 50 as of 2026-11-09 after Sprint 7 — the 11 posts, waiting on §3.8; 41 of 45 on
-  2026-08-23) and ✅ **18 of 18 location pages passing the doorway delta** — met in the repo
-  2026-11-09 (`7c3f2db`, `locationMedianDelta 343.5`; 0 before); the reviewer sign-off and the five
-  🔶 entries (owner-actions 3.6) are still open — `npm run audit -- --scope content` exit 0 is the
-  bar.
+- **Zero pages under their word floor** (11 of 46 as of 2026-11-09 after `7ed1acd` — the 11 posts, waiting on §3.8; 41 of 45 on
+  2026-08-23) and ✅ **every location page passing the doorway delta** — met in the repo
+  2026-11-09 (`7c3f2db`, 18 of 18; 14 of 14 and `locationMedianDelta 343` since `7ed1acd` retired
+  the four unserved pages on owner-actions 3.6; 0 before); the reviewer sign-off is still open —
+  `npm run audit -- --scope content` exit 0 is the bar.
 - ✅ **The 7 service pages each with their own FAQ, triggers and mechanics** — met in the repo
   2026-11-09 (`225ff45`): service doorway delta 404–468 against 120, `faqPages 8` (26 since the
   city FAQs, `7c3f2db`); not deployed.

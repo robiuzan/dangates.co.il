@@ -20,7 +20,9 @@ and again 2026-11-09 after Sprint 5 (`225ff45`): **5** failures, all `content-de
 areas index, location floor, post floor, location doorway) — and again 2026-11-09 after the Sprint 6
 content (`7c3f2db`): **1** failure, `content-depth` post floor (11 of 11 posts under 900) — and
 again 2026-11-09 after Sprint 7 (`89439b7`, the guides hub, four guides and `llms.txt`): still
-**1**, the same post floor, which now waits on the owner (owner-actions 3.8; Sprint 7.3).
+**1**, the same post floor, which now waits on the owner (owner-actions 3.8; Sprint 7.3) — and
+again 2026-11-09 after the owner answered 3.6 (the roster sync `8e8843d`, then `7ed1acd` retiring
+the four unserved location pages): still **1**, the same post floor.
 
 **Severity:** P0 = shipping something wrong or harmful · P1 = material ranking/conversion loss ·
 P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half a day · L = multi-day.
@@ -29,11 +31,13 @@ P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half 
 (moves only when [business-facts.md](business-facts.md) / [owner-actions.md](owner-actions.md) moves) ·
 `✅ HOLDS` (sound today — don't regress) · `NOT STARTED`.
 
-**Scope reminder:** 50 indexable content pages as of 2026-11-09 — 1 home, 8 Hebrew statics (the
-`/מדריכים/` hub joined them in `89439b7`), 7 services, 18 locations, 4 guides, the blog index and
-11 posts — plus the `noindex` `/תודה/` (since 2026-11-08) and `/404`, for 52 `index.html` files in
-`out/` (`links.mjs` → `sitemapUrls 50`, `contentPages 51`). It was 45 / 47 until Sprint 7. The 37
-legacy redirect stubs that once made it 83 are gone since 2026-09-06 (ADR 0004).
+**Scope reminder:** 46 indexable content pages as of 2026-11-09 — 1 home, 8 Hebrew statics (the
+`/מדריכים/` hub joined them in `89439b7`), 7 services, 14 locations, 4 guides, the blog index and
+11 posts — plus the `noindex` `/תודה/` (since 2026-11-08) and `/404` (`links.mjs` →
+`sitemapUrls 46`, `contentPages 47`). It was 45 / 47 until Sprint 7 and 50 / 51 from Sprint 7
+until `7ed1acd` retired the four unserved location pages (קריות, צפון, דרום, באר שבע —
+owner-actions 3.6). The 37 legacy redirect stubs that once made it 83 are gone since 2026-09-06
+(ADR 0004).
 
 ---
 
@@ -69,8 +73,9 @@ Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region p
 
 **Next up** (as of 2026-11-09): Phases 1, 2 and 5's repo work, the Sprint 4 truth pass, the
 Sprint 5 service depth, the Sprint 6 location and index-page content (`7c3f2db`) and the Sprint 7
-guides hub, first four guides and `llms.txt` (`89439b7`) have shipped in the repo. Not
-owner-blocked and still open: the header (§9.1, Sprint 6.5), the reviewer sign-offs on record, and
+guides hub, first four guides and `llms.txt` (`89439b7`) have shipped in the repo, and the owner's
+3.6 answer closed the five 🔶 location entries on 2026-11-09 (`8e8843d` `7ed1acd`: four retired
+with 301s, שרון kept). Not owner-blocked and still open: the header (§9.1, Sprint 6.5), the reviewer sign-offs on record, and
 the deploy (with the guide dates set to the deploy day first — `deploy-dangates`). The post rewrite
 (§3.8, §3.10, §9.5, the post half of §6.2, §6.4 and §9.4) waits on owner-actions 3.8 — see
 "Suggested order of work" below.
@@ -123,6 +128,18 @@ node scripts/audit/links.mjs  # ✅ contentPages 45 · sitemapUrls 45 · brokenL
 `301` to `/locations/תל-אביב/?utm_source=test`, `/contact?utm_source=test` → `301` to `/צור-קשר/` with the
 query intact, `/en/` → `301` to `/`. The query string survives, so §13.3 is closed in production too.
 
+**Extended 2026-11-09** by commit `7ed1acd` (owner-actions 3.6): the four retired location pages
+(`/locations/קריות/`, `/צפון/`, `/דרום/`, `/באר-שבע/`) get a 301 each, slashed and bare, to
+`/איזורי-שירות/`, and the four legacy root paths that used to reach them now point there directly,
+so nothing chains. Verified on the current `out/`:
+
+```bash
+node scripts/audit/edge.mjs   # ✅ redirectRules 80 · stubs 0 · redirectsFile true · headersFile true · deadHostArtifacts 0 · foreignStubs 0 · llmsTxt true
+# 8 /locations/ rules and the 8 legacy-root rules for those four places all end in /%D7%90%D7%99%D7%96%D7%95%D7%A8%D7%99-%D7%A9%D7%99%D7%A8%D7%95%D7%AA/ 301
+```
+
+Not live until the next deploy — probe `/locations/קריות/` → `301` to `/איזורי-שירות/` after it.
+
 ### 1.2 — P1 · S · [✅ DONE] The 404 page claimed to be the homepage
 
 `out/404.html` shipped the homepage title and `<link rel="canonical" href="https://dangates.co.il/">`.
@@ -137,10 +154,11 @@ wholesale rather than merging, and `url: null` does not typecheck). `titles.mjs`
 **`notFoundClaimsUrl` must be `false`** — it fails if the 404 declares either a canonical or an
 `og:url`. Any future identity tag on this page needs the same treatment.
 
-### 1.3 — P1 · M · [NOT STARTED] 45 RSC payload files ship to production as crawlable duplicates
+### 1.3 — P1 · M · [NOT STARTED] 47 RSC payload files ship to production as crawlable duplicates
 
 `perf.mjs` → `rscPayloads: 45`, `rscBytes` ≈ 1.43 MB (as of 2026-08-23); `rscPayloads 51`,
-`rscBytes` 3.54 MB as of 2026-11-09 after the Sprint 7 hub and guides (`89439b7`). Next emits an `index.txt`
+`rscBytes` 3.54 MB after the Sprint 7 hub and guides (`89439b7`); `rscPayloads 47`, `rscBytes`
+3.23 MB as of 2026-11-09 after `7ed1acd` retired four location pages. Next emits an `index.txt`
 RSC payload beside every `index.html`. They contain the full readable copy of every page, sit at
 crawlable URLs, and `robots.txt` allows them.
 
@@ -189,8 +207,9 @@ Cloudflare → Rules → Redirect Rules → 301 to apex. [owner-actions.md](owne
 ### 1.8 — [✅ HOLDS] Already sound, don't regress
 
 `app/sitemap.ts` uses real per-content `<lastmod>` dates (never the build clock), `encodeURI`, and
-trailing slashes on all 45 URLs. Every page has exactly one self-referencing canonical
-(`titles.mjs`). `links.mjs` → 0 broken links, 0 links to stubs, 45 = 45 sitemap parity — and since `c047d4d` (2026-09-06) every `<lastmod>` asserted as a real, non-future W3C date and the static routes cross-checked against the `staticPages` registry.
+trailing slashes on all 46 URLs (45 until Sprint 7, 50 until `7ed1acd`). Every page has exactly one
+self-referencing canonical (`titles.mjs`). `links.mjs` → 0 broken links, 0 links to stubs,
+`sitemapUrls 46` in parity with the routes (2026-11-09) — and since `c047d4d` (2026-09-06) every `<lastmod>` asserted as a real, non-future W3C date and the static routes cross-checked against the `staticPages` registry.
 
 ---
 
@@ -228,6 +247,13 @@ Verified on the current `out/`:
 node scripts/audit/titles.mjs   # ✅ pass · uniqueTitles 46 · uniqueDescriptions 46 · ogUrlMissing 0
 # per location page, measured on out/locations/*/index.html: 18 distinct meta descriptions,
 #   150–159 characters; H1 = "תיקון שערים חשמליים " + prefixed on all 18
+```
+
+Still true on the 14 pages left after `7ed1acd` (2026-11-09), re-measured on the current `out/`:
+
+```bash
+node scripts/audit/titles.mjs   # ✅ pass · pages 47 · uniqueTitles 47 · uniqueDescriptions 47 · no warnings
+# out/locations/*/index.html: 14 distinct meta descriptions, 151–156 characters; H1 = "תיקון שערים חשמליים " + prefixed on all 14
 ```
 
 ### 2.4 — P1 · M · [✅ DONE 2026-11-08] Service descriptions are the on-page opening paragraph verbatim
@@ -282,7 +308,7 @@ Acceptance bar: [content-standards.md](content-standards.md) §1–§2. Script: 
 (unique words inside `<main>` minus shared blocks, doorway delta vs nearest sibling, answer-block
 proxy) · `spam-grep.mjs` · `claims-grep.mjs`.
 
-### 3.1 — P0 · L · [PARTIAL 2026-11-09 · 13 of 18 done · ⏳ BLOCKED · owner 3.6 for five] All 18 location pages are textbook doorway pages
+### 3.1 — P0 · L · [✅ DONE 2026-11-09 · 14 of 14 · four retired on owner 3.6] All 18 location pages were textbook doorway pages
 
 Until Sprint 6: `content-depth.mjs` measured 122 unique words per page (128 for the three two-word
 names) against a 350 floor on 2026-08-23 — 139–145 by 2026-11-09 — and a doorway delta of **2
@@ -309,14 +335,31 @@ node scripts/audit/content-depth.mjs
 # no location row in the failures; the answer-block warning no longer lists the location type
 ```
 
-**Done for the 13 confirmed cities.** **⏳ BLOCKED · owner (owner-actions 3.6, Track B B5) for the
-five 🔶 entries** — קריות, שרון, צפון, דרום, באר שבע. They pass the measured proxy as bounded
-geography-and-mechanism pages (the decision recorded in implementation-sprints §8): no coverage,
-travel or scheduling claim, every answer block and meta description ending on "check by phone
-whether a visit is possible". The content-standards §2 item they cannot carry — the travel and
-scheduling reality at that distance — waits on the owner's answer, and so does the `Service` node
-with `areaServed` that `locationServiceJsonLd` still emits on those five. local-seo-strategist
-sign-off on the 18 is not on record.
+Until 2026-11-09 the five 🔶 entries (קריות, שרון, צפון, דרום, באר שבע) shipped as bounded
+geography-and-mechanism pages waiting on owner-actions 3.6 (the decision recorded in
+implementation-sprints §8).
+
+**Closed 2026-11-09** by commit `7ed1acd` on the owner's 3.6 answer (not served: קריות, צפון, דרום,
+באר שבע; served: חיפה, אשקלון, שרון). The four unserved pages are retired — out of `locations`,
+`cityContent`, the sitemap, the chrome, the service pages and the business node's `areaServed` —
+each with a 301 to `/איזורי-שירות/` (§1.1); their `Service` / `areaServed` nodes went with them.
+The nearby pairs are rebalanced among the 14 that remain (`lib/nearby.ts`); חיפה keeps one far
+link to נתניה under its own `nearbyHeading`. Verified on the current `out/` (export check: source
+tree unchanged since the build):
+
+```bash
+node scripts/audit/content-depth.mjs
+# location 14 pages · belowFloor 0 · medianUnique 887 / 350 · locationMedianDelta 343 / 120
+# per page (unique · delta vs nearest sibling), from the script's own contentPages() / tokens():
+#   אשדוד 916 · 353   אשקלון 795 · 292   חולון 798 · 297   חיפה 938 · 398   יבנה 936 · 366
+#   ירושלים 1048 · 439  כפר-סבא 864 · 343  מודיעין 827 · 326  נתניה 910 · 345  פתח-תקווה 933 · 378
+#   ראשון-לציון 979 · 342  רחובות 714 · 301  שרון 744 · 316  תל-אביב 854 · 343
+# no location row in the failures or in the answer-block warning; out/locations/ holds 14 directories
+```
+
+ירושלים was asked by name in 3.6 and not answered by name, so its answer block and meta keep the
+bound (check by phone whether and when a visit is possible); business-facts §E is the owner's to
+fill. local-seo-strategist sign-off on the 14 is not on record (not owner-blocked).
 
 ### 3.2 — P1 · L · [✅ DONE 2026-11-09] All 7 service pages carried 13–23 words their siblings lacked
 
@@ -524,6 +567,11 @@ node scripts/audit/content-depth.mjs
 Every page this row named is over its floor; the blog index stays at 400/250 (unchanged). Home
 1770 unique and pricing 914 unique on the same run.
 
+Commit `7ed1acd` (2026-11-09) rewrote `/איזורי-שירות/` for the 14 places left after owner-actions
+3.6 — one region instead of four, a new H2 for a place not on the list — and kept it over its floor:
+`content-depth.mjs` → areas-index 542 words · 526 unique / 250 · `belowFloor 0`; its answer block is
+48 words.
+
 ---
 
 ## §4. Structured data
@@ -632,15 +680,25 @@ Until 2026-11-08 `{"@type":"AdministrativeArea","name":"מרכז הארץ ופר
 **Closed 2026-11-08** by commits `02a3144` (the phrase dropped from every node) and `d8edb28`
 (Sprint 2 change set B, row 2.5). The business node's `areaServed` is the 18 published locations as
 `placeNode()` entries — `City` ×14 and `AdministrativeArea` ×4 for קריות, שרון, צפון and דרום — so
-it can never drift from the location pages. The manifest phrase itself is untouched and still
-owner-gated (§5.4, business-facts §E, Track B B5) and still ships in the client JS bundle; only the
-graph stopped repeating it. Verified
+it can never drift from the location pages. The manifest phrase itself was left to the owner
+(§5.4, business-facts §E, Track B B5) and kept shipping in the client JS bundle until `8e8843d`
+(below); this change only stopped the graph repeating it. Verified
 after a clean rebuild:
 
 ```bash
 node scripts/audit/schema.mjs   # ✅ 0 warnings — the phrase-areaServed warning is gone
 # out/index.html #business areaServed: 18 nodes · City 14 · AdministrativeArea 4
 # grep -c 'פריסה ארצית' inside the JSON-LD of all 45 pages → 0
+```
+
+**The manifest half closed 2026-11-09.** The roster sync `8e8843d` (Track B B5, owner-actions 3.6)
+set `schema.areaServed` to "מרכז הארץ והאזורים שמופיעים באתר", and `7ed1acd` retired the four
+unserved location pages, so the node list shrank with them. Verified on the current `out/`:
+
+```bash
+node scripts/audit/schema.mjs              # ✅ 0 failures · danglingIds 0 · rawHebrewUrls 0
+# out/index.html #business areaServed: 14 nodes · City 13 · AdministrativeArea 1 (שרון)
+grep -rl 'פריסה ארצית' out/_next/static | wc -l   # 0 — the bundled manifest now reads "areaServed":"מרכז הארץ והאזורים שמופיעים באתר"
 ```
 
 ### 4.9 — P2 · S · [✅ DONE 2026-11-08] No `WebSite` node
@@ -729,6 +787,10 @@ node scripts/audit/schema.mjs   # ✅ 0 failures · faqPages 8 (/ + the 7 servic
 its three `cityContent.faqs` the same way, and `lib/city-content.ts` throws if a city question
 repeats one used on `/`, a service page or another city. `schema.mjs` → 0 failures, **`faqPages 26`**
 (`/` + 7 services + 18 locations); 98 questions sitewide (54 on location pages), 0 marked up twice.
+The four guides took it to `faqPages 30` (115 questions, `89439b7`); `7ed1acd` retired four
+location pages, so on the current `out/` (2026-11-09) `schema.mjs` → 0 failures, **`faqPages 26`**
+(`/` + 7 services + 14 locations + 4 guides), 103 `Question` nodes sitewide (42 on location pages),
+0 marked up twice.
 
 ---
 
@@ -763,38 +825,60 @@ node scripts/audit/schema.mjs   # ✅ 0 failures · 0 warnings · danglingIds 0 
 The body copy uses `בצפון` / `בדרום` as ordinary prose ("בצפון יש הרבה מושבים") on its own pages —
 correct Hebrew there, not the templated defect.
 
-### 5.3 — P1 · L · [PARTIAL 2026-11-09 · 13 of 18 done · ⏳ BLOCKED · owner 3.6 for five] Doorway risk on all 18 location pages
+Since `7ed1acd` (2026-11-09, owner-actions 3.6) קריות, צפון and דרום are retired, so one region is
+left: `kind` is `"city"` ×13 and `"region"` ×1 (שרון, `באזור השרון`), and the location `Service`
+nodes carry `AdministrativeArea` on שרון only. `grep` of every html/txt/xml in `out/` for `בשרון` →
+0 files.
 
-See §3.1. **No 19th location until the existing 18 pass.** 7 × 18 = 126 cells; do not build them.
+### 5.3 — P1 · L · [✅ DONE 2026-11-09 · measured half, 14 of 14 · sign-off not on record] Doorway risk on all 18 location pages
 
-**The measured doorway proxy passes on all 18 since 2026-11-09** (commit `7c3f2db`):
-`content-depth.mjs` → location `belowFloor 0`, `locationMedianDelta 343.5`, every page 288–428
-tokens ahead of its nearest sibling. **Done for the 13 confirmed cities; ⏳ BLOCKED · owner
-(owner-actions 3.6) for קריות, שרון, צפון, דרום and באר שבע**, which ship as bounded pages with no
-coverage claim until the owner says whether they are served (§3.1). The human half of the test —
-local-seo-strategist sign-off — is not on record, so the expansion cap stands.
+See §3.1. **No 15th location until the existing 14 pass by hand.** 7 × 14 = 98 cells; do not build
+them.
 
-### 5.4 — P2 · S · [⏳ BLOCKED · owner] Coverage and availability claims are unbounded
+The measured doorway proxy passed on all 18 from `7c3f2db` (2026-11-09), with five of them
+bounded pages waiting on owner-actions 3.6. **Closed 2026-11-09** by commit `7ed1acd` on the owner's
+answer: the four unserved pages are retired with 301s and the 14 left all pass. Verified on the
+current `out/`:
 
-The manifest `schema.areaServed` still reads `מרכז הארץ ופריסה ארצית` while locations span קריות to
-באר שבע, and whether 24/7 emergency service exists is unanswered (business-facts §E,
-owner-actions 3.5–3.6). Until Sprint 4 both were claimed sitewide (`claims-grep.mjs`:
+```bash
+node scripts/audit/content-depth.mjs   # location 14 pages · belowFloor 0 · medianUnique 887 / 350 · locationMedianDelta 343 / 120
+# every page 292 (אשקלון) to 439 (ירושלים) tokens ahead of its nearest sibling; no location row in the failures
+```
+
+The human half of the test — local-seo-strategist sign-off — is not on record (not owner-blocked),
+so the expansion cap stands.
+
+### 5.4 — P2 · S · [✅ DONE 2026-11-09 · coverage half · availability half ⏳ BLOCKED · owner 3.5] Coverage and availability claims are unbounded
+
+Until 2026-11-09 the manifest `schema.areaServed` read `מרכז הארץ ופריסה ארצית` while locations
+spanned קריות to באר שבע; whether 24/7 emergency service exists is still unanswered (business-facts
+§E, owner-actions 3.5). Until Sprint 4 both were claimed sitewide (`claims-grep.mjs`:
 `around-the-clock` on 42 pages, `national-coverage` on 4, as of 2026-08-23). **The copy half is
-done:** the JSON-LD has emitted the 18 published locations instead of the phrase since `02a3144`
+done:** the JSON-LD has emitted the published locations (18 then, 14 since `7ed1acd`) instead of
+the phrase since `02a3144`
 (§4.8), and `1796ee7` (Sprint 4.1) took both out of the copy — `claims-grep.mjs` →
 `around-the-clock 0`, `national-coverage 0` live as of 2026-11-09; the footer and `/צור-קשר/` read
 `serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר"). The roster `shortPitch` stopped
-claiming national coverage, 24/7, speed and a full warranty in `ad2f1ab` (2026-11-09). What stays
-blocked is the roster `areaServed` value and the owner's answer (B5, owner-actions 3.6): no page or
-JSON-LD node renders the phrase, but `site.config.json` is bundled whole into the client JS, so it
-still ships once in `out/_next/static/`:
+claiming national coverage, 24/7, speed and a full warranty in `ad2f1ab` (2026-11-09). The roster
+`areaServed` value stayed blocked on the owner (B5, owner-actions 3.6): no page or JSON-LD node
+rendered the phrase, but `site.config.json` is bundled whole into the client JS, so it shipped once
+in `out/_next/static/`.
+
+**The coverage half closed 2026-11-09.** The owner answered 3.6 (not served: קריות, צפון, דרום,
+באר שבע; served: חיפה, אשקלון, שרון); the roster sync `8e8843d` (B5) set `areaServed` to
+"מרכז הארץ והאזורים שמופיעים באתר", and `7ed1acd` retired the four unserved pages. Verified on the
+current `out/`:
 
 ```bash
-grep -rl 'פריסה ארצית' out/_next/static | wc -l    # 1 — areaServed:"מרכז הארץ ופריסה ארצית"
+grep -rl 'פריסה ארצית' out/_next/static | wc -l    # 0 (1 before 8e8843d)
 grep -rl 'אחריות מלאה\|24/7' out/_next/static | wc -l  # 0 since ad2f1ab
+node scripts/audit/claims-grep.mjs                  # ✅ failingClaims 0 · national-coverage 0 · around-the-clock 0 live
 ```
 
-### 5.5 — P2 · S · [PARTIAL 2026-11-09 · copy half done for 13 · ⏳ BLOCKED · owner for five and the map] No geo signals
+**⏳ BLOCKED · owner (3.5) for the availability half:** whether a 24/7 line exists, and response
+times per area. Nothing on the site promises either; a confirmed answer adds a line.
+
+### 5.5 — P2 · S · [PARTIAL 2026-11-09 · copy half done for all 14 · ⏳ BLOCKED · owner for the map (B3)] No geo signals
 
 Until Sprint 6: no `GeoCoordinates`, no `hasMap`, no map embed, no neighbourhood or landmark
 reference in any copy.
@@ -806,10 +890,11 @@ and climate they sit in. Verified on the current `out/`: all 18 location pages r
 three city FAQs (`<details>` ×3 each; 54 location questions, 98 sitewide, 0 marked up twice —
 `schema.mjs` → 0 failures, `faqPages 26`).
 
-**⏳ BLOCKED · owner (owner-actions 3.6) for the five 🔶 entries** (קריות, שרון, צפון, דרום, באר
-שבע): their place names are geography, not a service area, until the owner confirms coverage. **⏳
-BLOCKED · owner (§5.1, B3) for the map half:** `hasMap` and any map embed wait on the GBP URL; no
-`GeoCoordinates` around an invented midpoint, ever.
+The five 🔶 entries waited on owner-actions 3.6 until 2026-11-09; the answer retired four of them
+(`7ed1acd`) and kept שרון, so the copy half now covers all 14 pages: each renders its list and
+three city FAQs (42 location questions, 103 sitewide, 0 marked up twice — `schema.mjs` → 0
+failures, `faqPages 26`). **⏳ BLOCKED · owner (§5.1, B3) for the map half:** `hasMap` and any map
+embed wait on the GBP URL; no `GeoCoordinates` around an invented midpoint, ever.
 
 ### 5.6 — [✅ HOLDS] NAP is correct as-is
 
@@ -882,6 +967,11 @@ node scripts/audit/content-depth.mjs   # the answer-block warning lists post 11/
 #   the four guides 56–58 (מחסום-חניה-ועד-בית 58 · שער-חשמלי-רועש 58 · שער-נגרר-כנף-או-קונזולי 56
 #   · תקן-900-שער-חשמלי 57)
 ```
+
+After `7ed1acd` (2026-11-09) retired four location pages and rewrote the answers on חיפה,
+ירושלים, אשקלון and `/איזורי-שירות/`, the 14 location pages measure 44–57 words and
+`/איזורי-שירות/` 48 (first `<p>` after the H1, the audit's `tokens()`); the warning still lists
+post 11/11 only.
 
 The two legal pages and `/תודה/` are out of scope (no question to answer; the proxy skips them).
 
@@ -970,6 +1060,15 @@ node scripts/audit/edge.mjs   # llmsTxt true · 0 failures, 0 warnings
 #   · Guides · Key facts · Notes for AI assistants; the 11 posts are not listed (the blog index is)
 ```
 
+After `7ed1acd` (2026-11-09, owner-actions 3.6) the file follows the 14 locations by construction
+and says the business does not serve the whole country. Re-measured on the current `out/`:
+
+```bash
+node scripts/audit/edge.mjs   # llmsTxt true · 0 failures
+# out/llms.txt: 85 lines · 35 linked URLs, every one byte-identical to a sitemap <loc>, 0 raw Hebrew
+#   · 14 /locations/ lines · "The business does not serve the whole country." in Service areas and in the notes
+```
+
 **Live after the deploy** — the acceptance is `curl -sI https://dangates.co.il/llms.txt` → 200,
 after the AI-crawler full-UA probe (§6.1).
 
@@ -1036,7 +1135,9 @@ grep -rl --include=index.html 'בהקדם\|מענה מיידי\|מייצרים' 
 
 **Left, and why it is not this row:** one unclocked speed phrase, "שירות מהיר ואמין" in the
 `שער-חשמלי-לא-מגיב` checklist — permitted by eeat-and-trust §1.4, it goes with the post rewrites
-(Sprint 7.3); the manifest `areaServed` phrase in the client bundle (§5.4, B5). The lexicon still
+(Sprint 7.3). The manifest `areaServed` phrase in the client bundle (§5.4, B5) was the other
+remainder until the roster sync `8e8843d` (2026-11-09): `grep -rl 'פריסה ארצית' out/_next/static |
+wc -l` → 0. The lexicon still
 has no pattern for team claims or for absolute promises outside `workmanship-absolute`'s four
 phrases — `claims-verifier` reads for them.
 
@@ -1237,10 +1338,11 @@ heading order, breadcrumbs).
 
 ### 9.1 — P1 · M · [NOT STARTED] Header reaches no service or location page in one hop
 
-`Header.tsx` renders `navItems` only; `links.mjs` → chrome = 28 hrefs until 2026-11-09, **34**
-since the footer lists all 18 locations (§9.2, `7c3f2db`) — the six added links are all footer
-links; the header is unchanged. Posts are reachable only via indexes and related links. Still
-open — Sprint 6.5.
+`Header.tsx` renders `navItems` only; `links.mjs` → chrome = 28 hrefs until 2026-11-09, 34 once
+the footer listed all 18 locations (§9.2, `7c3f2db`), 35 with the hub entry (`89439b7`), and
+**31** since `7ed1acd` retired four location pages (owner-actions 3.6) — the footer lists all 14;
+the header is unchanged. The target is now the 7 services and 14 locations in one hop. Posts are
+reachable only via indexes and related links. Still open — Sprint 6.5.
 
 ### 9.2 — P1 · S · [✅ DONE 2026-11-09] Six location pages are missing from the chrome
 
@@ -1255,6 +1357,9 @@ all 18. Verified on the current `out/`:
 node scripts/audit/links.mjs   # ✅ notInChrome 0 · chromeLinks 34 (28 + the six) · orphans 0 · brokenLinks 0
 # "types reached only via indexes/related links": post, thanks — location is no longer listed
 ```
+
+Since `7ed1acd` (2026-11-09) the footer still renders `locations.map`, now all 14:
+`links.mjs` → `notInChrome 0` · `chromeLinks 31` · `orphans 0` · `brokenLinks 0`.
 
 ### 9.3 — P1 · M · [✅ DONE 2026-11-09] The service ↔ location mesh is one-way
 
@@ -1276,6 +1381,19 @@ Sprint 5 half. Measured on the current `out/` (`<main>` links):
 node scripts/audit/links.mjs   # ✅ orphans 0 · notInChrome 0 · brokenLinks 0
 # location → location: 18 of 18 pages link 2–4 neighbours; every location receives 2–4 such links
 # location → service: 18 of 18 pages link 4–7 service pages
+```
+
+**Rebalanced 2026-11-09** by commit `7ed1acd` (owner-actions 3.6): every pair touching a retired
+page went with it, and `["חיפה", "נתניה"]` and `["אשקלון", "יבנה"]` restore the links those two
+pages lost — 18 pairs now. חיפה has one neighbour, far but the nearest page on the site, under its
+own `nearbyHeading` (the documented exception in content-standards §3 block 5). Measured on the
+current `out/` (`<main>` links):
+
+```bash
+node scripts/audit/links.mjs   # ✅ orphans 0 · notInChrome 0 · brokenLinks 0
+# location → location: 13 of 14 pages link and receive 2–4 neighbours; חיפה links and receives 1 (נתניה)
+# location → service: 14 of 14 pages link 4–7 service pages
+# service → location: the 7 service pages link 5–6 cities each, 13 distinct (שרון by design not among them)
 ```
 
 The header half of §9 is §9.1, not this row.
@@ -1990,7 +2108,8 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    unique, `claims-grep` 0 over 14 claims. Partial by design: §3.13 (about and both indexes —
    closed in Sprint 6.8, `7c3f2db`), §6.2 (locations closed in Sprint 6, the rest but the posts in
    Sprint 7; the posts with Sprint 7.3, ⏳ owner 3.8), §6.4 (8 of 11 posts dated; the rest with
-   Sprint 7.3). Open: the deploy, and the manifest `areaServed` phrase in the client bundle (B5).
+   Sprint 7.3). ~~The manifest `areaServed` phrase in the client bundle (B5)~~ — gone with the
+   roster sync `8e8843d` (2026-11-09, owner-actions 3.6). Open: the deploy.
 7. ~~**Sprint 5 — service depth:** §3.2 · §6.2 and §4.13 for the 7 service pages · §9.4 service
    half · §2.4 re-derived inside the 120–160 window~~ — shipped in the repo 2026-11-09 (commit
    `225ff45`): service `belowFloor 0`, `serviceMedianDelta 438`, `faqPages 8`,
@@ -2000,14 +2119,19 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
 8. **Sprint 6 — locations + navigation:** ~~§2.3 · §5.2 · §3.13 (indexes and about) · §9.2 · the
    rest of §9.3~~ — shipped in the repo 2026-11-09 (commit `7c3f2db`): location `belowFloor 0`,
    `locationMedianDelta 343.5`, the three pages over their floors, `notInChrome 0`, `orphans 0`,
-   `faqPages 26`, `claims-grep.mjs` still 0; audit 5 → 1 (the post floor only). §3.1 / §5.3 and the
-   §5.5 copy half are done for the 13 confirmed cities and ⏳ BLOCKED · owner (3.6, B5) for the five
-   🔶 entries, which ship as bounded pages. **Next:** §9.1 header reach (row 6.5, not
-   owner-blocked), local-seo-strategist and claims-verifier sign-off on record, then the deploy.
+   `faqPages 26`, `claims-grep.mjs` still 0; audit 5 → 1 (the post floor only). ~~§3.1 / §5.3 and
+   the §5.5 copy half for the five 🔶 entries~~ — closed 2026-11-09 on the owner's 3.6 answer
+   (`8e8843d` roster sync, `7ed1acd`): קריות, צפון, דרום and באר שבע retired with 301s to
+   `/איזורי-שירות/`, שרון kept; 14 location pages, `belowFloor 0`, `locationMedianDelta 343`,
+   `sitemapUrls 46`, `redirectRules 80`; ~~§5.4 coverage half~~ too (the availability half waits
+   on 3.5). **Next:** §9.1 header reach to the 7 services and 14 locations (row 6.5, not
+   owner-blocked), local-seo-strategist and claims-verifier sign-off on record, the owner's GBP
+   service area set to the same 14 places (gbp-runbook §2), then the deploy.
 9. **Phase 4 — guides hub + block model:** ~~§6.3 the hub and guides #1–#4 · §6.5 `llms.txt` ·
    §6.2 for `/blog/`, `/צור-קשר/`, the hub and the guides~~ — shipped in the repo 2026-11-09
    (Sprint 7, commit `89439b7`): guide `belowFloor 0` (median 2395.5 unique / 900), `faqPages 30`,
-   `orphans 0`, `sitemapUrls 50`, `edge.mjs` → `llmsTxt true`; audit still 1 (the post floor).
+   `orphans 0`, `sitemapUrls 50`, `edge.mjs` → `llmsTxt true`; audit still 1 (the post floor) —
+   after `7ed1acd`: `faqPages 26`, `sitemapUrls 46`, audit still 1.
    **⏳ BLOCKED · owner 3.8:** §3.8 · §3.10 · §9.5 · §6.2 for the posts · the rest of §6.4 · the post
    half of §9.4 (not owner-blocked in itself; it rides with the post route rewrite) and the
    content-calendar §4 keep / fold / 301 moves (Sprint 7.3, 7.4). Open and not blocked: guides #5–#8

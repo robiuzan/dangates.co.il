@@ -46,7 +46,7 @@ keeps 50 pages (as of 2026-11-09), and the guides still to come, from cannibalis
 ```text
 /                              the head term + the brand entity
 ├── /services/[service]/       SILO A — 7 pages — "what we do, buy it" — transactional, by gate type
-├── /locations/[city]/         SILO B — 18 pages — "we do it near you" — 14 cities + 4 region entries
+├── /locations/[city]/         SILO B — 14 pages — "we do it near you" — 13 cities + 1 region entry (שרון)
 ├── /blog/                     the 11 legacy posts — keep / fold / redirect per content-calendar §4
 ├── /מדריכים/                  THE HUB (ADR 0002, built Sprint 7) — 4 guides — "what is wrong, what to choose, what the law says"
 │                              five pillars (content-calendar §1): תקלות · רכיבים · בחירה · בטיחות ותקנים · ועד בית
@@ -63,16 +63,18 @@ keeps 50 pages (as of 2026-11-09), and the guides still to come, from cannibalis
 | Query family                                                              | Owner                                                                                             | Must not answer it                                                               |
 | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | Transactional service terms — `שער נגרר`, `מחסום חניה`, `תיקון שער חשמלי` | Silo A. `מחסום` goes into the שער-זרוע title/H1 (`new-service`, Phase 3), not a guide             | A guide title never equals a service `name`                                      |
-| `תיקון שערים חשמליים ב{city}` and every ב+city form                       | Silo B, with `prefixed` for the four regions (backlog §5.2)                                       | Silo A never names a city in an H1/H2; a guide never matches `{service} ב{city}` |
+| `תיקון שערים חשמליים ב{city}` and every ב+city form                       | Silo B, with `prefixed` for the region (backlog §5.2)                                             | Silo A never names a city in an H1/H2; a guide never matches `{service} ב{city}` |
 | Symptom · component · brand · comparison · safety · committee             | The hub, one topic per URL, per the pillar table in [content-calendar.md](content-calendar.md) §1 | Silo A states its own case; it does not diagnose or compare                      |
 | `כמה עולה` · `מחיר` · `מחירון`                                            | `/מחירון/`, pivoted to _what determines the price_ (N14; keyword-map §10)                         | No guide carries a price; guides link down to `/מחירון/`                         |
 | "מי אתם"                                                                  | `/אודות/` (`AboutPage` + `knowsAbout`, Phase 6)                                                   | Nowhere else                                                                     |
 | The 11 legacy posts                                                       | Keep 3, fold 4 into guides, 301 4 — content-calendar §4 (owner approval, owner-actions §3.8)      | Never a 12th legacy-style post; new editorial starts at `content-hub`            |
 
-**No service × location matrix.** 7 × 18 = 126 cells; keyword-map §6 says do not build them. The
-18 location pages differ by 2–3 tokens today; multiplying that pattern multiplies risk, not reach.
-**Expansion cap:** no 19th city and no 8th service (`שער קונזולי`, `דלת מוסך פנלים`) until the 18
-and the 7 pass the doorway test in content-standards §2 (CLAUDE.md §12).
+**No service × location matrix.** 7 × 14 = 98 cells; keyword-map §6 says do not build them. The
+14 location pages pass the measured doorway proxy since Sprint 6 (`locationMedianDelta 343`,
+2026-11-09 — they differed by 2–3 tokens before); a matrix would still be thin variations of them,
+which multiplies risk, not reach. **Expansion cap:** no 15th location and no 8th service
+(`שער קונזולי`, `דלת מוסך פנלים`) until the 14 and the 7 pass the doorway test in content-standards
+§2 by hand (CLAUDE.md §12) — and none of the four retired on owner-actions 3.6 comes back.
 
 ### 1.2 Explicitly not doing
 
@@ -104,7 +106,7 @@ sitewide — the vocabulary gap is the content gap.
 sii.org.il, a GSC export) → `keyword-researcher` appends one row to keyword-map §13 with the URL and a
 strength tier → `content-hub` runs the four-question "does it earn a page" test → a content-calendar
 row → `/new-guide <family> <slug>` → `article-auditor`. A candidate whose target route already exists
-is a cannibalisation flag, not a page; cannibalisation against the 7 services, the 18 locations,
+is a cannibalisation flag, not a page; cannibalisation against the 7 services, the 14 locations,
 `/מחירון/` and other guides is a **module-load throw in `lib/guides.ts`** since Sprint 7 (`89439b7`, ADR 0003).
 
 ---
@@ -120,28 +122,30 @@ The canonical strings are gbp-runbook §0 — copy, never retype: `דן שערי
 (generated from `siteConfig` by `lib/llms.ts` since `89439b7`); a mismatch splits the entity. The absent `address` is **correct** and holds
 (backlog §4.11); WhatsApp on the same number is 🔶 (owner-actions §3.7) and is never the NAP.
 
-### 3.2 The four entries that are not cities
+### 3.2 The entry that is not a city
 
-קריות, שרון, צפון, דרום are regions. `locations` is `{slug, name}` only, so templates ship `בשרון`
-and `בצפון` where Hebrew requires `באזור השרון` and `בצפון הארץ` (backlog §5.2). Phase 3 adds `kind`
-and `prefixed` through `new-city`; schema switches `City` → `AdministrativeArea` on `kind`
-(schema-graph §5); until then no guide names a region. Whether these four and באר שבע are genuinely
-served is an open owner question (business-facts §E).
+שרון is a region — the one left since `7ed1acd`. Until Sprint 6 `locations` was `{slug, name}` only,
+so templates shipped `בשרון` and `בצפון` where Hebrew requires `באזור השרון` and `בצפון הארץ`
+(backlog §5.2); since `7c3f2db` every entry carries `kind` and `prefixed`, and schema types the
+place `City` or `AdministrativeArea` from `kind` (schema-graph §5). The owner answered owner-actions
+3.6 on 2026-11-09: קריות, צפון, דרום and באר שבע are not served (their pages retired with 301s to
+`/איזורי-שירות/`), חיפה, אשקלון and שרון are. No guide names a retired place as served.
 
 ### 3.3 Geo signals, ranked by value per effort
 
-1. **Google Business Profile** — service-area business, no pin, the 13 confirmed cities, the 7
+1. **Google Business Profile** — service-area business, no pin, the 14 published places (13 cities
+   and אזור השרון — an owner step, gbp-runbook §2), the 7
    services named as the site's H1s, hours as the footer (gbp-runbook §1–§5). Not in this repo.
 2. ✅ **A `Service` node per location page and a defined `#business` on every page** — since
    Sprint 2 (`d8edb28`, backlog §4.2, §4.4); until then locations carried only `BreadcrumbList` and
    `#business` dangled on 18 pages.
 3. ✅ **`areaServed` as place nodes** — `City` / `AdministrativeArea` matching the published set,
    not the marketing phrase (backlog §4.8, Sprint 2; typed from `kind` since `7c3f2db`). The roster
-   value itself stays owner-gated (B5).
+   value lost "ופריסה ארצית" in the roster sync `8e8843d` (B5, 2026-11-09).
 4. **Genuinely local copy** — neighbourhoods, industrial zones, the local gate reality, travel and
    scheduling at that distance (`cityContent`, built in Sprint 6, `7c3f2db`). The copy half of
-   backlog §5.5 is done for the 13 confirmed cities; the five 🔶 entries carry no travel or
-   scheduling line until owner-actions 3.6, and `hasMap` waits on the GBP.
+   backlog §5.5 is done for all 14 pages since `7ed1acd` closed the five 🔶 entries on owner-actions
+   3.6; no page carries a travel or scheduling line (3.5 is open), and `hasMap` waits on the GBP.
 5. **Israeli citations** (gbp-runbook §12) only where a no-address listing is honest, each feeding
    roster `sameAs`; **GBP links tagged** `utm_campaign=gbp` ([event-taxonomy.md](event-taxonomy.md)).
 
@@ -157,8 +161,9 @@ since Sprint 5 (`225ff45`). The delta is necessary, not
 sufficient: `local-seo-strategist` and `claims-verifier` read every new city page. A city about which
 nothing true and specific can be said does not warrant a page — say so in business-facts §E.
 
-**Coverage honesty.** "24/7" and "פריסה ארצית" are bounded to what the owner confirms (business-facts
-§E; backlog §5.4): the copy is written around them, `claims-grep.mjs` fails on the phrases, and
+**Coverage honesty.** "24/7" is bounded to what the owner confirms and "פריסה ארצית" is refuted —
+the owner said on 2026-11-09 that קריות, צפון, דרום and באר שבע are not served (owner-actions 3.6;
+business-facts §E; backlog §5.4): the copy is written around both, `claims-grep.mjs` fails on the phrases, and
 neither enters a title, an `areaServed` node or the profile's hours (gbp-runbook §5).
 
 ---
@@ -231,8 +236,8 @@ number. Until Sprint 7 nothing on the site carried a citable table (backlog §6.
 
 **`/llms.txt`** is built in the repo since `89439b7` (2026-11-09; backlog §6.5 ✅ · repo):
 `app/llms.txt/route.ts` serves `buildLlmsTxt()` from `lib/llms.ts`, in the shape of
-`.claude/skills/aeo-answer-content/templates/llms.txt` — NAP from the manifest, the 7 services, 18
-areas, the static pages and the guides with percent-encoded canonicals byte-identical to the sitemap,
+`.claude/skills/aeo-answer-content/templates/llms.txt` — NAP from the manifest, the 7 services, 14
+areas (18 until `7ed1acd`), the static pages and the guides with percent-encoded canonicals byte-identical to the sitemap,
 and a "notes for AI assistants" block naming what must **not** be attributed — no warranty term,
 years, rating, licence or response-time promise. `edge.mjs` → `llmsTxt true`; live 404 until the
 next deploy (it was 404 on 2026-09-06).
@@ -309,7 +314,7 @@ full`** report carries the Δ on every script above (baseline 2026-08-24).
 | Rule                                                                                                              | Enforced by                                                                                                                                                                                                                                                          |
 | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | One query family = one URL; no guide in the silos' phrase space                                                   | `lib/guides.ts` module-load throws since `89439b7` (backlog §6.3, ADR 0003) + `article-auditor` for the body under each H2                                                                                                                                           |
-| No service × location matrix; no 19th city / 8th service                                                          | `local-seo-il`, `content-hub` doctrine; CLAUDE.md §12 — judgment, not mechanical                                                                                                                                                                                     |
+| No service × location matrix; no 15th location / 8th service                                                      | `local-seo-il`, `content-hub` doctrine; CLAUDE.md §12 — judgment, not mechanical                                                                                                                                                                                     |
 | Doorway delta ≥ 120; word floors; answer block 40–60 words                                                        | `content-depth.mjs` (`thresholds.json`) — the answer block warns until Phase 3 copy lands (backlog §6.2); `local-seo-strategist` reads new city pages                                                                                                                |
 | One Q/A per `FAQPage` sitewide; answers rendered                                                                  | `schema.mjs` parity; native `<details>` since N8 (`7cfcf4c`)                                                                                                                                                                                                         |
 | `#business` defined on every page; `WebSite`; escaped URLs                                                        | `schema.mjs` — fails on all three today (backlog §4.4, §4.9, §4.7)                                                                                                                                                                                                   |

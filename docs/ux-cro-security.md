@@ -29,7 +29,7 @@ crawler probe and the deploy state were re-verified with `curl` on 2026-09-06. R
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | CTAs (`cta-coverage.mjs`) | 2026-11-08 (repo): 119 elements on 46 pages, **0 without `data-cta`**, 23 distinct values, 0 warnings — `/מחירון/` has call and WhatsApp in `<main>` (was 113 / 24 missing / no pricing CTA on 2026-08-24)                                                                                                                                                       | §13.2 ✅, §8.5 ✅                                          |
 | Lead form (source, §8)    | 2026-11-08 (repo, `68a4a7f`): per-field `aria-invalid` + `aria-describedby`, the `lib/phone.ts` pattern, an error alert, a consent line, the `city` select, `/תודה/` after a confirmed send, `lead_submit` with `page` / `service` / `city` / `placement` / `site`; `a11y.mjs` 0. Open: the privacy copy sign-off (§8.2) and a tag consuming `lead_error` (§8.6) | §8.1 ✅ §8.3–§8.5 ✅, §8.2 · §8.6 PARTIAL, N1 ✅, §13.4 ✅ |
-| Navigation (`links.mjs`)  | header reaches 0 services / 0 locations; footer lists all 18 locations since `7c3f2db` (`notInChrome 0`, `chromeLinks 34`); the service ↔ location mesh both ways since `7c3f2db`; post related links by array order; breadcrumbs 44/44; FAQ answers in the DOM via `<details>` since `7cfcf4c`                                                                  | §9.1, §9.4 · §9.2 ✅ §9.3 ✅ §9.6 ✅, N8 ✅                |
+| Navigation (`links.mjs`)  | header reaches 0 services / 0 locations; footer lists all 14 locations (all 18 from `7c3f2db` until `7ed1acd` retired four; `notInChrome 0`, `chromeLinks 31`, 2026-11-09); the service ↔ location mesh both ways since `7c3f2db`; post related links by array order; breadcrumbs 45/45; FAQ answers in the DOM via `<details>` since `7cfcf4c`                  | §9.1, §9.4 · §9.2 ✅ §9.3 ✅ §9.6 ✅, N8 ✅                |
 | Headers (`edge.mjs`)      | `headersFile: true` since `a0e0fe2` — the five security headers and a report-only CSP from `public/_headers`, live since 2026-10-12; the zone rule was disabled 2026-11-08, deletion pending (B7)                                                                                                                                                                | §12.1 ✅, §12.2 PARTIAL                                    |
 | Redirects / origins       | `stubs: 37`, `redirectsFile: false`, `foreignStubs: 1`, `deadHostArtifacts: 3`; the GitHub Pages origin still answers; `www` serves a full duplicate (200 on 2026-09-06)                                                                                                                                                                                         | §1.1, §12.4, N4, N5, §1.7                                  |
 | Edge bot policy (zone)    | AI crawlers **200** on the full-UA probe, verified 2026-09-06 (owner-actions 1.1 ✅); blocked 2026-08-16 (managed `robots.txt`) and 2026-08-23 (enforced 403) — can revert with no repo change; `llms.txt` 404                                                                                                                                                   | §6.1 ✅, §6.2–§6.5                                         |
@@ -153,11 +153,12 @@ inbox; if spam becomes real, Web3Forms' captcha option.
 
 ### 3.1 The one-hop rule, and RTL ergonomics
 
-The header must reach **all 7 services and all 18 locations in one hop**, listed from `services` /
+The header must reach **all 7 services and all 14 locations in one hop**, listed from `services` /
 `locations` — never a hand-typed subset (§9.1, Sprint 6.5 — not started). The footer's
 `.slice(0, 12)`, which dropped אשקלון, באר שבע, דרום, צפון, קריות and שרון from the chrome, is gone
-since `7c3f2db` (§9.2 ✅): `links.mjs` → `notInChrome 0`, `chromeLinks 34` (28 + the six, as of
-2026-11-09). The mobile menu gets `aria-controls`,
+since `7c3f2db` (§9.2 ✅): `links.mjs` → `notInChrome 0`, `chromeLinks 31` as of 2026-11-09 (34 =
+28 + the six at `7c3f2db`, 35 with the hub entry, then four fewer when `7ed1acd` retired קריות,
+צפון, דרום and באר שבע on owner-actions 3.6). The mobile menu gets `aria-controls`,
 Escape and focus return in the same pass (§11.4). `dir="rtl"` mirrors flex and grid — never
 `flex-row-reverse` except to wrap an LTR island; logical utilities only (CLAUDE.md §6, `hebrew-rtl`,
 `rtl-lint.mjs`); phone and email are `dir="ltr"` islands ([accessibility-and-i18n.md](accessibility-and-i18n.md)).
@@ -263,8 +264,9 @@ origin that ignores `_redirects` is worse once the stubs are gone; ship `_header
 cPanel comment in `next.config.mjs` (N7). A real 301 keeps the query string, so `gclid`/`utm` on
 legacy entries is fixed for free (§13.3); the owner unpublishes GitHub Pages (audit §4). **Done in
 the repo on 2026-09-06** — 72 rules for the 37 pairs, since each is emitted in its slashed and bare
-form (Cloudflare matches a source literally and nothing is served at the bare path). Live only after
-the next deploy. Proof:
+form (Cloudflare matches a source literally and nothing is served at the bare path); live since the
+2026-10-12/13 deploys. 80 since `7ed1acd` (2026-11-09) added the four retired location pages, each
+to `/איזורי-שירות/` — those 8 are live only after the next deploy. Proof:
 `edge.mjs` → `stubs: 0`, `redirectsFile: true`, `headersFile: true`, `deadHostArtifacts: 0`,
 `foreignStubs: 0`; three legacy URLs live return `301` + `Location` with `?utm_source=test` intact
 (today `/חולון/` is a 200 stub). Deploying is a production mutation — dry run, the user's go, then
@@ -320,7 +322,7 @@ the next deploy. Proof:
 | Form: error state renders + `lead_error`; per-field a11y; Israeli phone pattern                                                | `a11y.mjs` (source checks on `LeadForm.tsx`; error state not yet checked)                                        | —                                                        | conversion-cro · cro-engagement-auditor · perf-a11y-auditor       | N1, §8.6, §8.1                                    |
 | Consent line; policy names Web3Forms and GTM                                                                                   | —                                                                                                                | —                                                        | conversion-cro · security-auditor · hebrew-editor                 | §8.2                                              |
 | `city` collected; `lead_submit` dimensions, confirmed send only, no PII; `form_start`; `/תודה/` noindex and out of the sitemap | `links.mjs` (sitemap ↔ export parity) once `/תודה/` exists                                                       | —                                                        | conversion-cro · tracking-analytics · seo-auditor                 | §8.3, §8.4, §13.4, §13.5; golden rule 10 standing |
-| Header one-hop; footer all 18; relevance-based related; breadcrumb ↔ `BreadcrumbList` parity, one per page                     | `links.mjs` (`notInChrome`, `chromeLinks`, related warnings, `breadcrumbPages`), `schema.mjs`                    | `.claude/rules/schema-jsonld.md`                         | internal-linking · seo-auditor · schema-auditor                   | §9.1–§9.4; ✅ holds (§9.6)                        |
+| Header one-hop; footer all 14; relevance-based related; breadcrumb ↔ `BreadcrumbList` parity, one per page                     | `links.mjs` (`notInChrome`, `chromeLinks`, related warnings, `breadcrumbPages`), `schema.mjs`                    | `.claude/rules/schema-jsonld.md`                         | internal-linking · seo-auditor · schema-auditor                   | §9.1–§9.4; ✅ holds (§9.6)                        |
 | Logical RTL utilities; menu focus management; hrefs end in `/`                                                                 | `rtl-lint.mjs`; `a11y.mjs` (warn on `Header.tsx`)                                                                | `post-edit-lint.ps1`, `.claude/rules/rtl-markup.md`      | hebrew-rtl · responsive-accessibility · ts-react-reviewer         | §11.5, §11.4, N10                                 |
 | No pop-ups, nothing else fixed; TOC; FAQ in the DOM                                                                            | `perf.mjs` (client components, deps), `a11y.mjs` (N8), `content-depth.mjs`                                       | —                                                        | engagement-ux · cro-engagement-auditor                            | N8; TOC with Phase 4                              |
 | `public/_headers` with the five headers, verified live; CSP report-only before enforcing                                       | `edge.mjs` (`headersFile`); `curl -sSI` (manual)                                                                 | —                                                        | web-security-headers · security-auditor                           | §12.1, §12.2                                      |
@@ -345,7 +347,7 @@ Every line is a command or a named agent. Rebuild first (N12); the live domain l
       sent in the email and on `lead_submit`; `/תודה/` exists, `noindex`, absent from `sitemap.xml`,
       carries `thanks-call`; `grep -rn "trackEvent\|dataLayer" components app lib` shows no PII.
 - [ ] **Navigation.** `node scripts/audit/links.mjs` → `notInChrome: 0`, `orphans: 0`,
-      `breadcrumbPages: 44`, no related-link warning; the header reaches 7 services + 18 locations
+      `breadcrumbPages: 45`, no related-link warning; the header reaches 7 services + 14 locations
       and Escape closes the menu; `node scripts/audit/rtl-lint.mjs` → 0 banned utilities; no new
       `"use client"` beyond the one events leaf; no fixed element beyond the bar.
 - [ ] **Security.** `curl -sSI` on `https://dangates.co.il/` and `https://dangates.pages.dev/` both

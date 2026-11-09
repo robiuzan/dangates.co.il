@@ -32,15 +32,15 @@ bucket at 0. Since `9195c9b` (4F) the lexicon has 14 ids: `workmanship-absolute`
 
 ## What is not coming — and what is
 
-| Fact                                      | Row               | Status  | What the site does instead                                                                     |
-| ----------------------------------------- | ----------------- | ------- | ---------------------------------------------------------------------------------------------- |
-| Warranty term, scope, exclusions          | business-facts §D | ❌      | "אחריות על העבודה" — true, unquantified. Never "מלאה"; `claims.json` fails it                  |
-| Licence, insurance, manufacturer training | §C                | ❌      | Nothing claimed. Expertise is **shown** as mechanism depth, never as a badge                   |
-| Founding year, owner/technician name      | §B                | ❌      | No `foundingDate`, no `Person`, no byline. `lib/authors.ts` stays empty                        |
-| Real prices                               | §D                | ❌ / 🔶 | `/מחירון/` explains "what determines the price" since `af8ba4c` (N14). `Offer` stays forbidden |
-| 24/7 emergency, response times            | §E                | 🔶      | Off the site since `1796ee7`; urgent faults handled within the hours (step 3)                  |
-| "פריסה ארצית"                             | §E                | 🔶      | Copy says `serviceAreaLine` and names the 18 areas; the manifest phrase is a roster question   |
-| GBP + reviews · job photos                | §A · §F           | ⏳      | Gated on `REVIEW_SOURCE_URL` (`docs/gbp-runbook.md` §11) · `/site-images`; zero `<img>` today  |
+| Fact                                      | Row               | Status  | What the site does instead                                                                                                         |
+| ----------------------------------------- | ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Warranty term, scope, exclusions          | business-facts §D | ❌      | "אחריות על העבודה" — true, unquantified. Never "מלאה"; `claims.json` fails it                                                      |
+| Licence, insurance, manufacturer training | §C                | ❌      | Nothing claimed. Expertise is **shown** as mechanism depth, never as a badge                                                       |
+| Founding year, owner/technician name      | §B                | ❌      | No `foundingDate`, no `Person`, no byline. `lib/authors.ts` stays empty                                                            |
+| Real prices                               | §D                | ❌ / 🔶 | `/מחירון/` explains "what determines the price" since `af8ba4c` (N14). `Offer` stays forbidden                                     |
+| 24/7 emergency, response times            | §E                | 🔶      | Off the site since `1796ee7`; urgent faults handled within the hours (step 3)                                                      |
+| "פריסה ארצית"                             | §E                | ❌      | Refuted (owner-actions 3.6, 2026-11-09); copy says `serviceAreaLine` and names the 14 areas; the manifest phrase left in `8e8843d` |
+| GBP + reviews · job photos                | §A · §F           | ⏳      | Gated on `REVIEW_SOURCE_URL` (`docs/gbp-runbook.md` §11) · `/site-images`; zero `<img>` today                                      |
 
 **Available now, and enough to build on:** the SII safety standard **ת״י 900 חלק 21.03** — guide #1
 since Sprint 7 (`89439b7`), its facts read on primary sources 2026-11-08/09
@@ -89,13 +89,13 @@ everywhere" → the roster gains the emergency hours and the footer shows them; 
 cities" → the wording lives on those location pages only (Phase 3 `cityContent`).
 `docs/gbp-runbook.md` §5 copies the site's wording — the profile never leads.
 
-**4. Coverage (row §E "Is פריסה ארצית true?") — copy half done.** The footer and `/צור-קשר/` say
+**4. Coverage (row §E "Is פריסה ארצית true?") — done; the owner said no (owner-actions 3.6, 2026-11-09).** The footer and `/צור-קשר/` say
 `serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר", in `lib/content.ts` since `1796ee7`) and the
 copy names the published areas. Since `d8edb28` `businessNode` (`/schema-structured-data`) emits the
-18 real places as `areaServed`. The phrase survives only in the roster `schema.areaServed`
-(`shortPitch` was cleared in `ad2f1ab`, step 1): no page or node shows it, but it ships once in the
-client bundle (`grep -rl 'פריסה ארצית' out/_next/static` → 1). It stays a roster question (B5,
-owner-actions 3.6).
+real places as `areaServed` — 14 since `7ed1acd` retired קריות, צפון, דרום and באר שבע. The phrase
+survived in the roster `schema.areaServed` (`shortPitch` was cleared in `ad2f1ab`, step 1), shipping
+once in the client bundle, until the roster sync `8e8843d` (B5) set it to "מרכז הארץ והאזורים
+שמופיעים באתר": `grep -rl 'פריסה ארצית' out/_next/static | wc -l` → 0 as of 2026-11-09.
 
 **5. `lib/authors.ts` — an empty registry with a data-only path (§7.4 · row §B).** Copy
 `c:/Users/robiu/antigravity/Projects/galbath.co.il/lib/authors.ts` and retarget its header: brand
@@ -145,7 +145,7 @@ carries none of the four claims since `1796ee7`. The rewrite (Sprint 6.8) goes i
    statements (the ₪800,000 award, the criminal-offence line) only attributed to SII with that URL
    beside them; the deaths and injuries are headlines SII quotes, never findings. Link the safety
    guide `/מדריכים/תקן-900-שער-חשמלי/` (built in Sprint 7, `89439b7`).
-6. Areas (the 18, linked), hours as they are, the visit band 150–350 ₪ as an estimate to confirm.
+6. Areas (the 14, linked), hours as they are, the visit band 150–350 ₪ as an estimate to confirm.
 
 Schema: `pageNode(m, "AboutPage", …)` + `businessNode(m)` (which carries `knowsAbout` — the gate
 types and the standard, **standards, never credentials**) in one `@graph`, via `/schema-structured-data`.
@@ -187,7 +187,7 @@ rows that move when a fact arrives.
 
 - [ ] `claims-grep.mjs` → 0 failures; `licence` / `insurance` / `founded` / `named-person` still 0.
 - [x] Roster `shortPitch` softened and synced; `site.config.json` untouched by hand (`ad2f1ab`).
-- [ ] Roster `schema.areaServed` bounded once the owner answers 3.6 (B5 — step 4).
+- [x] Roster `schema.areaServed` bounded on the owner's 3.6 answer (B5 — step 4, `8e8843d`).
 - [x] `trustStats` (4) and `differentiators` (6) name observable things; no copy left in JSX (`1796ee7`).
 - [x] Footer hours and every CTA agree; `hours.emergency` gone (`1796ee7`) — a 24/7 line only once §E is ✅.
 - [ ] `lib/authors.ts` exists, empty, header intact; `schema.mjs` reports the gate closed.

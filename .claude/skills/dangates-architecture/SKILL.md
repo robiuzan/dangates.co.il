@@ -35,7 +35,7 @@ site.config.json          SiteManifest             ← NEVER edit directly (deny
         │
         ▼
 lib/site-config.ts        manifest (= parseManifest() from lib/manifest.ts) · siteConfig · services[7]
-        │                 locations[18] (slug · name · kind · prefixed · updated) · staticPages (10, /תודה/ noindex)
+        │                 locations[14] (slug · name · kind · prefixed · updated) · staticPages (11, /תודה/ noindex)
         │                 telHref · whatsappHref()
         ├─► lib/content.ts   serviceCards · serviceMeta · differentiators · processSteps · trustStats
         │                    priceRows · faqs · reviews = [] + REVIEW_SOURCE_URL = null (gated)
@@ -54,11 +54,12 @@ app/**/page.tsx  →  components/{ui,layout,marketing,forms}/**
 **Identity and NAP go up to the roster. Wording goes in `lib/content.ts`. Article bodies go in
 `lib/posts.ts`. Layout goes in components.** A phone number, city or service name typed into JSX is a
 bug (`.claude/rules/content-data.md`, `rtl-markup.md`). The site has **no street address** — the
-manifest carries none; do not invent one. The manifest's `schema.areaServed` is still the phrase
-`"מרכז הארץ ופריסה ארצית"` (owner-gated, B5), but since Sprint 2 the graph emits the 18 published
-locations instead. `site.config.json` is bundled whole into the client JS, so that phrase still
-ships once under `out/_next/static/`; the roster `shortPitch` was cleared of its claims in
-`ad2f1ab` (2026-11-09).
+manifest carries none; do not invent one. The manifest's `schema.areaServed` reads
+`"מרכז הארץ והאזורים שמופיעים באתר"` since the roster sync `8e8843d` (B5, owner-actions 3.6,
+2026-11-09; it said "ופריסה ארצית" until then), and since Sprint 2 the graph emits the published
+locations instead — 14 since `7ed1acd` retired קריות, צפון, דרום and באר שבע. `site.config.json` is
+bundled whole into the client JS, so any roster string ships under `out/_next/static/` — "פריסה
+ארצית" there is 0 now; the roster `shortPitch` was cleared of its claims in `ad2f1ab`.
 
 **The service depth model is built** (Sprint 5, `225ff45`): `lib/service-depth.ts` types, assembles
 and checks `serviceDepth`, one module per service in `content/services/<slug>.ts` — `/new-service`
@@ -103,8 +104,8 @@ canonical byte for byte) and the schema `url` fields (`/schema-structured-data`,
 
 ## Redirects — real 301s from generated `public/_redirects`
 
-`public/_redirects` carries **72 Cloudflare Pages 301 rules**, both columns percent-encoded, covering
-36 legacy paths in both their slashed and bare form (Pages matches a source literally, and this
+`public/_redirects` carries **80 Cloudflare Pages 301 rules**, both columns percent-encoded, covering
+36 legacy paths and the 4 location pages retired in `7ed1acd` (72 before) in both their slashed and bare form (Pages matches a source literally, and this
 export ships nothing at a bare path). It is **generated**: `scripts/gen-redirects.mjs` builds it from
 `REDIRECTS.md` and runs on `prebuild`, writing only on a real change so a rebuild cannot trip the
 audit's staleness guard (N12). Edit the map, then `npm run redirects` — never the file.
@@ -116,8 +117,9 @@ a GitHub Pages workaround that returned 200 with `noindex` **and** a canonical, 
 (§13.3) and added 45 % to the crawlable URL count. **ADR 0004** replaced them in commit `a0e0fe2`;
 the stub directories, the Houston stub (N4), `deploy.yml`, `CNAME` and `.htaccess` are all deleted.
 The `public/**/index.html` deny rule stays anyway, so the pattern cannot come back. Procedure:
-`/web-security-headers`; proof: `edge.mjs` → `redirectRules 72 · stubs 0 · redirectsFile true ·
-headersFile true · deadHostArtifacts 0`. None of it is live until the next deploy.
+`/web-security-headers`; proof: `edge.mjs` → `redirectRules 80 · stubs 0 · redirectsFile true ·
+headersFile true · deadHostArtifacts 0` (2026-11-09). The first 72 are live since the 2026-10-12/13
+deploys; the 8 for the retired location pages go live with the next deploy.
 
 ## What `@ishub/site-kit` gives you
 
@@ -131,7 +133,7 @@ headersFile true · deadHostArtifacts 0`. None of it is live until the next depl
 
 Schema reality (`node scripts/audit/schema.mjs`, 2026-11-08): 0 failures, 0 warnings. Every content
 page emits one `@graph` built by `lib/jsonld.ts`; the business node is on every page that references
-it; `WebSite` on `/`; `Service` on the 7 services and 18 locations; `CollectionPage` / `AboutPage` /
+it; `WebSite` on `/`; `Service` on the 7 services and the 14 locations; `CollectionPage` / `AboutPage` /
 `ContactPage` / `WebPage` on the statics; `BlogPosting` via `articleJsonLd`; every schema URL
 percent-encoded (Sprint 2, `02a3144` `d8edb28` — not deployed yet). Target graph: `docs/schema-graph.md`.
 

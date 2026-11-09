@@ -118,7 +118,7 @@ node -e "require('fs').rmSync('.next',{recursive:true,force:true})" && npm run b
 ```bash
 curl -sSI https://dangates.co.il/ | head -20
 curl -sS "https://dangates.co.il/services/%D7%A9%D7%A2%D7%A8%D7%99%D7%9D-%D7%A0%D7%92%D7%A8%D7%A8%D7%99%D7%9D/" | grep -o '<title>[^<]*</title>'
-curl -sS https://dangates.co.il/sitemap.xml | grep -c '<url>'                                   # 50 since Sprint 7 (45 before)
+curl -sS https://dangates.co.il/sitemap.xml | grep -c '<url>'                                   # 46 since 7ed1acd (50 after Sprint 7, 45 before)
 curl -o /dev/null -w '%{http_code}\n' -s https://dangates.co.il/llms.txt                       # 200 since Sprint 7 (404 before)
 curl -o /dev/null -w '%{http_code}\n' -s "https://www.googletagmanager.com/gtm.js?id=GTM-KWGGH438"   # 200
 curl -sSI "https://dangates.co.il/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/" | grep -iE '^HTTP|^location'
@@ -151,8 +151,12 @@ surviving into `Location` is the §13.3 acceptance test: a 301 preserves the que
 old `location.replace()` stub destroyed it, so paid and campaign attribution on legacy links is only
 actually fixed once this probe passes live.
 
-**The first deploy after Sprint 1 is the one that makes this real.** As of 2026-09-06 the 72 rules
-and `public/_headers` exist only in the repo — `edge.mjs` measures files, not responses.
+**A deploy is what makes a rule real — `edge.mjs` measures files, not responses.** The 72 original
+rules and `public/_headers` went live with the 2026-10-12/13 deploys (probed 2026-11-08). The 8
+rules `7ed1acd` added for the retired location pages (80 in all, 2026-11-09) exist only in the repo
+until the next deploy — add `curl -sI "https://dangates.co.il/locations/%D7%A7%D7%A8%D7%99%D7%95%D7%AA/"`
+→ `301` with `Location` `/%D7%90%D7%99%D7%96%D7%95%D7%A8%D7%99-%D7%A9%D7%99%D7%A8%D7%95%D7%AA/` to that
+deploy's probe.
 
 **AI-crawler state and `robots.txt`:** do not restate it here — it moved on 2026-08-23 (managed
 `robots.txt` off, edge 403) and again by 2026-09-06 (every AI crawler 200 — backlog §6.1 ✅).

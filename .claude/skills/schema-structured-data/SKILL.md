@@ -23,9 +23,10 @@ As of 2026-11-08 (clean rebuild): **`schema.mjs` → 0 failures, 0 warnings** �
 recorded — five failures and five warnings: locations and statics with only a breadcrumb, 18 dangling
 `#business` references, no `WebSite`, 18 raw-Hebrew URLs, no `image`/`logo`, a homepage array
 instead of one `@graph`. Sprint 5 put a `FAQPage` on each service page and Sprint 6 (`7c3f2db`) on
-each location page (§4.13 ✅ — `faqPages 26`, 98 questions sitewide, none twice, as of 2026-11-09).
-What is left: `sameAs` empty (B3), the `Service` node on the five 🔶 entries (owner-actions 3.6),
-the Rich Results Test after the deploy. The numbers move; the script is the truth.
+each location page, and Sprint 7 on each guide (§4.13 ✅ — `faqPages 26` = `/`, 7 services, 14
+locations, 4 guides; 103 questions sitewide, none twice, as of 2026-11-09 after `7ed1acd`). What is
+left: `sameAs` empty (B3) and the Rich Results Test after the deploy. The five 🔶 entries' `Service`
+nodes were resolved by the owner's 3.6 answer — four retired with their pages, שרון kept. The numbers move; the script is the truth.
 
 ## The kit builders — and their limits
 
@@ -78,8 +79,8 @@ The last crumb keeps its `href` — `BreadcrumbList` needs a resolvable `item` a
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
 | `/`                                   | business + `WebSite` + `FAQPage`                                                                             | ✅                                                |
 | `/services/{slug}/` ×7                | business + `Service` (`#service`, encoded `url`) + breadcrumb (+ `FAQPage` later)                            | ✅ (no FAQ yet)                                   |
-| `/locations/{slug}/` ×18              | business + `Service` with local `areaServed` + breadcrumb                                                    | ✅                                                |
-| `/שירותים/` `/איזורי-שירות/` `/blog/` | `CollectionPage` + `ItemList` + breadcrumb                                                                   | ✅ (ItemLists of 7, 18 and 11)                    |
+| `/locations/{slug}/` ×14              | business + `Service` with local `areaServed` + breadcrumb                                                    | ✅                                                |
+| `/שירותים/` `/איזורי-שירות/` `/blog/` | `CollectionPage` + `ItemList` + breadcrumb                                                                   | ✅ (ItemLists of 7, 14 and 11)                    |
 | `/blog/{slug}/` ×11                   | business + `BlogPosting` (`#article`, `isPartOf`) + breadcrumb                                               | ✅                                                |
 | `/מדריכים/{slug}/` ×4 · `/מדריכים/`   | business + `TechArticle`/`Article` (`citation`) + `FAQPage` + breadcrumb · hub `CollectionPage` + `ItemList` | ✅ since `89439b7` (`TechArticle` 1, `Article` 3) |
 | `/אודות/` · `/צור-קשר/`               | business + `AboutPage` (`knowsAbout`) / `ContactPage` + breadcrumb — no `Person`                             | ✅                                                |
@@ -108,7 +109,7 @@ differs in the places noted below — **the repo file wins**. It holds
    never pre-encode (double-encoding turns `%` into `%25`).
 4. **`logo` = `/dangates-logo.png`, `image` = the manifest OG card** via `ogImageMeta(m.images)` —
    the same helper `app/layout.tsx` uses for `og:image`. No other image exists (business-facts §F).
-5. `businessNode` also sets `url` with the trailing slash, `areaServed` as the 18 published places,
+5. `businessNode` also sets `url` with the trailing slash, `areaServed` as the 14 published places (`City` ×13, `AdministrativeArea` ×1),
    `description` as the tagline (the roster pitch carries unconfirmed claims), and `knowsAbout` when
    the caller passes it (`/אודות/` only). Unlike the template it **does** set `hasOfferCatalog` — an
    `OfferCatalog` whose `itemListElement` entries are the 7 services as `Service` nodes (`@id`, `name`,
@@ -119,8 +120,8 @@ differs in the places noted below — **the repo file wins**. It holds
 
 `locationServiceJsonLd(m, { name: h1, serviceType: locationServiceType }, loc)` → `Service` with `@id`
 `{pageUrl}#service`, encoded `url`, `provider` → `#business`, `areaServed: placeNode(loc)`.
-`placeNode` types the place from the entry's `kind` — `AdministrativeArea` for קריות, שרון, צפון,
-דרום, `City` for the rest; typing a region as a city is a factual error in the graph. Since Sprint 6
+`placeNode` types the place from the entry's `kind` — `AdministrativeArea` for שרון (the one
+region left since `7ed1acd`), `City` for the rest; typing a region as a city is a factual error in the graph. Since Sprint 6
 (`7c3f2db`) every `locations` entry carries `kind` and `prefixed` and the interim `REGION_SLUGS` set
 is gone; the location route passes the page's H1 (built on `prefixed`) as the `Service` name, and
 adds a `FAQPage` from the city's `cityContent.faqs` — the same `{ q, a }` its `<Faq>` renders.

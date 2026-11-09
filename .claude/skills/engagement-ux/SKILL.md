@@ -126,7 +126,7 @@ applies unchanged: static export, no backend, ~dozens of clicks a month cannot i
 before the banner on purpose — the last objection handler — and `FinalCta` must never be the only
 exit: a reader still deciding needs a lateral link. Related services by relevance — the service
 pages use declared `relatedServices`, cities and posts since Sprint 5 (`225ff45`); the post route's
-`others` list still takes `.slice(0, 4)` (Sprint 7.3). Locations all 18 — the footer renders them
+`others` list still takes `.slice(0, 4)` (Sprint 7.3). Locations all 14 — the footer renders them
 all and each location page links its `nearby` neighbours since Sprint 6 (`7c3f2db`); the header is
 still Sprint 6.5 (`/internal-linking`). "More guides" is the `relatedGuides` list on each guide since Sprint 7 (`89439b7`).
 

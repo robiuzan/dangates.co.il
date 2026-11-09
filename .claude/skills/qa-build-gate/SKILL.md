@@ -1,6 +1,6 @@
 ---
 name: qa-build-gate
-description: The release gate before any deploy on dangates — Step 0 `npm run audit:env`, a clean rebuild that clears `.next/` the hook-approved way, `npm run gate` (lint → typecheck → format:check → build → audit) read against the known-baseline table (re-cut 2026-11-09 after Sprint 7 — still 1 expected failure, the content-depth post floor, which now waits on owner-actions 3.8; down from 5, 8, 15, 26 and 37) so a run is judged on regressions rather than on that baseline, seven raw sanity greps a human can eyeball, the auditor sweep routed from docs/agent-roster.md §3, and the stop-ship list. Use before every deploy or when asked whether the site is ready to ship. Triggers: "run the build gate", "is this ready to ship", "pre-deploy check", "QA the site", "verify the build", "מוכן לעלות לאוויר", "בדיקה לפני פריסה".
+description: The release gate before any deploy on dangates — Step 0 `npm run audit:env`, a clean rebuild that clears `.next/` the hook-approved way, `npm run gate` (lint → typecheck → format:check → build → audit) read against the known-baseline table (re-cut 2026-11-09 after owner-actions 3.6 retired four location pages in 7ed1acd — still 1 expected failure, the content-depth post floor, which waits on owner-actions 3.8; down from 5, 8, 15, 26 and 37) so a run is judged on regressions rather than on that baseline, seven raw sanity greps a human can eyeball, the auditor sweep routed from docs/agent-roster.md §3, and the stop-ship list. Use before every deploy or when asked whether the site is ready to ship. Triggers: "run the build gate", "is this ready to ship", "pre-deploy check", "QA the site", "verify the build", "מוכן לעלות לאוויר", "בדיקה לפני פריסה".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -43,9 +43,10 @@ way to clear `.next/`. `next build` rewrites `out/` itself.
 export, uploaded on every deploy. Deleting them from `out/` afterwards is not the fix; clearing
 `.next/` is. `node scripts/audit/perf.mjs` holds the line (`maxJsFileBytes` 1 MB in
 `scripts/audit/thresholds.json`, `devBuildFiles` in `edge.mjs`); as of 2026-11-09 (after
-Sprint 7, `89439b7`) a clean export is 11.51 MB in 151 files (the live-kit surfaces added ≈1.15 MB
-in 2026-10, the service depth copy ≈0.7 MB, the location and index-page copy ≈1.3 MB and the hub
-and four guides ≈1.5 MB in HTML and RSC payloads), 33 JS chunks totalling 776 KB, largest 173 KB.
+`7ed1acd` retired four location pages) a clean export is 10.61 MB in 143 files — 11.51 MB in 151
+after Sprint 7 (the live-kit surfaces added ≈1.15 MB in 2026-10, the service depth copy ≈0.7 MB, the
+location and index-page copy ≈1.3 MB and the hub and four guides ≈1.5 MB in HTML and RSC payloads)
+— with 33 JS chunks totalling 776 KB, largest 173 KB.
 
 ## Step 2 — `npm run gate`
 
@@ -64,37 +65,38 @@ table against the baseline below. Every inline grep the old gate carried now liv
 weight/preloads → `perf.mjs`, `_redirects`/`_headers`/dead hosts → `edge.mjs`, blog debris →
 `spam-grep.mjs`, unconfirmed claims → `claims-grep.mjs`.
 
-### Known baseline — as of 2026-11-09 (post-Sprint 7), `npm run audit` exits 1
+### Known baseline — as of 2026-11-09 (after `7ed1acd`), `npm run audit` exits 1
 
 Re-cut from `npm run audit -- --scope full` on 2026-11-09 against the current `out/` (source tree
-at `89439b7`, the Sprint 7 guides hub, four guides, `llms.txt` and the `/blog/` and `/צור-קשר/`
-answer blocks). The previous baseline was also 1, at `7c3f2db` the same day (5 at `225ff45`, 8 at
-`9195c9b`, 15 on 2026-11-08, 26 on 2026-09-06, 37 on 2026-08-23). Sprint 7 added no failure and
-removed none: the post floor needs the post rewrite, which is ⏳ BLOCKED · owner 3.8. New and
-passing: the guide floor (4 pages, median 2395.5 unique / 900) and the guides-index floor (870 /
-250); `edge` lost its `llms.txt` warning. Everything else moved only by design — 5 new pages
-(`pages` 46 → 51, `sitemapUrls` 45 → 50), `faqPages` 26 → 30, `chromeLinks` 34 → 35 (the hub
-entry), `ctaElements` 125 → 152 with the guides' CTAs, home unique 1770 → 1772,
-`serviceMedianDelta` 436 → 437 and `locationMedianDelta` 343.5 → 342.5 (the reverse-index links).
-One new warning: `cta-coverage` flags the six `article-*` `data-cta` values as off the
-`{location}-{action}` convention (a naming decision, `missingDataCta` still 0).
+at `7ed1acd`: the owner answered owner-actions 3.6, the roster sync `8e8843d` dropped "ופריסה
+ארצית" from the manifest `areaServed`, and the four unserved location pages — קריות, צפון, דרום,
+באר שבע — were retired with 301s to `/איזורי-שירות/`). The previous baseline was also 1, at
+`89439b7` (Sprint 7) the same day (1 at `7c3f2db`, 5 at `225ff45`, 8 at `9195c9b`, 15 on
+2026-11-08, 26 on 2026-09-06, 37 on 2026-08-23). The change set added no failure and removed none:
+the post floor needs the post rewrite, which is ⏳ BLOCKED · owner 3.8. Everything else moved only
+by design — 4 pages fewer (`pages` 51 → 47, `sitemapUrls` 50 → 46, `breadcrumbPages` 49 → 45,
+`pagesWithJsonLd` 50 → 46), `faqPages` 30 → 26, `chromeLinks` 35 → 31 (four footer links),
+`redirectRules` 72 → 80 (the retired pages, slashed and bare), `ctaElements` 152 → 144,
+`locationMedianDelta` 342.5 → 343 and location median unique 843 → 887 over 14 pages, areas-index
+456 → 526 unique (rewritten for one region), home unique 1772 → 1762. The `cta-coverage` naming
+warning on the six `article-*` `data-cta` values stays (`missingDataCta` still 0).
 
-| Check                 | Fails | What is failing                                                                                                                                                                                                                                                                                                             | Expected until                                       |
-| --------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| `content-depth`       | 1     | the post floor: 11 posts 447–582/900. ✅ since `89439b7`: the 4 guides (median 2395.5 / 900) and the hub (870 / 250); since `7c3f2db`: the 18 locations (floor and delta), the areas index and `/אודות/`; since `225ff45`: the 7 services (floor and delta). The post answer-block warning (11/11, 1 word — the date) stays | posts — Sprint 7.3, ⏳ owner 3.8 (§3.8, §3.10, §6.2) |
-| `claims-grep`         | 0     | ✅ since `1796ee7` (§7.2, §7.6) — `failingClaims` 5 → 0, every `liveOccurrences` 0 over `claimsChecked 14` (`workmanship-absolute` added in `9195c9b`); `totalHits 1` is the gated rating row in `Reviews.tsx`. It reads `<main>` text only — see the bundle note under Step 3                                              | keep at 0                                            |
-| `schema`              | 0     | ✅ since `d8edb28` (§4.2, §4.4–§4.9, §4.12, N2) — `danglingIds` 18 → 0, `rawHebrewUrls` 18 → 0, `WebSite` on `/`, `Service` on 18 locations; 0 warnings                                                                                                                                                                     | keep at 0                                            |
-| `a11y`                | 0     | ✅ since `68a4a7f` (§11.1–§11.3, N11, §8.1) — every contrast pair ≥ 5.42:1, lists intact, per-field `aria-invalid`; 0 warnings                                                                                                                                                                                              | keep at 0                                            |
-| `rtl-lint`            | 0     | ✅ since `7cfcf4c` (§11.5) — `bannedUtilities` 3 → 0, `hexLiterals` 7 → 0                                                                                                                                                                                                                                                   | keep at 0                                            |
-| `titles`              | 0     | ✅ since `13a6bdc` (§1.5) — `ogUrlMissing` 45 → 0; 0 warnings since `74a92d1` (§2.4–§2.6, 24 → 0)                                                                                                                                                                                                                           | keep at 0                                            |
-| `cta-coverage`        | 0     | ✅ since `fee7f69` (§13.2) — `missingDataCta` 24 → 0; the `/מחירון/` warning gone since `68a4a7f` (§8.5). Since `89439b7` one warning: six `article-*` values off the `{location}-{action}` convention — expected until tracking-analytics decides the name                                                                 | keep at 0                                            |
-| `perf`                | 0     | ✅ since `13a6bdc` (§10.1, §10.3) — `fontPreloads` 0 → 2, `unusedDeps` → `[]`; the RSC-payload warning (§1.3) stays                                                                                                                                                                                                         | keep at 0                                            |
-| `edge`                | 0     | ✅ since `a0e0fe2` (§1.1 ADR 0004, §12.1, §12.4/N5, N4) — 37 stubs → 72 real 301 rules, `_headers` owned, 0 dead-host artifacts; `llmsTxt true` and 0 warnings since `89439b7` (§6.5)                                                                                                                                       | keep at 0                                            |
-| `export`              | 0     | pass — asserts `out/` is a current build of the source tree (N12)                                                                                                                                                                                                                                                           | keep at 0                                            |
-| `links` · `spam-grep` | 0     | pass — their metrics are the regression watch-list below                                                                                                                                                                                                                                                                    | keep at 0                                            |
+| Check                 | Fails | What is failing                                                                                                                                                                                                                                                                                                                                     | Expected until                                       |
+| --------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `content-depth`       | 1     | the post floor: 11 posts 447–582/900. ✅ since `89439b7`: the 4 guides (median 2395.5 / 900) and the hub (870 / 250); since `7c3f2db`: the locations (floor and delta — 14 of 14 since `7ed1acd`), the areas index and `/אודות/`; since `225ff45`: the 7 services (floor and delta). The post answer-block warning (11/11, 1 word — the date) stays | posts — Sprint 7.3, ⏳ owner 3.8 (§3.8, §3.10, §6.2) |
+| `claims-grep`         | 0     | ✅ since `1796ee7` (§7.2, §7.6) — `failingClaims` 5 → 0, every `liveOccurrences` 0 over `claimsChecked 14` (`workmanship-absolute` added in `9195c9b`); `totalHits 1` is the gated rating row in `Reviews.tsx`. It reads `<main>` text only — see the bundle note under Step 3                                                                      | keep at 0                                            |
+| `schema`              | 0     | ✅ since `d8edb28` (§4.2, §4.4–§4.9, §4.12, N2) — `danglingIds` 18 → 0, `rawHebrewUrls` 18 → 0, `WebSite` on `/`, `Service` on the 14 locations (18 until `7ed1acd`); 0 warnings                                                                                                                                                                    | keep at 0                                            |
+| `a11y`                | 0     | ✅ since `68a4a7f` (§11.1–§11.3, N11, §8.1) — every contrast pair ≥ 5.42:1, lists intact, per-field `aria-invalid`; 0 warnings                                                                                                                                                                                                                      | keep at 0                                            |
+| `rtl-lint`            | 0     | ✅ since `7cfcf4c` (§11.5) — `bannedUtilities` 3 → 0, `hexLiterals` 7 → 0                                                                                                                                                                                                                                                                           | keep at 0                                            |
+| `titles`              | 0     | ✅ since `13a6bdc` (§1.5) — `ogUrlMissing` 45 → 0; 0 warnings since `74a92d1` (§2.4–§2.6, 24 → 0)                                                                                                                                                                                                                                                   | keep at 0                                            |
+| `cta-coverage`        | 0     | ✅ since `fee7f69` (§13.2) — `missingDataCta` 24 → 0; the `/מחירון/` warning gone since `68a4a7f` (§8.5). Since `89439b7` one warning: six `article-*` values off the `{location}-{action}` convention — expected until tracking-analytics decides the name                                                                                         | keep at 0                                            |
+| `perf`                | 0     | ✅ since `13a6bdc` (§10.1, §10.3) — `fontPreloads` 0 → 2, `unusedDeps` → `[]`; the RSC-payload warning (§1.3) stays                                                                                                                                                                                                                                 | keep at 0                                            |
+| `edge`                | 0     | ✅ since `a0e0fe2` (§1.1 ADR 0004, §12.1, §12.4/N5, N4) — 37 stubs → 72 real 301 rules (80 since `7ed1acd`), `_headers` owned, 0 dead-host artifacts; `llmsTxt true` and 0 warnings since `89439b7` (§6.5)                                                                                                                                          | keep at 0                                            |
+| `export`              | 0     | pass — asserts `out/` is a current build of the source tree (N12)                                                                                                                                                                                                                                                                                   | keep at 0                                            |
+| `links` · `spam-grep` | 0     | pass — their metrics are the regression watch-list below                                                                                                                                                                                                                                                                                            | keep at 0                                            |
 
 The ✅ rows are green **in the repo**. Sprint 1 is live (the 2026-10-12/13 deploys, probed
-2026-11-08); Sprints 2, 3, 4, 5, the Sprint 6 content and Sprint 7 are not deployed yet. `edge` in particular measures files, not
+2026-11-08); Sprints 2, 3, 4, 5, the Sprint 6 content, Sprint 7 and the 3.6 change set (`8e8843d` `7ed1acd`) are not deployed yet. `edge` in particular measures files, not
 responses — the live probe is `deploy-dangates`'s job.
 
 Phases are the "Suggested order of work" at the end of `docs/optimization-backlog.md`. When a
@@ -103,30 +105,30 @@ should be re-cut from it.
 
 **Regression watch-list** (metrics in the `--json` output; any move in the wrong direction fails the
 gate even though the check itself still passes): `links` → `orphans 0`, `brokenLinks 0`,
-`linksToStubs 0`, `pagesNotExactlyOneH1 0`, `headingSkips 0`, `breadcrumbPages 49`,
-`sitemapUrls 50`, `contentPages 51` (50 + the `noindex` `/תודה/`), `staticRoutesRegistered 11` ·
-`titles` → `pages 51`, `uniqueTitles 51`, `uniqueDescriptions 51` ·
+`linksToStubs 0`, `pagesNotExactlyOneH1 0`, `headingSkips 0`, `breadcrumbPages 45`,
+`sitemapUrls 46`, `contentPages 47` (46 + the `noindex` `/תודה/`), `staticRoutesRegistered 11` ·
+`titles` → `pages 47`, `uniqueTitles 47`, `uniqueDescriptions 47` ·
 `titles` → 0 warnings (since `74a92d1`) ·
 `spam-grep` → `spamHits 0`, `fusedWords 0`, `relatedTails 0`, `curlyQuotes 0`, `emojiCount 39` ·
 `claims-grep` → `failingClaims 0`, `totalHits 1`, `claimsChecked 14`, every `liveOccurrences`
-value 0 · `content-depth` → home `belowFloor 0` (1772 unique), pricing `belowFloor 0` (914 unique),
-service `belowFloor 0` (median 1401 unique), location `belowFloor 0` (median 843 unique), guide
-`belowFloor 0` (median 2395.5 unique), guides index `belowFloor 0` (870 unique), services index
-`belowFloor 0` (1018 unique), areas index `belowFloor 0` (456 unique), about `belowFloor 0` (1145
-unique), blog index 548 unique, `locationMedianDelta 342.5`, `serviceMedianDelta 437`,
+value 0 · `content-depth` → home `belowFloor 0` (1762 unique), pricing `belowFloor 0` (914 unique),
+service `belowFloor 0` (median 1401 unique), location `belowFloor 0` (14 pages, median 887 unique),
+guide `belowFloor 0` (median 2395.5 unique), guides index `belowFloor 0` (870 unique), services index
+`belowFloor 0` (1018 unique), areas index `belowFloor 0` (526 unique), about `belowFloor 0` (1145
+unique), blog index 548 unique, `locationMedianDelta 343`, `serviceMedianDelta 437`,
 `sharedParagraphs 1`, no service, location or guide row in the answer-block warning · `links` →
-`relatedServiceTargets 7`, `notInChrome 0`, `chromeLinks 35`, no service-page monotony warning (the
+`relatedServiceTargets 7`, `notInChrome 0`, `chromeLinks 31`, no service-page monotony warning (the
 post-page one stays until Sprint 7.3, `relatedPostTargets 5`) ·
-`schema` → `pagesWithJsonLd 50`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 30` · `perf` →
+`schema` → `pagesWithJsonLd 46`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 26` · `perf` →
 `largestJsBytes 172834`, `clientComponents 3` (`LeadForm`, `MobileMenu`, `Reveal`), `fontPreloads 2`,
 `unusedDeps []`, `devBuildFiles 0`, `sourceMaps 0` · `rtl-lint` → `bannedUtilities 0`,
 `hexLiterals 0` · `a11y` → `unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 ·
-`titles` → `ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, `ctaElements 152`,
+`titles` → `ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, `ctaElements 144`,
 `distinctTaggedElements 46` (113 / 24 after Sprint 1; 115 / 26 with the fleet live-kit's card —
 CLAUDE.md §14; 119 / 30 with the pricing and thank-you CTAs of Sprint 3; 125 / 35 with Sprint 4's
-pricing, FAQ link-out and complaints CTAs; 152 / 46 with Sprint 7's guide CTAs) · `edge` → `stubs 0`,
-`redirectRules 72`, `redirectsFile true`, `headersFile true`, `llmsTxt true`, `deadHostArtifacts 0`,
-`foreignStubs 0`.
+pricing, FAQ link-out and complaints CTAs; 152 / 46 with Sprint 7's guide CTAs; 144 / 46 after
+`7ed1acd` took four location pages' CTAs out) · `edge` → `stubs 0`, `redirectRules 80`,
+`redirectsFile true`, `headersFile true`, `llmsTxt true`, `deadHostArtifacts 0`, `foreignStubs 0`.
 
 **Live surfaces (CLAUDE.md §14).** `npm run build` now runs the kit's gates in `prebuild` and
 `postbuild`; a register without the owner's `approved` stamp fails it. A local preview is
@@ -142,22 +144,22 @@ here rather than shipping a 404 preload.
 ## Step 3 — raw sanity greps (for a human, after the scripts)
 
 ```bash
-find out -name index.html | wc -l                                                  # 52 = 50 content + /תודה/ (noindex) + /404/ (47 before Sprint 7; 83 while the 37 stubs shipped)
-grep -c '<url>' out/sitemap.xml                                                    # 50
+find out -name index.html | wc -l                                                  # 48 = 46 content + /תודה/ (noindex) + /404/ (52 from Sprint 7 until 7ed1acd; 47 before Sprint 7; 83 while the 37 stubs shipped)
+grep -c '<url>' out/sitemap.xml                                                    # 46
 grep -rl 'aggregateRating\|"@type":"Review"' out --include=index.html | wc -l      # 0 — anything else is a stop-ship
 grep -rl '"@type":"Person"' out --include=index.html | wc -l                       # 0 — no person exists; lib/authors.ts is an empty registry
 grep -rl 'דן שערים חשמליים | דן שערים חשמליים' out --include=index.html | wc -l  # 0 — doubled brand suffix
 find public -name index.html | wc -l                                               # 0 — stubs gone (ADR 0004); anything > 0 means one came back
-grep -c ' 301$' public/_redirects                                                  # 72 — the real 301s that replaced them
+grep -c ' 301$' public/_redirects                                                  # 80 — the real 301s that replaced them, plus the 4 retired location pages (7ed1acd)
 ```
 
 **The client bundle is not in any script's scope.** `claims-grep` reads `<main>` text, and
 `site.config.json` is bundled whole into a JS chunk, so a roster string no page renders still
 ships. Since `ad2f1ab` (2026-11-09) the roster `shortPitch` carries none of the four claims;
-`grep -rl 'אחריות מלאה\|24/7' out/_next/static | wc -l` → 0, and
-`grep -rl 'פריסה ארצית' out/_next/static | wc -l` → 1, the manifest `areaServed`
-"מרכז הארץ ופריסה ארצית" — expected until the owner answers B5 (owner-actions 3.6); any other hit
-is a new roster claim.
+`grep -rl 'אחריות מלאה\|24/7' out/_next/static | wc -l` → 0, and since the roster sync `8e8843d`
+(B5, owner-actions 3.6 answered 2026-11-09) `grep -rl 'פריסה ארצית' out/_next/static | wc -l` → 0
+too — the manifest `areaServed` reads "מרכז הארץ והאזורים שמופיעים באתר" (it was 1 until then).
+Any hit now is a new roster claim — stop-ship.
 
 Do not grep for a bare `"author"` here: all 11 `BlogPosting` nodes and the 4 guide `TechArticle` /
 `Article` nodes carry the business as author by design (CLAUDE.md §8), so that count is 15, not 0. The invented-byline assertion is `Person` = 0.

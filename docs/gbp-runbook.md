@@ -16,16 +16,16 @@ Google UI shows at the time of writing — Google renames menu items, so search 
 Every profile, directory and citation must carry **byte-identical** values. They come from the
 manifest (`site.config.json:13-20`, synced from the roster), nowhere else.
 
-| Field          | Value                                      | Note                                                                                                                                                                                            |
-| -------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Business name  | `דן שערים חשמליים`                         | Exactly this — no city, no "תיקון", no slogan appended (Google suspends keyword-stuffed names).                                                                                                 |
-| Phone          | `072-2587772`                              | `contact.phoneOverride: true` — the one fleet site **not** on `055-6601006`. Never "correct" it.                                                                                                |
-| WhatsApp       | `+972556601006`                            | ✅ owner-actions §3.7 (2026-10-12) — `072-2587772` is not on WhatsApp; the owner's own number is the chat channel.                                                                              |
-| Email          | `info@dangates.co.il`                      |                                                                                                                                                                                                 |
-| Website        | `https://dangates.co.il/`                  | Apex, https, trailing slash. Never `www` (backlog §1.7).                                                                                                                                        |
-| Street address | **none**                                   | Service-area business. An invented or borrowed address is a suspension risk, not a ranking tactic (`/local-seo-il` §1).                                                                         |
-| Area (wording) | `מרכז הארץ ופריסה ארצית`                   | The manifest's `schema.areaServed`, which no page renders since Sprint 4 (it still ships in the client JS bundle, B5); "פריסה ארצית" is 🔶 (business-facts §E). In GBP use the city list in §2. |
-| Hours          | ראשון–חמישי 08:00–18:00 · שישי 08:00–15:00 | Manifest `schema.openingHours`; `siteConfig.hours` is built from it by `hoursLine()` since `1796ee7`. Saturday: closed.                                                                         |
+| Field          | Value                                      | Note                                                                                                                                                                                                               |
+| -------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Business name  | `דן שערים חשמליים`                         | Exactly this — no city, no "תיקון", no slogan appended (Google suspends keyword-stuffed names).                                                                                                                    |
+| Phone          | `072-2587772`                              | `contact.phoneOverride: true` — the one fleet site **not** on `055-6601006`. Never "correct" it.                                                                                                                   |
+| WhatsApp       | `+972556601006`                            | ✅ owner-actions §3.7 (2026-10-12) — `072-2587772` is not on WhatsApp; the owner's own number is the chat channel.                                                                                                 |
+| Email          | `info@dangates.co.il`                      |                                                                                                                                                                                                                    |
+| Website        | `https://dangates.co.il/`                  | Apex, https, trailing slash. Never `www` (backlog §1.7).                                                                                                                                                           |
+| Street address | **none**                                   | Service-area business. An invented or borrowed address is a suspension risk, not a ranking tactic (`/local-seo-il` §1).                                                                                            |
+| Area (wording) | `מרכז הארץ והאזורים שמופיעים באתר`         | The manifest's `schema.areaServed` since the roster sync `8e8843d` (2026-11-09, B5); it read "מרכז הארץ ופריסה ארצית" until then. There is no national coverage (owner-actions 3.6 ✅). In GBP use the list in §2. |
+| Hours          | ראשון–חמישי 08:00–18:00 · שישי 08:00–15:00 | Manifest `schema.openingHours`; `siteConfig.hours` is built from it by `hoursLine()` since `1796ee7`. Saturday: closed.                                                                                            |
 
 ---
 
@@ -46,16 +46,19 @@ manifest (`site.config.json:13-20`, synced from the roster), nowhere else.
 
 ---
 
-## 2. Service areas (אזורי שירות) — the 18 locations, as you confirm them
+## 2. Service areas (אזורי שירות) — the 14 locations
 
-The site publishes 18 location pages (`lib/site-config.ts`). Add an area **only if the business
-genuinely sends a technician there**; the profile's area list and the site's location list should
-match, or a customer in a listed city calls and is refused. Google caps the count (20 at the time of
-writing 🔶) and prefers areas reachable from your base — 18 fits.
+The site publishes 14 location pages (`lib/site-config.ts`) since `7ed1acd` (2026-11-09): you
+answered owner-actions 3.6 that קריות, צפון, דרום and באר שבע are not served, so those four pages
+were retired with 301s to `/איזורי-שירות/`; it was 18 until then. **Owner step:** when you create or
+edit the profile, its service-area list must be these same 14 places — no more, no fewer — or a
+customer in a listed place calls and is refused. Nothing in this repo can set it or check it; it is
+not done until you see the 14 on the profile. Google caps the count (20 at the time of writing 🔶) —
+14 fits.
 
-| Add now (cities)                                                                                                        | Pending your answer — business-facts §E, owner-actions §3.6                                                                                                                                                        |
-| ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| תל אביב · ירושלים · חיפה · ראשון לציון · פתח תקווה · נתניה · חולון · כפר סבא · מודיעין · רחובות · יבנה · אשדוד · אשקלון | **באר שבע** (a long call-out — is it served?) · **קריות**, **שרון**, **צפון**, **דרום** (regions, not cities — Google's picker wants a city, a district or a region name; pick the real one, never a made-up town) |
+| Add (13 cities)                                                                                                         | Add (1 region)                                                                                                      | Do not add — not served (3.6 ✅ 2026-11-09) |
+| ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| תל אביב · ירושלים · חיפה · ראשון לציון · פתח תקווה · נתניה · חולון · כפר סבא · מודיעין · רחובות · יבנה · אשדוד · אשקלון | **אזור השרון** — a region, not a city: Google's picker wants a city, a district or a region name; pick the real one | קריות · צפון · דרום · באר שבע               |
 
 Order them by business priority (מרכז first) — Google shows the first few on the listing.
 
@@ -98,7 +101,7 @@ posts, messages and your own reference — the service entry has no link field.
 | תריסי גלילה חשמליים  | `https://dangates.co.il/services/%D7%AA%D7%A8%D7%99%D7%A1%D7%99-%D7%92%D7%9C%D7%99%D7%9C%D7%94-%D7%97%D7%A9%D7%9E%D7%9C%D7%99%D7%99%D7%9D/` |
 | שערים לדירה          | `https://dangates.co.il/services/%D7%A9%D7%A2%D7%A8%D7%99%D7%9D-%D7%9C%D7%93%D7%99%D7%A8%D7%94/`                                            |
 
-Do **not** add per-city services ("תיקון שער חשמלי בחולון" × 18) — that is the doorway pattern in
+Do **not** add per-city services ("תיקון שער חשמלי בחולון" × 14) — that is the doorway pattern in
 profile form (`docs/content-standards.md` §2) and Google treats it as spam.
 
 ---
@@ -326,7 +329,9 @@ answer the 24/7 question (§E) and does not replace photos (§F).
 ## Checklist
 
 - [ ] Profile created as a service-area business; **no address shown**; name/phone/website exactly §0.
-- [ ] Service areas = the 13 cities now; the 5 pending entries added only after business-facts §E is ✅.
+- [ ] Service areas = exactly the 14 places in §2 (13 cities + אזור השרון) — the site's 14 location
+      pages; קריות, צפון, דרום and באר שבע left off (owner-actions 3.6, answered 2026-11-09). Owner
+      step, not yet done.
 - [ ] One primary category chosen from the picker; "חשמלאי" not used.
 - [ ] 7 services named as the site's H1s; descriptions from page copy; **no prices**.
 - [ ] Hours = the site's; no "open 24 hours"; emergency wording only after §E.

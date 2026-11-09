@@ -30,8 +30,10 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
   item id on every row. `docs/keyword-map.md` §3–§5 hold the title/H1/description formulas;
   `docs/content-standards.md` §1–§2 the floors and the doorway test; `docs/audits/` the previous report.
 - `scripts/audit/thresholds.json` — the only place a floor or a limit is defined.
-- `lib/site-config.ts` (`services` ×7, `locations` ×18) and `lib/posts.ts` (`posts` ×11) → the 45
-  content pages. `out/` also holds `/404` — 46 `index.html` files in all. The 37 redirect stubs that used to sit beside them are gone (ADR 0004, 2026-09-06); legacy URLs are 301 rules in `public/_redirects` now, so `links.mjs` reports `stubs 0`.
+- `lib/site-config.ts` (`services` ×7, `locations` ×14, `staticPages`) and `lib/posts.ts` (`posts` ×11),
+  plus the guides registry → the 46 indexable content pages (2026-11-09, after `7ed1acd` retired four
+  location pages on owner-actions 3.6). `out/` also holds the `noindex` `/תודה/` and `/404` — 48
+  `index.html` files in all. The 37 redirect stubs that used to sit beside them are gone (ADR 0004, 2026-09-06); legacy URLs are 301 rules in `public/_redirects` now, so `links.mjs` reports `stubs 0`.
 
 ## What to audit
 
@@ -44,16 +46,16 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
 2. **Descriptions.** 120–160 chars with terminal punctuation (`titles.mjs` warns). Since `74a92d1` every
    description passes (`titles.mjs` 0 warnings, 2026-11-09): services read
    `ServiceMeta.metaDescription` before the on-page `card.description` (§2.4 ✅), posts read `postSeo`
-   (§2.6 ✅). Still open: all 18 location descriptions differ by the city name only
-   (`locationMetaDescription(cityName)`, §2.3, Sprint 6.3).
+   (§2.6 ✅). Location descriptions are each page's own since Sprint 6.3 (`7c3f2db`, §2.3 ✅) — 14
+   distinct, 151–156 characters on 2026-11-09; report a shared or interpolated one if it comes back.
 3. **One H1, ordered headings.** `links.mjs` → `pagesNotExactlyOneH1`, `headingSkips`; both 0 today.
    Blog bodies are a flat wall of `<h2>` (`app/blog/[slug]/page.tsx` maps every `h` block) — not a
    skip, but a §3.10 hierarchy finding; the fix is the block-model migration (the model is built since Sprint 7; the post rewrite waits on owner-actions 3.8), not a heading swap.
-4. **Canonicals and `og:url`.** One self-referencing `<link rel="canonical">`, trailing slash, percent-escaped = byte-identical to the sitemap `<loc>` (holds, §1.8). `og:url` is on all 45 since 2026-09-06 (`titles.mjs` → `ogUrlMissing 0`, §1.5 closed) — both now derive from `routeUrl()` and `ogBase` in `lib/seo.ts`, so a new route that hand-rolls either is the regression to look for.
-5. **Sitemap and robots.** `links.mjs` diffs sitemap ↔ emitted tree both ways (45 = 45). the static routes are the `staticPages` registry in `lib/site-config.ts` and `links.mjs` cross-checks it against the `app/` tree (`staticRoutesRegistered`; §1.4 done 2026-09-06) — an unregistered new route now fails the check instead of going silently absent. Fetch the **live** `/robots.txt` and compare to `out/robots.txt`;
+4. **Canonicals and `og:url`.** One self-referencing `<link rel="canonical">`, trailing slash, percent-escaped = byte-identical to the sitemap `<loc>` (holds, §1.8). `og:url` is on every content page since 2026-09-06 (47 of 47 on 2026-11-09) (`titles.mjs` → `ogUrlMissing 0`, §1.5 closed) — both now derive from `routeUrl()` and `ogBase` in `lib/seo.ts`, so a new route that hand-rolls either is the regression to look for.
+5. **Sitemap and robots.** `links.mjs` diffs sitemap ↔ emitted tree both ways (`sitemapUrls 46`, 2026-11-09). the static routes are the `staticPages` registry in `lib/site-config.ts` and `links.mjs` cross-checks it against the `app/` tree (`staticRoutesRegistered`; §1.4 done 2026-09-06) — an unregistered new route now fails the check instead of going silently absent. Fetch the **live** `/robots.txt` and compare to `out/robots.txt`;
    AI-crawler reachability itself belongs to `aeo-geo-strategist` — do not duplicate it.
-6. **Legacy URLs — §1.1, closed in the repo 2026-09-06.** `public/_redirects` carries 72 real 301 rules and the 37 meta-refresh stubs are deleted (`edge.mjs` → `redirectRules 72 · stubs 0 · redirectsFile true · foreignStubs 0 · deadHostArtifacts 0`); the Houston promo stub (N4), `.github/workflows/deploy.yml`, `public/CNAME` and `public/.htaccess` went with them, so there is no second origin to duplicate the site. Each stub used to return **200** with `noindex` **and** a canonical — a combination Google says not to use. What you still audit: the drift check (§1.6) — `npm run redirects && git status --porcelain public/` must be empty — and whether the 301s are actually **live**, which they are not until the next deploy. A `200` on a legacy URL post-deploy means a static file is shadowing its rule.
-7. **RSC payloads.** `perf.mjs` → 45 `index.txt` files (≈1.47 MB) ship as crawlable copies of every
+6. **Legacy URLs — §1.1, closed in the repo 2026-09-06.** `public/_redirects` carries 80 real 301 rules (72 until `7ed1acd` added the four retired location pages, each to `/איזורי-שירות/`) and the 37 meta-refresh stubs are deleted (`edge.mjs` → `redirectRules 80 · stubs 0 · redirectsFile true · foreignStubs 0 · deadHostArtifacts 0`, 2026-11-09); the Houston promo stub (N4), `.github/workflows/deploy.yml`, `public/CNAME` and `public/.htaccess` went with them, so there is no second origin to duplicate the site. Each stub used to return **200** with `noindex` **and** a canonical — a combination Google says not to use. What you still audit: the drift check (§1.6) — `npm run redirects && git status --porcelain public/` must be empty — and whether the 301s are actually **live** — the original 72 are since the 2026-10-12/13 deploys (probed 2026-11-08); the 8 for the retired location pages are not until the next deploy (probe `/locations/קריות/` → `301`). A `200` on a legacy URL post-deploy means a static file is shadowing its rule.
+7. **RSC payloads.** `perf.mjs` → 47 `index.txt` files (3.23 MB, 2026-11-09) ship as crawlable copies of every
    page and `robots.txt` allows them (§1.3).
 8. **Thin and doorway pages — measured, never asserted.** `content-depth.mjs` gives unique words inside
    `<main>` minus shared blocks vs the floors, and the **doorway delta** vs the nearest sibling
@@ -62,17 +64,17 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
    `serviceTriggers` list in `lib/content.ts` (the shared module-scope array that put gate faults on
    the shutters page is gone, closed 2026-09-06). Since Sprint 5 (`225ff45`, 2026-11-09)
    `serviceMedianDelta` is 438 and the 7 services clear the 450 floor (§3.2 ✅). Since Sprint 6
-   (`7c3f2db`) `locationMedianDelta` is 343.5 and all 18 locations clear the 350 floor (§3.1 PARTIAL —
-   five 🔶 entries wait on owner-actions 3.6), and `/אודות/` and `/איזורי-שירות/` clear theirs
+   (`7c3f2db`) every location clears the 350 floor — 14 since `7ed1acd` retired the four unserved
+   pages on owner-actions 3.6, `locationMedianDelta 343` (§3.1 ✅) — and `/אודות/` and `/איזורי-שירות/` clear theirs
    (§3.13 ✅); only the 11 posts sit under their floor. Never re-derive this with a `node -e`
    one-liner.
-9. **Chrome reach, orphans, related links.** `links.mjs`: the footer renders all 18 locations since
-   `7c3f2db` → `notInChrome: 0`, `chromeLinks: 34` (§9.2 ✅; it sliced to 12 before); the header
+9. **Chrome reach, orphans, related links.** `links.mjs`: the footer renders every location since
+   `7c3f2db` → `notInChrome: 0`, `chromeLinks: 31` with 14 locations (2026-11-09; §9.2 ✅; it sliced to 12 before); the header
    reaches no service or location in one hop (§9.1, Sprint 6.5); related posts on the
    post pages are `.slice(0, 4)` by array order (the `others` list in `app/blog/[slug]/page.tsx`;
    the service pages use declared lists since `225ff45`, §9.4 PARTIAL); the blog contains zero
    links (§9.5); the mesh runs both ways since `7c3f2db` — service → city and location → neighbours
-   and services (§9.3 ✅). Trailing slashes are clean since 2026-09-06 (N10 closed): 0 un-slashed internal hrefs across all 46 exported pages.
+   and services (§9.3 ✅). Trailing slashes are clean since 2026-09-06 (N10 closed): 0 un-slashed internal hrefs across all exported pages.
 10. **Anchors and alt.** The export carries **zero `<img>`** — there is no alt surface; refer that to
     §7.5 (`eeat-trust-auditor`, `site-images`), not as an alt defect. Judge anchor text on what exists.
 
@@ -80,7 +82,7 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
 
 1. Run the baseline; read the JSON (`--json`) when you need per-page detail.
 2. Enumerate expected routes from `lib/site-config.ts` + `lib/posts.ts`; confirm `links.mjs` agrees
-   (45 content, 0 stubs, 1 `404` — 46 `index.html` in `out/`).
+   (46 indexable content pages, `/תודה/`, 0 stubs, 1 `404` — 48 `index.html` in `out/`, 2026-11-09).
 3. Spot-check one page per route type in `out/` by hand — `<title>`, description, `<h1>`, canonical,
    `og:` — against the keyword-map formulas; the scripts count, you judge intent match.
 4. Fetch the live homepage and `/robots.txt` once; note any divergence from `out/`.

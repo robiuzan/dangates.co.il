@@ -10,11 +10,11 @@
 
 - **Business:** דן שערים חשמליים (Dan Electric Gates) — repair, service and installation of electric
   gates, plus electric rolling shutters. **No street address** — the manifest carries none, and
-  manifest `schema.areaServed` is `מרכז הארץ ופריסה ארצית` (🔶, B5 — no page or JSON-LD node
-  renders it since Sprints 2 and 4, but `site.config.json` is bundled whole into the client JS, so
-  the phrase still ships once in `out/_next/static/` until the roster changes). The roster
-  `shortPitch` stopped carrying speed, "אחריות מלאה", 24/7 and "פריסה ארצית" in `ad2f1ab`
-  (2026-11-09). Do not invent an address.
+  manifest `schema.areaServed` reads `מרכז הארץ והאזורים שמופיעים באתר` since the roster sync
+  `8e8843d` (2026-11-09, Track B B5); it said "ופריסה ארצית" until then, which shipped in the client
+  JS because `site.config.json` is bundled whole — `out/_next/static/` now carries 0 occurrences.
+  The roster `shortPitch` stopped carrying speed, "אחריות מלאה", 24/7 and "פריסה ארצית" in
+  `ad2f1ab` (2026-11-09). Do not invent an address.
 - **Phone (click-to-call):** `072-2587772` · WhatsApp `+972556601006` (the owner's own — 072-2587772
   is not on WhatsApp, §14) · `info@dangates.co.il`.
   This site sets `contact.phoneOverride: true` — it is the **one** fleet site that does not use the
@@ -24,8 +24,10 @@
   (owner-actions 3.5); since Sprint 4 (`1796ee7`) the site promises urgent-fault handling only
   within these hours.
 - **Service area:** the copy says `serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר") and names
-  the published areas — 18 location pages, 7 service pages, 4 guides (since Sprint 7), 11 blog
-  posts. "פריסה ארצית" is 🔶.
+  the published areas — 14 location pages (13 cities and אזור השרון), 7 service pages, 4 guides
+  (since Sprint 7), 11 blog posts. **National coverage is ❌:** the owner answered owner-actions 3.6
+  on 2026-11-09 — קריות, צפון, דרום and באר שבע are not served (their four pages were retired in
+  `7ed1acd` with 301s to `/איזורי-שירות/`); חיפה, אשקלון and שרון are. Never write "פריסה ארצית".
 - **Audience:** private homeowners, ועדי בתים (building committees), property managers, businesses
   with vehicle gates.
 - **Core promise:** reliable diagnosis before repair, and a warranty on the work — write **אחריות על העבודה**, never "אחריות מלאה": the term, scope and
@@ -36,7 +38,8 @@
   call/WhatsApp action within reach; the mobile CTA bar is sticky.
 
 > ⚠️ **Not substantiated:** years in business (`foundedYear: null`), the warranty term, licences,
-> insurance, 24/7 availability, response times, national coverage, and every price — the one number
+> insurance, 24/7 availability, response times, and every price (national coverage is not merely
+> unsubstantiated but refuted — owner-actions 3.6, 2026-11-09) — the one number
 > the site shows is the 150–350 ₪ technician-visit band (`priceRows` → `visitFeeRange`), itself 🔶
 > as to whether it is current. `/מחירון/` explains what determines the price instead of listing
 > authored ranges since `af8ba4c` (N14 — until then 8 of its 9 prices were authored estimates).
@@ -132,11 +135,11 @@ transpilePackages: ["@ishub/site-kit"],
 app/
   layout.tsx              # metadata, Rubik, GTM, <html lang="he" dir="rtl">
   page.tsx                # homepage — LocalBusiness + FAQPage JSON-LD
-  sitemap.ts robots.ts    # /sitemap.xml (50 URLs since Sprint 7), /robots.txt
+  sitemap.ts robots.ts    # /sitemap.xml (46 URLs since 7ed1acd; 50 after Sprint 7), /robots.txt
   llms.txt/route.ts       # /llms.txt — generated from lib/llms.ts, never hand-written (Sprint 7)
   not-found.tsx           # 404
   services/[service]/     # 7 pages — Service + FAQPage JSON-LD, rendered from serviceDepth
-  locations/[city]/       # 18 pages
+  locations/[city]/       # 14 pages (18 until 7ed1acd retired four, owner-actions 3.6)
   blog/ blog/[slug]/      # index + 11 posts
   מדריכים/ מדריכים/[slug]/  # the guides hub (ADR 0002) — index + 4 guides, rendered from lib/guides.ts
   שירותים/ איזורי-שירות/ מחירון/ אודות/ צור-קשר/
@@ -152,7 +155,7 @@ components/
   forms/       LeadForm
   live/        Live.tsx — the fleet live-kit surfaces, server components only (§14)
 lib/
-  site-config.ts   # ⭐ NAP, services[7], locations[18] (kind · prefixed · updated), telHref, whatsappHref
+  site-config.ts   # ⭐ NAP, services[7], locations[14] (kind · prefixed · updated), telHref, whatsappHref
   content.ts       # ⭐ all Hebrew marketing copy; reviews = [] (gated)
   posts.ts         # ⭐ 11 migrated blog posts (untrusted — see golden rule 7)
   service-depth.ts # ServiceDepth type + serviceDepth record + module-load checks (Sprint 5)
@@ -170,7 +173,7 @@ lib/
   seo.ts           # routeUrl() + ogBase — canonical and og:url from one place
   utils.ts         # cn()
   live/            # fleet live-kit copies — byte-locked, never edit (§14)
-scripts/gen-redirects.mjs   # emits public/_redirects (72 real 301 rules) from REDIRECTS.md; runs on prebuild
+scripts/gen-redirects.mjs   # emits public/_redirects (80 real 301 rules) from REDIRECTS.md; runs on prebuild
 scripts/audit/     # ⭐ the measurements (12 checks + thresholds.json + claims.json) — roster §4
 scripts/live/      # fleet live-kit gates (prebuild / postbuild) and the weekly reminder — locked (§14)
 content/services/  # ⭐ one depth module per service (<slug>.ts → ServiceDepth): answer, sections, FAQs, links
@@ -181,7 +184,7 @@ content/live/      # ⭐ _campaigns.mjs + _updates.mjs (the live registers) + th
 live.config.mjs    # ⭐ calm / no-card pages, this site's ⛔ claim stems, pageOfSource (§14)
 live-kit.lock.json # the kit commit and the sha256 of every locked copy (§14)
 site.config.json   # SiteManifest — SYNCED FROM THE ROSTER, do not edit here
-public/_redirects  # GENERATED — 72 Cloudflare Pages 301 rules; edit REDIRECTS.md, not this
+public/_redirects  # GENERATED — 80 Cloudflare Pages 301 rules; edit REDIRECTS.md, not this
 public/_headers    # the repo's own security headers + the report-only CSP (ADR 0004)
 public/assets/live.js  # fleet live-kit browser behaviour (the switch, the card, the strip) — locked (§14)
 .github/workflows/remind.yml  # the live-kit's weekly reminder — the repo's only workflow (§14)
@@ -298,13 +301,15 @@ See the `hebrew-rtl` skill for the full rule set.
   `articleJsonLd`, `itemListJsonLd`, `pageNode`, `breadcrumbNode`, `graph`; target graph
   [docs/schema-graph.md](docs/schema-graph.md). Since Sprint 2 (2026-11-08, `02a3144` `d8edb28`) every
   content page emits **one** script holding **one** `@graph`: pages hand `PageHeader` their `nodes`
-  and it appends the one `BreadcrumbList` (49 nested routes since Sprint 7 — never add a second). The business node
-  ships on every page that references `#business`, with `logo`, `image`, `areaServed` as the 18
-  published locations and `hasOfferCatalog` naming the 7 services (no `Offer`, no price); `WebSite`
-  is on `/` only; `FAQPage` is on `/`, the 7 service pages, the 18 location pages and the 4 guides
-  (`faqPages 30` since Sprint 7, `89439b7` — 115 questions, each marked up on one page only; a guide
-  that repeats a question throws at module load); the
-  18 locations emit a `Service` with `areaServed` typed from `kind`,
+  and it appends the one `BreadcrumbList` (45 nested routes since `7ed1acd`, 49 after Sprint 7 —
+  never add a second). The business node
+  ships on every page that references `#business`, with `logo`, `image`, `areaServed` as the 14
+  published locations (`City` ×13 + `AdministrativeArea` ×1, שרון) and `hasOfferCatalog` naming the
+  7 services (no `Offer`, no price); `WebSite`
+  is on `/` only; `FAQPage` is on `/`, the 7 service pages, the 14 location pages and the 4 guides
+  (`faqPages 26` since `7ed1acd` — 103 questions, each marked up on one page only; 30 and 115 after
+  Sprint 7; a guide that repeats a question throws at module load); the
+  14 locations emit a `Service` with `areaServed` typed from `kind`,
   the indexes `CollectionPage` + `ItemList`,
   `/אודות/` an `AboutPage` with `knowsAbout` (naming ת״י 900 חלק 21.03 as a subject since the safety
   guide shipped — never a compliance claim), `/צור-קשר/` a `ContactPage`. Blog posts emit
@@ -372,8 +377,10 @@ only then run the dry run (`deploy-dangates`, "Before you deploy").
 **Redirects and headers — this repo owns both since 2026-09-06**
 ([ADR 0004](docs/decisions/0004-redirects-replace-stubs.md), commit `a0e0fe2`).
 
-- **`public/_redirects`** carries **72 real 301 rules** that Cloudflare Pages issues at the edge —
-  each of the 36 mapped legacy paths in both its slashed and bare form, both columns percent-encoded.
+- **`public/_redirects`** carries **80 real 301 rules** that Cloudflare Pages issues at the edge —
+  each of the 36 mapped legacy paths and the 4 location pages retired in `7ed1acd` (owner-actions
+  3.6) in both its slashed and bare form, both columns percent-encoded (72 until 2026-11-09). The
+  retired pages and the legacy root paths that reached them all land on `/איזורי-שירות/` in one hop.
   It is **generated**: `scripts/gen-redirects.mjs` builds it from `REDIRECTS.md` and runs on
   `prebuild`, so edit the map, never the file. The 37 meta-refresh stubs it replaced are deleted; a
   static asset at a path would shadow its own redirect rule, which is why deleting them was
@@ -388,9 +395,11 @@ only then run the dry run (`deploy-dangates`, "Before you deploy").
   not delete it before `_headers` is confirmed live on `dangates.pages.dev`, which has no zone rules
   in front of it.
 
-`node scripts/audit/edge.mjs` measures both — `redirectRules 72 · stubs 0 · redirectsFile true ·
-headersFile true · deadHostArtifacts 0 · foreignStubs 0` as of 2026-09-06. **None of it is live
-until the next deploy**; the acceptance test is the three-URL `301` probe in `deploy-dangates`.
+`node scripts/audit/edge.mjs` measures both — `redirectRules 80 · stubs 0 · redirectsFile true ·
+headersFile true · deadHostArtifacts 0 · foreignStubs 0 · llmsTxt true` as of 2026-11-09. The 72
+original rules are live since the 2026-10-12/13 deploys (the three-URL `301` probe passed
+2026-11-08); the 8 rules for the retired location pages are **not live until the next deploy** —
+probe one of them (e.g. `/locations/קריות/` → `301` to `/איזורי-שירות/`) after it.
 
 ---
 
@@ -415,8 +424,9 @@ until the next deploy**; the acceptance test is the three-URL `301` probe in `de
 ## 12. Scope guardrails
 
 - Implement real UI, sections, or content only when asked. Don't opportunistically redesign.
-- Don't add a 19th location or an 8th service until the existing ones pass the doorway test in
-  [docs/content-standards.md](docs/content-standards.md).
+- Don't add a 15th location or an 8th service until the existing ones pass the doorway test in
+  [docs/content-standards.md](docs/content-standards.md) — and never re-add one of the four retired
+  in `7ed1acd` (קריות, צפון, דרום, באר שבע) unless the owner reverses owner-actions 3.6.
 - Don't add dependencies without a reason that survives "can the platform already do this?"
 - Cloudflare zone settings (AI crawler policy, Scrape Shield, cache rules, security headers) are **the
   owner's to change**. Document the exact toggle in [docs/owner-actions.md](docs/owner-actions.md);
@@ -470,8 +480,8 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   `pageOfSource`, that a tip links to the page carrying it; `check-live-out` proves the built page
   shows it). Nothing 🔶 from [docs/business-facts.md](docs/business-facts.md): this site's own pages
   carried many 🔶 claims (24/7, אחריות מלאה, ניסיון רב, פריסה ארצית, שירות מהיר) until Sprint 4
-  softened them (2026-11-08) and the roster `shortPitch` until `ad2f1ab` (2026-11-09) — only the
-  manifest `areaServed` phrase is left, in the client bundle (B5) — and the lines still quote only the blog's maintenance and
+  softened them (2026-11-08), the roster `shortPitch` until `ad2f1ab` and the manifest `areaServed`
+  until `8e8843d` (both 2026-11-09, the last one B5) — and the lines still quote only the blog's maintenance and
   troubleshooting advice — no price, warranty, speed, hours,
   availability, coverage, credentials, staff, counts or reviews. Calm / no-card pages and this
   site's own ⛔ claim stems: `live.config.mjs` (mutation-tested — re-test after any edit). Both

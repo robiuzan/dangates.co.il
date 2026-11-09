@@ -56,10 +56,11 @@ sibling of the same type does not. `content-depth.mjs` computes it pairwise; the
 `doorwayMinUniqueTokens: 120` in `thresholds.json`. As of 2026-08-23 every location scores **2**
 (3 for the two-word names — the only variable is `${loc.name}`, interpolated into one shared
 template) and the services scored **13–23**; both failed by an order of magnitude. The services
-score 404–468 since their depth modules shipped in Sprint 5 (`225ff45`), and the locations 288–428
-(`locationMedianDelta 343.5`) since theirs shipped in Sprint 6 (`7c3f2db`), as of 2026-11-09. The
-human half is still open: no local-seo-strategist sign-off is on record, and five entries
-(קריות, שרון, צפון, דרום, באר שבע) ship as bounded pages until owner-actions 3.6 is answered.
+score 404–468 since their depth modules shipped in Sprint 5 (`225ff45`), and the 14 locations
+292–439 (`locationMedianDelta 343`) since theirs shipped in Sprint 6 (`7c3f2db`) and four unserved
+ones were retired in `7ed1acd` (owner-actions 3.6), as of 2026-11-09. The human half is still open:
+no local-seo-strategist sign-off is on record. The five 🔶 entries that shipped as bounded pages
+until 3.6 was answered are resolved — קריות, צפון, דרום and באר שבע retired with 301s, שרון kept.
 
 ```bash
 node scripts/audit/content-depth.mjs        # per-page delta and nearest sibling in the failure detail
@@ -74,7 +75,9 @@ To pass, a location page needs at least **three** of these, and they must be tru
 - A real job reference from that city (with the customer's permission), or a photo (coming —
   business-facts §F).
 - Travel and scheduling reality — how far it is, and whether the emergency claim genuinely holds at
-  that distance. For באר שבע, קריות and צפון that is a real question (business-facts §E).
+  that distance. It was a real question for באר שבע, קריות and צפון until the owner said they are
+  not served (owner-actions 3.6, 2026-11-09); for חיפה and אשקלון, served but far, the timing is
+  still unconfirmed (business-facts §E).
 - A city-specific FAQ that would read oddly anywhere else.
 - Local pricing reality if it differs — as _what drives it_, never an invented number.
 
@@ -193,7 +196,7 @@ a featured snippet lifts.
 ## 6. Claims — what may be stated as fact
 
 **Free to state** (verified in the manifest or the code): the phone number `072-2587772`, the email,
-opening hours, the 7 services, the 18 locations, the 150–350 ₪ technician visit fee, and the service
+opening hours, the 7 services, the 14 locations, the 150–350 ₪ technician visit fee, and the service
 area as written in the manifest.
 
 **Gated on [business-facts.md](business-facts.md)** — mark `// 🔶 confirm` and never state as fact
@@ -245,7 +248,8 @@ certification the business doesn't hold; a photo presented as our work that isn'
 
 ## 8. Hebrew grammar for locations
 
-`locations` mixes cities with **regions** — קריות, שרון, צפון, דרום — and until Sprint 6 templates
+`locations` mixes cities with **regions** — one since `7ed1acd`, שרון (קריות, צפון and דרום were
+retired, owner-actions 3.6) — and until Sprint 6 templates
 interpolated a bare `ב${loc.name}`, producing `בשרון` and `בצפון`. Correct Hebrew is `באזור השרון` and `בצפון הארץ`. Every
 entry in `locations` (`lib/site-config.ts`) carries `kind`, `prefixed` and its own `updated` since
 Sprint 6 (2026-11-09); templates and `content/locations/*.ts` use `prefixed`, never a bare `ב` + name.

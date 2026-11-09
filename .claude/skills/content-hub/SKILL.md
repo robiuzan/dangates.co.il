@@ -1,6 +1,6 @@
 ---
 name: content-hub
-description: The /מדריכים/ knowledge-hub doctrine for dangates — the five pillars (תקלות, רכיבים, בחירה, בטיחות ותקנים, ועד בית) and which query family belongs where, the four-question "does it earn a page" test, the anti-cannibalisation rules that are module-load throws in lib/guides.ts (the hub and guides #1–#4 are built since Sprint 7) against the 7 service pages, the 18 location pages and /מחירון/, the one-Q/A-per-FAQPage rule and the homepage-FAQ moreAt link-out contract, the reverse index that makes an orphaned guide impossible, the pricing pivot, and the two-guides-a-month cadence kept in docs/content-calendar.md. Use when deciding what to publish next, whether a topic earns a guide at all, or how the hub connects to the silos. Triggers: "what should we write next", "does this need a guide", "topic cluster", "cannibalisation", "content plan", "editorial calendar", "מה לכתוב עכשיו", "מדריך חדש", "האם זה מצדיק עמוד".
+description: The /מדריכים/ knowledge-hub doctrine for dangates — the five pillars (תקלות, רכיבים, בחירה, בטיחות ותקנים, ועד בית) and which query family belongs where, the four-question "does it earn a page" test, the anti-cannibalisation rules that are module-load throws in lib/guides.ts (the hub and guides #1–#4 are built since Sprint 7) against the 7 service pages, the 14 location pages and /מחירון/, the one-Q/A-per-FAQPage rule and the homepage-FAQ moreAt link-out contract, the reverse index that makes an orphaned guide impossible, the pricing pivot, and the two-guides-a-month cadence kept in docs/content-calendar.md. Use when deciding what to publish next, whether a topic earns a guide at all, or how the hub connects to the silos. Triggers: "what should we write next", "does this need a guide", "topic cluster", "cannibalisation", "content plan", "editorial calendar", "מה לכתוב עכשיו", "מדריך חדש", "האם זה מצדיק עמוד".
 ---
 
 # The knowledge hub
@@ -19,7 +19,7 @@ its verdict; `article-auditor` gates what ships; `docs/content-calendar.md` is t
 
 ## The governing idea
 
-The 7 service pages own **"what we do, buy it."** The 18 location pages own **"we do it near you."**
+The 7 service pages own **"what we do, buy it."** The 14 location pages own **"we do it near you."**
 Neither can own **"what is wrong, what should I choose, what does the law require"** — and that is
 where the Tier-3/4 families in `docs/keyword-map.md` §2 and §8 live: symptom queries competitors
 treat as first-class URLs, component queries with a page per part, the ועד בית audience the site
@@ -103,8 +103,8 @@ answer are not competing; pretending they are produces thin guides that dodge th
 ## The homepage-FAQ contract
 
 Do **not** shrink the homepage FAQ. It was the only `FAQPage` on the site until Sprint 5 (the
-`graph(` call in `app/page.tsx`; `faqPages 30` since `89439b7` — `/`, the 7 services, the 18
-locations and the 4 guides) and it makes the homepage convert. Each question with a deep owner gains `moreAt: { href, label }` on its
+`graph(` call in `app/page.tsx`; `faqPages 26` since `7ed1acd` — `/`, the 7 services, the 14
+locations and the 4 guides; 30 with 18 locations after `89439b7`) and it makes the homepage convert. Each question with a deep owner gains `moreAt: { href, label }` on its
 `faqs` entry; `Faq.tsx` renders it inside the answer panel **outside the `a` string**, so
 `faqJsonLd([...faqs])` still receives clean text. `lib/guides.ts` throws if a `moreAt` href names a
 slug that is not registered. The homepage passes more equity than any other page — this turns the
@@ -198,8 +198,9 @@ Routing table: `docs/agent-roster.md` §3, rows §3, §6 and "keyword expansion"
 - Never rename a published slug without a 301 — a `REDIRECTS.md` row, generated into
   `public/_redirects` by `node scripts/gen-redirects.mjs` (ADR 0004).
 - A guide that names a city uses `loc.prefixed` (on every `locations` entry since Sprint 6,
-  `7c3f2db`) — never a bare `ב` + name. A guide that names קריות, שרון, צפון, דרום or באר שבע makes
-  no coverage claim about it until owner-actions 3.6 is answered.
+  `7c3f2db`) — never a bare `ב` + name. Owner-actions 3.6 is answered (2026-11-09): a
+  guide never says קריות, צפון, דרום or באר שבע are served (they are not; their pages are retired),
+  and names a place as served only if it is one of the 14 published locations.
 - `מחסום` is the buyer's word for שער זרוע (keyword-map §2 Tier 4) — it goes into the שער-זרוע
   service title (`/new-service`, Phase 3), not into a guide.
 - `דלת מוסך פנלים` and `שער קונזולי` as _services_ are an 8th service, capped by CLAUDE.md §12; the

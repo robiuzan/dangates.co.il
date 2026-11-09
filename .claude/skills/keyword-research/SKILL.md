@@ -66,8 +66,9 @@ answer-block or FAQ note for that page, never a second page (§7). Keep the tabl
   typed), `טכנאי שערים`, `מתקין שערים`, `חברת שערים`, and the two co-terms competitors brand with and
   this site never uses: `שערים אוטומטיים`, `שערים ומחסומים` (keyword-map §1).
 - **ב+city:** `תיקון שערים חשמליים ב{city}` with the city exactly as `locations[].name` in
-  `lib/site-config.ts` (two-word names stay two words: `בראשון לציון`, `בפתח תקווה`). The four region
-  entries take the phrasing keyword-map §3 sets — `בצפון הארץ`, `באזור השרון` — never a bare `בשרון`;
+  `lib/site-config.ts` (two-word names stay two words: `בראשון לציון`, `בפתח תקווה`). The one region
+  entry left, שרון (קריות, צפון and דרום were retired on owner-actions 3.6, 2026-11-09), takes the
+  phrasing keyword-map §3 sets — `באזור השרון` — never a bare `בשרון`;
   copy the form from the entry's `prefixed` field (since Sprint 6, `7c3f2db`).
 - **Symptom phrasing:** `{שער חשמלי | השער החשמלי} + לא + {נסגר | נפתח | מגיב לשלט | עובד}`, plus
   `נתקע`, `רועש`, `חורק`, `נפתח לבד`, `נסגר לבד`, `הפסקת חשמל`. The definite `השער` and the question
@@ -108,7 +109,7 @@ Full detail, access notes and the citation format: [references/sources.md](refer
 1. **Frame the question**: a backlog id, a content-calendar row, or "is there demand for X".
 2. **Inventory what exists**, so you propose nothing the site already owns:
    ```bash
-   grep -n 'name:' lib/site-config.ts          # 7 service names + 18 location names
+   grep -n 'name:' lib/site-config.ts          # 7 service names + 14 location names
    grep -n -E '^\s+title:' lib/posts.ts        # the 11 post titles
    ```
    plus keyword-map §7 (route → primary keyword), §8, §13 and content-calendar §2–§3.
@@ -146,7 +147,7 @@ Full detail, access notes and the citation format: [references/sources.md](refer
 
 - [ ] Every new §13 row has a real evidence URL, a strength tier and a dated observation.
 - [ ] No volume, CPC, difficulty or "popular" anywhere in the row or the commit message.
-- [ ] Term written as typed: buyer vocabulary (§4), region form for the four regions, one row per variant set.
+- [ ] Term written as typed: buyer vocabulary (§4), region form for the region (שרון), one row per variant set; no row targets a retired place (קריות, צפון, דרום, באר שבע).
 - [ ] Cannibalisation check (§7) run against services, locations, posts and the calendar.
 - [ ] Only §13 of keyword-map, competitors.md and (via script) rank-tracking.md were edited.
 - [ ] Rank-order claims say "unverified" until competitors.md §6 has a capture.
@@ -161,8 +162,9 @@ Full detail, access notes and the citation format: [references/sources.md](refer
   anything else prompts. Fetch to confirm a page exists, not to harvest it.
 - **Singular vs plural vs construct state** are different queries to Google and one row to us —
   `שער חשמלי` / `שערים חשמליים` / `שערי חשמל`; record the dominant form first.
-- **A keyword never adds a 19th location or an 8th service** (CLAUDE.md §12) — `דלת מוסך פנלים` and
-  `שער קונזולי` are guides or notes until the 7 and 18 pass the doorway test.
+- **A keyword never adds a 15th location or an 8th service** (CLAUDE.md §12) — `דלת מוסך פנלים` and
+  `שער קונזולי` are guides or notes until the 7 and 14 pass the doorway test; demand for a retired
+  place (קריות, צפון, דרום, באר שבע) is recorded `rejected` — the owner does not serve it.
 - **Brand terms** (`BFT`, `Nice`, `Somfy`, `Beninca`) are evidence-rich and owner-blocked: a brand
   page is honest only for brands the business services (keyword-map §9; business-facts §C 🔶).
 - **Never "confirm" a volume from memory of a paid tool.** If a screenshot of an export exists, it is

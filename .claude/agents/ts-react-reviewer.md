@@ -66,8 +66,8 @@ SiteManifest`. Any new `as unknown as` is a finding.
    `aria-invalid` / `aria-describedby` on error (`LeadForm` has both since `68a4a7f`, §8.1 ✅).
 9. **Dead code and dependencies.** `perf.mjs` `unusedDeps` is `[]` since `framer-motion` was removed 2026-09-06 (§10.3) — anything it lists again is this finding.
    The dead `types/index.d.ts` is deleted (N3 ✅, `68a4a7f`) and the form collects `city` itself (§8.4). `components/layout/Footer.tsx` derives the year at build time since 2026-09-06 (N9 closed); it used to hardcode `const year = 2026` with an
-   "update yearly" comment (N9). `Footer` renders all 18 locations since `7c3f2db` (§9.2 ✅ — it
-   sliced to 12 before); a truncation coming back is this finding.
+   "update yearly" comment (N9). `Footer` renders every location since `7c3f2db` (§9.2 ✅ — 14 since
+   `7ed1acd`; it sliced to 12 before); a truncation coming back is this finding.
 10. **Trailing slashes.** The export runs with `trailingSlash: true`; `navItems` and the crumb
     `href`s carry the `/` since `cfff52f` (N10 ✅). A new internal href without it is a finding — the
     export scan in backlog N10 is the proof.

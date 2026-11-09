@@ -92,7 +92,7 @@ Naive fetches do not work: several operator sites sit behind Cloudflare and retu
 2. **The query set** — one capture per query, per quarter. Families from keyword-map:
    - head: `תיקון שערים חשמליים` · `התקנת שערים חשמליים` · `טכנאי שערים חשמליים`
    - location: `תיקון שערים חשמליים בתל אביב` · `…בחיפה` · `…בפתח תקווה` (rotate three cities per
-     quarter so all 18 are captured within 18 months)
+     quarter so all 14 are captured within 15 months — 18 until `7ed1acd` retired four, owner-actions 3.6)
    - symptom: `שער חשמלי לא נסגר` · `שער חשמלי לא נפתח` · `שער חשמלי לא מגיב לשלט` · `שער חשמלי רועש`
    - component: `עינית לשער חשמלי` · `שכפול שלט לשער חשמלי` · `לוח פיקוד לשער חשמלי`
    - standard / committee: `תקן שערים חשמליים` · `מחסום חניה בבית משותף`

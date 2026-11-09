@@ -181,10 +181,10 @@ nothing until it lands. Never hand-edit `site.config.json` for either (golden ru
 
 Then, in order:
 
-1. Submit `https://dangates.co.il/sitemap.xml` (45 URLs).
+1. Submit `https://dangates.co.il/sitemap.xml` (46 URLs as of 2026-11-09, `links.mjs` → `sitemapUrls 46`).
 2. Check Coverage for the percent-encoded Hebrew routes first — they are the likeliest indexing quirk
    (`seo-metadata`).
-3. Confirm the 18 location pages index as pages, not as duplicates of each other — the early warning
+3. Confirm the 14 location pages index as pages, not as duplicates of each other — the early warning
    for the doorway risk in [content-standards.md](content-standards.md) §2 (§3.1, §5.3).
 
 **The monthly ingest.** Performance → Export → `node scripts/audit/gsc-ingest.mjs <queries.csv>

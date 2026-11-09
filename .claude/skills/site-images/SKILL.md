@@ -111,7 +111,7 @@ category and no evidence claim. Month only, never a date that implies a record w
   `caption`) on `articleJsonLd` (schema-graph §6, Phase 4). The primary image's `contentUrl` is the
   `srcFor` URL at intrinsic width, never an SVG — Google rejects SVG for `image`.
 - **Location `Service` node:** `image` only when the photo is from that city. A generic gate photo
-  on 18 location nodes is the schema version of a doorway page.
+  on 14 location nodes is the schema version of a doorway page.
 
 ## First image task — the header logo
 

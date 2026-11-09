@@ -32,7 +32,8 @@ workmanship promises beyond the four phrases `workmanship-absolute` catches (the
 credited, quote-then-consent), response-time wording outside the lexicon ("בהקדם", "מענה מיידי" —
 4F took both out of the form's success state) — so read for them; a 0 from the script is not a
 pass from you. Nor does it read the client bundle: the manifest `areaServed` "מרכז הארץ ופריסה
-ארצית" still ships in `out/_next/static/` (B5), and the roster `shortPitch` did until `ad2f1ab`.
+ארצית" shipped in `out/_next/static/` until the roster sync `8e8843d` (B5, 2026-11-09), and the
+roster `shortPitch` did until `ad2f1ab` — grep the bundle yourself; any hit now is a new roster claim.
 
 ## The lexicon — `scripts/audit/claims.json` → `docs/business-facts.md`
 
@@ -48,9 +49,10 @@ pass from you. Nor does it read the client bundle: the manifest `areaServed` "מ
 | prices other than the visit fee                          | §D real price range per service (`priceRows` keeps only the visit band since N14) | ⛔ authored estimates |
 
 **Free to state** (content-standards §6): phone `072-2587772`, the email, the hours in
-`siteConfig.hours`, the 7 services, the 18 locations, the `150–350 ₪` visit fee (interpolated from
-`visitFeeRange`, and note §D asks whether it is still current), and the 18 published areas — not the
-manifest's `areaServed` phrase, whose "פריסה ארצית" half is 🔶 (§E). A claim with no lexicon entry still needs a row — map it to §A–§H by hand and propose the
+`siteConfig.hours`, the 7 services, the 14 locations, the `150–350 ₪` visit fee (interpolated from
+`visitFeeRange`, and note §D asks whether it is still current), and the 14 published areas. National
+coverage is refuted, not open: the owner said on 2026-11-09 that קריות, צפון, דרום and באר שבע are
+not served (owner-actions 3.6) — "פריסה ארצית" or a retired place named as served is stop-ship. A claim with no lexicon entry still needs a row — map it to §A–§H by hand and propose the
 regex for `claims.json` in your report (you do not edit it).
 
 ## Method

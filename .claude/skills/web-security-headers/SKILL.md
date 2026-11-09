@@ -21,9 +21,10 @@ curl -sSI https://dangates.pages.dev/  | grep -iE 'strict-transport|x-frame|perm
 npm audit --omit=dev                        # runtime advisories — the ones that ship
 ```
 
-As of 2026-09-06 `edge.mjs` **passes**: `redirectRules 72 · stubs 0 · redirectsFile true ·
+As of 2026-11-09 `edge.mjs` **passes**: `redirectRules 80 · stubs 0 · redirectsFile true ·
 headersFile true · deadHostArtifacts 0 · foreignStubs 0 · envDocumented 1 / envUsed 1 ·
-sourceMaps 0 · devBuildFiles 0`; `llmsTxt false` remains as a warning (§6.5). The cutover shipped in
+sourceMaps 0 · devBuildFiles 0 · llmsTxt true` (72 rules on 2026-09-06, when `llmsTxt false` was
+still a warning; 80 since `7ed1acd` added the four retired location pages). The cutover shipped in
 commit `a0e0fe2` (ADR 0004) along with the `next.config.mjs` cPanel-comment fix (N7). Its predecessor
 run, 2026-08-23, read `stubs 37 · redirectsFile false · headersFile false · deadHostArtifacts 3 ·
 foreignStubs 1 · envDocumented 4 / envUsed 1`.
@@ -105,8 +106,9 @@ observed yet, because the report-only header has not been deployed.
 
 **Do not re-run this. It shipped 2026-09-06.** What exists now:
 
-- `public/_redirects` — **72 rules**, both columns percent-encoded (`edge.mjs` fails on raw Hebrew),
-  covering 36 mapped paths in **both** their slashed and bare form, because Cloudflare Pages matches
+- `public/_redirects` — **80 rules** (72 until `7ed1acd`), both columns percent-encoded (`edge.mjs`
+  fails on raw Hebrew), covering 36 mapped legacy paths and the 4 retired location pages
+  (owner-actions 3.6, each to `/איזורי-שירות/`) in **both** their slashed and bare form, because Cloudflare Pages matches
   a source path literally and this export ships nothing at a bare path.
 - `scripts/gen-redirects.mjs` generates it from the `REDIRECTS.md` map and is wired as
   `npm run redirects` and `prebuild`, writing only on a real change so a rebuild cannot bump the
@@ -125,7 +127,7 @@ and `edge.mjs` fails on any from-path that still has a stub directory.
 **If you touch the map**, the repo-side proof is unchanged: `npm run redirects` (then
 `git status --porcelain public/` clean), `npm run build`, `node scripts/audit/edge.mjs` →
 `redirectRules · stubs 0 · redirectsFile true · headersFile true · deadHostArtifacts 0 ·
-foreignStubs 0`, `find out -name index.html | wc -l` → 46 (45 content + `/404/`), every destination
+foreignStubs 0`, `find out -name index.html | wc -l` → 48 (46 content + `/תודה/` + `/404/`, 2026-11-09), every destination
 an emitted content page. Then `/qa-build-gate` and `/deploy-dangates` (dry run first — the user says
 go).
 

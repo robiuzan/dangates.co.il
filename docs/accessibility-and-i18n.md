@@ -248,7 +248,7 @@ map, the switcher — live in the `i18n-locale-architecture` skill; this section
    Keep `app/not-found.tsx` top-level and self-contained — its own `lang="he" dir="rtl"` wrapper —
    and verify `out/404.html` after every build.
 4. **Scope: home, the 7 services, `/שירותים/`, `/איזורי-שירות/`, `/אודות/`, `/צור-קשר/` and the
-   two legal pages — never the 18 location pages (doorway, §3.1), the 11 posts (golden rule 7),
+   two legal pages — never the 14 location pages (doorway, §3.1), the 11 posts (golden rule 7),
    `/מדריכים/` (ADR 0002), or `/מחירון/` (N14 landed in `af8ba4c`; translating it is a separate
    decision).** Full table: skill § Scope.
 5. **`hreflang` — reciprocal, self-referencing, absolute, percent-escaped identically to the sitemap

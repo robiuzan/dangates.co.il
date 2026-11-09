@@ -15,14 +15,15 @@ node scripts/audit/links.mjs           # one H1, heading order, sitemap parity, 
 npm run audit -- --scope seo           # both, plus content-depth.mjs
 ```
 
-As of 2026-11-09 `titles.mjs` **passes with 0 warnings**: 46 pages, 46 unique titles, 46 unique
-descriptions, brand once on every page, `ogUrlMissing 0` (§1.5 closed by `13a6bdc`). The 24
+As of 2026-11-09 (after `7ed1acd`) `titles.mjs` **passes with 0 warnings**: 47 pages, 47 unique
+titles, 47 unique descriptions, brand once on every page, `ogUrlMissing 0` (§1.5 closed by `13a6bdc`). The 24
 warnings it printed on 2026-09-06 — 7 blog titles at 63–72 chars (§2.5), service descriptions at
 163–229 chars (§2.4), 2 blog descriptions cut mid-sentence (§2.6), the two legal pages at 40 and 57 —
 went with Sprint 4.7 (`74a92d1`): `ServiceMeta.metaDescription`, `postSeo` and the rewritten index,
-legal and location descriptions. Not measured by the script: the 18 location descriptions are still
-one interpolated token apart (`locationMetaDescription(cityName)`, §2.3, Sprint 6.3). Re-run the
-script before quoting any of these.
+legal and location descriptions. The location descriptions stopped being one interpolated token
+apart with Sprint 6.3 (`7c3f2db`, §2.3 ✅): each `cityContent` entry writes its own — 14 distinct,
+151–156 characters, measured on `out/locations/*/index.html` after `7ed1acd`. Re-run the script
+before quoting any of these.
 
 ## The template rule
 
@@ -65,8 +66,8 @@ Keep the **rendered** title (subject + ` | דן שערים חשמליים`, 19 c
 titles over budget are `Post.title` used verbatim; the fix is a separate `seoTitle` (or a shortened
 `title` with the H1 kept in the body), not a longer template.
 
-**Hebrew grammar:** a bare `ב${name}` produces `בשרון`/`בצפון` for the four region entries where
-the correct Hebrew is `באזור השרון` / `בצפון הארץ` (§5.2 ✅, content-standards §8). Every entry in
+**Hebrew grammar:** a bare `ב${name}` produces `בשרון` for the region entry (שרון — the one left
+since `7ed1acd`; `בצפון` too while צפון was published) where the correct Hebrew is `באזור השרון` (§5.2 ✅, content-standards §8). Every entry in
 `locations` (`lib/site-config.ts`) carries `prefixed` since Sprint 6 (`7c3f2db`); titles, H1s and
 descriptions are built on it — never hand-patch a title string.
 
@@ -146,7 +147,7 @@ Never `new Date()` — bump the dates only for real copy edits.
 
 The registry: `staticPages` in `lib/site-config.ts` (typed `StaticPage`, optional `noindex`) is the one list of the static routes (ten indexable since the hub joined in Sprint 7, plus the `noindex` `/תודה/`); `app/sitemap.ts` derives from it and `links.mjs` cross-checks it against the `app/` tree both ways (§1.4, done 2026-09-06 in `c047d4d`). Add a top-level page → add its row, or `links.mjs` fails naming the route. `navItems` hrefs carry the trailing slash since N10 closed (2026-09-06). Since Sprint 7 (`89439b7`) the guides registry `lib/guides.ts` (ADR 0002) appends the `/מדריכים/` entries the same way (`guideList`, `<lastmod>` = each guide's `dateModified`). Never hand-maintain a second URL list.
 
-`links.mjs` asserts sitemap ↔ emitted-tree parity both ways and every `<lastmod>` as a real, non-future date; 50 URLs as of 2026-11-09 (45 before Sprint 7).
+`links.mjs` asserts sitemap ↔ emitted-tree parity both ways and every `<lastmod>` as a real, non-future date; 46 URLs as of 2026-11-09 (50 after Sprint 7 until `7ed1acd` retired four location pages; 45 before Sprint 7).
 
 ## Robots
 

@@ -88,7 +88,8 @@ verification passed against the live response.
   heading (status moved, item re-scoped), follow the heading and note the drift in the report.
 - **Sprints 5–7 are content work** measured by `content-depth.mjs`; a row is not done because the
   words exist — it is done when the floor and the doorway delta pass and the reviewers signed.
-- **Never start a 19th city or an 8th service** inside a sprint; the expansion cap is
+- **Never start a 15th location or an 8th service** inside a sprint (nor re-add one of the four
+  retired on owner-actions 3.6); the expansion cap is
   `docs/content-standards.md` §2 and it is not a sprint row.
 - **Owner-blocked is not "later"** — it is a different list. A sprint that cannot exit without a
   Track B row says so at the top of its report instead of waiting.

@@ -28,7 +28,7 @@ symptom · component · brand) so movement is read per family, not per page.
 - **Symptom / component impressions before a page exists** = demand the guides hub should capture
   next (`content-hub`, `docs/content-calendar.md`).
 - **Location queries concentrated on 3–4 cities** = where the doorway retrofit (`new-city`) pays
-  first; the rest of the 18 can wait.
+  first; the rest of the 14 can wait.
 - **Position 8–15 on a generic head term** = the page is indexed and competing; depth and links move
   it. Position > 30 = the page is not really in the race; fix the page, not the links.
 

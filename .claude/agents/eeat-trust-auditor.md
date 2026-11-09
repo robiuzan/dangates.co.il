@@ -57,13 +57,14 @@ context for reading the output, never a finding to copy.
    המומחה"), other absolute workmanship promises (the "שום חלק לא מוחלף לפני…" line the 4B re-review
    flagged on `/` was removed in 4F) or unclocked speed ("שירות מהיר ואמין", left on one post,
    `שער-חשמלי-לא-מגיב` — allowed by eeat-and-trust §1.4): read for them by hand. The backing facts are **not coming** (business-facts §B, §D), so
-   the resolution stays softening: "אחריות על העבודה", mechanism depth (`/eeat-build`), 24/7 and
-   פריסה ארצית bounded to what the owner confirms (§E). Never propose replacing a vague claim with a
+   the resolution stays softening: "אחריות על העבודה", mechanism depth (`/eeat-build`), 24/7
+   bounded to what the owner confirms (§E), and no national coverage at all (refuted, owner-actions
+   3.6). Never propose replacing a vague claim with a
    specific unsourced one. Also check the client bundle: `site.config.json` ships whole inside a
    JS chunk, though no page renders most of it. The roster `shortPitch` carried "אחריות מלאה", 24/7,
-   speed and "פריסה ארצית" there until `ad2f1ab` (2026-11-09); today the only hit is the manifest
-   `areaServed` "מרכז הארץ ופריסה ארצית" (`grep -rl 'פריסה ארצית' out/_next/static` → 1) —
-   expected until B5, a roster fix (`/eeat-build` step 4). Any other hit is a finding.
+   speed and "פריסה ארצית" there until `ad2f1ab` (2026-11-09), and the manifest `areaServed`
+   "מרכז הארץ ופריסה ארצית" until the roster sync `8e8843d` the same day (B5, `/eeat-build` step 4):
+   `grep -rl 'פריסה ארצית' out/_next/static | wc -l` → 0 now. Any hit is a finding.
 3. **Prices** (§7.3 ✅ by the N14 pivot, `af8ba4c`). `priceRows` now holds only the ₪150–350 visit
    band (`visitFeeRange`, 🔶 whether current — business-facts §D); `/מחירון/` explains what moves the
    price and shows no other number. Flag any new number, any per-service range, and any stated
@@ -97,8 +98,9 @@ context for reading the output, never a finding to copy.
    business, do not flag it. `/צור-קשר/#complaints` covers complaints, cancellation and invoice
    questions on the existing channels, linked from the footer, with no response-time promise. No ח.פ.
    and no legal entity name — both 🔶 (§B); flag any that appears without a ✅ row.
-10. **Schema ↔ copy parity.** `areaServed` is the 18 published locations since `d8edb28` (§4.8 ✅) —
-    the manifest phrase "מרכז הארץ ופריסה ארצית" is in no node. The `FAQPage` is built from the same
+10. **Schema ↔ copy parity.** `areaServed` is the published locations since `d8edb28` (§4.8 ✅) — 14
+    since `7ed1acd` — and the manifest phrase is in no node (the manifest dropped "ופריסה ארצית" in
+    `8e8843d`). The `FAQPage` is built from the same
     `faqs` the homepage renders (§3.5 ✅); flag any answer that differs from the visible text.
 
 ## Method

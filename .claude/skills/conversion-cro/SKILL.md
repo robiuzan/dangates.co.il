@@ -88,7 +88,8 @@ and `lead_submit` the cross-check. The inline success block stays as the fallbac
 
 Shipped in `68a4a7f`: an optional `<select id="lf-city" name="city">` built from `locations` (value
 = slug, label = name, plus `אחר` → `"other"`), sent in the Web3Forms body and as `city` on
-`lead_submit` — dispatch-relevant across 18 areas from באר שבע to the קריות. The dead
+`lead_submit` — dispatch-relevant across the 14 published areas from חיפה to אשקלון (18 until
+`7ed1acd` retired the four the owner does not serve, owner-actions 3.6). The dead
 `types/index.d.ts` is deleted (N3).
 
 ### Gap 6 — the pricing page's CTA (§8.5 ✅ 2026-11-08)
