@@ -475,6 +475,16 @@ export const headerCopy = {
   callNow: "חייגו עכשיו:",
 } as const;
 
+/**
+ * components/layout/Header.tsx + DesktopNav.tsx + MobileMenu.tsx — the two disclosures that reach
+ * every service and every location in one hop (backlog §9.1). `href` is the hub page the first link
+ * of each panel opens; the links under it come from `services` / `locations`, never from this block.
+ */
+export const headerMenuCopy = {
+  services: { label: "שירותים", allLabel: "כל השירותים", href: "/שירותים/" },
+  areas: { label: "אזורי שירות", allLabel: "כל אזורי השירות", href: "/איזורי-שירות/" },
+} as const;
+
 /** app/layout.tsx — the skip link, first focusable element on every page; targets <main id="main">. */
 export const skipLinkLabel = "דלג לתוכן הראשי";
 
@@ -911,6 +921,10 @@ export const servicesGridCopy = {
 /** components/layout/Footer.tsx — the tagline paragraph in the bottom strip. */
 export const footerCopy = {
   tagline: "תיקון, תחזוקה והתקנה של שערים חשמליים ותריסי גלילה חשמליים",
+  servicesNavLabel: "שירותים",
+  servicesHeading: "השירותים שלנו",
+  areasNavLabel: "אזורי שירות",
+  areasHeading: "אזורי שירות",
 } as const;
 
 /** components/layout/MobileCtaBar.tsx — the two sticky labels (the WhatsApp opener is `defaultWhatsappMessage`). */

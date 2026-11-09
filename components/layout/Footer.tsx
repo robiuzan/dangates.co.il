@@ -10,6 +10,10 @@ import {
 import { hasGuides } from "@/lib/guides";
 import { Container } from "@/components/ui/Container";
 
+/** Service and location links: a 44px row on a phone, back to a compact list from `lg`. */
+const areaLinkClass =
+  "flex min-h-11 items-center text-white/70 hover:text-white lg:min-h-0";
+
 export function Footer() {
   // Derived at build time — a static export never re-renders, so this is fixed until the
   // next build, which is exactly the cadence a copyright year needs.
@@ -63,15 +67,12 @@ export function Footer() {
         </div>
 
         {/* Services */}
-        <nav aria-label="שירותים">
-          <p className="font-semibold text-white">השירותים שלנו</p>
-          <ul className="mt-4 space-y-2 text-sm">
+        <nav aria-label={footerCopy.servicesNavLabel}>
+          <p className="font-semibold text-white">{footerCopy.servicesHeading}</p>
+          <ul className="mt-4 space-y-1 text-sm lg:space-y-2">
             {services.map((s) => (
               <li key={s.slug}>
-                <Link
-                  href={`/services/${s.slug}`}
-                  className="text-white/70 hover:text-white"
-                >
+                <Link href={`/services/${s.slug}`} className={areaLinkClass}>
                   {s.name}
                 </Link>
               </li>
@@ -80,15 +81,12 @@ export function Footer() {
         </nav>
 
         {/* Areas */}
-        <nav aria-label="אזורי שירות">
-          <p className="font-semibold text-white">אזורי שירות</p>
-          <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+        <nav aria-label={footerCopy.areasNavLabel}>
+          <p className="font-semibold text-white">{footerCopy.areasHeading}</p>
+          <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 text-sm lg:gap-y-2">
             {locations.map((c) => (
               <li key={c.slug}>
-                <Link
-                  href={`/locations/${c.slug}`}
-                  className="text-white/70 hover:text-white"
-                >
+                <Link href={`/locations/${c.slug}`} className={areaLinkClass}>
                   {c.name}
                 </Link>
               </li>

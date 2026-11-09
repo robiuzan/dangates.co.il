@@ -2,12 +2,13 @@ import Link from "next/link";
 import { Phone } from "lucide-react";
 import { siteConfig, telHref } from "@/lib/site-config";
 import { headerCopy } from "@/lib/content";
-import { headerNav } from "@/lib/nav";
+import { headerLinks, headerMenus } from "@/lib/nav";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { DesktopNav } from "@/components/layout/DesktopNav";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 
-/** Server shell: logo, desktop nav and call button. The mobile menu is the one client leaf. */
+/** Server shell: logo and call button. The two navigation leaves (desktop, mobile) are the only client code. */
 export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 backdrop-blur">
@@ -20,21 +21,11 @@ export function Header() {
           {siteConfig.name}
         </Link>
 
-        {/* Desktop nav */}
-        <nav aria-label={headerCopy.navLabel} className="hidden lg:block">
-          <ul className="flex items-center gap-6">
-            {headerNav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-sm font-medium text-gray-700 transition-colors hover:text-primary"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <DesktopNav
+          menus={headerMenus}
+          links={headerLinks}
+          navLabel={headerCopy.navLabel}
+        />
 
         <div className="flex items-center gap-2">
           <Button
@@ -48,7 +39,8 @@ export function Header() {
           </Button>
 
           <MobileMenu
-            items={headerNav}
+            menus={headerMenus}
+            links={headerLinks}
             phone={siteConfig.phone}
             phoneHref={telHref}
             labels={{
