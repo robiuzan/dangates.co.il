@@ -9,6 +9,13 @@
  * page to another says the two places are near each other, nothing about coverage. A pair that
  * touches the region (שרון) is a link to the region's page, not an availability promise.
  *
+ * A pair whose two places are far apart (over about 30 km in a straight line) stays only where a page
+ * would otherwise fall under the 2–4 links content-standards §3 block 5 asks for. The page on EACH
+ * side then carries a `CityContent.nearbyHeading` that does not call the far place close — today
+ * חיפה–נתניה and ירושלים–רחובות, four modules. Dropping either pair was weighed and rejected: חיפה would
+ * be left with no nearby link at all and ירושלים with one. אשקלון–יבנה is under that distance, so
+ * both keep the shared heading.
+ *
  * Module-load checks throw (so `next build` fails) on a self-pair and on a pair listed twice in
  * either direction. An unknown slug cannot be written: the tuple is typed on `LocationSlug`.
  */
@@ -43,12 +50,15 @@ export const nearbyPairs: readonly NearbyPair[] = [
   //    (`locationPageCopy.nearbyHeading`) asks for close places, which נתניה is not, so חיפה's module
   //    carries its own `nearbyHeading` asking which page on the site is the nearest — true for a
   //    single far link. The shared heading never says "closest": on the other pages a nearer page
-  //    can exist without being paired.
+  //    can exist without being paired. The reverse side counts too: נתניה's list holds חיפה, so
+  //    נתניה's module carries a heading that asks which listed place is farther as well.
   //  - אשקלון had only the retired דרום and באר שבע, leaving just אשדוד. Its next-nearest published
   //    place up the coast is יבנה.
   ["חיפה", "נתניה"],
   ["אשקלון", "יבנה"],
-  // ירושלים gets a second neighbour: רחובות, the nearest published place after מודיעין.
+  // ירושלים gets a second neighbour: רחובות, the nearest published place after מודיעין. It is far,
+  // not close, so ירושלים and רחובות both carry a `nearbyHeading` that asks which listed place is farther
+  // (audit 2026-11-09 L6).
   ["ירושלים", "רחובות"],
 ];
 

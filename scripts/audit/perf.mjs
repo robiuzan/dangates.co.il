@@ -5,7 +5,7 @@
  *   - total JS ≤ maxJsTotalBytes (warn — §10.2); chunk count and the largest chunks recorded
  *   - .woff2 files shipped vs <link rel="preload" as="font"> on the homepage: 0 preloads while
  *     fonts exist is a fail — with a text-only LCP the font IS the critical path (§10.1)
- *   - RSC index.txt payloads beside every index.html: count + bytes (warn — §1.3)
+ *   - RSC index.txt payloads beside every index.html: count + bytes against the out/ budget (warn — §1.3, §10.4)
  *   - package.json dependencies imported nowhere under app/ components/ lib/ scripts/ (warn — §10.3)
  *   - "use client" components: count and which (metric — §10.2)
  *   - <img> without width/height on content pages (warn, CLS — §10.5; today 0 images ship)
@@ -146,8 +146,8 @@ export function run() {
   const rscBytes = bytesOf(rsc);
   if (rsc.length)
     r.warn(
-      `${rsc.length} RSC payload files (index.txt) ship — ${fmtBytes(rscBytes)} of crawlable duplicate copy beside every index.html`,
-      "strip them post-build or disallow /*/index.txt at the edge",
+      `${rsc.length} RSC payload files (index.txt) ship — ${fmtBytes(rscBytes)} of the out/ byte budget (${((rscBytes / outBytes) * 100).toFixed(1)}%)`,
+      "kept on purpose for soft navigation; robots.txt disallows them (edge.mjs rscPayloadsDisallowed), so the cost is bytes against thresholds.perf.maxOutBytes, not crawlability",
       "backlog §1.3",
     );
 

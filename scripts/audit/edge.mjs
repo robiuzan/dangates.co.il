@@ -5,12 +5,14 @@
  *
  *   - public/_redirects present; rules resolve to emitted content pages, are percent-encoded, and no
  *     from-path is still shadowed by a stub directory under public/
- *   - public/_headers present with HSTS, nosniff, Referrer-Policy, framing and Permissions-Policy
+ *   - public/_headers (and the out/_headers copy) declares HSTS, X-Frame-Options, nosniff, Referrer-Policy,
+ *     Permissions-Policy and a Content-Security-Policy(-Report-Only) carrying frame-ancestors, each as a
+ *     header line under the `/*` rule — a name that appears only in a comment does not count (audit L13)
  *   - no .github/workflows/deploy.yml, public/CNAME, public/.htaccess; no foreign-market stub dirs
  *   - llms.txt present — public/llms.txt, or out/llms.txt emitted by app/llms.txt/route.ts (Sprint 7); out/robots.txt quoted (what this file says is not what the edge does)
  *   - .env.example ↔ process.env usage drift; stale cPanel comment in next.config.mjs
  *   - out/ carries no source maps and no dev-only React/Next chunks
- *   - out/robots.txt disallows the RSC payload files (root and nested index.txt, anchored) in every user-agent group, or
+ *   - out/robots.txt disallows the RSC payload files (root and nested index.txt, as plain unanchored prefix patterns) in every user-agent group, or
  *     public/_headers sends X-Robots-Tag: noindex for them (backlog §1.3)
  *
  * Usage: node scripts/audit/edge.mjs [--json]
@@ -32,13 +34,16 @@ import { Report, finish, isMain, parseArgs } from "./lib/report.mjs";
 const HEBREW = /[֐-׿]/;
 const FOREIGN = /יוסטון|houston|dallas|texas/i;
 const DEAD_HOST = [".github/workflows/deploy.yml", "public/CNAME", "public/.htaccess"];
-const REQUIRED_HEADERS = [
-  ["Strict-Transport-Security", /strict-transport-security/i],
-  ["X-Content-Type-Options", /x-content-type-options/i],
-  ["Referrer-Policy", /referrer-policy/i],
-  ["X-Frame-Options or frame-ancestors", /x-frame-options|frame-ancestors/i],
-  ["Permissions-Policy", /permissions-policy/i],
+/** Headers the `/*` rule of _headers must send (name matched case-insensitively). */
+const REQUIRED_STAR_HEADERS = [
+  "Strict-Transport-Security",
+  "X-Frame-Options",
+  "X-Content-Type-Options",
+  "Referrer-Policy",
+  "Permissions-Policy",
 ];
+/** Either CSP header satisfies the policy requirement; report-only is today's mode (backlog §12.2). */
+const CSP_NAMES = ["content-security-policy", "content-security-policy-report-only"];
 /** Dev-only Next artifacts: unhashed chunks and hot-update files never belong in an export. */
 const DEV_FILE =
   /\/chunks\/(main|amp|react-refresh)\.js$|\/chunks\/fallback\/|\.hot-update\./;
@@ -95,6 +100,46 @@ function envUsed() {
   }
   names.delete("NODE_ENV"); // Next's own, never documented in .env.example
   return [...names].sort();
+}
+
+/**
+ * Parse a Cloudflare Pages `_headers` file: a path line at column 0, then indented `Name: value`
+ * lines. Blank lines and `#` comments are skipped, so a header named only in a comment is not
+ * declared. Returns Map<path, Map<lowercased name, value[]>>.
+ */
+export function parseHeadersFile(text) {
+  const rules = new Map();
+  let cur = null;
+  for (const raw of text.split(/\r?\n/)) {
+    if (!raw.trim() || raw.trimStart().startsWith("#")) continue;
+    if (!/^\s/.test(raw)) {
+      cur = new Map();
+      rules.set(raw.trim(), cur);
+      continue;
+    }
+    const m = /^\s+([A-Za-z0-9-]+)\s*:\s*(.*?)\s*$/.exec(raw);
+    if (m && cur) {
+      const name = m[1].toLowerCase();
+      cur.set(name, [...(cur.get(name) ?? []), m[2]]);
+    }
+  }
+  return rules;
+}
+
+/** What is wrong with the `/*` rule of a `_headers` text: missing headers, a CSP with no frame-ancestors. */
+export function starRuleProblems(text) {
+  const star = parseHeadersFile(text).get("/*");
+  if (!star) return ["no `/*` rule"];
+  const problems = REQUIRED_STAR_HEADERS.filter((n) => !star.has(n.toLowerCase())).map(
+    (n) => `/* sends no ${n}`,
+  );
+  const cspName = CSP_NAMES.find((n) => star.has(n));
+  if (!cspName) problems.push("/* sends no Content-Security-Policy(-Report-Only)");
+  else if (
+    !(star.get(cspName) ?? []).some((v) => /(^|;)\s*frame-ancestors\s+\S/i.test(v))
+  )
+    problems.push("the CSP has no frame-ancestors directive");
+  return problems;
 }
 
 // ── the check ───────────────────────────────────────────────────────────────
@@ -193,6 +238,7 @@ export function run() {
 
   // 2. _headers
   const hasHeaders = exists("public/_headers");
+  let headerProblems = 0;
   if (!hasHeaders) {
     r.fail(
       "no public/_headers — the live security headers come from Cloudflare zone rules this repo does not own",
@@ -201,9 +247,25 @@ export function run() {
     );
   } else {
     const text = readSrc("public/_headers");
-    for (const [name, re] of REQUIRED_HEADERS)
-      if (!re.test(text))
-        r.warn(`public/_headers lacks ${name}`, undefined, "backlog §12.1");
+    const problems = starRuleProblems(text);
+    if (problems.length)
+      r.fail(
+        `public/_headers does not declare the full security-header set for /* (${problems.length} problem(s))`,
+        problems.join("\n"),
+        "backlog §12.1",
+      );
+    // The export copies public/ into out/, so the built file is what Cloudflare Pages reads.
+    const builtHeaders = path.join(OUT, "_headers");
+    const builtProblems = existsSync(builtHeaders)
+      ? starRuleProblems(readFileSync(builtHeaders, "utf8"))
+      : ["out/_headers is missing from the export"];
+    if (builtProblems.length)
+      r.fail(
+        `out/_headers does not declare the full security-header set for /* (${builtProblems.length} problem(s))`,
+        builtProblems.join("\n"),
+        "backlog §12.1",
+      );
+    headerProblems = problems.length + builtProblems.length;
     const csp = /content-security-policy-report-only/i.test(text)
       ? "Content-Security-Policy-Report-Only"
       : /content-security-policy/i.test(text)
@@ -324,6 +386,7 @@ export function run() {
   r.metric("stubs", stubs.length);
   r.metric("redirectsFile", hasRedirects);
   r.metric("headersFile", hasHeaders);
+  r.metric("headerProblems", headerProblems);
   r.metric("deadHostArtifacts", dead.length);
   r.metric("foreignStubs", foreign.length);
   r.metric("llmsTxt", hasLlms);

@@ -828,7 +828,8 @@ export const locationPageCopy = {
    * It asks for close places, never for the closest: the pairs in lib/nearby.ts are geography, not a
    * ranking, and a "closest" heading read false wherever a nearer page is not paired (נתניה, יבנה,
    * רחובות — local-seo-strategist, 2026-11-09). חיפה, whose one link (נתניה) is the nearest page on
-   * the site but not a close town, carries its own heading in its module.
+   * the site but not a close town, carries its own heading in its module, and so do the other three
+   * pages on the two far pairs (נתניה, ירושלים, רחובות).
    */
   nearbyHeading: "אילו ערים ואזורים קרובים?",
 } as const;

@@ -15,31 +15,46 @@ const linkCardClass =
   "flex items-center justify-between gap-2 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 hover:border-secondary hover:text-secondary";
 
 /**
- * Freshness and reading time. Dates are facts this repo owns and ship today. There is no byline: no
- * person is coming (business-facts §B), and the business is already the publisher on the Article
- * node — an invented byline is a worse trust signal than none.
+ * Freshness, and reading time when the caller has one. Dates are facts this repo owns and ship
+ * today. There is no byline: no person is coming (business-facts §B), and the business is already
+ * the publisher on the Article node — an invented byline is a worse trust signal than none.
+ * Shared by the guides (`GuideView`) and the blog posts (`app/blog/[slug]`): the revised date shows
+ * only when it differs from the publish date, so an unrevised article shows the publish date alone.
  */
-export function ArticleMeta({ guide }: { guide: Guide }) {
-  const revised = guide.dateModified !== guide.datePublished;
+export function ArticleMeta({
+  datePublished,
+  dateModified,
+  minutes,
+}: {
+  /** ISO `YYYY-MM-DD`. */
+  datePublished: string;
+  /** ISO `YYYY-MM-DD`; equal to `datePublished` when the article was never revised. */
+  dateModified: string;
+  /** Reading time in minutes; omitted → no reading-time item. */
+  minutes?: number;
+}) {
+  const revised = dateModified !== datePublished;
   return (
     <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-gray-600">
       <span className="flex items-center gap-1.5">
         <CalendarDays className="h-4 w-4" aria-hidden />
         <span>
           {guidesCopy.published}{" "}
-          <time dateTime={guide.datePublished}>{formatDate(guide.datePublished)}</time>
+          <time dateTime={datePublished}>{formatDate(datePublished)}</time>
         </span>
       </span>
       {revised && (
         <span>
           {guidesCopy.updated}{" "}
-          <time dateTime={guide.dateModified}>{formatDate(guide.dateModified)}</time>
+          <time dateTime={dateModified}>{formatDate(dateModified)}</time>
         </span>
       )}
-      <span className="flex items-center gap-1.5">
-        <Clock className="h-4 w-4" aria-hidden />
-        {guidesCopy.readingMinutes(readingMinutes(guide))}
-      </span>
+      {minutes !== undefined && (
+        <span className="flex items-center gap-1.5">
+          <Clock className="h-4 w-4" aria-hidden />
+          {guidesCopy.readingMinutes(minutes)}
+        </span>
+      )}
     </div>
   );
 }

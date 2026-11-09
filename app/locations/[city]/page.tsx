@@ -107,6 +107,10 @@ export default function LocationPage({ params }: { params: { city: string } }) {
     ? nearby(loc.slug).flatMap((slug) => locations.find((l) => l.slug === slug) ?? [])
     : [];
 
+  // The H2 over those links: the page's own `nearbyHeading` when its list holds a far place
+  // (lib/nearby.ts), else the shared one.
+  const nearbyHeading = content.nearbyHeading ?? locationPageCopy.nearbyHeading;
+
   // The reverse index: guides that name this city (and declare it) appear here by themselves.
   const guides = guidesForLocation(loc.slug);
 
@@ -126,7 +130,7 @@ export default function LocationPage({ params }: { params: { city: string } }) {
     ...(neighbourhoods.length > 0 ? [neighbourhoodsHeading] : []),
     servicesHeading,
     ...(content.faqs.length > 0 ? [{ id: "faq", text: faqHeading }] : []),
-    ...(neighbours.length > 0 ? [locationPageCopy.nearbyHeading] : []),
+    ...(neighbours.length > 0 ? [nearbyHeading] : []),
   ];
   const toc = buildToc(tocHeadings, [
     ...(written
@@ -139,7 +143,8 @@ export default function LocationPage({ params }: { params: { city: string } }) {
     ...listed.map((s) => s.name),
     faqHeading,
     ...content.faqs.flatMap(({ q, a }) => [q, a]),
-    locationPageCopy.nearbyHeading,
+    nearbyHeading,
+    ...(neighbours.length > 0 && content.nearbyNote ? [content.nearbyNote] : []),
     ...neighbours.map((n) => areaLinkLabel(n.prefixed)),
   ]);
 
@@ -237,11 +242,14 @@ export default function LocationPage({ params }: { params: { city: string } }) {
           {neighbours.length > 0 && (
             <>
               <h2
-                id={headingId(locationPageCopy.nearbyHeading)}
+                id={headingId(nearbyHeading)}
                 className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
               >
-                {locationPageCopy.nearbyHeading}
+                {nearbyHeading}
               </h2>
+              {content.nearbyNote && (
+                <p className="mt-4 text-gray-700">{content.nearbyNote}</p>
+              )}
               <ul className="mt-5 grid gap-3 sm:grid-cols-2">
                 {neighbours.map((n) => (
                   <li key={n.slug}>

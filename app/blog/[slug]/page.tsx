@@ -3,12 +3,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { posts, getPost, type Post, type PostBlock } from "@/lib/posts";
+import { relatedPosts } from "@/lib/related-posts";
 import { manifest } from "@/lib/site-config";
 import { crumbLabels, postSeo } from "@/lib/content";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { articleJsonLd, businessNode } from "@/lib/jsonld";
 import { relatedAttr } from "@/lib/engagement";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { ArticleMeta } from "@/components/article/chrome";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
@@ -52,12 +54,6 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
     },
   };
 }
-
-const DATE_FMT = new Intl.DateTimeFormat("he-IL", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
 
 /** Group consecutive `li` blocks into `<ul>`, render `h`→`<h2>` and `p`→`<p>`. */
 function renderBlocks(blocks: PostBlock[]) {
@@ -103,7 +99,9 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = getPost(params.slug);
   if (!post) notFound();
 
-  const others = posts.filter((p) => p.slug !== post.slug).slice(0, 4);
+  // By relevance, not array order (lib/related-posts.ts): excludes the post itself, and every post
+  // is reached from at least one other.
+  const others = relatedPosts(post.slug);
 
   // Handed to PageHeader, which renders them with the page's breadcrumb as ONE @graph. The
   // business node rides along because the article's `author` and `publisher` point at it.
@@ -124,7 +122,6 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     <>
       <PageHeader
         title={post.title}
-        subtitle={DATE_FMT.format(new Date(post.date))}
         nodes={nodes}
         crumbs={[
           { label: crumbLabels.home, href: "/" },
@@ -134,7 +131,14 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       />
 
       <Section tone="white">
-        <article className="mx-auto max-w-3xl">{renderBlocks(post.blocks)}</article>
+        <article className="mx-auto max-w-3xl">
+          {/* The same dates the BlogPosting node carries; "עודכן" shows only when `updated` differs. */}
+          <ArticleMeta
+            datePublished={post.date}
+            dateModified={post.updated ?? post.date}
+          />
+          {renderBlocks(post.blocks)}
+        </article>
 
         <div className="mx-auto mt-14 max-w-3xl border-t border-gray-100 pt-10">
           <h2 className="font-heading text-xl font-bold text-primary">מאמרים נוספים</h2>

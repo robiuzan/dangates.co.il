@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
 };
 
-// The full array the list renders (all 18) — never a slice.
+// The full array the list renders (every published location) — never a slice.
 const nodes = [
   itemListJsonLd(
     manifest,

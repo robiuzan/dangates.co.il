@@ -104,11 +104,20 @@ export interface CityContent {
   services: readonly ServiceSlug[];
   /**
    * Optional H2 over the `nearby(slug)` links, for a page whose links the shared
-   * `locationPageCopy.nearbyHeading` ("אילו ערים ואזורים קרובים?") would misdescribe — today only
-   * חיפה, whose one link is the nearest page on the site but not a close town (lib/nearby.ts).
+   * `locationPageCopy.nearbyHeading` ("אילו ערים ואזורים קרובים?") would misdescribe: a page whose
+   * list holds a far place, on either side of the pair (lib/nearby.ts) — today חיפה, נתניה, ירושלים
+   * and רחובות. The route reads it for the H2, its anchor and the table of contents. A heading that
+   * asks which listed place is farther needs a `nearbyNote` that answers it.
    * Question form; asks about the site's pages, never about service. Absent → the shared heading.
    */
   nearbyHeading?: string;
+  /**
+   * Optional sentence between `nearbyHeading` and the links, answering it: which listed places are
+   * close and which listed place is the farther one, so the far place does not read as one of the close
+   * ones. Geography only — never a coverage, travel or availability claim. Set it beside every
+   * `nearbyHeading` that asks which listed place is farther. Absent → the links follow the H2 directly.
+   */
+  nearbyNote?: string;
 }
 
 export const cityContent: Record<LocationSlug, CityContent> = {

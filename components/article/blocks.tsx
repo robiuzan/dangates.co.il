@@ -162,7 +162,7 @@ export function InlineCta({
       <div className="mt-4 flex flex-col gap-3 sm:flex-row">
         <Button
           href={whatsappHref(message)}
-          data-cta={isQuote ? "article-quote-whatsapp" : "article-inline-whatsapp"}
+          data-cta={isQuote ? "articlequote-whatsapp" : "articleinline-whatsapp"}
           variant="whatsapp"
           size="lg"
         >
@@ -171,7 +171,7 @@ export function InlineCta({
         </Button>
         <Button
           href={telHref}
-          data-cta={isQuote ? "article-quote-call" : "article-inline-call"}
+          data-cta={isQuote ? "articlequote-call" : "articleinline-call"}
           variant={isQuote ? "accent" : "outline"}
           size="lg"
         >

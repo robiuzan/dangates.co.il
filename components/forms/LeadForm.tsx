@@ -36,7 +36,7 @@ type FieldErrors = Partial<Record<FieldName, string>>;
 /** The `site` dimension: the shared GTM container tells fleet sites apart by it. */
 const SITE_ID = "dangates";
 
-/** The city select's value for a town outside the 18 locations — `city: "other"` on lead_submit. */
+/** The city select's value for a town outside the published locations — `city: "other"` on lead_submit. */
 const CITY_OTHER = "other";
 
 /**

@@ -139,6 +139,9 @@ export type ServiceSlug = (typeof services)[number]["slug"];
  * the business does not serve them). Their pages are gone and their URLs 301 to /איזורי-שירות/;
  * never re-add one without a new owner answer.
  *
+ * `name`      the display name every chrome label (header, footer, breadcrumb, areas list) and the
+ *             JSON-LD `areaServed` read. The region's is `אזור השרון`, never the bare `שרון` — alone
+ *             it is also a personal name (audit 2026-11-09 L7). The slug and URL stay `שרון`.
  * `kind`      "city" or "region". One entry is a region (שרון): schema types it
  *             `AdministrativeArea`, never `City` (lib/jsonld.ts `placeNode`).
  * `prefixed`  the name WITH its preposition — `בתל אביב`, `באזור השרון`. Every
@@ -236,7 +239,7 @@ export const locations = [
   },
   {
     slug: "שרון",
-    name: "שרון",
+    name: "אזור השרון",
     kind: "region",
     prefixed: "באזור השרון",
     updated: "2026-11-09",

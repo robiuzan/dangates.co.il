@@ -42,7 +42,7 @@ import { areaLinkLabel, guideWhatsappMessage, guidesCopy } from "@/lib/content";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { articleJsonLd, businessNode, type JsonLd } from "@/lib/jsonld";
 import { schemaTypeFor, type Guide } from "@/lib/guide-types";
-import { guidePath, relatedGuidesOf, wordCount } from "@/lib/guides";
+import { guidePath, readingMinutes, relatedGuidesOf, wordCount } from "@/lib/guides";
 import { buildToc } from "@/lib/toc";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
@@ -151,7 +151,11 @@ export function GuideView({ guide: g }: { guide: Guide }) {
       <Section tone="white">
         <div className="grid gap-10 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <ArticleMeta guide={g} />
+            <ArticleMeta
+              datePublished={g.datePublished}
+              dateModified={g.dateModified}
+              minutes={readingMinutes(g)}
+            />
             <div className="mt-6">
               <ArticleBody
                 blocks={g.blocks}
@@ -171,7 +175,7 @@ export function GuideView({ guide: g }: { guide: Guide }) {
               <div className="mt-5 flex flex-col gap-3">
                 <Button
                   href={telHref}
-                  data-cta="article-aside-call"
+                  data-cta="articleaside-call"
                   variant="accent"
                   size="lg"
                 >
@@ -180,7 +184,7 @@ export function GuideView({ guide: g }: { guide: Guide }) {
                 </Button>
                 <Button
                   href={whatsappHref(guideWhatsappMessage(g.title))}
-                  data-cta="article-aside-whatsapp"
+                  data-cta="articleaside-whatsapp"
                   variant="whatsapp"
                   size="lg"
                 >

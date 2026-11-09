@@ -6,7 +6,7 @@ import { ChevronDown, Menu, Phone, X } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import type { NavItem, NavMenu } from "@/lib/nav";
+import { useNavData } from "@/components/layout/nav-context";
 
 const linkClass =
   "flex min-h-11 items-center rounded-lg px-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
@@ -31,10 +31,6 @@ function isReachable(el: HTMLElement): boolean {
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
 type MobileMenuProps = {
-  /** The disclosures — services, then service areas — as collapsible groups. */
-  menus: readonly NavMenu[];
-  /** The remaining plain links, after the groups. */
-  links: readonly NavItem[];
   phone: string;
   phoneHref: string;
   labels: {
@@ -46,8 +42,8 @@ type MobileMenuProps = {
 };
 
 /**
- * The mobile client leaf of the header: toggle + panel. The list is built from props the server
- * shell hands over, and only while the panel is open: the toggle is the one way in and it needs the
+ * The mobile client leaf of the header: toggle + panel. It renders inside `DesktopNav`, which owns the
+ * link data (`useNavData`). The list is built only while the panel is open: the toggle is the one way in and it needs the
  * script anyway, so rendering the 23 links into every page's HTML a second time (the desktop nav
  * already carries them) would only add weight to all 47 pages. Each group is a native <details>.
  *
@@ -56,7 +52,10 @@ type MobileMenuProps = {
  * following any link in the panel closes it. The panel is positioned
  * against the sticky <header>, so it overlays the page instead of pushing it down.
  */
-export function MobileMenu({ menus, links, phone, phoneHref, labels }: MobileMenuProps) {
+export function MobileMenu({ phone, phoneHref, labels }: MobileMenuProps) {
+  // The disclosures (as collapsible groups) and the plain links after them: read from `DesktopNav`'s
+  // context, not from props, so the server hands the link data to ONE client leaf (audit L1).
+  const { menus, links } = useNavData();
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);

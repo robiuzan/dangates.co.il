@@ -8,7 +8,10 @@ import { Button } from "@/components/ui/Button";
 import { DesktopNav } from "@/components/layout/DesktopNav";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 
-/** Server shell: logo and call button. The two navigation leaves (desktop, mobile) are the only client code. */
+/**
+ * Server shell: logo and call button. The two navigation leaves (desktop, mobile) are the only client
+ * code; the link data goes to `DesktopNav` alone and `MobileMenu` renders inside it.
+ */
 export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 backdrop-blur">
@@ -25,32 +28,30 @@ export function Header() {
           menus={headerMenus}
           links={headerLinks}
           navLabel={headerCopy.navLabel}
-        />
+        >
+          <div className="flex items-center gap-2">
+            <Button
+              href={telHref}
+              data-cta="header-call"
+              variant="accent"
+              className="hidden sm:inline-flex"
+            >
+              <Phone className="h-4 w-4" aria-hidden />
+              <span dir="ltr">{siteConfig.phone}</span>
+            </Button>
 
-        <div className="flex items-center gap-2">
-          <Button
-            href={telHref}
-            data-cta="header-call"
-            variant="accent"
-            className="hidden sm:inline-flex"
-          >
-            <Phone className="h-4 w-4" aria-hidden />
-            <span dir="ltr">{siteConfig.phone}</span>
-          </Button>
-
-          <MobileMenu
-            menus={headerMenus}
-            links={headerLinks}
-            phone={siteConfig.phone}
-            phoneHref={telHref}
-            labels={{
-              navLabel: headerCopy.mobileNavLabel,
-              openMenu: headerCopy.openMenu,
-              closeMenu: headerCopy.closeMenu,
-              callNow: headerCopy.callNow,
-            }}
-          />
-        </div>
+            <MobileMenu
+              phone={siteConfig.phone}
+              phoneHref={telHref}
+              labels={{
+                navLabel: headerCopy.mobileNavLabel,
+                openMenu: headerCopy.openMenu,
+                closeMenu: headerCopy.closeMenu,
+                callNow: headerCopy.callNow,
+              }}
+            />
+          </div>
+        </DesktopNav>
       </Container>
     </header>
   );
