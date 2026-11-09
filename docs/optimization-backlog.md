@@ -859,7 +859,7 @@ left: `kind` is `"city"` ×13 and `"region"` ×1 (שרון, `באזור השרו
 nodes carry `AdministrativeArea` on שרון only. `grep` of every html/txt/xml in `out/` for `בשרון` →
 0 files.
 
-### 5.3 — P1 · L · [✅ DONE 2026-11-09 · measured half, 14 of 14 · sign-off not on record] Doorway risk on all 18 location pages
+### 5.3 — P1 · L · [✅ DONE 2026-11-09 · 14 of 14 · sign-off on record 2026-11-09] Doorway risk on all 18 location pages
 
 See §3.1. **No 15th location until the existing 14 pass by hand.** 7 × 14 = 98 cells; do not build
 them.
@@ -876,6 +876,13 @@ node scripts/audit/content-depth.mjs   # location 14 pages · belowFloor 0 · me
 
 The human half of the test — local-seo-strategist sign-off — is not on record (not owner-blocked),
 so the expansion cap stands.
+
+Verified 2026-11-09 by `npm run audit -- --scope full` → content-depth `locationMedianDelta 343`,
+location 14 pages · `belowFloor 0`, no location row in the failures; the local-seo-strategist
+human-half sign-off for all 14 is on record in
+[docs/audits/2026-11-09-full.md](audits/2026-11-09-full.md) (§3 H5, "Agents run") — given on
+public knowledge only: 0 of 14 pages carry a first-hand element (job reference, photo, travel
+reality, local pricing), which stays §7.5 and owner-actions 4.1 / 4.4.
 
 ### 5.4 — P2 · S · [✅ DONE 2026-11-09 · coverage half · availability half ⏳ BLOCKED · owner 3.5] Coverage and availability claims are unbounded
 
@@ -2161,6 +2168,34 @@ The bar is judged per page, so the TOC set moves when copy does (the other 9 cit
 **Counted nowhere yet:** the events reach `dataLayer` only; the GTM Custom Event tags and a GA4
 property to receive them wait on **B2** (owner-actions 2.4) — Sprint 8.2. Not live until the next
 deploy.
+
+### N21 — P3 · S · [NOT STARTED] Six article `data-cta` values are off the `{placement}-{action}` convention
+
+Filed 2026-11-09 by [docs/audits/2026-11-09-full.md](audits/2026-11-09-full.md) (row L11,
+cro-engagement-auditor). `cta-coverage.mjs` warns "6 data-cta value(s) off the {location}-{action}
+convention": `article-quote-whatsapp`, `article-quote-call`, `article-inline-whatsapp`,
+`article-inline-call` (`components/article/blocks.tsx:165`, `:174`) and `article-aside-call`,
+`article-aside-whatsapp` (`components/article/GuideView.tsx:174`, `:183`). All six are tagged and
+counted (`missingDataCta 0`), so this is naming only — but a GTM trigger written to the convention
+misses them. Rename per placement and update [event-taxonomy.md](event-taxonomy.md) in the same
+change. Proof: `node scripts/audit/cta-coverage.mjs` → no off-convention warning.
+
+### N22 — P2 · S · [NOT STARTED] The trust ledger still describes the August state
+
+Filed 2026-11-09 by [docs/audits/2026-11-09-full.md](audits/2026-11-09-full.md) (row L10,
+eeat-trust-auditor and local-seo-strategist). [business-facts.md](business-facts.md) prose and
+citations lag the code (golden rule 11): §D cites `lib/content.ts:152-156` for the price-authoring
+comment, which is now `differentiators` (the comment is at `lib/content.ts:249-253`), and the
+"Real price range per service" row still reads ⛔ though no authored price ships; §E's prose says
+`schema.areaServed` claims «מרכז הארץ ופריסה ארצית» and 24/7 is claimed on every location page,
+and its rows still ask whether קריות/שרון/צפון/דרום/באר שבע are served, whether «פריסה ארצית» is
+true and say same-day is implied for all 18 locations — all answered by owner-actions 3.6 or
+retired — while ירושלים, the one place still bounded, has no row (§5.4); §F says 45 pages; §G says
+42 emoji and 4 curly quotes. Measured 2026-11-09: `spam-grep.mjs` → `emojiCount 39`,
+`curlyQuotes 0`; `a11y.mjs` → `pages 47`; `claims-grep.mjs` → `national-coverage 0`,
+`around-the-clock 0`; `grep -c ירושלים docs/business-facts.md` → 0. Fix the prose and citations
+and add the 🔶 ירושלים §E row; the Value and Status columns stay the owner's. Proof:
+`npm run audit:env` (citations resolve) and a re-read against the §2 numbers of the latest report.
 
 ---
 
