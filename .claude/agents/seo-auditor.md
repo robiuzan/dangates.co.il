@@ -61,15 +61,18 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
    `serviceMedianDelta` 40 against 120 — services moved up from 13–23 when §3.3 gave each one its own
    `serviceTriggers` list in `lib/content.ts` (the shared module-scope array that put gate faults on
    the shutters page is gone, closed 2026-09-06). Since Sprint 5 (`225ff45`, 2026-11-09)
-   `serviceMedianDelta` is 438 and the 7 services clear the 450 floor (§3.2 ✅). All 18 locations, 11
-   posts and 2 static pages (`/אודות/`, `/איזורי-שירות/`) still sit under their floor (§3.1, §3.13). Never re-derive this with a `node -e`
+   `serviceMedianDelta` is 438 and the 7 services clear the 450 floor (§3.2 ✅). Since Sprint 6
+   (`7c3f2db`) `locationMedianDelta` is 343.5 and all 18 locations clear the 350 floor (§3.1 PARTIAL —
+   five 🔶 entries wait on owner-actions 3.6), and `/אודות/` and `/איזורי-שירות/` clear theirs
+   (§3.13 ✅); only the 11 posts sit under their floor. Never re-derive this with a `node -e`
    one-liner.
-9. **Chrome reach, orphans, related links.** `links.mjs`: `components/layout/Footer.tsx` renders
-   `locations.slice(0, 12)` → `notInChrome: 6` (§9.2; not strict orphans because `/איזורי-שירות/`
-   lists all 18); the header reaches no service or location in one hop (§9.1); related posts on the
+9. **Chrome reach, orphans, related links.** `links.mjs`: the footer renders all 18 locations since
+   `7c3f2db` → `notInChrome: 0`, `chromeLinks: 34` (§9.2 ✅; it sliced to 12 before); the header
+   reaches no service or location in one hop (§9.1, Sprint 6.5); related posts on the
    post pages are `.slice(0, 4)` by array order (the `others` list in `app/blog/[slug]/page.tsx`;
    the service pages use declared lists since `225ff45`, §9.4 PARTIAL); the blog contains zero
-   links (§9.5); the mesh runs service → city only, no location → location (§9.3 PARTIAL). Trailing slashes are clean since 2026-09-06 (N10 closed): 0 un-slashed internal hrefs across all 46 exported pages.
+   links (§9.5); the mesh runs both ways since `7c3f2db` — service → city and location → neighbours
+   and services (§9.3 ✅). Trailing slashes are clean since 2026-09-06 (N10 closed): 0 un-slashed internal hrefs across all 46 exported pages.
 10. **Anchors and alt.** The export carries **zero `<img>`** — there is no alt surface; refer that to
     §7.5 (`eeat-trust-auditor`, `site-images`), not as an alt defect. Judge anchor text on what exists.
 
@@ -108,5 +111,5 @@ Severity guide: a doorway cluster or a regression of §2.1/§1.2 is **Critical**
 - Never propose renaming `/איזורי-שירות/` — it is intentional live-URL fidelity (CLAUDE.md §2, rule 3).
 - The city URLs already moved once (root → `/locations/`) and are held together by the 301 rules in `public/_redirects`; any further URL change is a migration with a redirect plan, never a cleanup.
 - Never recommend padding a page to reach a floor — a floor is met by `cityContent` / `serviceDepth`
-  copy that passes content-standards §2; `serviceDepth` exists since Sprint 5, `cityContent` does not
-  yet (Phase 3, `/new-city`).
+  copy that passes content-standards §2; `serviceDepth` exists since Sprint 5 and `cityContent`
+  since Sprint 6 (`/new-service`, `/new-city`).

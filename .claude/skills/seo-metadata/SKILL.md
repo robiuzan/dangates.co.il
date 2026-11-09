@@ -56,7 +56,7 @@ second brand token to "work around" the template.
 | Route    | What you write                                                                        |
 | -------- | ------------------------------------------------------------------------------------- |
 | Service  | `שערים נגררים` (optionally + `–` + one true differentiator)                           |
-| Location | `תיקון שערים חשמליים ב${loc.name}` — `${loc.prefixed}` once Phase 3 adds it           |
+| Location | `תיקון שערים חשמליים ${loc.prefixed}` — the city's own `cityContent.title` (Sprint 6) |
 | Static   | the page name — `מחירון תיקון שערים חשמליים`, `אזורי שירות`, `אודות`                  |
 | Article  | the question, **trimmed to fit** — the H1 keeps the full question, the title need not |
 | Guide    | the question form from the family template (`/new-guide`, Phase 4)                    |
@@ -65,21 +65,22 @@ Keep the **rendered** title (subject + ` | דן שערים חשמליים`, 19 c
 titles over budget are `Post.title` used verbatim; the fix is a separate `seoTitle` (or a shortened
 `title` with the H1 kept in the body), not a longer template.
 
-**Hebrew grammar:** `locations` in `lib/site-config.ts` is `{ slug, name }` only, so `ב${name}`
-produces `בשרון`/`בצפון` for the four region entries where the correct Hebrew is `באזור השרון` /
-`בצפון הארץ` (§5.2, content-standards §8). The `prefixed` field that fixes it is built in Phase 3
-(`/new-city`); until then do not hand-patch a title string.
+**Hebrew grammar:** a bare `ב${name}` produces `בשרון`/`בצפון` for the four region entries where
+the correct Hebrew is `באזור השרון` / `בצפון הארץ` (§5.2 ✅, content-standards §8). Every entry in
+`locations` (`lib/site-config.ts`) carries `prefixed` since Sprint 6 (`7c3f2db`); titles, H1s and
+descriptions are built on it — never hand-patch a title string.
 
 ## Descriptions
 
 120–160 chars (`thresholds.json`), unique per route, ending in terminal punctuation, following
 keyword-map §5: service + place, one **true** differentiator, then an action with the phone.
-Service descriptions are their own field since `74a92d1`: the route reads
-`ServiceMeta.metaDescription` and falls back to `card.description` (the page's opening paragraph,
-which overran at 163–229 chars when it doubled as the meta line). Keep them separate — a new service
-gets a `metaDescription` in `serviceMeta`, 120–160 chars, ending in punctuation. Posts read `postSeo`
-(title ≤ 60, description 120–160) before `post.title` / `post.excerpt`. Locations need a per-city
-string from the Phase 3 `cityContent` map, not a template.
+Service descriptions are their own field (since `74a92d1`; since `225ff45` it is
+`ServiceDepth.metaDescription` in `content/services/<slug>.ts`, with no `card.description` fallback
+— the opening paragraph overran at 163–229 chars when it doubled as the meta line). Keep them
+separate — a new service gets its `metaDescription` in its depth module, 120–160 chars, ending in
+punctuation. Posts read `postSeo` (title ≤ 60, description 120–160) before `post.title` /
+`post.excerpt`. Locations read the city's own `cityContent.metaDescription` (150–160 chars, since
+`7c3f2db`), falling back to `locationMetaDescription(prefixed)` only while it is empty.
 
 Only claim what `docs/business-facts.md` marks ✅. The warranty term, licence, insurance, years in
 business and 24/7 are 🔶 or ❌ — `claims-grep.mjs` fails the build on the lexicon. `אחריות מלאה`
@@ -140,7 +141,7 @@ new route that skips this is the only way that number moves.
 
 `app/sitemap.ts` builds services, locations and posts from the data arrays, gives every entry a
 trailing slash, `encodeURI`s the Hebrew, and uses **real content dates** for `<lastmod>`
-(`services[].updated`, `locationsUpdated` at `lib/site-config.ts`, `posts[].updated ?? date`).
+(`services[].updated`, `locations[].updated` — per entry since Sprint 6 — in `lib/site-config.ts`, `staticPages[].updated`, `posts[].updated ?? date`).
 Never `new Date()` — bump the dates only for real copy edits.
 
 The registry: `staticPages` in `lib/site-config.ts` (typed `StaticPage`, optional `noindex`) is the one list of the nine static routes; `app/sitemap.ts` derives from it and `links.mjs` cross-checks it against the `app/` tree both ways (§1.4, done 2026-09-06 in `c047d4d`). Add a top-level page → add its row, or `links.mjs` fails naming the route. Still open: `navItems` hrefs lack the trailing slash (N10). Phase 4: the guides registry `lib/guides.ts` (ADR 0002) appends the `/מדריכים/` entries the same way. Never hand-maintain a second URL list.

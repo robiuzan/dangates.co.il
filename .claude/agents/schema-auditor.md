@@ -41,7 +41,8 @@ field fixes it, and what would be wrong to "fix". Quote today's numbers only as 
 ## The graph as it stands (as of 2026-11-08 — re-measure)
 
 `schema.mjs` → **0 failures, 0 warnings** after a clean rebuild: `pagesWithJsonLd 45`,
-`danglingIds 0`, `rawHebrewUrls 0`, `faqPages 8` (1 until Sprint 5, `225ff45`, re-run 2026-11-09);
+`danglingIds 0`, `rawHebrewUrls 0`, `faqPages 26` (1 until Sprint 5, 8 until Sprint 6 added the 18
+city FAQs in `7c3f2db`; re-run 2026-11-09);
 `links.mjs` → `breadcrumbPages 44`. Sprint 2
 (`02a3144` `d8edb28`, in the repo — not deployed yet) closed the eight gaps the 2026-08-23 run listed:
 locations and statics with only a breadcrumb (§4.2), the dangling `#business` (§4.4), no `WebSite`
@@ -85,8 +86,10 @@ business-facts §D), a `Person` author
 5. **Service nodes.** Services: `Service` → `provider #business` (node must exist on the page), encoded
    `url`. Locations: `Service` with a **local** `areaServed` — `City` for cities, `AdministrativeArea`
    for קריות, שרון, צפון, דרום; typing a region as a `City` is a factual error (schema-graph §5).
-   Neither `kind` nor `prefixed` exists on `locations` yet (`{ slug, name }` only — Phase 3), so
-   `placeNode()` names the four region slugs itself; check it still does.
+   Since Sprint 6 (`7c3f2db`) `placeNode()` types the place from the entry's `kind` (the region-slug
+   set is gone); check every region still comes out `AdministrativeArea`. The location `FAQPage` must
+   carry exactly the city's visible `{ q, a }`; the `Service` node on the five 🔶 entries waits on
+   owner-actions 3.6.
 6. **BlogPosting.** From `articleJsonLd()` since `02a3144`: `@id` `#article`, encoded `url` and
    `mainEntityOfPage`, `dateModified` from `post.updated ?? post.date`, `isPartOf` a `Blog` node,
    `author` and `publisher` → `#business` (the `Organization` — stays so), the business node on the

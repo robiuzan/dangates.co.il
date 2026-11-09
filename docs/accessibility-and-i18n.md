@@ -276,14 +276,14 @@ map, the switcher — live in the `i18n-locale-architecture` skill; this section
 
 ### 10. Explicitly not doing
 
-| Not doing                                        | Why                                                                                                              |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| English locale now                               | No demand evidence, a Hebrew-only conversion path, a doubled claim surface — §7. Owner decision, evidence first. |
-| Subdomain (`en.dangates.co.il`)                  | Splits authority the domain does not have to spare.                                                              |
-| `Accept-Language` or JS locale redirect          | Static export forbids the first; the second delays LCP, breaks Back and gets indexed.                            |
-| Translating `/מדריכים/`, the 11 posts, locations | The guides are the Hebrew moat; the posts are untrusted input; the locations are doorway pages (§3.1).           |
-| Transliterating Hebrew slugs                     | Hebrew slugs stay; English slugs are Latin words. `/איזורי-שירות/` stays as it is (golden rule 3).               |
-| Filling the statement's coordinator name or date | Business facts are the owner's; `business-facts.md` is the one file an agent may not fill in.                    |
+| Not doing                                        | Why                                                                                                                                                |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| English locale now                               | No demand evidence, a Hebrew-only conversion path, a doubled claim surface — §7. Owner decision, evidence first.                                   |
+| Subdomain (`en.dangates.co.il`)                  | Splits authority the domain does not have to spare.                                                                                                |
+| `Accept-Language` or JS locale redirect          | Static export forbids the first; the second delays LCP, breaks Back and gets indexed.                                                              |
+| Translating `/מדריכים/`, the 11 posts, locations | The guides are the Hebrew moat; the posts are untrusted input; the locations cleared the doorway proxy only in Sprint 6 and await sign-off (§3.1). |
+| Transliterating Hebrew slugs                     | Hebrew slugs stay; English slugs are Latin words. `/איזורי-שירות/` stays as it is (golden rule 3).                                                 |
+| Filling the statement's coordinator name or date | Business facts are the owner's; `business-facts.md` is the one file an agent may not fill in.                                                      |
 
 ---
 

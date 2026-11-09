@@ -17,7 +17,8 @@ checks; where a script exists it is the measurement.
 `74a92d1`): `npm run audit -- --scope full` → **8** failures, all in one check (`content-depth` 8) —
 unchanged after the roster sync `ad2f1ab` and the review follow-up `9195c9b` (4F), re-run 2026-11-09 —
 and again 2026-11-09 after Sprint 5 (`225ff45`): **5** failures, all `content-depth` (about,
-areas index, location floor, post floor, location doorway).
+areas index, location floor, post floor, location doorway) — and again 2026-11-09 after the Sprint 6
+content (`7c3f2db`): **1** failure, `content-depth` post floor (11 of 11 posts under 900; Sprint 7).
 
 **Severity:** P0 = shipping something wrong or harmful · P1 = material ranking/conversion loss ·
 P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half a day · L = multi-day.
@@ -48,8 +49,8 @@ against a clean `out/`; `lint`, `typecheck`, `format:check` and `build` all pass
 | 6   | False "ובכל אזור המרכז" claim removed from 7 out-of-region pages         | §3.4        | `claims-grep.mjs`                                |
 | 7   | `BreadcrumbList` wired through `PageHeader` on all 44 nested routes      | §4.3 / §9.6 | `links.mjs` → `breadcrumbPages: 44`              |
 
-Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region pages still render
-`בשרון` / `בצפון` (§5.2).
+Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region pages rendered
+`בשרון` / `בצפון` until §5.2 closed with the Sprint 6 content (`7c3f2db`, 2026-11-09).
 
 **Phase E0** — the `.claude/` environment stopped being advice and became mechanism
 ([ADR 0001](decisions/0001-environment-hardening.md)). Acceptance: `npm run audit:env` → 0 failures.
@@ -63,9 +64,11 @@ Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region p
 | 5   | **Routing + owner docs.** Agent roster, owner actions, Cloudflare + GBP runbooks, content calendar, event taxonomy, rank tracking, competitors, growth roadmap                                                                                                                                  | `docs/agent-roster.md`, `docs/owner-actions.md`, `docs/*-runbook.md`, `docs/content-calendar.md`, … |
 | 6   | **De-stale pass + new assets** per the roster: 15 agents, 25 skills (and the saved `site-audit` workflow where workflows are available); every `file:line` re-anchored; scripts cited instead of numbers                                                                                        | `.claude/agents/`, `.claude/skills/`, `.claude/workflows/`                                          |
 
-**Next up** (as of 2026-11-09): Phases 1, 2 and 5's repo work, the Sprint 4 truth pass and the
-Sprint 5 service depth have shipped in the repo — Sprints 1–5. What comes next is Sprint 6,
-locations and navigation — see "Suggested order of work" below.
+**Next up** (as of 2026-11-09): Phases 1, 2 and 5's repo work, the Sprint 4 truth pass, the
+Sprint 5 service depth and the Sprint 6 location and index-page content (`7c3f2db`) have shipped in
+the repo. What is left of Sprint 6 is the header (§9.1, row 6.5), the reviewer sign-off and the
+owner's answer on the five 🔶 entries (B5, owner-actions 3.6); then Sprint 7 — see "Suggested
+order of work" below.
 
 ---
 
@@ -202,15 +205,24 @@ Sanity check: `grep -rl 'דן שערים חשמליים | דן שערים חשמ
 
 `app/page.tsx` now exports `metadata` with a real description (it inherited the 34-char tagline).
 
-### 2.3 — P1 · L · [NOT STARTED] All 18 location descriptions are one interpolated token apart
+### 2.3 — P1 · L · [✅ DONE 2026-11-09] All 18 location descriptions are one interpolated token apart
 
-Title, description and H1 all interpolate only `${loc.name}`. Combined with the 2-token body delta
-(§3.1), the metadata layer gives Google nothing to tell Haifa from Beer Sheva.
+Until Sprint 6: title, description and H1 all interpolated only `${loc.name}`. Combined with the
+2-token body delta (§3.1), the metadata layer gave Google nothing to tell Haifa from Beer Sheva.
 
-**Fix (Phase 3):** add `kind` + `prefixed` to `locations` and a `cityContent` map in **`lib/content.ts`**
-(not `site-config.ts`) — the `new-city` skill describes the target model and says plainly it does
-not exist yet. Move `locationsUpdated` (`lib/site-config.ts`) onto each entry at the same time —
-one shared date becomes false precision the moment the pages diverge.
+**Closed 2026-11-09** by commit `7c3f2db` (Sprint 6 rows 6.2–6.3). Every `locations` entry in
+`lib/site-config.ts` carries `kind`, `prefixed` and its own `updated` (the shared
+`locationsUpdated` is gone; `app/sitemap.ts` reads each entry's date). The per-city model is
+`cityContent` in `lib/city-content.ts`, one typed module per location in
+`content/locations/<slug>.ts`: its own `title`, `h1` and `metaDescription`, each falling back to the
+shared builder in `lib/content.ts` (now built on `prefixed`) only while empty — all 18 are filled.
+Verified on the current `out/`:
+
+```bash
+node scripts/audit/titles.mjs   # ✅ pass · uniqueTitles 46 · uniqueDescriptions 46 · ogUrlMissing 0
+# per location page, measured on out/locations/*/index.html: 18 distinct meta descriptions,
+#   150–159 characters; H1 = "תיקון שערים חשמליים " + prefixed on all 18
+```
 
 ### 2.4 — P1 · M · [✅ DONE 2026-11-08] Service descriptions are the on-page opening paragraph verbatim
 
@@ -264,17 +276,41 @@ Acceptance bar: [content-standards.md](content-standards.md) §1–§2. Script: 
 (unique words inside `<main>` minus shared blocks, doorway delta vs nearest sibling, answer-block
 proxy) · `spam-grep.mjs` · `claims-grep.mjs`.
 
-### 3.1 — P0 · L · [NOT STARTED] All 18 location pages are textbook doorway pages
+### 3.1 — P0 · L · [PARTIAL 2026-11-09 · 13 of 18 done · ⏳ BLOCKED · owner 3.6 for five] All 18 location pages are textbook doorway pages
 
-`content-depth.mjs` as of 2026-08-23: 122 unique words per page (128 for the three two-word names)
-against a 350 floor, and a doorway delta of **2 tokens** vs the nearest sibling (3 for two-word names)
-against the 120 threshold — every unique token is the city name itself.
+Until Sprint 6: `content-depth.mjs` measured 122 unique words per page (128 for the three two-word
+names) against a 350 floor on 2026-08-23 — 139–145 by 2026-11-09 — and a doorway delta of **2
+tokens** vs the nearest sibling (3 for two-word names) against the 120 threshold: every unique
+token was the city name itself. Doorway clusters are an explicit Google spam policy and the penalty
+lands on the **domain**, not the page.
 
-Doorway clusters are an explicit Google spam policy and the penalty lands on the **domain**, not the
-page. This is the single largest ranking risk on the site.
+**The measured half closed 2026-11-09** by commit `7c3f2db` (Sprint 6 row 6.1). Each location has
+its own typed module `content/locations/<slug>.ts` (`export const city: CityContent`), assembled
+and checked in `lib/city-content.ts` (`cityContent: Record<LocationSlug, CityContent>`, module-load
+throws on an unknown service slug and on a FAQ question used anywhere else): a question-form
+heading over a 40–60-word answer, three or more local notes on the housing stock, terrain and
+climate and what they do to gates, a neighbourhood or town list, three city FAQs and the services
+that fit. Verified on the current `out/` (export check: source tree unchanged since the build):
 
-**Fix (Phase 3):** `new-city` skill — `cityContent` with three or more genuinely local items per
-content-standards §2. Verify: `content-depth.mjs` → `location.belowFloor: 0`, delta ≥ 120.
+```bash
+node scripts/audit/content-depth.mjs
+# location 18 pages · belowFloor 0 · medianUnique 842 / 350 · locationMedianDelta 343.5 / 120
+# per page (unique · delta vs nearest sibling), from the script's own contentPages() / tokens():
+#   אשדוד 916 · 354   אשקלון 780 · 296   באר-שבע 798 · 288   דרום 799 · 330   חולון 798 · 298
+#   חיפה 938 · 400    יבנה 934 · 371     ירושלים 1022 · 428  כפר-סבא 863 · 346  מודיעין 813 · 326
+#   נתניה 907 · 345   פתח-תקווה 932 · 377  צפון 832 · 345   קריות 792 · 342   ראשון-לציון 979 · 342
+#   רחובות 717 · 303  שרון 744 · 303     תל-אביב 852 · 346
+# no location row in the failures; the answer-block warning no longer lists the location type
+```
+
+**Done for the 13 confirmed cities.** **⏳ BLOCKED · owner (owner-actions 3.6, Track B B5) for the
+five 🔶 entries** — קריות, שרון, צפון, דרום, באר שבע. They pass the measured proxy as bounded
+geography-and-mechanism pages (the decision recorded in implementation-sprints §8): no coverage,
+travel or scheduling claim, every answer block and meta description ending on "check by phone
+whether a visit is possible". The content-standards §2 item they cannot carry — the travel and
+scheduling reality at that distance — waits on the owner's answer, and so does the `Service` node
+with `areaServed` that `locationServiceJsonLd` still emits on those five. local-seo-strategist
+sign-off on the 18 is not on record.
 
 ### 3.2 — P1 · L · [✅ DONE 2026-11-09] All 7 service pages carried 13–23 words their siblings lacked
 
@@ -432,7 +468,7 @@ all-`<h2>` outline (§3.10) and the 39 emoji go with the block-model migration, 
 the quotes were dropped, not swapped. Verified: `node scripts/audit/spam-grep.mjs` →
 `curlyQuotes 0`, `spamHits 0`, `fusedWords 0`. Nothing of this row is left for Sprint 7.3.
 
-### 3.13 — P2 · S · [PARTIAL 2026-11-08 · home + pricing done] Thin index and static pages
+### 3.13 — P2 · S · [✅ DONE 2026-11-09] Thin index and static pages
 
 `content-depth.mjs` as of 2026-08-23: `/איזורי-שירות/` 111/250 · `/שירותים/` 111/250 (its 323
 words are almost all the shared service teasers) · `/מחירון/` 144/400 · `/אודות/` 277/500, and the
@@ -456,13 +492,26 @@ node scripts/audit/content-depth.mjs
 Commit `9195c9b` (4F, 2026-11-09) moved both by design and kept them over their floors: home 1788
 words · 1549 unique; pricing 914 · 914 unique, after the visit band's repeats were cut to two.
 
-**Still open — Sprint 6.8**, as of 2026-11-09 after Sprint 5 (`content-depth.mjs`): `/אודות/`
-320/500, `/איזורי-שירות/` 101/250. `/שירותים/` now measures 336/250 (352 total) and passes the
-floor, but not on new copy: since `225ff45` the service pages no longer render the seven
-`serviceCards` descriptions, so each of them renders on two pages (`/` and `/שירותים/`), under the
-three-page shared-block threshold, and stopped being subtracted (`sharedParagraphs` 8 → 1). Its
-words are still the homepage teasers; Sprint 6.8 still owes it copy of its own. The homepage's
-unique count rose 1549 → 1765 for the same reason.
+After Sprint 5 (`content-depth.mjs`, 2026-11-09) `/אודות/` measured 320/500 and `/איזורי-שירות/`
+101/250; `/שירותים/` passed at 336/250 on the metric only — its words were still the homepage
+teasers, which had stopped being subtracted as shared once the service pages dropped them
+(`sharedParagraphs` 8 → 1).
+
+**The index and about half closed 2026-11-09** by commit `7c3f2db` (Sprint 6 row 6.8). Each page
+has its own typed copy module — `content/pages/services-index.ts`, `content/pages/areas-index.ts`,
+`content/pages/about.ts`, through `lib/page-content.ts` — rendered by `ContentSections`, and each
+opens with its own answer block under the H1. Verified on the current `out/`:
+
+```bash
+node scripts/audit/content-depth.mjs
+# services-index 1034 words · 1018 unique · floor 250 · belowFloor 0   (336 on the metric only before)
+# areas-index     472 words ·  456 unique · floor 250 · belowFloor 0   (101 before; 111 on 2026-08-23)
+# about          1161 words · 1145 unique · floor 500 · belowFloor 0   (320 before; 277 on 2026-08-23)
+# first <p> after the H1, by the audit's tokens(): /שירותים/ 56 · /איזורי-שירות/ 45 · /אודות/ 51
+```
+
+Every page this row named is over its floor; the blog index stays at 400/250 (unchanged). Home
+1770 unique and pricing 914 unique on the same run.
 
 ---
 
@@ -665,6 +714,11 @@ node scripts/audit/schema.mjs   # ✅ 0 failures · faqPages 8 (/ + the 7 servic
 # <details> per service page = its question count
 ```
 
+**The 18 location pages joined 2026-11-09** with commit `7c3f2db` (Sprint 6 row 6.1): each renders
+its three `cityContent.faqs` the same way, and `lib/city-content.ts` throws if a city question
+repeats one used on `/`, a service page or another city. `schema.mjs` → 0 failures, **`faqPages 26`**
+(`/` + 7 services + 18 locations); 98 questions sitewide (54 on location pages), 0 marked up twice.
+
 ---
 
 ## §5. Local SEO
@@ -676,16 +730,38 @@ Doctrine: `local-seo-il` skill. Script: `content-depth.mjs` (doorway delta).
 `schema.sameAs` is `[]`; `siteConfig.social` is three empty strings. The top local lever. The profile
 is **coming** (business-facts §A ⏳); the restore path is [gbp-runbook.md](gbp-runbook.md).
 
-### 5.2 — P1 · M · [NOT STARTED] Four regions render wrong Hebrew in shipped titles, descriptions and H1s
+### 5.2 — P1 · M · [✅ DONE 2026-11-09] Four regions render wrong Hebrew in shipped titles, descriptions and H1s
 
-`locations` has only `slug` and `name`, so templates interpolate a bare `ב${name}`:
-`out/locations/שרון/index.html` ships **בשרון** where **באזור השרון** is correct; צפון ships **בצפון**
-where **בצפון הארץ** is correct. A live copy defect on four pages, in three places each. Phase 3
-adds `kind` + `prefixed` (deferred from Phase 0 on purpose).
+Until Sprint 6 `locations` had only `slug` and `name`, so templates interpolated a bare `ב${name}`:
+`out/locations/שרון/index.html` shipped **בשרון** where **באזור השרון** is correct; צפון shipped
+**בצפון** where **בצפון הארץ** is correct — a copy defect on four pages, in three places each.
 
-### 5.3 — P1 · L · [NOT STARTED] Doorway risk on all 18 location pages
+**Closed 2026-11-09** by commit `7c3f2db` (Sprint 6 row 6.2). Every entry carries `kind`
+(`"city"` ×14, `"region"` ×4) and `prefixed` (`בקריות`, `באזור השרון`, `בצפון הארץ`, `בדרום הארץ`);
+the shared title, H1, description and intro builders in `lib/content.ts` take `prefixed`, the
+service and location link labels too, and `locationServiceJsonLd` types `areaServed` from `kind`
+(the interim region-slug set is gone). Verified on the current `out/`:
+
+```bash
+# <title> and <h1> per region page: "תיקון שערים חשמליים באזור השרון" · "… בצפון הארץ" ·
+#   "… בדרום הארץ" · "… בקריות"; bare בשרון / בצפון / בדרום in <head>: 0 on all three
+node scripts/audit/schema.mjs   # ✅ 0 failures · 0 warnings · danglingIds 0 · rawHebrewUrls 0
+# the location Service node's areaServed: AdministrativeArea on קריות, שרון, צפון, דרום; City on the 14 cities
+```
+
+The body copy uses `בצפון` / `בדרום` as ordinary prose ("בצפון יש הרבה מושבים") on its own pages —
+correct Hebrew there, not the templated defect.
+
+### 5.3 — P1 · L · [PARTIAL 2026-11-09 · 13 of 18 done · ⏳ BLOCKED · owner 3.6 for five] Doorway risk on all 18 location pages
 
 See §3.1. **No 19th location until the existing 18 pass.** 7 × 18 = 126 cells; do not build them.
+
+**The measured doorway proxy passes on all 18 since 2026-11-09** (commit `7c3f2db`):
+`content-depth.mjs` → location `belowFloor 0`, `locationMedianDelta 343.5`, every page 288–428
+tokens ahead of its nearest sibling. **Done for the 13 confirmed cities; ⏳ BLOCKED · owner
+(owner-actions 3.6) for קריות, שרון, צפון, דרום and באר שבע**, which ship as bounded pages with no
+coverage claim until the owner says whether they are served (§3.1). The human half of the test —
+local-seo-strategist sign-off — is not on record, so the expansion cap stands.
 
 ### 5.4 — P2 · S · [⏳ BLOCKED · owner] Coverage and availability claims are unbounded
 
@@ -707,10 +783,22 @@ grep -rl 'פריסה ארצית' out/_next/static | wc -l    # 1 — areaServed:
 grep -rl 'אחריות מלאה\|24/7' out/_next/static | wc -l  # 0 since ad2f1ab
 ```
 
-### 5.5 — P2 · S · [NOT STARTED] No geo signals
+### 5.5 — P2 · S · [PARTIAL 2026-11-09 · copy half done for 13 · ⏳ BLOCKED · owner for five and the map] No geo signals
 
-No `GeoCoordinates`, no `hasMap`, no map embed, no neighbourhood or landmark reference in any copy.
-The copy half lands with `cityContent` (Phase 3); the map half waits for the GBP (§5.1).
+Until Sprint 6: no `GeoCoordinates`, no `hasMap`, no map embed, no neighbourhood or landmark
+reference in any copy.
+
+**The copy half closed 2026-11-09 for the 13 confirmed cities** by commit `7c3f2db` (Sprint 6 row
+6.4): each `cityContent` entry names its neighbourhoods, industrial zones or — for a region — towns
+(`neighborhoods`, rendered as a list under its own heading), and the local notes name the terrain
+and climate they sit in. Verified on the current `out/`: all 18 location pages render the list and
+three city FAQs (`<details>` ×3 each; 54 location questions, 98 sitewide, 0 marked up twice —
+`schema.mjs` → 0 failures, `faqPages 26`).
+
+**⏳ BLOCKED · owner (owner-actions 3.6) for the five 🔶 entries** (קריות, שרון, צפון, דרום, באר
+שבע): their place names are geography, not a service area, until the owner confirms coverage. **⏳
+BLOCKED · owner (§5.1, B3) for the map half:** `hasMap` and any map embed wait on the GBP URL; no
+`GeoCoordinates` around an invented midpoint, ever.
 
 ### 5.6 — [✅ HOLDS] NAP is correct as-is
 
@@ -735,7 +823,7 @@ was gone but the edge answered **403** to every AI-crawler signature (N18). The 
 owner's and can revert without a repo change — **re-probe before every AEO claim; a `robots.txt`
 read proves nothing.** §6.2–§6.5 are no longer capped by this item.
 
-### 6.2 — P1 · M · [PARTIAL 2026-11-09 · `/`, `/מחירון/` and the 7 services done] No page opens with an extractable answer block
+### 6.2 — P1 · M · [PARTIAL 2026-11-09 · `/`, `/מחירון/`, the 7 services, the 18 locations, the indexes and `/אודות/` done] No page opens with an extractable answer block
 
 `content-depth.mjs` (as of 2026-08-23): 0 of 36 service, location and post pages open with a
 40–60-word paragraph — services open with 3–4 words, locations with 16–17, posts with 1. Spec:
@@ -758,8 +846,18 @@ node scripts/audit/content-depth.mjs   # the answer-block warning lists location
 #   שערים-לחניה 55 · שערים-מתרוממים 49 · שערים-נגררים 49 · תריסי-גלילה-חשמליים 56
 ```
 
-**Still open:** the proxy warns on location 18/18 (19–20 words, Sprint 6) and post 11/11 (1 word —
-the date, Sprint 7.6), as of 2026-11-09.
+**The 18 location pages closed 2026-11-09** by commit `7c3f2db` (Sprint 6 row 6.1): once a
+`cityContent` entry's `answer` is written, the `PageHeader` subtitle and the shared intro step aside
+and the answer is the first `<p>` after the H1, under its `answerHeading`. The index pages and
+`/אודות/` gained one too (row 6.8). Verified on the current `out/`:
+
+```bash
+node scripts/audit/content-depth.mjs   # the answer-block warning lists post 11/11 only — no location row
+# first <p> after the H1, by the audit's tokens(): the 18 locations 44–57 words;
+#   /שירותים/ 56 · /איזורי-שירות/ 45 · /אודות/ 51
+```
+
+**Still open:** the proxy warns on post 11/11 (1 word — the date, Sprint 7.6), as of 2026-11-09.
 
 ### 6.3 — P1 · L · [NOT STARTED] Nothing on the site is worth citing over a competitor
 
@@ -1056,24 +1154,48 @@ heading order, breadcrumbs).
 
 ### 9.1 — P1 · M · [NOT STARTED] Header reaches no service or location page in one hop
 
-`Header.tsx` renders `navItems` only; `links.mjs` → chrome = 28 hrefs, posts reachable only via
-indexes and related links.
+`Header.tsx` renders `navItems` only; `links.mjs` → chrome = 28 hrefs until 2026-11-09, **34**
+since the footer lists all 18 locations (§9.2, `7c3f2db`) — the six added links are all footer
+links; the header is unchanged. Posts are reachable only via indexes and related links. Still
+open — Sprint 6.5.
 
-### 9.2 — P1 · S · [NOT STARTED] Six location pages are missing from the chrome
+### 9.2 — P1 · S · [✅ DONE 2026-11-09] Six location pages are missing from the chrome
 
-`components/layout/Footer.tsx` renders `locations.slice(0, 12)`. `links.mjs` → `notInChrome: 6`
-(אשקלון, באר שבע, דרום, צפון, קריות, שרון); they are not strict orphans only because
-`/איזורי-שירות/` lists all 18.
+Until Sprint 6 `components/layout/Footer.tsx` rendered `locations.slice(0, 12)`. `links.mjs` →
+`notInChrome: 6` (אשקלון, באר שבע, דרום, צפון, קריות, שרון); they were not strict orphans only
+because `/איזורי-שירות/` lists all 18.
 
-### 9.3 — P1 · M · [PARTIAL 2026-11-09 · service → city half done] The service ↔ location mesh is one-way
+**Closed 2026-11-09** by commit `7c3f2db` (Sprint 6 row 6.6): the footer renders `locations.map`,
+all 18. Verified on the current `out/`:
 
-Until Sprint 5 no service page linked to any city; no location links to another. **The service →
+```bash
+node scripts/audit/links.mjs   # ✅ notInChrome 0 · chromeLinks 34 (28 + the six) · orphans 0 · brokenLinks 0
+# "types reached only via indexes/related links": post, thanks — location is no longer listed
+```
+
+### 9.3 — P1 · M · [✅ DONE 2026-11-09] The service ↔ location mesh is one-way
+
+Until Sprint 5 no service page linked to any city, and until Sprint 6 no location linked to another. **The service →
 city half shipped 2026-11-09** in commit `225ff45` (Sprint 5): each service page links the 5–6
 cities its `ServiceDepth.locations` declares, under "מחפשים שירות בעיר שלכם?". Measured on the
 current `out/` (`<main>` links): 13 distinct location pages reached from the 7 service pages, each
 from at least 2. The five unconfirmed region / far entries (קריות, שרון, צפון, דרום, באר שבע —
-business-facts §E) are left out by design. **Still open — Sprint 6.7:** location → location
-(`nearby`) and the location side of the mesh.
+business-facts §E) are left out by design.
+
+**The location side closed 2026-11-09** by commit `7c3f2db` (Sprint 6 row 6.7). `lib/nearby.ts`
+holds one list of unordered pairs (`nearbyPairs`, 22 pairs) that `nearby(slug)` reads in both
+directions, so a one-way edge cannot be written; module-load throws reject a self-pair and a pair
+listed twice. Each location page links its neighbours, and its service list is `cityContent.services`
+plus every service whose `ServiceDepth.locations` names the city — the reverse direction of the
+Sprint 5 half. Measured on the current `out/` (`<main>` links):
+
+```bash
+node scripts/audit/links.mjs   # ✅ orphans 0 · notInChrome 0 · brokenLinks 0
+# location → location: 18 of 18 pages link 2–4 neighbours; every location receives 2–4 such links
+# location → service: 18 of 18 pages link 4–7 service pages
+```
+
+The header half of §9 is §9.1, not this row.
 
 ### 9.4 — P2 · S · [PARTIAL 2026-11-09 · service half done] Related items are selected by array order
 
@@ -1780,20 +1902,23 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    `74a92d1`): `claims-grep.mjs` 0, home 1535 unique / 800, `titles.mjs` 0 warnings,
    `curlyQuotes 0`; audit 15 → 8. ~~The 4B / 4C reviewer should-fix items~~ — closed 2026-11-09
    in `9195c9b` (4F), with the roster `shortPitch` cleared in `ad2f1ab`; audit still 8, home 1549
-   unique, `claims-grep` 0 over 14 claims. Partial by design: §3.13 (about and both indexes →
-   Sprint 6.8), §6.2 (locations, posts → Sprints 6–7), §6.4 (8 of 11 posts dated; the rest with
-   Sprint 7.3). Open: the deploy, and the manifest `areaServed` phrase in the client bundle (B5).
+   unique, `claims-grep` 0 over 14 claims. Partial by design: §3.13 (about and both indexes —
+   closed in Sprint 6.8, `7c3f2db`), §6.2 (locations closed in Sprint 6; posts → Sprint 7), §6.4
+   (8 of 11 posts dated; the rest with Sprint 7.3). Open: the deploy, and the manifest `areaServed` phrase in the client bundle (B5).
 7. ~~**Sprint 5 — service depth:** §3.2 · §6.2 and §4.13 for the 7 service pages · §9.4 service
    half · §2.4 re-derived inside the 120–160 window~~ — shipped in the repo 2026-11-09 (commit
    `225ff45`): service `belowFloor 0`, `serviceMedianDelta 438`, `faqPages 8`,
    `relatedServiceTargets 7`, `titles.mjs` 0 warnings; audit 8 → 5. Partial: §9.4 (the post route
-   still `.slice(0, 4)` → Sprint 7.3) and §9.3 (service → city done; location → location → Sprint
-   6.7). Open: reviewer sign-off on record, and the deploy.
-8. **Sprint 6 — locations + navigation (next):** §3.1 (the decision on whether this domain ranks) ·
-   §2.3 · §5.2 · §5.5 copy half · §9.1–9.2 · the rest of §9.3 · the rest of §3.13. Acceptance:
-   `content-depth.mjs` floors + delta (the 5 failures left), `links.mjs` 0 orphans and
-   `notInChrome 0`, `claims-grep.mjs` still 0.
-9. **Phase 4 — guides hub + block model:** §6.3 · §3.8 · §3.10 · §9.5 · §6.2 for the posts
+   still `.slice(0, 4)` → Sprint 7.3) and §9.3 (service → city done; the location side closed in
+   Sprint 6.7, `7c3f2db`). Open: reviewer sign-off on record, and the deploy.
+8. **Sprint 6 — locations + navigation:** ~~§2.3 · §5.2 · §3.13 (indexes and about) · §9.2 · the
+   rest of §9.3~~ — shipped in the repo 2026-11-09 (commit `7c3f2db`): location `belowFloor 0`,
+   `locationMedianDelta 343.5`, the three pages over their floors, `notInChrome 0`, `orphans 0`,
+   `faqPages 26`, `claims-grep.mjs` still 0; audit 5 → 1 (the post floor only). §3.1 / §5.3 and the
+   §5.5 copy half are done for the 13 confirmed cities and ⏳ BLOCKED · owner (3.6, B5) for the five
+   🔶 entries, which ship as bounded pages. **Next:** §9.1 header reach (row 6.5, not
+   owner-blocked), local-seo-strategist and claims-verifier sign-off on record, then the deploy.
+9. **Phase 4 — guides hub + block model (next after 6.5):** §6.3 · §3.8 · §3.10 · §9.5 · §6.2 for the posts
    (ADR 0002, 0003) · the rest of §6.4 (PARTIAL since 4F) · the post half of §9.4 · §6.5 `llms.txt`.
 10. ~~**Phase 5 — engagement + CRO:** §8.1 · §8.3 · §8.4/N3 · §8.5 · N8 · §13.4–13.5 · §10.2 · N19~~
     — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 closed

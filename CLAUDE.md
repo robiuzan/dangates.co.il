@@ -144,13 +144,17 @@ components/
   layout/      Header (server shell) MobileMenu (client leaf) Footer PageHeader MobileCtaBar
   marketing/   Hero TrustBar ServicesGrid WhyUs Process PricingTeaser
                ServiceAreas Reviews Faq FinalCta
+               ContentSections (AnswerBlock · BulletedBlock — the depth-module renderers, Sprint 6)
   forms/       LeadForm
   live/        Live.tsx — the fleet live-kit surfaces, server components only (§14)
 lib/
-  site-config.ts   # ⭐ NAP, services[7], locations[18], telHref, whatsappHref
+  site-config.ts   # ⭐ NAP, services[7], locations[18] (kind · prefixed · updated), telHref, whatsappHref
   content.ts       # ⭐ all Hebrew marketing copy; reviews = [] (gated)
   posts.ts         # ⭐ 11 migrated blog posts (untrusted — see golden rule 7)
   service-depth.ts # ServiceDepth type + serviceDepth record + module-load checks (Sprint 5)
+  city-content.ts  # CityContent type + cityContent record + module-load checks (Sprint 6)
+  nearby.ts        # nearbyPairs — one list of unordered location pairs, read both ways (Sprint 6)
+  page-content.ts  # the copy model for /שירותים/, /איזורי-שירות/, /אודות/ (Sprint 6)
   jsonld.ts        # site-local JSON-LD builders — one @graph per page (§8)
   manifest.ts      # parseManifest(): narrows site.config.json at the boundary, throws on a bad key
   authors.ts       # empty Author registry — no person is coming; a Person author is forbidden while empty
@@ -162,6 +166,8 @@ scripts/gen-redirects.mjs   # emits public/_redirects (72 real 301 rules) from R
 scripts/audit/     # ⭐ the measurements (12 checks + thresholds.json + claims.json) — roster §4
 scripts/live/      # fleet live-kit gates (prebuild / postbuild) and the weekly reminder — locked (§14)
 content/services/  # ⭐ one depth module per service (<slug>.ts → ServiceDepth): answer, sections, FAQs, links
+content/locations/ # ⭐ one module per location (<slug>.ts → CityContent): answer, local notes, FAQs, services
+content/pages/     # ⭐ services-index.ts · areas-index.ts · about.ts — the three pages' own copy
 content/live/      # ⭐ _campaigns.mjs + _updates.mjs (the live registers) + the synced calendar (§14)
 live.config.mjs    # ⭐ calm / no-card pages, this site's ⛔ claim stems, pageOfSource (§14)
 live-kit.lock.json # the kit commit and the sha256 of every locked copy (§14)
@@ -207,13 +213,17 @@ lib/site-config.ts   manifest · siteConfig · services · locations · telHref 
         │                    trustStats · priceRows · faqs · reviews · aboutValues · navItems
         ├── lib/posts.ts     posts[11]
         ├── lib/service-depth.ts  serviceDepth  ← content/services/<slug>.ts (one per service)
+        ├── lib/city-content.ts   cityContent   ← content/locations/<slug>.ts (one per location)
+        ├── lib/nearby.ts         nearbyPairs · nearby()
+        ├── lib/page-content.ts   ← content/pages/*.ts (the two indexes and /אודות/)
         ▼
 app/**/page.tsx  →  components/**
 ```
 
 Rule of thumb: **identity and NAP go up the chain to the roster; wording goes in `lib/content.ts`;
 article bodies go in `lib/posts.ts`; each service page's depth prose goes in its own
-`content/services/<slug>.ts` (UI labels around it stay in `lib/content.ts`); layout goes in
+`content/services/<slug>.ts`, each location page's in `content/locations/<slug>.ts`, and the two
+indexes' and `/אודות/`'s in `content/pages/` (UI labels around them stay in `lib/content.ts`); layout goes in
 components.** Copy never gets typed directly
 into JSX.
 
@@ -276,8 +286,9 @@ See the `hebrew-rtl` skill for the full rule set.
   and it appends the one `BreadcrumbList` (44 nested routes — never add a second). The business node
   ships on every page that references `#business`, with `logo`, `image`, `areaServed` as the 18
   published locations and `hasOfferCatalog` naming the 7 services (no `Offer`, no price); `WebSite`
-  is on `/` only; `FAQPage` is on `/` and the 7 service pages (`faqPages 8` since Sprint 5,
-  `225ff45` — 44 questions, each marked up on one page only); the 18 locations emit a `Service`,
+  is on `/` only; `FAQPage` is on `/`, the 7 service pages and the 18 location pages
+  (`faqPages 26` since Sprint 6, `7c3f2db` — 98 questions, each marked up on one page only); the
+  18 locations emit a `Service` with `areaServed` typed from `kind`,
   the indexes `CollectionPage` + `ItemList`,
   `/אודות/` an `AboutPage` with `knowsAbout`, `/צור-קשר/` a `ContactPage`. Blog posts emit
   `BlogPosting` with an `Organization` author, `dateModified` from `updated ?? date` and `isPartOf`

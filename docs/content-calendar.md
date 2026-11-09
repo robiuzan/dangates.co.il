@@ -36,7 +36,7 @@ Rules that apply to every spoke: no guide title equals a service `name` or match
 (that phrase space belongs to the silos; `lib/guides.ts` throws on it in Phase 4); one Q/A string in
 exactly one `FAQPage` sitewide; every guide declares `relatedServices` and appears on those service
 pages through the reverse index, so an orphan is impossible; a guide that names a city uses
-`loc.prefixed` (a Phase 3 field — until then, name no region).
+`loc.prefixed` (on every `locations` entry since Sprint 6, `7c3f2db`) — never a bare `ב` + name.
 
 ---
 

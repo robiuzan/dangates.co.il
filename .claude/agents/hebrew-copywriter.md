@@ -27,10 +27,12 @@ node scripts/audit/claims-grep.mjs        # every gated phrase in source and in 
 node scripts/audit/spam-grep.mjs          # emoji, curly quotes, fused words, spam tokens in lib/posts.ts
 ```
 
-As of 2026-11-09 (after Sprint 5) for context only: all 18 locations sit at 139–145 unique words
-against a 350 floor with a doorway delta of 2–3 tokens (threshold 120); the 7 services pass since
-`225ff45` (1294–1542 against 450, delta 404–468); all 11 posts under the 900 floor; no location or
-post page opens with a 40–60-word answer block (`/`, `/מחירון/` and the 7 services do); `claims-grep.mjs` passes — the five gated phrases it
+As of 2026-11-09 (after the Sprint 6 content, `7c3f2db`) for context only: the 18 locations pass
+since `7c3f2db` (717–1022 unique words against 350, delta 288–428 against 120 — the five 🔶 entries
+as bounded pages until owner-actions 3.6); the 7 services pass since `225ff45` (1294–1542 against
+450, delta 404–468); `/שירותים/`, `/איזורי-שירות/` and `/אודות/` pass on their own copy; all 11
+posts under the 900 floor; no post page opens with a 40–60-word answer block (every other page type
+with one does); `claims-grep.mjs` passes — the five gated phrases it
 failed on 2026-08-23 ("ניסיון רב שנים", "אחריות מלאה", "פריסה ארצית", 24/7, two superlatives) were
 softened in `1796ee7`, and 4F (`9195c9b`) took out the absolute workmanship lines ("ללא פשרות",
 "מצוינות", "שום חלק לא מוחלף…") and the form's "בהקדם" — the lexicon now fails the first two
@@ -50,14 +52,20 @@ still to strip.
 
 ## Where copy lives — today, and the model you write against
 
-**Today — the target model does not exist yet; say so rather than pretend.** Read two neighbouring
-entries of the same kind before adding one, so tone, length and structure match.
+**Today — for the guides the target model does not exist yet; say so rather than pretend.** Read
+two neighbouring entries of the same kind before adding one, so tone, length and structure match.
 
-- `locations` in `lib/site-config.ts` is `{slug, name}` only, and the location body is a template
-  interpolating the city name (`locationIntroParagraph1` / `locationIntroParagraph2` and the other
-  builders in `lib/content.ts`, rendered by `app/locations/[city]/page.tsx`). You **cannot** deepen a city page
-  until `rtl-frontend-engineer` builds the `cityContent` map — ask for it; never edit the JSX.
-- `lib/content.ts` is what you write into today: the `serviceMeta` map (taglines, descriptions and
+- A city page's copy is its own module, `content/locations/<slug>.ts` (`export const city:
+CityContent`), typed and checked by `cityContent` in `lib/city-content.ts` (built in Sprint 6,
+  `7c3f2db` — `/new-city`): title, H1, meta description, answer block, local notes, neighbourhoods,
+  FAQs, services. Read the module's header comment (what that page may and may not say) and the
+  `CityContent` JSDoc first; use the entry's `prefixed` for the place, never a bare `ב` + name. The
+  five 🔶 entries (קריות, שרון, צפון, דרום, באר שבע) carry no coverage claim until owner-actions 3.6.
+  The shared builders in `lib/content.ts` (`locationIntroParagraph1` and the rest) are a fallback
+  for an empty entry only.
+- `/שירותים/`, `/איזורי-שירות/` and `/אודות/` read their own `content/pages/*.ts` modules through
+  `lib/page-content.ts` (Sprint 6).
+- `lib/content.ts` is what you write into for everything else: the `serviceMeta` map (taglines, descriptions and
   `metaDescription` behind `serviceCards`), `faqs` (the single homepage FAQ), `aboutValues`,
   `aboutSections`, `pricingPageCopy` and `homeDiagnosisCopy` (never a number beyond
   `visitFeeRange`), `postSeo`, the form's states (`leadFormSuccessCopy` since 4F) and the softened
@@ -70,8 +78,8 @@ entries of the same kind before adding one, so tone, length and structure match.
 **Built in Sprint 5 (`/new-service` describes it):** one `ServiceDepth` module per service in
 `content/services/<slug>.ts` — answer, mechanism sections, caveats, FAQs, `relatedServices`,
 `locations`, `relatedPosts`, `metaDescription`; the triggers stay in `serviceTriggers`
-(`lib/content.ts`). **Target model — Phase 3 builds it (spec in /new-city):** `kind`, `prefixed` and
-per-entry `updated` on `locations`; a `cityContent` map; `nearby`. **Phase 4 (ADR 0003, /new-guide):** the typed block model and `content/guides/*.ts`
+(`lib/content.ts`). **Built in Sprint 6 (`/new-city` describes it):** `kind`, `prefixed` and
+per-entry `updated` on `locations`; `cityContent`; `nearbyPairs`. **Target model — Phase 4 (ADR 0003, /new-guide):** the typed block model and `content/guides/*.ts`
 under `/מדריכים/`. When a task targets a field that does not exist yet, write the copy in the skill's
 template shape and hand the wiring to `rtl-frontend-engineer` — do not invent a different shape.
 

@@ -23,12 +23,13 @@ node scripts/audit/run-all.mjs --scope cro       # cta-coverage.mjs — data-cta
 node scripts/audit/links.mjs                     # chrome reach, orphans, one H1, heading order, breadcrumbs
 ```
 
-As of 2026-11-09, for context only: the full audit exits **5** — all `content-depth`, copy work
-(8 before Sprint 5 cleared the service rows; 15 on 2026-11-08 before Sprint 4 cleared `claims-grep`). On your axes everything reads 0: `rtl-lint.mjs`
+As of 2026-11-09, for context only: the full audit exits **1** — the `content-depth` post floor,
+copy work (5 before the Sprint 6 content `7c3f2db`; 8 before Sprint 5; 15 on 2026-11-08 before
+Sprint 4 cleared `claims-grep`). On your axes everything reads 0: `rtl-lint.mjs`
 `bannedUtilities 0 · hexLiterals 0`, `a11y.mjs` 0, `cta-coverage.mjs` `missingDataCta 0`, `schema.mjs`
-0 (`danglingIds 0`, `rawHebrewUrls 0`). Still open on yours: 6 locations outside the chrome
-(`links.mjs` `notInChrome 6` — the footer slices to 12, §9.2) and related links by array order on
-the post pages (§9.4; the service pages use declared lists since `225ff45`). Sprints 2–4 cleared the rest, N19's two `md` buttons included (`fba5957`; 2026-08-23: exit
+0 (`danglingIds 0`, `rawHebrewUrls 0`), `links.mjs` `notInChrome 0` (the footer lists all 18 since
+`7c3f2db`). Still open on yours: the header's one-hop reach (§9.1, Sprint 6.5) and related links by
+array order on the post pages (§9.4; the service pages use declared lists since `225ff45`). Sprints 2–4 cleared the rest, N19's two `md` buttons included (`fba5957`; 2026-08-23: exit
 37).
 
 ## Stack and constraints
@@ -117,8 +118,9 @@ one `noindex` row — it stays out of the sitemap.
 ## Workflow
 
 1. Read a sibling component first — match its patterns, not generic best practice. If the task needs a
-   data-model field that does not exist yet (`cityContent`, `kind`/`prefixed`, `content/guides/`;
-   `serviceDepth` exists since Sprint 5), build it to the owning skill's spec and name the phase.
+   data-model field that does not exist yet (`content/guides/`, the typed block model;
+   `serviceDepth` exists since Sprint 5, `cityContent`, `kind`/`prefixed` and `nearbyPairs` since
+   Sprint 6), build it to the owning skill's spec and name the phase.
 2. Make the change. New strings → `hebrew-copywriter`; never type Hebrew into JSX yourself.
 3. Touched `REDIRECTS.md` or `scripts/gen-redirects.mjs`? Run `npm run redirects`, commit the regenerated `public/_redirects`, and say how many rules it now carries (`git status --porcelain public/` must end clean).
 4. Run **`npm run gate`** (lint → typecheck → format:check → build → audit). Report the real output

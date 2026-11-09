@@ -91,7 +91,7 @@ node -e "require('fs').rmSync('.next',{recursive:true,force:true})" && npm run b
    must be clean before you build, or the map and the shipped rules have drifted (§1.6). `public/`
    reaches `out/` only through a build.
 5. **Did visible copy change? Bump its `updated` date — no script catches this.** `<lastmod>` comes
-   from `services[].updated`, `locationsUpdated`, `staticPages[].updated` and a post's `updated`.
+   from `services[].updated`, `locations[].updated` (per entry since Sprint 6), `staticPages[].updated` and a post's `updated`.
    `links.mjs` asserts each is a real, non-future date, **not that it is current**, so a stale date
    survives a green gate and understates a real change on exactly the pages you want recrawled.
    Judge it per page type: rendered copy changed → bump; metadata, analytics, styling or a verbatim

@@ -60,10 +60,10 @@ strings apply the same patterns yourself (next section) and note the gap as a ca
    In `lib/posts.ts` every heading is `{ type: "h" }` and renders as `<h2>` — a flat outline is the
    Phase 4 block model's job (backlog §3.10), so flag it once, not per heading.
 6. **Location grammar (§8).** קריות, שרון, צפון, דרום are regions: correct Hebrew is בקריות, באזור
-   השרון, בצפון הארץ, בדרום הארץ — never `בשרון`, `בצפון`. Today `locations` entries are `{ slug, name }`
-   with no `prefixed` field (Phase 3, `new-city`), so a bare `ב${loc.name}` in a template is backlog
-   §5.2, a template defect — report it as such, not as the writer's error. New copy written per city
-   must already use the correct form.
+   השרון, בצפון הארץ, בדרום הארץ — never `בשרון`, `בצפון` in a title, H1 or description. Every
+   `locations` entry carries `prefixed` since Sprint 6 (`7c3f2db`, backlog §5.2 ✅), so a bare
+   `ב${loc.name}` in a template or a `content/locations/*.ts` heading is now a regression — report it.
+   In body prose `בצפון` / `בדרום` as ordinary words ("בצפון יש הרבה מושבים") are correct Hebrew.
 7. **No language mixing mid-sentence.** A Latin brand, model or material name gets its own clause;
    detect with `grep -nE '[א-ת]+ [A-Za-z]{3,} [א-ת]+'` and read the hits.
 8. **Answer block (§5).** Directly under a question-form heading; 40–60 words; the first sentence

@@ -35,12 +35,16 @@ site.config.json          SiteManifest             ← NEVER edit directly (deny
         │
         ▼
 lib/site-config.ts        manifest (= parseManifest() from lib/manifest.ts) · siteConfig · services[7]
-        │                 locations[18] (slug, name only today) · staticPages (10, /תודה/ noindex)
-        │                 telHref · whatsappHref() · locationsUpdated (one shared date)
+        │                 locations[18] (slug · name · kind · prefixed · updated) · staticPages (10, /תודה/ noindex)
+        │                 telHref · whatsappHref()
         ├─► lib/content.ts   serviceCards · serviceMeta · differentiators · processSteps · trustStats
         │                    priceRows · faqs · reviews = [] + REVIEW_SOURCE_URL = null (gated)
         │                    aboutValues · aboutSections · navItems
         ├─► lib/posts.ts     posts[11] on the flat PostBlock {type:"h"|"p"|"li"; text} — untrusted
+        ├─► lib/service-depth.ts  serviceDepth ← content/services/<slug>.ts (Sprint 5)
+        ├─► lib/city-content.ts   cityContent  ← content/locations/<slug>.ts (Sprint 6)
+        ├─► lib/nearby.ts         nearbyPairs · nearby() — the location mesh (Sprint 6)
+        ├─► lib/page-content.ts   ← content/pages/*.ts — /שירותים/, /איזורי-שירות/, /אודות/ (Sprint 6)
         ├─► lib/jsonld.ts    the JSON-LD builders: one @graph per page (since Sprint 2, 2026-11-08)
         ├─► lib/authors.ts   empty Author registry — no person is coming
         ▼
@@ -58,9 +62,12 @@ ships once under `out/_next/static/`; the roster `shortPitch` was cleared of its
 
 **The service depth model is built** (Sprint 5, `225ff45`): `lib/service-depth.ts` types, assembles
 and checks `serviceDepth`, one module per service in `content/services/<slug>.ts` — `/new-service`
-describes it. **The rest of the richer data model does not exist yet:** `kind` / `prefixed` /
-per-entry `updated` on locations, `cityContent` (Phase 3 — `/new-city` is the spec); the typed block
-model, `lib/guides.ts` + `content/guides/*.ts` (Phase 4 — ADR 0002/0003, `/new-guide`).
+describes it. **The location model is built** (Sprint 6, `7c3f2db`): `kind` / `prefixed` /
+per-entry `updated` on every `locations` entry, `cityContent` in `lib/city-content.ts` from one
+module per location in `content/locations/<slug>.ts`, and the `nearbyPairs` mesh in `lib/nearby.ts`
+— `/new-city` describes it; the two indexes and `/אודות/` read `content/pages/*.ts` through
+`lib/page-content.ts`. **What does not exist yet:** the typed block model, `lib/guides.ts` +
+`content/guides/*.ts` (Phase 4 — ADR 0002/0003, `/new-guide`).
 `env-doctor.mjs` tracks them as "planned"; never cite a line number in them. (`lib/jsonld.ts` and
 `lib/authors.ts` left this list when Sprint 2 built them, 2026-11-08.)
 

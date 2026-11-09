@@ -29,7 +29,7 @@ crawler probe and the deploy state were re-verified with `curl` on 2026-09-06. R
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | CTAs (`cta-coverage.mjs`) | 2026-11-08 (repo): 119 elements on 46 pages, **0 without `data-cta`**, 23 distinct values, 0 warnings — `/מחירון/` has call and WhatsApp in `<main>` (was 113 / 24 missing / no pricing CTA on 2026-08-24)                                                                                                                                                       | §13.2 ✅, §8.5 ✅                                          |
 | Lead form (source, §8)    | 2026-11-08 (repo, `68a4a7f`): per-field `aria-invalid` + `aria-describedby`, the `lib/phone.ts` pattern, an error alert, a consent line, the `city` select, `/תודה/` after a confirmed send, `lead_submit` with `page` / `service` / `city` / `placement` / `site`; `a11y.mjs` 0. Open: the privacy copy sign-off (§8.2) and a tag consuming `lead_error` (§8.6) | §8.1 ✅ §8.3–§8.5 ✅, §8.2 · §8.6 PARTIAL, N1 ✅, §13.4 ✅ |
-| Navigation (`links.mjs`)  | header reaches 0 services / 0 locations; footer omits 6 of 18 locations (`notInChrome 6`); related links by array order; breadcrumbs 44/44; FAQ answers in the DOM via `<details>` since `7cfcf4c`                                                                                                                                                               | §9.1–§9.4, §9.6 ✅, N8 ✅                                  |
+| Navigation (`links.mjs`)  | header reaches 0 services / 0 locations; footer lists all 18 locations since `7c3f2db` (`notInChrome 0`, `chromeLinks 34`); the service ↔ location mesh both ways since `7c3f2db`; post related links by array order; breadcrumbs 44/44; FAQ answers in the DOM via `<details>` since `7cfcf4c`                                                                  | §9.1, §9.4 · §9.2 ✅ §9.3 ✅ §9.6 ✅, N8 ✅                |
 | Headers (`edge.mjs`)      | `headersFile: true` since `a0e0fe2` — the five security headers and a report-only CSP from `public/_headers`, live since 2026-10-12; the zone rule was disabled 2026-11-08, deletion pending (B7)                                                                                                                                                                | §12.1 ✅, §12.2 PARTIAL                                    |
 | Redirects / origins       | `stubs: 37`, `redirectsFile: false`, `foreignStubs: 1`, `deadHostArtifacts: 3`; the GitHub Pages origin still answers; `www` serves a full duplicate (200 on 2026-09-06)                                                                                                                                                                                         | §1.1, §12.4, N4, N5, §1.7                                  |
 | Edge bot policy (zone)    | AI crawlers **200** on the full-UA probe, verified 2026-09-06 (owner-actions 1.1 ✅); blocked 2026-08-16 (managed `robots.txt`) and 2026-08-23 (enforced 403) — can revert with no repo change; `llms.txt` 404                                                                                                                                                   | §6.1 ✅, §6.2–§6.5                                         |
@@ -154,9 +154,10 @@ inbox; if spam becomes real, Web3Forms' captcha option.
 ### 3.1 The one-hop rule, and RTL ergonomics
 
 The header must reach **all 7 services and all 18 locations in one hop**, listed from `services` /
-`locations` — never a hand-typed subset (§9.1). The footer's `.slice(0, 12)` drops אשקלון, באר שבע,
-דרום, צפון, קריות and שרון from the chrome (§9.2). Proof: `links.mjs` → `notInChrome: 0`,
-`chromeLinks: 34` (28 + the 6 missing, as of 2026-08-24). The mobile menu gets `aria-controls`,
+`locations` — never a hand-typed subset (§9.1, Sprint 6.5 — not started). The footer's
+`.slice(0, 12)`, which dropped אשקלון, באר שבע, דרום, צפון, קריות and שרון from the chrome, is gone
+since `7c3f2db` (§9.2 ✅): `links.mjs` → `notInChrome 0`, `chromeLinks 34` (28 + the six, as of
+2026-11-09). The mobile menu gets `aria-controls`,
 Escape and focus return in the same pass (§11.4). `dir="rtl"` mirrors flex and grid — never
 `flex-row-reverse` except to wrap an LTR island; logical utilities only (CLAUDE.md §6, `hebrew-rtl`,
 `rtl-lint.mjs`); phone and email are `dir="ltr"` islands ([accessibility-and-i18n.md](accessibility-and-i18n.md)).
@@ -164,7 +165,8 @@ Escape and focus return in the same pass (§11.4). `dir="rtl"` mirrors flex and 
 ### 3.2 Mesh, relatedness, breadcrumbs
 
 - Since Sprint 5 (`225ff45`) each service page links the cities its `ServiceDepth.locations`
-  declares; location → location is still missing until Phase 3 adds `nearby` (§9.3). Related items
+  declares; since Sprint 6 (`7c3f2db`) each location page links its neighbours from `lib/nearby.ts`
+  (one list of pairs read both ways) and the services that fit it (§9.3 ✅). Related items
   by relevance, not `.slice(0, 4)` (§9.4): the service pages use declared `relatedServices` and
   `relatedPosts` since Sprint 5; the post route still slices (Sprint 7.3). Every sibling receives at least one
   inbound related link; cards carry `data-related="service|location|guide|post"` for `related_click`.

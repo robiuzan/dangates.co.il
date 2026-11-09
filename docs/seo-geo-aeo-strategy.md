@@ -132,12 +132,16 @@ served is an open owner question (business-facts §E).
 
 1. **Google Business Profile** — service-area business, no pin, the 13 confirmed cities, the 7
    services named as the site's H1s, hours as the footer (gbp-runbook §1–§5). Not in this repo.
-2. **A `Service` node per location page and a defined `#business` on every page** — today locations
-   carry only `BreadcrumbList` and `#business` dangles on 18 pages (backlog §4.2, §4.4). Phase 2.
-3. **`areaServed` as place nodes** — `City` / `AdministrativeArea` matching the published set, not
-   the marketing phrase typed as `AdministrativeArea` on 8 nodes (backlog §4.8; owner-gated value).
+2. ✅ **A `Service` node per location page and a defined `#business` on every page** — since
+   Sprint 2 (`d8edb28`, backlog §4.2, §4.4); until then locations carried only `BreadcrumbList` and
+   `#business` dangled on 18 pages.
+3. ✅ **`areaServed` as place nodes** — `City` / `AdministrativeArea` matching the published set,
+   not the marketing phrase (backlog §4.8, Sprint 2; typed from `kind` since `7c3f2db`). The roster
+   value itself stays owner-gated (B5).
 4. **Genuinely local copy** — neighbourhoods, industrial zones, the local gate reality, travel and
-   scheduling at that distance (`cityContent`, Phase 3). Zero geo signals exist today (backlog §5.5).
+   scheduling at that distance (`cityContent`, built in Sprint 6, `7c3f2db`). The copy half of
+   backlog §5.5 is done for the 13 confirmed cities; the five 🔶 entries carry no travel or
+   scheduling line until owner-actions 3.6, and `hasMap` waits on the GBP.
 5. **Israeli citations** (gbp-runbook §12) only where a no-address listing is honest, each feeding
    roster `sameAs`; **GBP links tagged** `utm_campaign=gbp` ([event-taxonomy.md](event-taxonomy.md)).
 
@@ -301,7 +305,7 @@ full`** report carries the Δ on every script above (baseline 2026-08-24).
 | One Q/A per `FAQPage` sitewide; answers rendered                                                                  | `schema.mjs` parity; `<details>` not yet → N8                                                                                                                                            |
 | `#business` defined on every page; `WebSite`; escaped URLs                                                        | `schema.mjs` — fails on all three today (backlog §4.4, §4.9, §4.7)                                                                                                                       |
 | `Review` / `AggregateRating` / `Person` / `Offer` absent until sourced; no address; `sameAs` only from the roster | `schema.mjs`; `Reviews.tsx` gate on `REVIEW_SOURCE_URL`; `schema-auditor` (backlog §4.11 HOLDS); `guard-protected-paths.ps1` denies `site.config.json`                                   |
-| Buyer vocabulary; region grammar (`prefixed`)                                                                     | `hebrew-editor` review; `prefixed` not yet → backlog §5.2 (`new-city`, Phase 3)                                                                                                          |
+| Buyer vocabulary; region grammar (`prefixed`)                                                                     | `hebrew-editor` review; `prefixed` on every `locations` entry since `7c3f2db` (backlog §5.2 ✅, `new-city`)                                                                              |
 | Unconfirmed claims (24/7, ארצית, אחריות מלאה, ניסיון)                                                             | `claims-grep.mjs` (`claims.json`); `post-edit-lint.ps1` at edit time; `claims-verifier`                                                                                                  |
 | Title brand once; canonical = sitemap; one H1; orphans; chrome reach                                              | `titles.mjs`, `links.mjs`                                                                                                                                                                |
 | Gate 1 re-probed live, full UA string, never inferred; no zone mutation by an agent                               | `aeo-answer-content` checklist; `aeo-geo-strategist` brief; `guard-destructive-ops.ps1` — the probe is manual (🔶 no script probes the live edge)                                        |

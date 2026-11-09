@@ -127,7 +127,7 @@ correctly, the URL does not. Renaming it without a 301 throws away ranking signa
 - Copy lives in `lib/content.ts` (marketing) and `lib/posts.ts` (articles), never in JSX. Phase 4
   adds `content/guides/` for the `/מדריכים/` hub (ADR 0003) — same rule.
 - Region names need a preposition form: `בצפון הארץ`, `באזור השרון`, never a bare `ב${loc.name}`.
-  The `prefixed` field that carries it does not exist yet (Phase 3, `/new-city`).
+  The `prefixed` field on every `locations` entry carries it (since Sprint 6, `7c3f2db` — `/new-city`).
 - Full voice and depth rules: `docs/content-standards.md` §4 and §7; second-pass review by
   `hebrew-editor`.
 

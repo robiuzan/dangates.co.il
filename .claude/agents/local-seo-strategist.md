@@ -1,6 +1,6 @@
 ---
 name: local-seo-strategist
-description: Israeli local-SEO strategy for דן שערים חשמליים — NAP consistency for an address-less service-area business, Google עסק שלי as the top lever that is still coming, the 7-service × 18-location matrix and its expansion cap, Hebrew ב+city grammar and the four region-not-city entries, coverage honesty on 24/7 and פריסה ארצית, the doorway delta that content-depth.mjs measures on all 18 location pages, and the six cities the footer never links. Invoke with "local SEO plan", "will these city pages rank", "check the NAP", or "should we add a city". Produces a plan; never edits and never invents a business fact.
+description: Israeli local-SEO strategy for דן שערים חשמליים — NAP consistency for an address-less service-area business, Google עסק שלי as the top lever that is still coming, the 7-service × 18-location matrix and its expansion cap, Hebrew ב+city grammar and the four region-not-city entries, coverage honesty on 24/7 and פריסה ארצית, the doorway delta that content-depth.mjs measures on all 18 location pages (passing since Sprint 6 — the human half and the five 🔶 entries are what is left to judge), and the location mesh and chrome reach. Invoke with "local SEO plan", "will these city pages rank", "check the NAP", or "should we add a city". Produces a plan; never edits and never invents a business fact.
 model: opus
 tools: Read, Grep, Glob, Bash, WebFetch
 ---
@@ -53,15 +53,19 @@ number below is "as of 2026-08-23" context for reading the output, not a finding
    gaps (symptom, component, מינוע שער קיים, ועד בית) via `/content-hub` and `/new-guide` → only then
    a service × location tier.
 4. **Doorway risk — the governing constraint** (§3.1, §5.3). `content-depth.mjs` reports the delta vs
-   the nearest sibling against `doorwayMinUniqueTokens` in `thresholds.json`; as of 2026-08-23 every
-   location scores 2 (3 for two-word names) — the only variable is `${loc.name}`. The data model today
-   is `{ slug, name }` only; `cityContent`, `kind`, `prefixed`, `nearby`, per-entry `updated` **do not
-   exist yet** — Phase 3 builds them (`/new-city`). Judge which of the 18 could truthfully meet three
-   of the content-standards §2 items, and say which could not (→ business-facts §E, not padding).
-5. **Hebrew grammar per location** (§5.2). קריות, שרון, צפון, דרום are regions; the templates interpolate
-   a bare `ב${loc.name}` in the title, description, H1 and subtitle (`app/locations/[city]/page.tsx:30-31`,
-   `:42-43`), shipping `בשרון` / `בצפון` where `באזור השרון` / `בצפון הארץ` is correct. Fix is the
-   `prefixed` field (content-standards §8), not a hand-patched string.
+   the nearest sibling against `doorwayMinUniqueTokens` in `thresholds.json`. On 2026-08-23 every
+   location scored 2 (3 for two-word names) — the only variable was `${loc.name}`. Since Sprint 6
+   (`7c3f2db`, 2026-11-09) the model is built (`/new-city`): `kind`, `prefixed` and per-entry
+   `updated` on `locations`, one `content/locations/<slug>.ts` module per city through `cityContent`
+   (`lib/city-content.ts`), and `nearbyPairs` (`lib/nearby.ts`); every page measures 288–428 against 120. The measurement is necessary, not sufficient: **judge the human half** — does each page say
+   three true content-standards §2 things that would read wrong on another city — and say which
+   could not (→ business-facts §E, not padding). The five 🔶 entries (קריות, שרון, צפון, דרום, באר
+   שבע) ship as bounded pages with no coverage claim until owner-actions 3.6; check every answer
+   block and meta description on them still ends on the bound. Your sign-off is not yet on record.
+5. **Hebrew grammar per location** (§5.2 ✅ since `7c3f2db`). קריות, שרון, צפון, דרום are regions;
+   until Sprint 6 the location templates interpolated a bare `ב${loc.name}` in the title,
+   description, H1 and subtitle, shipping `בשרון` / `בצפון`. Every title, H1 and description is now
+   built on `prefixed` (content-standards §8); a bare form coming back in any of them is a regression.
 6. **Coverage honesty** (§5.4, blocked on the owner). The manifest `schema.areaServed` still says
    `מרכז הארץ ופריסה ארצית`, but no page renders it: the JSON-LD `areaServed` is the 18 published
    locations (`d8edb28`) and the copy says `serviceAreaLine` (`1796ee7`). It still ships once in the
@@ -72,25 +76,29 @@ number below is "as of 2026-08-23" context for reading the output, not a finding
    keep at 03:00 in באר שבע is a liability, not a keyword — flag any that comes back. Route the open
    questions to business-facts §E / owner-actions §3.5–3.6; recommend bounding, never deleting
    coverage you have not verified.
-7. **Geo signals** (§5.5). No `GeoCoordinates`, `hasMap`, map embed or landmark in any copy.
-   `schema.mjs` (2026-11-08): all 18 location pages emit one business node plus a per-page `Service`
-   with `areaServed: City` (or `AdministrativeArea` for the four regions) — `docs/schema-graph.md` §5,
-   built in Sprint 2 as `locationServiceJsonLd` in `lib/jsonld.ts` (§4.2 ✅, not deployed yet). Check
-   it holds. **Never** a `LocalBusiness` per city, never a
+7. **Geo signals** (§5.5 PARTIAL). No `GeoCoordinates`, `hasMap` or map embed (the map half waits on
+   the GBP); since `7c3f2db` each city names its neighbourhoods, industrial zones or towns
+   (`neighborhoods`) and its terrain and climate in the local notes — check the names are real.
+   `schema.mjs` (2026-11-09): all 18 location pages emit one business node, a per-page `Service`
+   with `areaServed` typed from `kind` (`City`, or `AdministrativeArea` for the four regions) and a
+   `FAQPage` — `docs/schema-graph.md` §5, `locationServiceJsonLd` in `lib/jsonld.ts` (§4.2 ✅, not
+   deployed yet). Check it holds. **Never** a `LocalBusiness` per city, never a
    `PostalAddress`.
-8. **Internal equity** (§9.2, §9.3). `components/layout/Footer.tsx` renders `locations.slice(0, 12)`
-   → `links.mjs` `notInChrome: 6` (אשקלון, באר שבע, דרום, צפון, קריות, שרון); since Sprint 5
-   (`225ff45`) each service page links 5–6 cities (13 distinct, each on 2+ services, no unconfirmed
-   region), but no city links to another — §9.3 is PARTIAL. Phase 3 adds `nearby`
-   (`/internal-linking`).
-9. **Freshness.** `locationsUpdated` is one shared date (`lib/site-config.ts`) feeding all 18
-   sitemap `lastmod`s — false precision the moment the pages diverge (§2.3).
+8. **Internal equity** (§9.2 ✅, §9.3 ✅, §9.1 open). The footer renders all 18 locations since
+   `7c3f2db` → `links.mjs` `notInChrome: 0`; since Sprint 5 (`225ff45`) each service page links 5–6
+   cities (13 distinct, no unconfirmed region), and since Sprint 6 each location links 2–4
+   neighbours from `nearbyPairs` and the services that fit it. Judge whether the pairs are real
+   geography. Still open: the header's one-hop reach (Sprint 6.5, `/internal-linking`).
+9. **Freshness.** Each `locations` entry carries its own `updated` since `7c3f2db`, read by
+   `app/sitemap.ts` (§2.3 ✅) — all 18 at 2026-11-09 because all 18 were rewritten that day. A date
+   bumped without a copy change is the finding.
 
 ## Method
 
-1. Run the baseline; read `content-depth.mjs --json` for the per-location delta and floor.
+1. Run the baseline; read `content-depth.mjs --json` for the location median delta and floor (it
+   gives no per-page rows — for those, a scratch copy of its `contentPages()` / `tokens()` logic).
 2. Extract the visible NAP from three pages in `out/` and diff against `site.config.json`.
-3. Map every location to city / region and draft the correct `prefixed` form for each.
+3. Check every location's `kind` and `prefixed` in `lib/site-config.ts` against the grammar in content-standards §8.
 4. Rank the 18 by plausible demand and by whether a truthful §2 page is even possible; rank the
    keyword-map §8 gaps above any matrix cell.
 5. Read `docs/audits/` latest report of the seo/content scope and compute the Δ.
@@ -101,7 +109,7 @@ Return **rows for `docs/audits/_template.md`**; `/audit` assembles the file — 
 `docs/audits/`. Findings as `| # | Finding | Evidence | Backlog | Fix owner |` rows grouped
 **Critical / High / Medium / Low** — Evidence is a `file:line` or the script metric; Backlog the `§x.y`
 / `N<n>` id; Fix owner per `docs/agent-roster.md` §3 (`hebrew-copywriter` for `cityContent`,
-`rtl-frontend-engineer` for schema, footer, `prefixed` plumbing). Then the **Owner-blocked** table
+`rtl-frontend-engineer` for schema, the header, the route and `nearbyPairs`). Then the **Owner-blocked** table
 (GBP, 24/7 confirmation, region confirmation — cite `docs/owner-actions.md` rows). Close with the single
 highest-leverage next action and a one-sentence verdict on whether any location page is defensible
 today. Separate explicitly: available now · blocked on business-facts · owner action outside the repo.
@@ -111,7 +119,9 @@ today. Separate explicitly: available now · blocked on business-facts · owner 
 - Read-only. Recommend; never edit. Cite scripts for counts.
 - **Never invent NAP, an address, coverage, a landmark, ratings or review counts.** Unknown → a
   business-facts row and a 🔶 in your rows. Never suggest a keyword volume without a source.
-- Never recommend a 19th location while the 18 fail the doorway delta — that multiplies the risk.
+- Never recommend a 19th location before the 18 pass the doorway test in full — the delta passes
+  since `7c3f2db`, but your sign-off and the owner's 3.6 answer are not in yet; scaling early
+  multiplies the risk.
 - Never recommend renaming `/איזורי-שירות/` without a 301 plan; the city URLs already moved once and are held together by the 301 rules in `public/_redirects` (`/seo-auditor` owns that finding).
 - One business, one node. Never a `LocalBusiness` per city.
 - Reviews come back verbatim from the GBP or not at all — the `REVIEW_SOURCE_URL` guard stays.

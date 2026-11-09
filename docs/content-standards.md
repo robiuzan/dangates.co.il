@@ -25,7 +25,7 @@ bar — is outside it and never counted) **minus every paragraph of ≥ 12 words
 | Guide (`/מדריכים/`)           | 900                       | route family not built yet (Phase 4)                                                                                                         |
 | Index page (services / areas) | 250                       | `/שירותים/` 1018 ✅ · `/איזורי-שירות/` 456 ✅ (Sprint 6 `content/pages/`; 336 and 101 before) · `/blog/` 400 ✅ — as of 2026-11-09           |
 | Pricing                       | 400                       | 914 ✅ (144 — the "what determines the price" pivot, N14; 945 before 4F cut the repeated visit band)                                         |
-| About                         | 500                       | 320 ❌ (277)                                                                                                                                 |
+| About                         | 500                       | 1145 ✅ (Sprint 6 `content/pages/about.ts`, as of 2026-11-09; 320 before, 277 on 2026-08-23)                                                 |
 | Contact, legal, thank-you     | no minimum                | fine as-is                                                                                                                                   |
 
 A block rendered identically on another route earns no credit anywhere — a service page that reuses
@@ -35,7 +35,8 @@ bullets once shared by all seven service pages counted on exactly one page, not 
 2026-11-09, the `FinalCta` body; 8 before Sprint 5). The threshold is three pages: since `225ff45` the
 seven service-card descriptions render on `/` and `/שירותים/` only, so they count on both — which is
 why `/שירותים/` and the homepage rose without new copy. A page-level reading, not the script, decides
-whether an index has copy of its own (Sprint 6.8).
+whether an index has copy of its own — since Sprint 6.8 (`7c3f2db`) `/שירותים/`, `/איזורי-שירות/`
+and `/אודות/` each render their own `content/pages/` module (1018, 456 and 1145 unique).
 
 Word count is a floor, not a goal. A 500-word page that says five specific true things beats a
 900-word page that says one thing five ways — and the 11 blog posts are the proof: they clear 500 words
@@ -54,9 +55,11 @@ The measurable half is the **doorway delta**: the number of tokens a page carrie
 sibling of the same type does not. `content-depth.mjs` computes it pairwise; the threshold is
 `doorwayMinUniqueTokens: 120` in `thresholds.json`. As of 2026-08-23 every location scores **2**
 (3 for the two-word names — the only variable is `${loc.name}`, interpolated into one shared
-template) and the services scored **13–23**; both failed by an order of magnitude. As of 2026-11-09
-the locations still score 2–3; the services score 404–468 (`serviceMedianDelta 438`) since their
-depth modules shipped in Sprint 5 (`225ff45`).
+template) and the services scored **13–23**; both failed by an order of magnitude. The services
+score 404–468 since their depth modules shipped in Sprint 5 (`225ff45`), and the locations 288–428
+(`locationMedianDelta 343.5`) since theirs shipped in Sprint 6 (`7c3f2db`), as of 2026-11-09. The
+human half is still open: no local-seo-strategist sign-off is on record, and five entries
+(קריות, שרון, צפון, דרום, באר שבע) ship as bounded pages until owner-actions 3.6 is answered.
 
 ```bash
 node scripts/audit/content-depth.mjs        # per-page delta and nearest sibling in the failure detail
@@ -122,7 +125,8 @@ above the floor, as of 2026-11-09.
 1. H1 = the question or topic, verbatim.
 2. Answer block in the first 60 words — the whole answer, before any preamble. None of the 11 existing
    posts do this; they all open with scene-setting (`content-depth.mjs` answer-block proxy: first
-   paragraph outside 40–60 words on 36 of 36 service, location and post pages).
+   paragraph outside 40–60 words on 36 of 36 service, location and post pages on 2026-08-23; on the
+   11 posts only since Sprints 5 and 6 gave the services and locations theirs, as of 2026-11-09).
 3. Body with question-form `<h2>`s and real `<h3>`s — which needs the typed block model (Phase 4,
    ADR 0003); today `PostBlock` is `{ type: "h" | "p" | "li"; text }` and every heading is an `<h2>`.
 4. At least one captioned table, list or comparison a reader would screenshot.
@@ -237,8 +241,8 @@ certification the business doesn't hold; a photo presented as our work that isn'
 
 ## 8. Hebrew grammar for locations
 
-`locations` mixes cities with **regions** — קריות, שרון, צפון, דרום — and templates interpolate a bare
-`ב${loc.name}`, producing `בשרון` and `בצפון`. Correct Hebrew is `באזור השרון` and `בצפון הארץ`. Every
+`locations` mixes cities with **regions** — קריות, שרון, צפון, דרום — and until Sprint 6 templates
+interpolated a bare `ב${loc.name}`, producing `בשרון` and `בצפון`. Correct Hebrew is `באזור השרון` and `בצפון הארץ`. Every
 entry in `locations` (`lib/site-config.ts`) carries `kind`, `prefixed` and its own `updated` since
 Sprint 6 (2026-11-09); templates and `content/locations/*.ts` use `prefixed`, never a bare `ב` + name.
 

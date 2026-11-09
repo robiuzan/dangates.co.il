@@ -37,11 +37,11 @@ every content page emits **one** `<script>` holding **one** `@graph`, and every 
 at `#business` defines it. Sprint 2 closed this table (commits `02a3144` `d8edb28`, not deployed
 yet); until then 18 locations and 8 statics carried only the breadcrumb.
 
-| Route                    | Required                                                           | Currently (2026-11-08)                                                                                                                          |
+| Route                    | Required                                                           | Currently (2026-11-09)                                                                                                                          |
 | ------------------------ | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/`                      | one `@graph`: `GeneralContractor` + `WebSite` + `FAQPage`          | ✅ one `@graph`: business + `WebSite` `#website` + `FAQPage`                                                                                    |
 | `/services/{slug}/` ×7   | `Service` + `BreadcrumbList` + `FAQPage` from the per-service FAQs | ✅ business + `Service` (encoded `url`, `@id` `#service`, `provider` → `#business`) + `FAQPage` (4–5 Q/As, since `225ff45`, §4.13) + breadcrumb |
-| `/locations/{slug}/` ×18 | `Service` with local `areaServed` + `BreadcrumbList`               | ✅ business + `Service` with `areaServed` `City` / `AdministrativeArea` (§5) + breadcrumb                                                       |
+| `/locations/{slug}/` ×18 | `Service` with local `areaServed` + `BreadcrumbList` + `FAQPage`   | ✅ business + `Service` with `areaServed` `City` / `AdministrativeArea` from `kind` (§5) + `FAQPage` (3 Q/As, since `7c3f2db`) + breadcrumb     |
 | `/שירותים/`              | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (7) + breadcrumb                                                                                               |
 | `/איזורי-שירות/`         | `CollectionPage` + `BreadcrumbList`                                | ✅ `CollectionPage` + `ItemList` (18) + breadcrumb                                                                                              |
 | `/blog/`                 | `CollectionPage` (or `Blog`) + `BreadcrumbList`                    | ✅ `CollectionPage` + `ItemList` (11) + breadcrumb                                                                                              |
@@ -56,12 +56,12 @@ yet); until then 18 locations and 8 statics carried only the breadcrumb.
 
 **What is left** — none of it is a `schema.mjs` failure:
 
-1. `FAQPage` on 8 of 45 pages since Sprint 5 (`/` and the 7 services, 44 questions, none marked up
-   twice — backlog §4.13 ✅); location FAQs wait on their copy (Sprint 6).
+1. `FAQPage` on 26 of 45 pages since Sprint 6 (`/`, the 7 services and the 18 locations, 98
+   questions, none marked up twice — backlog §4.13 ✅; `schema.mjs` → `faqPages 26`, 2026-11-09).
 2. `sameAs` is empty until the GBP exists (§5.1, Track B B3); `hasMap` follows it.
 3. The Rich Results Test on one route per type runs after the next deploy (§9 below).
-4. The four regions are typed `AdministrativeArea` from a slug set in `lib/jsonld.ts` until
-   `locations` gains `kind` (Phase 3, §5 below).
+4. The `Service` + `areaServed` node on the five 🔶 entries (קריות, שרון, צפון, דרום, באר שבע)
+   waits on owner-actions 3.6 — whether those places are served (implementation-sprints §8).
 
 ---
 
@@ -149,18 +149,19 @@ The 18 location pages are the largest substance gap by page count. Each should e
   `serviceType: "תיקון שערים חשמליים"`, `provider: { "@id": ".../#business" }` (with the business
   node present on the page), `url` percent-escaped, `areaServed: { "@type": "City", name }`.
 - **`BreadcrumbList`** — `בית › אזורי שירות › {city}` — already emitted by `PageHeader`.
-- **`FAQPage`** once city-specific FAQs exist (content-standards §3).
+- **`FAQPage`** from the city's `cityContent.faqs` — the same `{ q, a }` the page renders
+  (content-standards §3; since `7c3f2db`, 3 per page).
 
 Use `City` for real cities and `AdministrativeArea` for the four region entries (קריות, שרון, צפון,
-דרום). Marking a region as a `City` is a factual error in the graph. **Neither `kind` nor `prefixed`
-exists on `locations` yet** — an entry is `{ slug, name }` only; Phase 3 (`new-city`) adds them. Until
-then `placeNode()` in `lib/jsonld.ts` names the four region slugs itself, so the regions already ship
-as `AdministrativeArea` (since `d8edb28`); it switches to `kind` when the field arrives, and the slug
-set is deleted.
+דרום). Marking a region as a `City` is a factual error in the graph. Since Sprint 6 (`7c3f2db`,
+2026-11-09) every `locations` entry carries `kind` and `prefixed`, and `placeNode()` in
+`lib/jsonld.ts` types the place from `kind` — the interim region-slug set is deleted. The regions
+shipped as `AdministrativeArea` since `d8edb28` either way.
 
-**Built 2026-11-08** (`d8edb28`): `locationServiceJsonLd()` emits the `Service` with `name` from
-`lib/content.ts` (the page's own `ב{name}` form — so `/locations/שרון/` ships `…בשרון` where `באזור השרון` is right;
-backlog §5.2, fixed with `prefixed`), `serviceType`, the encoded `url` and `@id` `#service`, `provider` → `#business`.
+**Built 2026-11-08** (`d8edb28`): `locationServiceJsonLd()` emits the `Service` with `name` = the
+page's H1 (until Sprint 6 the bare `ב{name}` form, so `/locations/שרון/` shipped `…בשרון`; since
+`7c3f2db` it reads `prefixed` — `…באזור השרון`, backlog §5.2 ✅), `serviceType`, the encoded `url` and
+`@id` `#service`, `provider` → `#business`.
 
 The kit's `serviceJsonLd` has no per-location `areaServed` and defaults `url` to raw Hebrew — which is
 why `locationServiceJsonLd` lives in `lib/jsonld.ts` (§8), not in the kit.

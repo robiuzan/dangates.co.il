@@ -176,8 +176,9 @@ Routing table: `docs/agent-roster.md` §3, rows §3, §6 and "keyword expansion"
 
 - Never rename a published slug without a 301 — `public/_redirects` after Phase 1 (ADR 0004), a
   generated stub before it (`node scripts/gen-redirects.mjs`).
-- A guide that names a city uses `loc.prefixed` once Phase 3 adds it; until then no guide names
-  קריות, שרון, צפון or דרום at all.
+- A guide that names a city uses `loc.prefixed` (on every `locations` entry since Sprint 6,
+  `7c3f2db`) — never a bare `ב` + name. A guide that names קריות, שרון, צפון, דרום or באר שבע makes
+  no coverage claim about it until owner-actions 3.6 is answered.
 - `מחסום` is the buyer's word for שער זרוע (keyword-map §2 Tier 4) — it goes into the שער-זרוע
   service title (`/new-service`, Phase 3), not into a guide.
 - `דלת מוסך פנלים` and `שער קונזולי` as _services_ are an 8th service, capped by CLAUDE.md §12; the

@@ -67,7 +67,8 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
    declared `relatedServices`, cities and posts (`relatedServiceTargets 7`, no service-page
    warning). The post route's `others` list in `app/blog/[slug]/page.tsx` still takes
    `.slice(0, 4)` in array order; `links.mjs` warns which post pages receive no related link at all
-   (Sprint 7.3). Location `nearby` is Phase 3 (`/internal-linking`) and does not exist yet.
+   (Sprint 7.3). Location pages link their neighbours from `nearbyPairs` in `lib/nearby.ts` since
+   Sprint 6 (`7c3f2db`, §9.3 ✅ — `/internal-linking`).
 9. **Honest-trust gate.** Any CTA block, badge or microcopy that leans on "אחריות מלאה", "24/7",
    "ניסיון רב שנים" or a rating is a `claims-grep.mjs` hit, not a conversion asset — cross-reference
    `claims-verifier` instead of recommending more of it.

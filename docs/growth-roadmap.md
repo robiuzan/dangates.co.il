@@ -41,13 +41,15 @@ and it leaves the site with **no proof of work at all**:
   gate with 230V tools, anonymity costs conversions as much as it costs E-E-A-T.
 - **No reviews, no profile, no rating** — and the site is written so that none is implied.
 
-The second problem is the one that decides whether the domain ranks: **the doorway pages.** All 18
-location pages are one template with the city name swapped — each carries 2–3 tokens its nearest
-sibling lacks (`node scripts/audit/content-depth.mjs`, doorway proxy), on a median of 122 unique words
-against a 350-word floor. The 7 service pages differed by 13–23 tokens on ~152 words against 450
-until Sprint 5 gave each its own depth copy (`225ff45`, 2026-11-09: 1294–1542 unique words, delta
-404–468). 41 of the 45 content pages were under their floor on 2026-08-23; 31 are as of 2026-11-09
-(about, the areas index, the 18 locations, the 11 posts). Doorway clusters are an explicit Google spam policy and
+The second problem is the one that decides whether the domain ranks: **the doorway pages.** Until
+Sprint 6 all 18 location pages were one template with the city name swapped — each carried 2–3
+tokens its nearest sibling lacked (`node scripts/audit/content-depth.mjs`, doorway proxy), on a
+median of 122 unique words against a 350-word floor. Sprint 6 gave each its own copy (`7c3f2db`,
+2026-11-09: 717–1022 unique words, delta 288–428); five of them (קריות, שרון, צפון, דרום, באר שבע)
+stay bounded until you say whether they are served (owner-actions 3.6). The 7 service pages differed
+by 13–23 tokens on ~152 words against 450 until Sprint 5 gave each its own depth copy (`225ff45`,
+2026-11-09: 1294–1542 unique words, delta 404–468). 41 of the 45 content pages were under their
+floor on 2026-08-23; 11 are as of 2026-11-09 (the 11 posts). Doorway clusters are an explicit Google spam policy and
 the penalty lands on the domain, not the page.
 
 The third is outside the repo: **the AI crawlers are refused at the Cloudflare edge.** On
@@ -110,8 +112,8 @@ font is the critical path on a text-only page); every call/WhatsApp/form CTA is 
 ### Phase 2 — Schema completion
 
 **Buys:** one business entity Google can read on every page instead of 18 pages pointing at a
-`#business` node that is never defined; a `Service` node on each location page (today they carry
-only breadcrumbs); a `WebSite` node for the site name in results; percent-encoded URLs that match the
+`#business` node that is never defined; a `Service` node on each location page (they carried only
+breadcrumbs until `d8edb28`); a `WebSite` node for the site name in results; percent-encoded URLs that match the
 canonicals; the logo and OG image on the graph. **Stays absent on purpose:** `Offer` (prices are not
 coming), `Review`/`AggregateRating` (until the profile exists), `Person` (until someone is named).
 `node scripts/audit/schema.mjs` = 0 is the acceptance.
@@ -124,10 +126,13 @@ longer produces a valid page; the four region entries (קריות, שרון, צ�
 Hebrew (`באזור השרון`, not `בשרון`); 7 service pages that differentiate on the mechanics of each gate
 type, with their own "when to call" list (today the shutters page says "השער נתקע") and their own
 FAQ; a header that reaches all 7 services and 18 locations in one hop; a footer that stops omitting
-six locations (the footer's `locations.slice(0, 12)` slices to 12); service ↔ location cross-links that do not
-exist today; related links chosen by relevance instead of array order. The bar is
-[content-standards.md](content-standards.md); the doorway delta and word floors are measured, not
-assumed. **Blocked on you:** nothing — but §3.5–3.6 answers make it better.
+six locations; service ↔ location cross-links both ways; related links chosen by relevance instead
+of array order. The bar is [content-standards.md](content-standards.md); the doorway delta and word
+floors are measured, not assumed. **Where it stands (2026-11-09, in the repo, not deployed):** the
+service pages since `225ff45`; the 18 location pages, the region grammar, the full footer, the
+mesh and the three index pages since `7c3f2db` — location delta 288–428 against 120, `notInChrome
+0`. Still to do: the header (Sprint 6.5) and the post-page related links (Sprint 7.3). **Blocked on
+you:** the five bounded entries wait on your 3.6 answer; §3.5 makes the rest better.
 
 ### Phase 4 — The guides hub and the block model
 
@@ -220,10 +225,14 @@ this is the summary, in the order it pays off.
 Targets to judge the work against, each one measurable by a script or a screenshot — not traffic
 predictions, which nobody can honestly make without the baseline §4.1 provides.
 
-- **Zero pages under their word floor** (31 of 45 as of 2026-11-09; 41 on 2026-08-23) and **18 of 18
-  location pages passing the doorway delta** (today 0) — `npm run audit -- --scope content` exit 0.
+- **Zero pages under their word floor** (11 of 45 as of 2026-11-09 — the 11 posts; 41 on
+  2026-08-23) and ✅ **18 of 18 location pages passing the doorway delta** — met in the repo
+  2026-11-09 (`7c3f2db`, `locationMedianDelta 343.5`; 0 before); the reviewer sign-off and the five
+  🔶 entries (owner-actions 3.6) are still open — `npm run audit -- --scope content` exit 0 is the
+  bar.
 - ✅ **The 7 service pages each with their own FAQ, triggers and mechanics** — met in the repo
-  2026-11-09 (`225ff45`): service doorway delta 404–468 against 120, `faqPages 8`; not deployed.
+  2026-11-09 (`225ff45`): service doorway delta 404–468 against 120, `faqPages 8` (26 since the
+  city FAQs, `7c3f2db`); not deployed.
 - **`/מדריכים/` live with the first eight guides** of the calendar published, each past
   `article-auditor`, each reachable from at least two non-hub pages.
 - **A Business Profile linked in `sameAs`, and the reviews section visible** with real reviews quoted

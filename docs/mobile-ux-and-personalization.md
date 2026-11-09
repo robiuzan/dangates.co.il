@@ -199,8 +199,9 @@ physical-utility lint (`hebrew-rtl`), with no effect on `flex-row-reverse`.
 6. **Cloaking.** Serving visitors materially different main content than a crawler gets is cloaking.
    Googlebot crawls predominantly from the US, so an IP-based swap shows it the "not in Israel"
    variant of all 45 pages. IP geolocation inside Israel is also often wrong at city granularity —
-   "ב<wrong city>" in an H1 is worse than no city. The location pages already fail the doorway test
-   (§3.1); a geo swap would make them doorway pages that also cloak.
+   "ב<wrong city>" in an H1 is worse than no city. The location pages passed the measured doorway
+   proxy only in Sprint 6 (§3.1, `7c3f2db`); a geo swap would turn that work back into doorway pages
+   that also cloak.
 
 ### 6. The insight: the 18 location pages are the personalisation
 
@@ -218,13 +219,16 @@ by **routing**, and it beats a runtime swap on every axis that matters:
 | Cost          | ✅ the routes, sitemap, breadcrumbs and areas index already exist                   | ❌ a Worker, a cache-key strategy, an owner decision           |
 | What it needs | content — 350 unique words and a doorway delta ≥ 120 per city (`content-depth.mjs`) | infrastructure nobody in this repo may ship                    |
 
-As of 2026-08-24 every location page carries 122–128 unique words against the 350 floor and a doorway
-delta of 2–3 tokens against 120 — the city name is the only variable. **Therefore the personalisation
-investment is content-standards §2 depth through `new-city`, which adds the data model that does not
-exist yet — `kind` + `prefixed` (Phase 3, §5.2), `cityContent` and `nearby` (§3.1) — not a
-geo-swap.** The same model gives the four region entries correct Hebrew (`באזור השרון`, not `בשרון` —
-§5.2, content-standards §8); the `Service` + `areaServed` node per city (schema-graph §5, `locationServiceJsonLd` in
-`lib/jsonld.ts` since `d8edb28` — §4.2 ✅) is the machine-readable half. Anyone proposing
+On 2026-08-24 every location page carried 122–128 unique words against the 350 floor and a doorway
+delta of 2–3 tokens against 120 — the city name was the only variable. **The personalisation
+investment is content-standards §2 depth through `new-city`, not a geo-swap** — and that model is
+built since Sprint 6 (`7c3f2db`, 2026-11-09): `kind` + `prefixed` + a per-entry `updated` on
+`locations` (§5.2 ✅), one `content/locations/<slug>.ts` module per city through `cityContent`
+(`lib/city-content.ts`) and the `nearbyPairs` mesh (`lib/nearby.ts`) — 717–1022 unique words and a
+delta of 288–428 per page, as of 2026-11-09. The same model gives the four region entries correct
+Hebrew (`באזור השרון`, not `בשרון` — content-standards §8); the `Service` + `areaServed` node per
+city (schema-graph §5, `locationServiceJsonLd` in `lib/jsonld.ts` since `d8edb28` — §4.2 ✅) and
+the city `FAQPage` are the machine-readable half. Anyone proposing
 runtime geo-targeting is pointed here first; `local-seo-strategist` reviews the plan.
 
 ### 7. What personalisation IS permitted

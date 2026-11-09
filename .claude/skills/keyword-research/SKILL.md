@@ -68,8 +68,7 @@ answer-block or FAQ note for that page, never a second page (§7). Keep the tabl
 - **ב+city:** `תיקון שערים חשמליים ב{city}` with the city exactly as `locations[].name` in
   `lib/site-config.ts` (two-word names stay two words: `בראשון לציון`, `בפתח תקווה`). The four region
   entries take the phrasing keyword-map §3 sets — `בצפון הארץ`, `באזור השרון` — never a bare `בשרון`;
-  the `prefixed` field that carries it lands in Phase 3 (`new-city`), so until then write the region
-  form by hand in the term.
+  copy the form from the entry's `prefixed` field (since Sprint 6, `7c3f2db`).
 - **Symptom phrasing:** `{שער חשמלי | השער החשמלי} + לא + {נסגר | נפתח | מגיב לשלט | עובד}`, plus
   `נתקע`, `רועש`, `חורק`, `נפתח לבד`, `נסגר לבד`, `הפסקת חשמל`. The definite `השער` and the question
   frame `מה עושים כש…` / `למה ה…` are how People-Also-Ask phrases them — record those verbatim; they

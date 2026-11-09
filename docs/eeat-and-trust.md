@@ -138,7 +138,7 @@ is fixed: **city · gate type · fault · outcome** — «[עיר], [סוג שע
 
 Case notes and dated photos are the evidence a location page needs to pass the doorway test
 (content-standards §2 — three true local items, delta ≥ 120, `content-depth.mjs`). They land in the
-per-city data (`cityContent`, Phase 3, `new-city`), never in JSX; the `photoEvidence` shape the
+per-city data (`cityContent`, built in Sprint 6 — `content/locations/<slug>.ts`, `new-city`), never in JSX; the `photoEvidence` shape the
 `site-images` skill describes does not exist yet — do not improvise it.
 
 ---
@@ -182,7 +182,7 @@ and fails any `Person` author in `out/`. Omitting a signal is legitimate; invent
 
 ### 3.4 Editorial freshness
 
-`updated` on `services`, `locationsUpdated`, the `staticPages` registry in `lib/site-config.ts` (backlog §1.4, done 2026-09-06) and a post's `updated` feed the
+`updated` on `services` and on each `locations` entry (the shared `locationsUpdated` went in Sprint 6, `7c3f2db`), the `staticPages` registry in `lib/site-config.ts` (backlog §1.4, done 2026-09-06) and a post's `updated` feed the
 sitemap `lastmod`. `BlogPosting.dateModified` follows `post.updated ?? post.date` since `02a3144`
 (schema-graph §6); since `9195c9b` (2026-11-09) 8 of 11 posts carry a real `updated` — the ones
 Sprint 4 edited — and the other three keep their publish date (backlog §6.4, PARTIAL). Dates move **only on a substantive copy edit** — never for
@@ -316,7 +316,7 @@ Doctrine: [seo-geo-aeo-strategy.md §4](seo-geo-aeo-strategy.md), not repeated h
 | No `Person` author while unnamed (§3.1)                           | `schema.mjs` reads `lib/authors.ts` (absent or empty → `Person` forbidden)                                        | registry file itself not built → §7.4                                                                                                             |
 | `sameAs` from the roster only (§4.3)                              | `guard-protected-paths.ps1` + `permissions.deny` on `site.config.json`; the kit emits from the manifest           | none                                                                                                                                              |
 | Real photos, Hebrew `alt`, width/height (§2.1)                    | `a11y.mjs` (alt) · `perf.mjs` (unsized) · `SiteImage` compile-time alt                                            | provenance and city · gate type · month are judged by `eeat-trust-auditor`, not measured → §7.5                                                   |
-| Case-note format, no price, permission (§2.3)                     | not enforced — `claims-verifier` judgment (prices other than the visit fee are ⛔ in its verdict table)           | no price-literal pattern in `claims.json` (add one → mechanical); no `cityContent` field yet → backlog §3.1 / Phase 3 (`new-city`)                |
+| Case-note format, no price, permission (§2.3)                     | not enforced — `claims-verifier` judgment (prices other than the visit fee are ⛔ in its verdict table)           | no price-literal pattern in `claims.json` (add one → mechanical); `cityContent` exists since `7c3f2db` but has no case-note field (`new-city`)    |
 | Hours consistent everywhere (§5.1)                                | not enforced on either half — `schema.mjs` never reads `openingHoursSpecification`; `eeat-trust-auditor` judgment | one source since `1796ee7` (`hoursLine()` over the manifest rows, §7.6 ✅) — parity held by construction, not measured                            |
 | Privacy policy names Web3Forms and GTM/GA4; consent line (§5.1)   | not enforced                                                                                                      | → §8.2 (`conversion-cro`, `security-auditor`)                                                                                                     |
 | Accessibility statement true (§5.1)                               | `a11y.mjs` contrast pairs; `perf-a11y-auditor` judgment                                                           | the statement text itself is unmeasured → §11.1 fixes the facts                                                                                   |

@@ -92,7 +92,7 @@ Cloudflare Image Transformations — ON for imgquarry.com and for this zone (clo
 
 | Photo                                   | Goes to                                                                  | Carries                                                            |
 | --------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| Job photo with city · gate type · month | that city's `cityContent.localNotes` (Phase 3)                           | a dated, placed proof line: «החלפת מנוע לשער כנף, רחובות, 06/2026» |
+| Job photo with city · gate type · month | that city's `cityContent.localNotes` (`content/locations/<slug>.ts`)     | a dated, placed proof line: «החלפת מנוע לשער כנף, רחובות, 06/2026» |
 | Gate-type photo                         | the matching service page (its `content/services/<slug>.ts` depth entry) | the depth signal a generic gate on all 7 pages is not              |
 | Before/after pair, same position        | service page + the symptom guide (Phase 4)                               | the conversion format for this trade — `templates/BeforeAfter.tsx` |
 | Detail: motor, לוח פיקוד, עינית, track  | component guides (Phase 4), image search                                 | `ImageObject` with a Hebrew `caption`                              |

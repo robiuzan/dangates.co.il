@@ -87,7 +87,7 @@ markdown draft, applying every bar by hand and citing block index or heading. A 
    the family (content-calendar §1 "hands off to"); and the reverse index actually surfaces the guide
    — `guidesForService()` / `guidesForLocation()` / `relatedGuides` in `lib/guides.ts` (Phase 4; names
    follow galbath's `lib/articles.ts`). Missing from the total `Record` is a throw; present on the
-   wrong service is your finding. A guide names no region until `loc.prefixed` exists (Phase 3).
+   wrong service is your finding. A guide names a region only through `loc.prefixed` (on every `locations` entry since Sprint 6), and makes no coverage claim about the five 🔶 entries.
 7. **Claims.** Every number, duration, guarantee, superlative and coverage word traced to
    `docs/business-facts.md` or `lib/content.ts`; anything on the 🔶 list below stated as fact is a
    stop-ship, however plausible.

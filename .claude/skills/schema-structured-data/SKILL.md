@@ -22,8 +22,9 @@ As of 2026-11-08 (clean rebuild): **`schema.mjs` → 0 failures, 0 warnings** �
 (`02a3144` `d8edb28`, in the repo, not deployed yet) closed the substance gap the 2026-08-23 run
 recorded — five failures and five warnings: locations and statics with only a breadcrumb, 18 dangling
 `#business` references, no `WebSite`, 18 raw-Hebrew URLs, no `image`/`logo`, a homepage array
-instead of one `@graph`. Sprint 5 put a `FAQPage` on each service page (§4.13 ✅, 44 questions
-sitewide, none twice). What is left: `sameAs` empty (B3), location FAQs with their copy (Sprint 6),
+instead of one `@graph`. Sprint 5 put a `FAQPage` on each service page and Sprint 6 (`7c3f2db`) on
+each location page (§4.13 ✅ — `faqPages 26`, 98 questions sitewide, none twice, as of 2026-11-09).
+What is left: `sameAs` empty (B3), the `Service` node on the five 🔶 entries (owner-actions 3.6),
 the Rich Results Test after the deploy. The numbers move; the script is the truth.
 
 ## The kit builders — and their limits
@@ -116,13 +117,14 @@ differs in the places noted below — **the repo file wins**. It holds
 
 ### Location pages
 
-`locationServiceJsonLd(m, { name: "תיקון שערים חשמליים" }, loc)` → `Service` with `@id`
+`locationServiceJsonLd(m, { name: h1, serviceType: locationServiceType }, loc)` → `Service` with `@id`
 `{pageUrl}#service`, encoded `url`, `provider` → `#business`, `areaServed: placeNode(loc)`.
-`placeNode` types קריות, שרון, צפון, דרום as `AdministrativeArea` and everything else as `City`;
-typing a region as a city is a factual error in the graph. **`kind` and `prefixed` do not exist on
-`locations` yet** — an entry is `{ slug, name }` (`locations` in `lib/site-config.ts`); the builder
-carries an interim `REGION_SLUGS` set and switches to `loc.kind` / `loc.prefixed` when Phase 3
-(`/new-city`) adds them. **Never a `LocalBusiness` per city** — no premises exist, and 18 business
+`placeNode` types the place from the entry's `kind` — `AdministrativeArea` for קריות, שרון, צפון,
+דרום, `City` for the rest; typing a region as a city is a factual error in the graph. Since Sprint 6
+(`7c3f2db`) every `locations` entry carries `kind` and `prefixed` and the interim `REGION_SLUGS` set
+is gone; the location route passes the page's H1 (built on `prefixed`) as the `Service` name, and
+adds a `FAQPage` from the city's `cityContent.faqs` — the same `{ q, a }` its `<Faq>` renders.
+**Never a `LocalBusiness` per city** — no premises exist, and 18 business
 nodes is a recognised local-spam pattern. Coverage is `areaServed`, always.
 
 ### Articles
