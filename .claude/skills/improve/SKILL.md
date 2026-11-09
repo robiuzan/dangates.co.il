@@ -135,7 +135,7 @@ verdicts, and: **"run `/qa-build-gate` then `/deploy-dangates` when the owner sa
 
 ## Worked example B — `§3.3` shared `triggers` on the shutters page
 
-1. Item: `app/services/[service]/page.tsx:43-48` declares four gate-fault bullets at module scope, so
+1. Item: `app/services/[service]/page.tsx` declares four gate-fault bullets at module scope, so
    `/services/תריסי-גלילה-חשמליים/` lists "השער נתקע…". User-facing Hebrew in a route file.
 2. Route: §3 → `/new-service` → hebrew-copywriter (the per-service wording) + rtl-frontend-engineer
    (the render) → hebrew-editor → claims-verifier → `content-depth.mjs`.
@@ -169,8 +169,8 @@ verdicts, and: **"run `/qa-build-gate` then `/deploy-dangates` when the owner sa
   `npm run audit:env` reports parity.
 - `rtl-frontend-engineer` runs the gate itself — do not run it twice in a row for the same diff;
   read its reported exit code.
-- A `PARTIAL` remainder that turns out to be owner-blocked (e.g. §3.11's empty `מקרי מבחן` section
-  needs real cases) becomes `⏳ BLOCKED · owner` with the business-facts row named, not a fabricated
+- A `PARTIAL` remainder that turns out to be owner-blocked (e.g. a section that could only be filled
+  with real cases — §3.11's empty `מקרי מבחן` was deleted instead, in `74a92d1`) becomes `⏳ BLOCKED · owner` with the business-facts row named, not a fabricated
   case study.
 - The hook `post-edit-lint.ps1` warns on banned utilities, hex and claim-lexicon hits at edit time —
   a warning during step 3 is the cheapest place to fix it.

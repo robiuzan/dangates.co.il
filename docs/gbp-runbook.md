@@ -16,16 +16,16 @@ Google UI shows at the time of writing — Google renames menu items, so search 
 Every profile, directory and citation must carry **byte-identical** values. They come from the
 manifest (`site.config.json:13-20`, synced from the roster), nowhere else.
 
-| Field          | Value                                      | Note                                                                                                                    |
-| -------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| Business name  | `דן שערים חשמליים`                         | Exactly this — no city, no "תיקון", no slogan appended (Google suspends keyword-stuffed names).                         |
-| Phone          | `072-2587772`                              | `contact.phoneOverride: true` — the one fleet site **not** on `055-6601006`. Never "correct" it.                        |
-| WhatsApp       | same number                                | 🔶 owner-actions §3.7 — the live site never advertised WhatsApp; confirm before listing it as a chat channel.           |
-| Email          | `info@dangates.co.il`                      |                                                                                                                         |
-| Website        | `https://dangates.co.il/`                  | Apex, https, trailing slash. Never `www` (backlog §1.7).                                                                |
-| Street address | **none**                                   | Service-area business. An invented or borrowed address is a suspension risk, not a ranking tactic (`/local-seo-il` §1). |
-| Area (wording) | `מרכז הארץ ופריסה ארצית`                   | The manifest's `schema.areaServed`; "פריסה ארצית" itself is 🔶 (business-facts §E). In GBP use the city list in §2.     |
-| Hours          | ראשון–חמישי 08:00–18:00 · שישי 08:00–15:00 | `lib/site-config.ts:41-46`; manifest `schema.openingHours` (`site.config.json:29-46`). Saturday: closed.                |
+| Field          | Value                                      | Note                                                                                                                                               |
+| -------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Business name  | `דן שערים חשמליים`                         | Exactly this — no city, no "תיקון", no slogan appended (Google suspends keyword-stuffed names).                                                    |
+| Phone          | `072-2587772`                              | `contact.phoneOverride: true` — the one fleet site **not** on `055-6601006`. Never "correct" it.                                                   |
+| WhatsApp       | `+972556601006`                            | ✅ owner-actions §3.7 (2026-10-12) — `072-2587772` is not on WhatsApp; the owner's own number is the chat channel.                                 |
+| Email          | `info@dangates.co.il`                      |                                                                                                                                                    |
+| Website        | `https://dangates.co.il/`                  | Apex, https, trailing slash. Never `www` (backlog §1.7).                                                                                           |
+| Street address | **none**                                   | Service-area business. An invented or borrowed address is a suspension risk, not a ranking tactic (`/local-seo-il` §1).                            |
+| Area (wording) | `מרכז הארץ ופריסה ארצית`                   | The manifest's `schema.areaServed`, which no page renders since Sprint 4; "פריסה ארצית" is 🔶 (business-facts §E). In GBP use the city list in §2. |
+| Hours          | ראשון–חמישי 08:00–18:00 · שישי 08:00–15:00 | Manifest `schema.openingHours`; `siteConfig.hours` is built from it by `hoursLine()` since `1796ee7`. Saturday: closed.                            |
 
 ---
 
@@ -48,7 +48,7 @@ manifest (`site.config.json:13-20`, synced from the roster), nowhere else.
 
 ## 2. Service areas (אזורי שירות) — the 18 locations, as you confirm them
 
-The site publishes 18 location pages (`lib/site-config.ts:82-101`). Add an area **only if the business
+The site publishes 18 location pages (`lib/site-config.ts`). Add an area **only if the business
 genuinely sends a technician there**; the profile's area list and the site's location list should
 match, or a customer in a listed city calls and is refused. Google caps the count (20 at the time of
 writing 🔶) and prefers areas reachable from your base — 18 fits.
@@ -81,7 +81,7 @@ do.
 ## 4. Services (שירותים) — the 7, with the site's canonical URLs
 
 GBP service entries have a name, an optional description (about 300 characters at the time of writing)
-and an optional price. Use the **service name exactly as the site's H1** (`app/services/[service]/page.tsx:38`
+and an optional price. Use the **service name exactly as the site's H1** (`app/services/[service]/page.tsx`
 sets the title to the same `card.name`), draft the description from that page's opening
 paragraph (no new claims — the `hebrew-editor` → `claims-verifier` review applies to this text too),
 and **leave every price field empty**: real prices are not coming (business-facts §D, owner-actions
@@ -108,11 +108,12 @@ profile form (`docs/content-standards.md` §2) and Google treats it as spam.
 Primary hours = when a person answers the phone: **ראשון–חמישי 08:00–18:00, שישי 08:00–15:00, שבת
 סגור** — identical to the footer and to `openingHoursSpecification` in the schema.
 
-The site also claims **שירות חירום 24/7** (`lib/site-config.ts:45`, `trustStats`). That claim is
-🔶 (business-facts §E, owner-actions §3.5). Put it on the profile **only once §E is ✅**, and then as
-a note in the description or as _more hours_ (**שעות נוספות**) — never by marking primary hours as
-"open 24 hours", which is how businesses get their hours flagged. If §E comes back "not everywhere",
-the site copy is bounded first (Phase 6), then the profile copies the bounded wording.
+The site claimed **שירות חירום 24/7** until `1796ee7` (2026-11-08, repo); it now says urgent faults
+are handled within these hours (`contactPageCopy.emergencyLine`, the homepage FAQ), because 24/7 is
+🔶 (business-facts §E, owner-actions §3.5). Put a 24/7 line on the profile **only once §E is ✅**,
+and then as a note in the description or as _more hours_ (**שעות נוספות**) — never by marking
+primary hours as "open 24 hours", which is how businesses get their hours flagged. The site copy
+gets the confirmed wording first, then the profile copies it.
 
 ---
 
@@ -170,22 +171,23 @@ month from Phase 4), plus one seasonal maintenance reminder. So **1–2 posts a 
 ## 9. Q&A (שאלות ותשובות) — seed from the homepage FAQ, verbatim
 
 Google lets the owner post a question and answer it. Seed the 10 pairs below **exactly as they appear
-in `lib/content.ts:170-211`** — the same text a crawler already sees in the homepage `FAQPage` — so
-the profile and the site never disagree. When the site copy changes (Phase 3 rewrites several of
-these; Phase 6 softens claims), update the profile the same week.
+in `faqs` in `lib/content.ts`** — the same text a crawler already sees in the homepage `FAQPage` —
+so the profile and the site never disagree. Copy each answer from the source at posting time: all
+ten were rewritten in `af8ba4c` (2026-11-08, Sprint 4 — real answers, "אחריות על העבודה", hours
+instead of 24/7), and Sprints 5–6 may change them again; update the profile the same week.
 
-| #   | Q (verbatim)                             | A (verbatim)                                                             | Post?                                                                                  |
-| --- | ---------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| 1   | כמה זמן לוקח לתקן שער חשמלי?             | התיקון אורך לרוב בין שעה ליום עבודה, תלוי בסוג התקלה ובזמינות החלקים.    | yes                                                                                    |
-| 2   | האם יש אחריות על התיקון?                 | כן, אנו מספקים אחריות מלאה על כל שירותי התיקון וההתקנה שלנו.             | **hold** — "אחריות מלאה" is 🔶 (§D); post after Phase 6 softens it to אחריות על העבודה |
-| 3   | מה כוללת תחזוקה שוטפת לשער?              | התחזוקה כוללת בדיקת מנוע, ניקוי מסילות, בדיקת חיישנים ושימון חלקים נעים. | yes                                                                                    |
-| 4   | איך לבחור שער חשמלי חדש?                 | יש להתחשב בסוג השער, אופן הפתיחה, החומר והצרכים האישיים שלכם.            | yes                                                                                    |
-| 5   | מה העלות של ביקור טכנאי לבדיקה?          | עלות ביקור טכנאי לבדיקת שער היא 150–350 ₪, תלוי במיקום ובשעה.            | **hold** — the range is 🔶 "still current?" (§D, owner-actions §3.4)                   |
-| 6   | האם אתם עובדים עם לקוחות פרטיים ועסקיים? | כן, אנו משרתים את שני הסקטורים.                                          | yes                                                                                    |
-| 7   | מה כוללת התקנה של שער חדש?               | ייעוץ, התקנה והתאמה אישית.                                               | yes                                                                                    |
-| 8   | איך ניתן ליצור קשר?                      | ניתן ליצור קשר טלפוני או דרך האתר.                                       | yes                                                                                    |
-| 9   | האם אתם מציעים שירותי חירום?             | כן, אנו זמינים למקרי חירום.                                              | **hold** — 24/7 / emergency is 🔶 (§E)                                                 |
-| 10  | כמה זמן לוקחת התקנה?                     | משך ההתקנה תלוי בסוג השער ובדרישות הלקוח.                                | yes                                                                                    |
+| #   | Q (verbatim)                             | Post?                                                                         |
+| --- | ---------------------------------------- | ----------------------------------------------------------------------------- |
+| 1   | כמה זמן לוקח לתקן שער חשמלי?             | yes                                                                           |
+| 2   | האם יש אחריות על התיקון?                 | yes — the answer says "אחריות על העבודה" with no term since `1796ee7`         |
+| 3   | מה כוללת תחזוקה שוטפת לשער?              | yes                                                                           |
+| 4   | איך לבחור שער חשמלי חדש?                 | yes                                                                           |
+| 5   | מה העלות של ביקור טכנאי לבדיקה?          | **hold** — the 150–350 ₪ band is 🔶 "still current?" (§D, owner-actions §3.4) |
+| 6   | האם אתם עובדים עם לקוחות פרטיים ועסקיים? | yes                                                                           |
+| 7   | מה כוללת התקנה של שער חדש?               | yes                                                                           |
+| 8   | איך ניתן ליצור קשר?                      | yes — the answer names the phone, the email and the hours                     |
+| 9   | האם אתם מציעים שירותי חירום?             | yes — the answer bounds urgent faults to the hours; a 24/7 line waits on §E   |
+| 10  | כמה זמן לוקחת התקנה?                     | yes                                                                           |
 
 Answer public questions from customers within a day; the profile lets anyone answer, and a wrong
 stranger's answer becomes the visible one.
@@ -226,8 +228,8 @@ either.
 
 When the profile has reviews, the restore is three edits and takes minutes:
 
-1. **`lib/content.ts:242`** — paste each review into `reviews`, matching the `Review` interface at
-   `lib/content.ts:231-240`:
+1. **`lib/content.ts`** — paste each review into `reviews`, matching the `Review` interface at
+   `lib/content.ts`:
 
    ```ts
    export const reviews: readonly Review[] = [
@@ -244,12 +246,12 @@ When the profile has reviews, the restore is three edits and takes minutes:
      edited one is authorship.
    - **Every review the profile shows, or a transparent rule for the subset** (e.g. "the 10 most
      recent"); never only the 5-star ones — that is gating in schema form and `reviewCount` would lie.
-   - `REVIEW_AVG` (`lib/content.ts:253-256`) is derived from the ratings; never hand-set it.
+   - `REVIEW_AVG` (`lib/content.ts`) is derived from the ratings; never hand-set it.
    - The interface has no `date` field today. The restore PR adds `date: "YYYY-MM-DD"` and emits
      `datePublished` per review (`rtl-frontend-engineer`, `/schema-structured-data`) — a dated
      review is what Google's rich-result guidance expects.
 
-2. **`lib/content.ts:248`** — `export const REVIEW_SOURCE_URL: string | null = "https://www.google.com/maps?cid=<number>";`
+2. **`lib/content.ts`** — `export const REVIEW_SOURCE_URL: string | null = "https://www.google.com/maps?cid=<number>";`
    (keep that exact declaration shape — the audit's regex reads it).
 
 3. **The roster** — `Israeli services sites/roster/sites/dangates.json` → `schema.sameAs` += the same
@@ -280,7 +282,7 @@ never invent or borrow one.
 | מידרג (`midrag.co.il`)               | trade reviews / quotes | 🔶 — contractor profiles by trade and region; the most relevant review source after Google                                                                      |
 | easy (`easy.co.il`)                  | local directory        | 🔶 — map-centric; may require a pin                                                                                                                             |
 | Waze · Apple Maps (Business Connect) | map places             | 🔶 — both are place-based; a service-area business with no premises usually cannot list honestly. Skip unless the platform offers an explicit no-address option |
-| Facebook page                        | social                 | yes — `siteConfig.social.facebook` is empty (`lib/site-config.ts:49-53`); fill via the roster `sameAs`                                                          |
+| Facebook page                        | social                 | yes — `siteConfig.social.facebook` is empty (`lib/site-config.ts`); fill via the roster `sameAs`                                                                |
 
 Where a directory offers a website field, tag it per `docs/event-taxonomy.md` "Campaign tagging":
 `https://dangates.co.il/?utm_source=<directory>&utm_medium=referral&utm_campaign=citations`
@@ -298,7 +300,7 @@ Every profile created goes into the roster `schema.sameAs` (same sync as §11 st
    shows a listing you don't recognise is a stray citation — usually WordPress-era directory entries
    carrying old URLs. Claim or correct it; old URLs 301 to the new ones after Phase 1, so a stray
    link is harmless but a stray phone is not.
-3. Check the site itself: footer (`siteConfig.serviceArea`, phone), `/צור-קשר/`, the JSON-LD
+3. Check the site itself: footer (`serviceAreaLine`, phone), `/צור-קשר/`, the JSON-LD
    `#business` node (`telephone`, `openingHoursSpecification`, `sameAs`) — `scripts/audit/schema.mjs`
    covers the schema side; the footer is a visual check.
 4. Record the date and any fix in `docs/business-facts.md` §A (it is the owner's sheet).
@@ -307,17 +309,17 @@ Every profile created goes into the roster `schema.sameAs` (same sync as §11 st
 
 ## 14. What changes on the site once the profile exists
 
-| Change                                                                                                  | Where                                                                     | Who                                  |
-| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------ |
-| `sameAs` gains the profile URL → `#business` emits it                                                   | roster → sync → `site.config.json:45` → kit `localBusinessJsonLd`         | owner (roster) · agent (sync + gate) |
-| `siteConfig.social.googleBusiness` stops being an empty literal and reads from `manifest.schema.sameAs` | `lib/site-config.ts:49-53` (read by nothing today — wire it or delete it) | rtl-frontend-engineer                |
-| The reviews section and its `AggregateRating` un-hide themselves                                        | `components/marketing/Reviews.tsx:41` gate opens once §11 steps 1–2 land  | owner supplies text · agent pastes   |
-| A "ביקורות בגוגל" link near the reviews and in the footer                                               | Phase 6 (`/eeat-build`), only after §11                                   | rtl-frontend-engineer                |
-| Backlog rows close                                                                                      | §5.1 (no GBP link), §7.1 restore path; business-facts §A rows → ✅        | whoever runs `/improve`              |
-| `claims-grep.mjs` §A rows (ratings, review counts) pass instead of fail                                 | `scripts/audit/claims.json` section `A`                                   | automatic                            |
+| Change                                                                                                  | Where                                                                    | Who                                  |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------ |
+| `sameAs` gains the profile URL → `#business` emits it                                                   | roster → sync → `site.config.json:45` → kit `localBusinessJsonLd`        | owner (roster) · agent (sync + gate) |
+| `siteConfig.social.googleBusiness` stops being an empty literal and reads from `manifest.schema.sameAs` | `lib/site-config.ts` (read by nothing today — wire it or delete it)      | rtl-frontend-engineer                |
+| The reviews section and its `AggregateRating` un-hide themselves                                        | `components/marketing/Reviews.tsx:41` gate opens once §11 steps 1–2 land | owner supplies text · agent pastes   |
+| A "ביקורות בגוגל" link near the reviews and in the footer                                               | Phase 6 (`/eeat-build`), only after §11                                  | rtl-frontend-engineer                |
+| Backlog rows close                                                                                      | §5.1 (no GBP link), §7.1 restore path; business-facts §A rows → ✅       | whoever runs `/improve`              |
+| `claims-grep.mjs` §A rows (ratings, review counts) pass instead of fail                                 | `scripts/audit/claims.json` section `A`                                  | automatic                            |
 
 Nothing else changes by itself: the profile does not fix doorway pages (content-standards §2), does not
-bound the 24/7 claim (§E) and does not replace photos (§F).
+answer the 24/7 question (§E) and does not replace photos (§F).
 
 ---
 

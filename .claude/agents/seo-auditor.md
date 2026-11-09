@@ -36,16 +36,18 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
 ## What to audit
 
 1. **Titles.** `app/layout.tsx:30` appends `| דן שערים חשמליים`; the routes write the bare subject
-   (`app/services/[service]/page.tsx:38` `title: card.name`; `app/locations/[city]/page.tsx:30`).
+   (`app/services/[service]/page.tsx` `title: card.name`; `app/locations/[city]/page.tsx:30`).
    `titles.mjs` fails on any title carrying the brand twice. _History:_ 25 pages shipped the doubled
-   suffix until 2026-08-17 — report it only if it comes back. Still open: blog titles run 63–72
-   chars after the template (§2.5).
-2. **Descriptions.** 120–160 chars with terminal punctuation (`titles.mjs` warns). Service pages reuse
-   `card.description` (`app/services/[service]/page.tsx:39`), which is also the on-page opening
-   paragraph — three run 190–229 chars (§2.4). All 18 location descriptions differ by `${loc.name}`
-   only (`app/locations/[city]/page.tsx:31`, §2.3). Blog descriptions are verbatim openings (§2.6).
+   suffix until 2026-08-17 — report it only if it comes back. Blog titles ran 63–72 chars after
+   the template until `postSeo` (`74a92d1`, §2.5 ✅) — `titles.mjs` 0 warnings; report one only if it
+   comes back.
+2. **Descriptions.** 120–160 chars with terminal punctuation (`titles.mjs` warns). Since `74a92d1` every
+   description passes (`titles.mjs` 0 warnings, 2026-11-09): services read
+   `ServiceMeta.metaDescription` before the on-page `card.description` (§2.4 ✅), posts read `postSeo`
+   (§2.6 ✅). Still open: all 18 location descriptions differ by the city name only
+   (`locationMetaDescription(cityName)`, §2.3, Sprint 6.3).
 3. **One H1, ordered headings.** `links.mjs` → `pagesNotExactlyOneH1`, `headingSkips`; both 0 today.
-   Blog bodies are a flat wall of `<h2>` (`app/blog/[slug]/page.tsx:57` maps every `h` block) — not a
+   Blog bodies are a flat wall of `<h2>` (`app/blog/[slug]/page.tsx` maps every `h` block) — not a
    skip, but a §3.10 hierarchy finding; the fix is the Phase 4 block model, not a heading swap.
 4. **Canonicals and `og:url`.** One self-referencing `<link rel="canonical">`, trailing slash, percent-escaped = byte-identical to the sitemap `<loc>` (holds, §1.8). `og:url` is on all 45 since 2026-09-06 (`titles.mjs` → `ogUrlMissing 0`, §1.5 closed) — both now derive from `routeUrl()` and `ogBase` in `lib/seo.ts`, so a new route that hand-rolls either is the regression to look for.
 5. **Sitemap and robots.** `links.mjs` diffs sitemap ↔ emitted tree both ways (45 = 45). the static routes are the `staticPages` registry in `lib/site-config.ts` and `links.mjs` cross-checks it against the `app/` tree (`staticRoutesRegistered`; §1.4 done 2026-09-06) — an unregistered new route now fails the check instead of going silently absent. Fetch the **live** `/robots.txt` and compare to `out/robots.txt`;
@@ -61,10 +63,10 @@ count below is "as of 2026-09-06" context for reading the output, never a findin
    the shutters page is gone, closed 2026-09-06). All 18 locations, 7 services, 11 posts and 4 static
    pages still sit under their floor (§3.1, §3.2, §3.13). Never re-derive this with a `node -e`
    one-liner.
-9. **Chrome reach, orphans, related links.** `links.mjs`: `components/layout/Footer.tsx:76` renders
+9. **Chrome reach, orphans, related links.** `links.mjs`: `components/layout/Footer.tsx` renders
    `locations.slice(0, 12)` → `notInChrome: 6` (§9.2; not strict orphans because `/איזורי-שירות/`
    lists all 18); the header reaches no service or location in one hop (§9.1); related items are
-   `.slice(0, 4)` by array order at `app/services/[service]/page.tsx:54` and `app/blog/[slug]/page.tsx:77`
+   `.slice(0, 4)` by array order (the `others` lists in `app/services/[service]/page.tsx` and `app/blog/[slug]/page.tsx`)
    (§9.4); the blog contains zero links (§9.5); no service ↔ location mesh (§9.3). Trailing slashes are clean since 2026-09-06 (N10 closed): 0 un-slashed internal hrefs across all 46 exported pages.
 10. **Anchors and alt.** The export carries **zero `<img>`** — there is no alt surface; refer that to
     §7.5 (`eeat-trust-auditor`, `site-images`), not as an alt defect. Judge anchor text on what exists.

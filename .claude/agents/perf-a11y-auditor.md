@@ -79,7 +79,8 @@ today's figures only as "as of" context and re-measure before asserting any of t
 7. **Motion.** `Reveal` starts `"static"` (fully visible) and returns early under reduced motion —
    confirm nothing strands content at `opacity: 0`.
 8. **Tap targets.** 44×44 px minimum, especially both halves of `MobileCtaBar` (`py-3.5` — measure).
-   Known open (N19): the two `size="md"` buttons in `LeadForm`'s delivery-failure alert, ≈40px.
+   N19 closed in `fba5957`: `LeadForm`'s delivery-failure alert buttons are `size="lg"` (≈52px) — a
+   return to `md` is a regression.
 9. **RTL.** `<html lang="he" dir="rtl">` intact; LTR islands (phone, email, price) isolated;
    `rtl-lint.mjs` → `bannedUtilities 0 · hexLiterals 0` since `7cfcf4c` — any new hit belongs to
    `ts-react-reviewer`; cross-reference, do not duplicate.

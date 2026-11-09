@@ -26,8 +26,8 @@ no 19th location while the 18 fail.
 ## The data model — the Phase-3 target
 
 **None of this model exists yet.** Today a location is `{ slug, name }` only
-(`lib/site-config.ts:82`), one shared `locationsUpdated` date serves all 18 sitemap entries
-(`lib/site-config.ts:112`), and there is no `cityContent`, `kind`, `prefixed` or `nearby` anywhere.
+(`lib/site-config.ts`), one shared `locationsUpdated` date serves all 18 sitemap entries
+(`lib/site-config.ts`), and there is no `cityContent`, `kind`, `prefixed` or `nearby` anywhere.
 `/improve §3.1` builds it; until then **this skill is the spec**, not a description of the code.
 
 ```ts
@@ -134,7 +134,7 @@ The `app/layout.tsx`template appends the brand; the doubled suffix is **fixed** 
 
 `generateStaticParams` picks up the route · `/איזורי-שירות/` and `ServiceAreas` list it
 (`locations.map`) · `app/sitemap.ts` includes it · the footer links it **once the `slice(0, 12)`
-at `components/layout/Footer.tsx:76` is gone** (`/internal-linking` §2 — six cities are missing from
+in `components/layout/Footer.tsx` is gone** (`/internal-linking` §2 — six cities are missing from
 the chrome today).
 
 ## Checklist

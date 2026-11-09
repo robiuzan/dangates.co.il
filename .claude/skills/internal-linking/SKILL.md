@@ -24,13 +24,13 @@ The homepage updates strip is inside `<main>` and counts: it is content on one p
 
 ## Current state (as of 2026-08-23 — re-run before quoting)
 
-| Finding                                                                                                                                               | Anchor                                                                                      | Metric                                                                                                    |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Header reaches no service or location — it renders `navItems` only; the footer is the only chrome that does, and it carries 7 services + 12 locations | `components/layout/Header.tsx`; `navItems` at `lib/content.ts:303`                          | `chromeLinks: 28` (6 nav + 7 services + 12 locations + home, blog, legal); posts reached only via indexes |
-| Six locations missing from the chrome (אשקלון, באר שבע, דרום, צפון, קריות, שרון)                                                                      | `components/layout/Footer.tsx:76` `locations.slice(0, 12)`                                  | `notInChrome: 6`, `orphans: 0` (only `/איזורי-שירות/` saves them)                                         |
-| Service → location: zero; location → location: zero                                                                                                   | no `nearby`, no `serviceDepth.locations` — the model is Phase 3                             | backlog §9.3                                                                                              |
-| Related services and posts by array order — the same 5 leading siblings absorb every related link                                                     | `app/services/[service]/page.tsx:54` and `app/blog/[slug]/page.tsx:77`, both `.slice(0, 4)` | `relatedServiceTargets: 5` (2 of 7 never linked), `relatedPostTargets: 5` (6 of 11 never linked)          |
-| Blog in-copy links: zero — 42 anchor-shaped phrases survived migration as dead text                                                                   | `lib/posts.ts` (the 42 emoji lines `spam-grep.mjs` counts)                                  | backlog §3.8, §9.5                                                                                        |
+| Finding                                                                                                                                               | Anchor                                                                                | Metric                                                                                                    |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Header reaches no service or location — it renders `navItems` only; the footer is the only chrome that does, and it carries 7 services + 12 locations | `components/layout/Header.tsx`; `navItems` at `lib/content.ts`                        | `chromeLinks: 28` (6 nav + 7 services + 12 locations + home, blog, legal); posts reached only via indexes |
+| Six locations missing from the chrome (אשקלון, באר שבע, דרום, צפון, קריות, שרון)                                                                      | `components/layout/Footer.tsx` `locations.slice(0, 12)`                               | `notInChrome: 6`, `orphans: 0` (only `/איזורי-שירות/` saves them)                                         |
+| Service → location: zero; location → location: zero                                                                                                   | no `nearby`, no `serviceDepth.locations` — the model is Phase 3                       | backlog §9.3                                                                                              |
+| Related services and posts by array order — the same 5 leading siblings absorb every related link                                                     | `app/services/[service]/page.tsx` and `app/blog/[slug]/page.tsx`, both `.slice(0, 4)` | `relatedServiceTargets: 5` (2 of 7 never linked), `relatedPostTargets: 5` (6 of 11 never linked)          |
+| Blog in-copy links: zero — 42 anchor-shaped phrases survived migration as dead text                                                                   | `lib/posts.ts` (the 42 emoji lines `spam-grep.mjs` counts)                            | backlog §3.8, §9.5                                                                                        |
 
 Breadcrumbs are **not** a finding any more: `PageHeader` emits `BreadcrumbList` on all 44 nested
 pages (`breadcrumbPages: 44`) — §7 is about keeping that parity, not creating it.
@@ -57,9 +57,9 @@ sed -n '/<header/,/<\/header>/p' out/index.html | grep -o 'href="/\(services\|lo
 
 ## 2. Footer — all 18, no slice
 
-Delete the `.slice(0, 12)` at `components/layout/Footer.tsx:76`; the list is already a
+Delete the `locations.slice(0, 12)` in `components/layout/Footer.tsx`; the list is already a
 `grid-cols-2`, so 18 fits. Truncation is what created the gap. The NAP block correctly shows
-`siteConfig.serviceArea` and the phone — no street address exists and none gets invented
+`serviceAreaLine` (`lib/content.ts`, since `1796ee7`) and the phone — no street address exists and none gets invented
 (`/local-seo-il` §1).
 
 Proof: `links.mjs` → `notInChrome: 0` and `chromeLinks: 34` (28 + the six cities).

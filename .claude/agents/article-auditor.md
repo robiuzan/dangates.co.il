@@ -35,7 +35,7 @@ not exist. `requiredTypes()` in `scripts/audit/schema.mjs:57-62` asks a `guide` 
 
 **No** `lib/guides.ts`, `lib/guide-types.ts`, `content/guides/`, `app/מדריכים/`,
 `components/article/` or `lib/authors.ts`. The only editorial model is
-`PostBlock = { type: "h" | "p" | "li"; text }` at `lib/posts.ts:9`. Phase 4 (ADR 0002 +
+`PostBlock = { type: "h" | "p" | "li"; text }` at `lib/posts.ts`. Phase 4 (ADR 0002 +
 `docs/decisions/0003-block-content-model.md`; backlog §3.8, §3.10, §6.2, §6.3 close with it) copies
 galbath's typed `Block` union and a registry whose rules **throw at module load** — listed under
 `/new-guide` "Verification": title or H2 = a service `name` or `{service} ב{city}`, no single
@@ -57,7 +57,7 @@ markdown draft, applying every bar by hand and citing block index or heading. A 
   from the guide's own `faq` blocks, `BreadcrumbList` from `PageHeader` (never a second one).
 - `/new-guide` (blocks per family, the table each carries, the CTA cap) · `/content-hub` (does it
   earn a page; the homepage-FAQ `moreAt` contract) · `/engagement-ux` §4 (CTA placement).
-- The cannibalisation set: `services` at `lib/site-config.ts:65` (7), `locations` at `:82` (18),
+- The cannibalisation set: `services` (7) and `locations` (18) in `lib/site-config.ts`,
   `/מחירון/`, the 11 post titles (`grep -n -E '^\s{4}title: "' lib/posts.ts`), every other guide,
   and the homepage `faqs` in `lib/content.ts` (one Q/A string in one `FAQPage` sitewide).
 
@@ -102,17 +102,17 @@ markdown draft, applying every bar by hand and citing block index or heading. A 
 
 ## The dangates 🔶 list — stop-ship if stated as fact
 
-- **Prices:** the ₪150–350 technician visit (`priceRows`, `lib/content.ts:157`; sourced from the old
-  live-site FAQ, `:153`) is the **only** sourced figure and is itself 🔶 current (business-facts §D);
-  every per-job range is an authored estimate (`:154`). A guide interpolates the visit fee or writes
-  "what determines the price" (keyword-map §10) — never a literal.
+- **Prices:** the ₪150–350 technician visit (`priceRows` → `visitFeeRange`; sourced from the old
+  live-site FAQ) is the **only** figure the site shows and is itself 🔶 current (business-facts §D);
+  the eight authored per-job ranges left with N14 (`af8ba4c`). A guide interpolates the visit fee or
+  writes "what determines the price" (keyword-map §10), as `/מחירון/` does — never a literal.
 - **Warranty:** no term exists — "אחריות על העבודה", never "אחריות מלאה", with or without a number.
 - **Licence, insurance, founding year, years of experience, a named person or technician:** not
   coming (owner-actions §3.2–3.3). `claims-grep.mjs` fails the phrases; you fail the paraphrases.
 - **24/7, same-day, "פריסה ארצית", any response time:** bounded to what the owner confirms (§E).
   **WhatsApp on `072-2587772`:** unconfirmed (owner-actions §3.7) — a guide does not promise it.
 - **Reviews, ratings, "המובילים", "הטובים ביותר":** never; `reviews` is empty and gated
-  (`lib/content.ts:242`, `:248`). Competitor prices, ratings and review counts never appear in any form.
+  (`REVIEW_SOURCE_URL` in `lib/content.ts`). Competitor prices, ratings and review counts never appear in any form.
 - **ת״י 900 חלק 21.03, the ₪800,000 judgment, the fatality record, the criminal-offence framing:**
   citable **only** with the sii.org.il URL in the paragraph's links or `sources` (keyword-map §12);
   the 2006 date and the licensed-electrician question stay unverified without a sii.org.il / gov.il

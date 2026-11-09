@@ -37,15 +37,15 @@ number below is "as of 2026-08-23" context for reading the output, not a finding
 ## What to audit
 
 1. **NAP — and the correct absence of an address** (§5.6 holds). No address in the manifest, the
-   schema or `/צור-קשר/`; the footer shows `siteConfig.serviceArea` plus the phone. That is the right
+   schema or `/צור-קשר/`; the footer shows `serviceAreaLine` (since `1796ee7`) plus the phone. That is the right
    shape. **Never report the missing address as a gap, never recommend adding one** — an invented or
    borrowed address is a GBP suspension risk. Verify the phone (`072-2587772`, `phoneOverride: true`,
    the one fleet site not on `055-6601006`) and email are byte-identical everywhere, against
    `docs/gbp-runbook.md` §0.
 2. **Google עסק שלי — the top lever, and it is coming** (⏳ business-facts §A, owner-actions §2.1).
-   `schema.sameAs` is `[]` and `siteConfig.social` (`lib/site-config.ts:49`) is empty strings, so
+   `schema.sameAs` is `[]` and `siteConfig.social` (`lib/site-config.ts`) is empty strings, so
    nothing off-site corroborates the entity today. _History:_ until 2026-08-17 the site published ten
-   fabricated reviews under real names; `reviews` is now `[]` (`lib/content.ts:242`) and gated behind
+   fabricated reviews under real names; `reviews` is now `[]` (`lib/content.ts`) and gated behind
    `REVIEW_SOURCE_URL` (`:248`). Reviews return **only** verbatim from the profile
    (`docs/gbp-runbook.md` §11) — never plan around a rating that does not yet exist.
 3. **The matrix.** 7 × 18 = 126 cells; only `תיקון שערים חשמליים × city` is expressed. **Do not build
@@ -62,13 +62,13 @@ number below is "as of 2026-08-23" context for reading the output, not a finding
    a bare `ב${loc.name}` in the title, description, H1 and subtitle (`app/locations/[city]/page.tsx:30-31`,
    `:42-43`), shipping `בשרון` / `בצפון` where `באזור השרון` / `בצפון הארץ` is correct. Fix is the
    `prefixed` field (content-standards §8), not a hand-patched string.
-6. **Coverage honesty** (§5.4, blocked). `schema.areaServed` says `מרכז הארץ ופריסה ארצית`; 24/7
-   emergency is claimed from `lib/site-config.ts:45`, `lib/content.ts:147`,
-   `components/marketing/Hero.tsx:7` and the location template. `claims-grep.mjs` as of 2026-08-23:
-   `around-the-clock` live on 42 pages, `national-coverage` on 4. A promise the business cannot keep
-   at 03:00 in באר שבע is a liability, not a keyword; the footer hours
-   (`components/layout/Footer.tsx:47-49`) omit the emergency line directly under a 24/7
-   CTA (§7.6). Route to business-facts §E / owner-actions §3.5; recommend bounding, never deleting
+6. **Coverage honesty** (§5.4, blocked on the owner). The manifest `schema.areaServed` still says
+   `מרכז הארץ ופריסה ארצית`, but no page renders it: the JSON-LD `areaServed` is the 18 published
+   locations (`d8edb28`) and the copy says `serviceAreaLine` (`1796ee7`). `claims-grep.mjs` →
+   `around-the-clock 0`, `national-coverage 0` live as of 2026-11-09 (42 and 4 pages on 2026-08-23);
+   the footer and every CTA read the same `siteConfig.hours` (§7.6 ✅). A promise the business cannot
+   keep at 03:00 in באר שבע is a liability, not a keyword — flag any that comes back. Route the open
+   questions to business-facts §E / owner-actions §3.5–3.6; recommend bounding, never deleting
    coverage you have not verified.
 7. **Geo signals** (§5.5). No `GeoCoordinates`, `hasMap`, map embed or landmark in any copy.
    `schema.mjs` (2026-11-08): all 18 location pages emit one business node plus a per-page `Service`
@@ -76,11 +76,11 @@ number below is "as of 2026-08-23" context for reading the output, not a finding
    built in Sprint 2 as `locationServiceJsonLd` in `lib/jsonld.ts` (§4.2 ✅, not deployed yet). Check
    it holds. **Never** a `LocalBusiness` per city, never a
    `PostalAddress`.
-8. **Internal equity** (§9.2, §9.3). `components/layout/Footer.tsx:76` renders `locations.slice(0, 12)`
+8. **Internal equity** (§9.2, §9.3). `components/layout/Footer.tsx` renders `locations.slice(0, 12)`
    → `links.mjs` `notInChrome: 6` (אשקלון, באר שבע, דרום, צפון, קריות, שרון); no service page links
    to a city and no city to another — the mesh is one-way. Phase 3 adds `nearby` / `relatedServices`
    (`/internal-linking`).
-9. **Freshness.** `locationsUpdated` is one shared date (`lib/site-config.ts:112`) feeding all 18
+9. **Freshness.** `locationsUpdated` is one shared date (`lib/site-config.ts`) feeding all 18
    sitemap `lastmod`s — false precision the moment the pages diverge (§2.3).
 
 ## Method

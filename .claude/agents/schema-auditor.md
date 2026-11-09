@@ -58,10 +58,11 @@ Your job is now a **regression watch** plus what is still open:
 5. **Not yet run:** the Rich Results Test on one URL per route type — it needs the deployed site.
 
 **Correctly absent — verify they stay absent, and never file them as gaps:** `Review` /
-`AggregateRating` (gated in code — `lib/content.ts:242` `reviews = []`, `:248` `REVIEW_SOURCE_URL =
-null`, `Reviews.tsx:41` returns `null`; the fabricated set was removed 2026-08-17 — history, not a
-finding), `Offer` / `OfferCatalog` on `/מחירון/` (8 of 9 prices are authored estimates,
-`lib/content.ts:152-156`; real prices are not coming — business-facts §D), a `Person` author
+`AggregateRating` (gated in code — `lib/content.ts` exports `reviews = []` and `REVIEW_SOURCE_URL =
+null`, and `Reviews.tsx` returns `null`; the fabricated set was removed 2026-08-17 — history, not a
+finding), `Offer` / `OfferCatalog` with prices on `/מחירון/` (8 of 9 prices were authored estimates
+until N14 removed them in `af8ba4c`; the visit band left is 🔶, and real prices are not coming —
+business-facts §D), a `Person` author
 (no person is coming — §B), `address` / `PostalAddress` (service-area business — schema-graph §3),
 `foundingDate` (`foundedYear` is `null` and is not coming — §B).
 

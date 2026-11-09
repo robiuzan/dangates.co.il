@@ -12,8 +12,9 @@ checks; where a script exists it is the measurement.
 
 **Compiled 2026-08-16/17.** Statuses re-verified 2026-08-23 against a fresh `out/`
 (`npm run audit` → 37 failures across 10 checks; `npm run audit:env` → 0 dead citations), and again
-2026-11-08 after Sprints 2 and 3 on a clean rebuild: `npm run audit -- --scope full` → **15**
-failures across 2 checks (`content-depth` 10, `claims-grep` 5).
+2026-11-08 after Sprints 2 and 3 on a clean rebuild (`npm run audit -- --scope full` → 15 across
+`content-depth` 10 and `claims-grep` 5), and again 2026-11-09 after Sprint 4 (`1796ee7` `af8ba4c`
+`74a92d1`): `npm run audit -- --scope full` → **8** failures, all in one check (`content-depth` 8).
 
 **Severity:** P0 = shipping something wrong or harmful · P1 = material ranking/conversion loss ·
 P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half a day · L = multi-day.
@@ -59,8 +60,9 @@ Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region p
 | 5   | **Routing + owner docs.** Agent roster, owner actions, Cloudflare + GBP runbooks, content calendar, event taxonomy, rank tracking, competitors, growth roadmap                                                                                                                                  | `docs/agent-roster.md`, `docs/owner-actions.md`, `docs/*-runbook.md`, `docs/content-calendar.md`, … |
 | 6   | **De-stale pass + new assets** per the roster: 15 agents, 25 skills (and the saved `site-audit` workflow where workflows are available); every `file:line` re-anchored; scripts cited instead of numbers                                                                                        | `.claude/agents/`, `.claude/skills/`, `.claude/workflows/`                                          |
 
-**Next up** (as of 2026-11-08): Phases 1, 2 and 5's repo work have shipped in the repo — Sprints 1–3.
-What comes next is Sprint 4, the truth pass — see "Suggested order of work" below.
+**Next up** (as of 2026-11-09): Phases 1, 2 and 5's repo work and the Sprint 4 truth pass have
+shipped in the repo — Sprints 1–4. What comes next is Sprint 5, service depth — see "Suggested
+order of work" below.
 
 ---
 
@@ -188,7 +190,7 @@ Script: `titles.mjs` (unique titles/descriptions, brand token once, length, cano
 
 `app/layout.tsx:30` sets `template: "%s | דן שערים חשמליים"`, and three places appended it **again**
 (18 locations, 7 services, `/אודות/`). Fixed 2026-08-17 — the routes now write the bare subject:
-`app/locations/[city]/page.tsx:30`, `app/services/[service]/page.tsx:38`, `app/אודות/page.tsx:13`,
+`app/locations/[city]/page.tsx:30`, `app/services/[service]/page.tsx`, `app/אודות/page.tsx:13`,
 each with a comment saying why. `titles.mjs` fails on any title carrying the brand token twice.
 
 Sanity check: `grep -rl 'דן שערים חשמליים | דן שערים חשמליים' out --include=index.html | wc -l` → 0.
@@ -204,25 +206,43 @@ Title, description and H1 all interpolate only `${loc.name}`. Combined with the 
 
 **Fix (Phase 3):** add `kind` + `prefixed` to `locations` and a `cityContent` map in **`lib/content.ts`**
 (not `site-config.ts`) — the `new-city` skill describes the target model and says plainly it does
-not exist yet. Move `locationsUpdated` (`lib/site-config.ts:112`) onto each entry at the same time —
+not exist yet. Move `locationsUpdated` (`lib/site-config.ts`) onto each entry at the same time —
 one shared date becomes false precision the moment the pages diverge.
 
-### 2.4 — P1 · M · [NOT STARTED] Service descriptions are the on-page opening paragraph verbatim
+### 2.4 — P1 · M · [✅ DONE 2026-11-08] Service descriptions are the on-page opening paragraph verbatim
 
-**Five** of seven run **163–229 characters** and truncate in SERPs (re-measured 2026-08-24 by
-`titles.mjs`; the earlier "three of seven" counted only the 190+ breaches — `שערים-לחניה` and
-`תריסי-גלילה-חשמליים` sit at 163). `app/services/[service]/page.tsx:39` reuses `card.description`,
-which is also rendered as body copy. Two location descriptions also breach at 162 and 164, and the
-two legal statics are far **under** at 40 and 57. `titles.mjs` warns on every description outside
-120–160.
+Until Sprint 4: **five** of seven ran **163–229 characters** and truncated in SERPs (measured
+2026-08-24 by `titles.mjs`), because the service route reused `card.description`, which is also
+rendered as body copy. Two location descriptions breached at 162 and 164, and the two legal statics
+were far **under** at 40 and 57. `titles.mjs` warns on every description outside 120–160.
 
-### 2.5 — P2 · S · [NOT STARTED] Blog titles render at 58–72 characters after the template
+**Closed 2026-11-08** by commit `74a92d1` (Sprint 4 change set C, row 4.7). The meta line is its own
+field: `generateMetadata` in the service route reads `ServiceMeta.metaDescription` and falls back to
+`card.description`; the location, index, legal and blog-index descriptions are rewritten in
+`lib/content.ts` (`locationMetaDescription`, `accessibilityMetaDescription`,
+`blogIndexMetaDescription` and the rest), each 120–160 characters with terminal punctuation.
+Verified on the current `out/`:
 
-`titles.mjs` warns on each one over 60 once `| דן שערים חשמליים` is appended.
+```bash
+node scripts/audit/titles.mjs   # ✅ pass · 0 warnings · pages 46 · uniqueTitles 46 · uniqueDescriptions 46
+```
 
-### 2.6 — P2 · S · [NOT STARTED] Blog descriptions are verbatim openings — some short, two cut mid-sentence
+Sprint 5.5 re-derives the service lines from the depth copy once it exists, inside the same window.
 
-`titles.mjs` warns on the short ones (100–110 chars) and on a missing terminal punctuation mark.
+### 2.5 — P2 · S · [✅ DONE 2026-11-08] Blog titles render at 58–72 characters after the template
+
+Until Sprint 4 `titles.mjs` warned on each post title over 60 once `| דן שערים חשמליים` was
+appended. **Closed 2026-11-08** by commit `74a92d1` (row 4.7): `postSeo` in `lib/content.ts` gives
+every post an SEO title of 60 characters or fewer, read by the post route's `generateMetadata`
+(falling back to `post.title`). The posts' own titles — which the live registers quote — are
+unchanged. `node scripts/audit/titles.mjs` → 0 warnings.
+
+### 2.6 — P2 · S · [✅ DONE 2026-11-08] Blog descriptions are verbatim openings — some short, two cut mid-sentence
+
+Until Sprint 4 `titles.mjs` warned on the short ones (100–110 chars) and on a missing terminal
+punctuation mark. **Closed 2026-11-08** by commit `74a92d1` (row 4.7): `postSeo` carries a
+120–160-character description per post (falling back to `post.excerpt`), each ending in
+punctuation. `node scripts/audit/titles.mjs` → 0 warnings, `uniqueDescriptions 46`.
 
 ---
 
@@ -255,7 +275,7 @@ all seven and duplicated from the homepage.
 
 ### 3.3 — P1 · S · [✅ DONE 2026-09-06] The shared `triggers` array puts gate faults on the shutters page
 
-`app/services/[service]/page.tsx:43-48` declares four "מתי כדאי לפנות אלינו" bullets at module scope,
+`app/services/[service]/page.tsx` declares four "מתי כדאי לפנות אלינו" bullets at module scope,
 so `השער נתקע, לא נסגר או לא נפתח עד הסוף` renders on `/services/תריסי-גלילה-חשמליים/`. It is also
 user-facing Hebrew living in a route file rather than `lib/content.ts`. Phase 1: move it to content
 as a per-service field.
@@ -281,11 +301,28 @@ node -e "for (const s of require('fs').readdirSync('out/services')) { const h = 
 Removed from the shared template 2026-08-17 (it was wrong on חיפה, באר שבע, צפון, דרום, קריות, אשקלון
 and ירושלים).
 
-### 3.5 — P1 · M · [NOT STARTED] Half the homepage FAQ answers are 4–7 words — and all ten ship as `FAQPage`
+### 3.5 — P1 · M · [✅ DONE 2026-11-08] Half the homepage FAQ answers are 4–7 words — and all ten ship as `FAQPage`
 
-Including `איך ניתן ליצור קשר?`, answered **without the phone number**. Thin answers in structured data
-are worse than no structured data: they are what an assistant would quote. `content-hub` owns the
-`moreAt` link-out contract for homepage FAQs.
+Until Sprint 4 they included `איך ניתן ליצור קשר?`, answered **without the phone number**. Thin
+answers in structured data are worse than no structured data: they are what an assistant would
+quote. `content-hub` owns the `moreAt` link-out contract for homepage FAQs.
+
+**Closed 2026-11-08** by commit `af8ba4c` (Sprint 4 change set B, row 4.3). All ten `faqs` in
+`lib/content.ts` carry real answers; the contact answer names `siteConfig.phone`, the email and the
+hours. Seven carry a `moreAt` link-out to the page that goes deeper. The `FAQPage` is built from
+`faqs.map(({ q, a }) => ({ q, a }))`, so the markup matches the visible answers and `moreAt` never
+reaches the JSON-LD. Verified on the current `out/`:
+
+```bash
+node scripts/audit/schema.mjs                       # ✅ 0 failures · faqPages 1 · danglingIds 0
+grep -o 'data-cta="faq-more"' out/index.html | wc -l  # 7 — one per moreAt
+grep -o '<details' out/index.html | wc -l             # 10
+node scripts/audit/links.mjs                        # brokenLinks 0 · orphans 0 — every moreAt target exists
+```
+
+`content-depth.mjs` → home 1535 unique words / 800 (`belowFloor 0`). **Open, not this row:** the
+re-review of change set B left five `hebrew-editor` should-fix items on these answers and the
+pricing copy, and one `claims-verifier` should-fix on the diagnosis intro (Sprint 4 Exit).
 
 ### 3.6 — P0 · S · [✅ DONE] Injected adult-spam was live in a blog post
 
@@ -301,13 +338,14 @@ grep -rniE 'onlyfans|leaked|casino|porn|allgatesrepair' lib/posts.ts out/blog
 
 All 11 posts ended with an identical 5-heading block naming four articles that never existed on this
 domain. Deleted 2026-08-17; `spam-grep.mjs` → `relatedTails: 0`. The route renders the real
-"מאמרים נוספים" list at `app/blog/[slug]/page.tsx:115-130`.
+"מאמרים נוספים" list at `app/blog/[slug]/page.tsx`.
 
 ### 3.8 — P1 · M · [NOT STARTED] 42 unlinked call-to-action phrases across the blog
 
 Migration stripped every `<a>`. The posts say "היכנסו למחירון", "בקרו בעמוד צור קשר", "📌 למידע נוסף" as
-plain text — anchor text written, target obvious, link missing. `spam-grep.mjs` also counts the 42
-structural emoji (💡 ×33, 📌 ×4, 📞 ×4, 💬 ×1) those phrases hang off.
+plain text — anchor text written, target obvious, link missing. `spam-grep.mjs` also counts the
+structural emoji those phrases hang off: 39 as of 2026-11-09 (💡 ×31, 📌 ×4, 📞 ×3, 💬 ×1; 42
+before Sprint 4 rewrote three post sentences).
 
 This is the cheapest internal-linking win on the site (§9.5) but needs the typed block model
 ([ADR 0003](decisions/0003-block-content-model.md), Phase 4, `new-article` skill).
@@ -324,30 +362,55 @@ A bold label fused to its sentence when `<strong>` was stripped. Fixed 2026-08-1
 
 **Fix (Phase 4):** the typed block model with `level` — closed by the same refactor as §3.8.
 
-### 3.11 — P2 · S · [PARTIAL] Mis-typed CTA heading — fixed; the empty `מקרי מבחן` section remains
+### 3.11 — P2 · S · [✅ DONE 2026-11-08] Mis-typed CTA heading and the empty `מקרי מבחן` section
 
-The 115-character CTA sentence is no longer a heading. Still open: `lib/posts.ts:416-418` are three
-consecutive headings with no body (`מקרי מבחן`, `ניתוח נתונים`), and the paragraph at `:421` then
-claims `הנתונים מראים בבירור` with no data anywhere on the page. Delete the section or give it data.
+The 115-character CTA sentence stopped being a heading on 2026-08-17. Until Sprint 4 the post
+`שער-חשמלי-חוסך-זמן` then carried three consecutive headings with no body
+(`מיתוס מול מציאות: האם זה באמת חוסך זמן?`, `מקרי מבחן`, `ניתוח נתונים`) and a paragraph claiming
+`הנתונים מראים בבירור` with no data anywhere on the page.
 
-### 3.12 — P2 · S · [PARTIAL] Latin curly quotes instead of Hebrew גרשיים
+**Closed 2026-11-08** by commit `74a92d1` (Sprint 4 change set C, row 4.8). The empty headings are
+deleted; `ניתוח נתונים` and its paragraph became the question-form heading
+`כמה זמן שער חשמלי חוסך לאורך שנה?` over one sentence of plain arithmetic. Verified:
 
-8 of 12 fixed. `spam-grep.mjs` → `curlyQuotes: 4`, all at `lib/posts.ts:848-849` (U+2019 around
-the brand name). Replace with גרשיים `״` or drop the quotes.
+```bash
+grep -rl 'מקרי מבחן\|ניתוח נתונים\|הנתונים מראים' out --include=index.html | wc -l   # 0
+grep -c 'מקרי מבחן\|ניתוח נתונים\|הנתונים מראים' lib/posts.ts                       # 0
+```
 
-### 3.13 — P2 · S · [NOT STARTED] Thin index and static pages
+The rest of the blog's structural debt is not this row: the ~42 dead link phrases (§3.8), the flat
+all-`<h2>` outline (§3.10) and the 39 emoji go with the block-model migration, Sprint 7.3.
+
+### 3.12 — P2 · S · [✅ DONE 2026-11-08] Latin curly quotes instead of Hebrew גרשיים
+
+8 of 12 were fixed on 2026-08-17; the last 4 (U+2019 around the brand name in the post
+`החלפה-או-תיקון-שער-חשמלי`'s "למה לבחור" section) went in commit `74a92d1` (Sprint 4 change set C, row 4.8) —
+the quotes were dropped, not swapped. Verified: `node scripts/audit/spam-grep.mjs` →
+`curlyQuotes 0`, `spamHits 0`, `fusedWords 0`. Nothing of this row is left for Sprint 7.3.
+
+### 3.13 — P2 · S · [PARTIAL 2026-11-08 · home + pricing done] Thin index and static pages
 
 `content-depth.mjs` as of 2026-08-23: `/איזורי-שירות/` 111/250 · `/שירותים/` 111/250 (its 323
 words are almost all the shared service teasers) · `/מחירון/` 144/400 · `/אודות/` 277/500, and the
 About page is fully substitutable boilerplate. The pricing page pivots to _what drives the price_
 ([keyword-map.md](keyword-map.md) §10) — real numbers are not coming (business-facts §D); that pivot
-is now its own item, N14.
+is its own item, N14. The homepage joined the list on 2026-08-24 at `675 unique / 800` — removing
+the ten fabricated reviews (§7.1) took ~200 words with them — and the fix was substance, not
+restored volume.
 
-⚠️ **The homepage joined this list on 2026-08-24**: `675 unique / 800` ❌. It is not a regression in
-the ordinary sense — removing the ten fabricated reviews (§7.1) took ~200 words of body copy with
-them, and content-standards' "~1,130 ✅" predates that removal. The honest fix is not to restore
-volume but to add substance the homepage lacks: an answer block (§6.2) and the fault/price
-mechanism copy that N14 needs anyway.
+**The home and pricing halves closed 2026-11-08** by commits `1796ee7` and `af8ba4c` (Sprint 4
+rows 4.2 and 4.4): the homepage gained an answer block under the H1 (`homeAnswerBlock`), the
+fault-and-price mechanism section (`homeDiagnosisCopy`, rendered by `Diagnosis`) and real FAQ
+answers (§3.5); `/מחירון/` became "what determines the price" (N14). Verified on the current `out/`:
+
+```bash
+node scripts/audit/content-depth.mjs
+# home    1764 words · 1535 unique · floor 800 · belowFloor 0   (675 on 2026-08-24)
+# pricing  945 words ·  945 unique · floor 400 · belowFloor 0   (144 on 2026-08-23)
+```
+
+**Still open — Sprint 6.8:** `/אודות/` 307/500, `/איזורי-שירות/` 98/250, `/שירותים/` 113/250
+(229 of its 342 words in shared blocks).
 
 ---
 
@@ -479,13 +542,15 @@ manifest; no other page references `#website`, so nothing dangles. Verified afte
 node scripts/audit/schema.mjs   # ✅ typeCensus home: WebSite 1 · FAQPage 1 · GeneralContractor 1
 ```
 
-### 4.10 — P2 · M · [⏳ BLOCKED · owner — `Offer` half · ✅ DONE 2026-11-08 — catalog half] `/מחירון/` publishes 9 price ranges and emits no `Offer`
+### 4.10 — P2 · M · [⏳ BLOCKED · owner — `Offer` half · ✅ DONE 2026-11-08 — catalog half] `/מחירון/` published 9 price ranges and emits no `Offer`
 
-**Blocked, not merely unimplemented.** Eight of the nine ranges are authored estimates — the comment
-above `priceRows` in `lib/content.ts` says so. Marking an invented number as a structured `Offer`
-makes a soft problem machine-readable, and the owner has said real prices are **not coming**
-(business-facts §D). `schema.mjs` treats `Offer` as forbidden until sourced. The way out is the
-N14 pivot (Sprint 4.2), not prices.
+**Blocked, not merely unimplemented.** Until Sprint 4 eight of the nine ranges were authored
+estimates. Marking an invented number as a structured `Offer` makes a soft problem
+machine-readable, and the owner has said real prices are **not coming** (business-facts §D).
+`schema.mjs` treats `Offer` as forbidden until sourced. The N14 pivot (`af8ba4c`, 2026-11-08)
+removed the eight authored ranges, so the page now carries one number — the 150–350 ₪ visit band
+(`priceRows`, `visitFeeRange`), itself 🔶 as to whether it is current — and the `Offer` half stays
+⏳ on that row, not on a price list.
 
 **The unblocked half closed 2026-11-08** by commit `d8edb28` (Sprint 2 change set B, row 2.9): the
 business node carries `hasOfferCatalog`, an `OfferCatalog` whose 7 `itemListElement` entries are
@@ -522,11 +587,16 @@ node scripts/audit/schema.mjs   # ✅ 0 warnings · post: BlogPosting 11 · Blog
 #               isPartOf {Blog, …/blog/} · author and publisher → #business · business url https://dangates.co.il/
 ```
 
-### 4.13 — P3 · M · [NOT STARTED] `FAQPage` exists on 1 of 45 pages
+### 4.13 — P3 · M · [PARTIAL 2026-11-08 · homepage half done] `FAQPage` exists on 1 of 45 pages
 
 `schema.mjs` → `faqPages: 1`. Since Google's August 2023 restriction it produces no rich result for a
 site of this type — treat it as machine-readable context (AEO), not as a rich-result play. One Q/A
 per `FAQPage` sitewide (`content-hub` rule); `schema.mjs` checks the parity.
+
+**The homepage half closed 2026-11-08** by commit `af8ba4c` (Sprint 4 row 4.3, with §3.5): the one
+`FAQPage` now carries ten real answers built from the same `faqs` the page renders, `moreAt` kept
+out of the markup. `node scripts/audit/schema.mjs` → ✅ 0 failures · `faqPages 1`. **Still open —
+Sprint 5.3:** per-service FAQs, each question unique sitewide; `faqPages` stays 1 until then.
 
 ---
 
@@ -552,9 +622,15 @@ See §3.1. **No 19th location until the existing 18 pass.** 7 × 18 = 126 cells;
 
 ### 5.4 — P2 · S · [⏳ BLOCKED · owner] Coverage and availability claims are unbounded
 
-`areaServed` claims `פריסה ארצית` while locations span קריות to באר שבע; 24/7 emergency is claimed
-sitewide (`claims-grep.mjs`: `around-the-clock` on 42 pages, `national-coverage` on 4, as of
-2026-08-23). Both are promises the business will be held to. Business-facts §E.
+The manifest `schema.areaServed` still reads `מרכז הארץ ופריסה ארצית` while locations span קריות to
+באר שבע, and whether 24/7 emergency service exists is unanswered (business-facts §E,
+owner-actions 3.5–3.6). Until Sprint 4 both were claimed sitewide (`claims-grep.mjs`:
+`around-the-clock` on 42 pages, `national-coverage` on 4, as of 2026-08-23). **The copy half is
+done:** the JSON-LD has emitted the 18 published locations instead of the phrase since `02a3144`
+(§4.8), and `1796ee7` (Sprint 4.1) took both out of the copy — `claims-grep.mjs` →
+`around-the-clock 0`, `national-coverage 0` live as of 2026-11-09; the footer and `/צור-קשר/` read
+`serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר"). What stays blocked is the roster value
+and the owner's answer (B5).
 
 ### 5.5 — P2 · S · [NOT STARTED] No geo signals
 
@@ -584,11 +660,18 @@ was gone but the edge answered **403** to every AI-crawler signature (N18). The 
 owner's and can revert without a repo change — **re-probe before every AEO claim; a `robots.txt`
 read proves nothing.** §6.2–§6.5 are no longer capped by this item.
 
-### 6.2 — P1 · M · [NOT STARTED] No page opens with an extractable answer block
+### 6.2 — P1 · M · [PARTIAL 2026-11-08 · `/` and `/מחירון/` done] No page opens with an extractable answer block
 
 `content-depth.mjs` (as of 2026-08-23): 0 of 36 service, location and post pages open with a
 40–60-word paragraph — services open with 3–4 words, locations with 16–17, posts with 1. Spec:
 content-standards §5. Closed by Phases 3–4 page by page.
+
+**`/` and `/מחירון/` closed 2026-11-08** by commit `af8ba4c` (Sprint 4 rows 4.2 and 4.4): the first
+`<p>` after the H1 is `homeAnswerBlock` on the homepage and `pricingPageCopy.answer` on the pricing
+page. Measured with the audit's own `tokens()` on that paragraph (the proxy itself covers only
+service, location, post and guide pages): `/` 46 words, `/מחירון/` 45 words. **Still open:** the
+proxy warns on service 7/7 (3–4 words, Sprint 5.2), location 18/18 (19–20 words, Sprint 6) and
+post 11/11 (1 word — the date, Sprint 7.6), as of 2026-11-09.
 
 ### 6.3 — P1 · L · [NOT STARTED] Nothing on the site is worth citing over a competitor
 
@@ -623,26 +706,48 @@ attributed to ten real named reviewers, invented cities, a hardcoded 5-star disp
 `components/marketing/Reviews.tsx` returns `null` unless reviews **and** a source URL exist —
 the guard is the rule made mechanical. Restore path: business-facts §A, verbatim only.
 
-### 7.2 — P1 · M · [NOT STARTED] Four load-bearing claims appear on nearly every page with nothing behind them
+### 7.2 — P1 · M · [✅ DONE 2026-11-08] Four load-bearing claims appeared on nearly every page with nothing behind them
 
 `claims-grep.mjs` as of 2026-08-23: `warranty-full` ("אחריות מלאה") live on 41 pages ·
 `around-the-clock` on 42 · `experience` ("ניסיון רב שנים", against `foundedYear: null`) on 3 ·
-`national-coverage` on 4 · two `superlative` hits at `lib/posts.ts:319` and `:557` (never permitted).
+`national-coverage` on 4 · two `superlative` hits in `lib/posts.ts` (never permitted). The owner
+has said the warranty term, licence, insurance and founding year are **not coming** (business-facts
+§B, §D), so the fix was to soften, not to wait. **Owner, 2026-10-12:** the blog posts' flagged
+claims were OK for now, to be fixed later — they were fixed in this item.
 
-The owner has said the warranty term, licence, insurance and founding year are **not coming**
-(business-facts §B, §D). So the fix is not to wait: soften "אחריות מלאה" → "אחריות על העבודה" and
-"ניסיון רב שנים" → mechanism depth, sitewide (Phase 6, `eeat-build`). Verify: `claims-grep.mjs` = 0.
+**Closed 2026-11-08** by commit `1796ee7` (Sprint 4 change set A, row 4.1), after N13 had moved the
+copy into `lib/content.ts`: "אחריות מלאה" → "אחריות על העבודה" with no term or scope; years of
+experience → what a repair involves; "24/7" → the published hours plus an urgent-fault line bounded
+to them; "פריסה ארצית" → `serviceAreaLine` and the 18 published areas; the speed and team claims
+out of `lib/content.ts`. In `lib/posts.ts`: the two superlatives, the experience line, and the three
+team / guarantee sentences the eeat-trust-auditor review named (`הצוות המומחה`, `צוות דן שערים`,
+"…לפתור את הבעיה במהירות"). No sentence the live registers quote was touched. Verified on the
+current `out/`:
 
-**Owner, 2026-10-12 (fleet wording sign-off page):** the blog posts' flagged claims are OK for now
-and get fixed later. Still open — not done; the posts (`lib/posts.ts`) keep their 🔶 claims until
-this item ships. The live surfaces quote the posts' advice, so a rewrite re-checks those quotes
-(CLAUDE.md §14).
+```bash
+node scripts/audit/claims-grep.mjs
+# ✅ pass · failingClaims 0 · totalHits 1 (the gated rating row in Reviews.tsx, 0 live)
+# liveOccurrences: all 13 claims 0 — warranty-full 0 · around-the-clock 0 · experience 0
+#                  national-coverage 0 · superlative 0 (77 · 75 · 9 · 7 · 2 on 2026-08-24)
+grep -rlE 'פריסה ארצית|24/7|אחריות מלאה|ניסיון רב' out --include=*.html | wc -l   # 0
+grep -rl 'הצוות המומחה\|צוות דן שערים' out --include=index.html | wc -l          # 0
+```
 
-### 7.3 — P1 · M · [⏳ BLOCKED · owner] Eight of nine published prices are authored estimates
+**Left, and why it is not this row:** three unclocked speed phrases in the posts ("שירות מהיר ואמין"
+in `שער-חשמלי-חוסך-זמן` and `שער-חשמלי-לא-מגיב`, "מקצועי, מהיר ואמין" in
+`שער-חשמלי-שעובד-כמו-חדש`) — permitted by eeat-and-trust §1.4, flagged `consider` by the
+eeat-trust-auditor, and they go with the post rewrites (Sprint 7.3). The lexicon has no pattern for
+team claims or for absolute workmanship promises; the change set B re-review found one of the
+latter on `/` ("ושום חלק לא מוחלף לפני שברור שהוא מקור התקלה", `homeDiagnosisCopy.intro`), open in
+the Sprint 4 Exit.
 
-The comment above `priceRows` in `lib/content.ts` says so. They are published on `/מחירון/` as a price list a
-customer will quote back. Real prices are **not coming** → pivot the page to what drives the price
-([keyword-map.md](keyword-map.md) §10) rather than waiting. Business-facts §D.
+### 7.3 — P1 · M · [✅ DONE 2026-11-08 · resolved by the N14 pivot] Eight of nine published prices were authored estimates
+
+Until Sprint 4 they were published on `/מחירון/` as a price list a customer would quote back. Real
+prices are **not coming** (business-facts §D), so the item was resolved by pivoting the page to what
+drives the price ([keyword-map.md](keyword-map.md) §10) rather than by waiting — N14, commit
+`af8ba4c`. `priceRows` now holds only the technician-visit row, marked 🔶 (is the band current?).
+Verification is N14's.
 
 ### 7.4 — P2 · M · [✅ DONE 2026-11-08 · registry + AboutPage] No person entity anywhere
 
@@ -678,10 +783,27 @@ page. Photos are **coming**
 (business-facts §F ⏳); the pipeline is the `site-images` skill. Cloudflare Image Transformations are
 enabled on this zone, so `SiteImage` works the day they land.
 
-### 7.6 — P2 · S · [NOT STARTED] The footer contradicts the CTA in a single viewport
+### 7.6 — P2 · S · [✅ DONE 2026-11-08] The footer contradicted the CTA in a single viewport
 
-Footer hours end at 18:00 and omit the emergency line, directly beneath a full-width CTA promising 24/7
-availability — visible together on all `FinalCta` pages. Resolves with §5.4 / §7.2.
+Until Sprint 4 the footer hours ended at 18:00 and omitted the emergency line, directly beneath a
+full-width CTA promising 24/7 availability — visible together on all `FinalCta` pages.
+
+**Closed 2026-11-08** by commit `1796ee7` (Sprint 4 change set A, row 4.6). The hours have one
+source: `siteConfig.hours.weekday` and `.friday` are built by `hoursLine()` from the manifest
+`schema.openingHours` — the same rows behind `openingHoursSpecification` — and
+`siteConfig.hours.emergency` is gone (its line is `contactPageCopy.emergencyLine`, which promises
+nothing outside the hours). The footer and `/צור-קשר/` print the two lines; the trust bar label, the
+`FinalCta` body and the homepage contact and urgent-fault answers interpolate them. Owner-actions
+3.5 is unanswered, so no CTA promises 24/7. Verified on the current `out/`:
+
+```bash
+# out/index.html openingHoursSpecification: Sunday–Thursday 08:00–18:00 · Friday 08:00–15:00 (two rows, no 24/7)
+grep -rl '24/7' out --include=index.html | wc -l   # 0
+node scripts/audit/claims-grep.mjs                 # around-the-clock 0 live · response-time 0 live
+```
+
+No script reads `openingHoursSpecification` against the visible lines (eeat-and-trust §9); the
+parity is held by the single source, not measured.
 
 ---
 
@@ -724,8 +846,9 @@ the values they keep in browser storage (`ls-status`, `ls-dlg-*`, `ls-pv`, `ls-t
 privacy page (`privacyPageCopy`) are in the tree. The built privacy page names Web3Forms, Google Tag
 Manager, the fields collected, the status-file read (`imgquarry.com`) and the four storage values
 (`ls-status`, `ls-dlg-*`, `ls-pv`, `ls-t`) — the owner's 2026-10-12 request above is met. The first
-`hebrew-editor` / `claims-verifier` pass is applied; **the row stays PARTIAL until both sign off on
-the fix pass.** Left out as unconfirmed owner policies, to restore only with a confirmed row in
+`hebrew-editor` / `claims-verifier` pass is applied, and both signed off on the 3C re-review, their
+last two should-fix sentences closed in `fba5957` (recorded in `ed24755`) — the row stays PARTIAL
+only on B2 and B10. Left out as unconfirmed owner policies, to restore only with a confirmed row in
 business-facts: the name Google Analytics (the open "GA4 measurement ID" row, Track B B2), that the
 details are never sold, that they are used "only" to call back and never for mailing, and access /
 correction / deletion on request. Whether a consent UI is needed at all is B10.
@@ -818,7 +941,7 @@ indexes and related links.
 
 ### 9.2 — P1 · S · [NOT STARTED] Six location pages are missing from the chrome
 
-`components/layout/Footer.tsx:76` renders `locations.slice(0, 12)`. `links.mjs` → `notInChrome: 6`
+`components/layout/Footer.tsx` renders `locations.slice(0, 12)`. `links.mjs` → `notInChrome: 6`
 (אשקלון, באר שבע, דרום, צפון, קריות, שרון); they are not strict orphans only because
 `/איזורי-שירות/` lists all 18.
 
@@ -829,7 +952,7 @@ No service page links to any city; no location links to another. Phase 3 adds `n
 
 ### 9.4 — P2 · S · [NOT STARTED] Related items are selected by array order
 
-`app/services/[service]/page.tsx:54` and `app/blog/[slug]/page.tsx:77` both `.slice(0, 4)`.
+The `others` lists in `app/services/[service]/page.tsx` and `app/blog/[slug]/page.tsx` both `.slice(0, 4)`.
 `links.mjs` warns: 2 of 7 service pages and 6 of 11 posts receive no related link at all.
 
 ### 9.5 — P1 · M · [NOT STARTED] The blog contains zero links
@@ -1080,9 +1203,9 @@ curl -o /dev/null -w '%{http_code}\n' "https://www.googletagmanager.com/gtm.js?i
 
 `cta-coverage.mjs` as of 2026-08-23: 113 CTA elements, 24 missing `data-cta`, only 9 distinct tagged
 elements (8 distinct values). Missing on `components/forms/LeadForm.tsx:221` (WhatsApp fallback) and
-`:208` (submit), the sticky-card `Button`s at `app/services/[service]/page.tsx:121` (tel) and `:125`
-(WhatsApp) (×7 pages), `app/צור-קשר/page.tsx:37` (tel), `:46` (WhatsApp) and `:59` (mailto), the
-`components/marketing/PricingTeaser.tsx:49` contact link (on `/` and `/מחירון/`) and the footer
+`:208` (submit), the sticky-card tel and WhatsApp `Button`s in `app/services/[service]/page.tsx` (×7 pages), the
+tel, WhatsApp and mailto links in `app/צור-קשר/page.tsx`, the
+`components/marketing/PricingTeaser.tsx` contact link (on `/` and `/מחירון/`) and the footer
 `mailto:`. The contact page is the highest-intent page on the site and reports nothing. The 9 tagged
 elements all sit in `Header`, `Footer`, `MobileCtaBar`, `Hero` and `FinalCta`
 (`grep -rn data-cta components`).
@@ -1272,7 +1395,7 @@ node scripts/audit/perf.mjs                 # ✅ clientComponents 3 — Faq is 
 
 ### N9 — P3 · S · [✅ DONE 2026-09-06] The footer year is hand-maintained
 
-`components/layout/Footer.tsx:7` — `const year = 2026;` with a "update yearly" comment. Derive it at
+`components/layout/Footer.tsx` — `const year = 2026;` with a "update yearly" comment. Derive it at
 build time; a static export is rebuilt on every deploy anyway.
 
 **Closed 2026-09-06** by commit `13a6bdc` (Sprint 1 change set B, row 1.13). `Footer` is an RSC, so
@@ -1330,10 +1453,10 @@ node scripts/audit/a11y.mjs   # ✅ contrastPairs "accent-foreground on accent-5
 ### N13 — P2 · M · [✅ DONE 2026-09-06] User-facing Hebrew and a phone literal live in route files
 
 Golden rule 6 says business facts come from `lib/site-config.ts` and CLAUDE.md §5 says copy lives in
-`lib/content.ts` — but `app/page.tsx:25` ends its metadata description with the literal
+`lib/content.ts` — but `app/page.tsx` ends its metadata description with the literal
 `חייגו 072-2587772` without importing `siteConfig` at all, and marketing copy is spread across
 `app/locations/[city]/page.tsx:31,43`, `app/אודות/page.tsx:15,34`, `app/שירותים/page.tsx:10,18`,
-`app/צור-קשר/page.tsx:12,71` and `components/marketing/{Hero,FinalCta,ServiceAreas}.tsx`.
+`app/צור-קשר/page.tsx` and `components/marketing/{Hero,FinalCta,ServiceAreas}.tsx`.
 
 This is the **mechanism** behind §7.2: each unconfirmed claim is spread over seven to nine files, so
 softening it is a hunt rather than one edit. Move the copy first, then soften once.
@@ -1355,25 +1478,47 @@ npm run audit -- --scope full                        # exit 26 · claims-grep 5,
 `claims-grep` did not move, and that is the expected result, not a miss: this row moves the claims
 into one file so §7.2 can soften each of them in one edit instead of nine.
 
-### N14 — P1 · M · [NOT STARTED] The `/מחירון/` price pivot is unblocked and overdue
+### N14 — P1 · M · [✅ DONE 2026-11-08] The `/מחירון/` price pivot was unblocked and overdue
 
-§7.3 and §4.10 are recorded as blocked on real prices — but the 2026-08-17 owner intake answered:
-real prices are **❌ not coming**. That resolves the item rather than deferring it. The page must stop
-being a price list of eight authored estimates and become _what determines the price_ (fault type,
-gate weight and width, motor class, whether the existing motor can be reused, access and cabling,
-whether the diagnosis fee is credited) — the pivot in `docs/keyword-map.md` §10, which targets the
-same intent, is more useful than a range, and needs no number the business has not confirmed.
+§7.3 and §4.10 were recorded as blocked on real prices — but the 2026-08-17 owner intake answered:
+real prices are **❌ not coming**. That resolved the item rather than deferring it: the page had to
+stop being a price list of eight authored estimates and become _what determines the price_ — the
+pivot in `docs/keyword-map.md` §10. Verified 2026-08-24: `grep -rl '800–1,500' out
+--include=index.html` → `out/index.html`, `out/מחירון/index.html`.
 
-Verified 2026-08-24: `grep -rl '800–1,500' out --include=index.html` → `out/index.html`,
-`out/מחירון/index.html`.
+**Closed 2026-11-08** by commit `af8ba4c` (Sprint 4 change set B, row 4.2). The eight authored rows
+are deleted; `priceRows` keeps only "ביקור טכנאי ואבחון" 150–350 ₪, marked `// 🔶 confirm`, and
+`visitFeeRange` is the one number any pricing copy interpolates. `/מחירון/` (`pricingPageCopy`)
+opens with an answer block and gives one question-form H2 per driver — the fault, the gate's weight
+and width, the motor class, whether the motor can be reused, access and cabling, what the visit
+covers (and whether its fee is credited, asked rather than stated — §D is 🔶), and what only shows
+once the motor is opened. Verified on the current `out/`:
 
-### N15 — P2 · S · [NOT STARTED] No transparency surface beyond a phone number
+```bash
+grep -rl '800–1,500' out --include=index.html | wc -l   # 0
+node scripts/audit/content-depth.mjs                    # pricing 945 unique / 400 · belowFloor 0
+node scripts/audit/schema.mjs                           # ✅ 0 failures — no Offer, /מחירון/ a plain WebPage
+```
 
-`grep -rnE 'ח\.פ\.|ע\.מ\.|תלונ|ביטול עסקה|החזר כספי' lib app` → nothing. No legal entity name, no
-ח.פ./ע.מ., no complaints route, no cancellation or refund path. The **absent street address is
-correct** for a service-area business (§5.6) and is not part of this item. A complaints and
-cancellation channel needs no owner fact beyond the phone, WhatsApp and email that already exist —
-it is the cheapest trust gain on the list. The ח.פ. itself stays 🔶 (business-facts §B).
+### N15 — P2 · S · [✅ DONE 2026-11-08] No transparency surface beyond a phone number
+
+Until Sprint 4: `grep -rnE 'ח\.פ\.|ע\.מ\.|תלונ|ביטול עסקה|החזר כספי' lib app` → nothing. No legal
+entity name, no ח.פ./ע.מ., no complaints route, no cancellation or refund path. The **absent street
+address is correct** for a service-area business (§5.6) and is not part of this item.
+
+**Closed 2026-11-08** by commit `af8ba4c` (Sprint 4 change set B, row 4.5). `/צור-קשר/` carries a
+`#complaints` section (`contactTransparencyCopy`): how to complain, cancel or reschedule a visit or
+ask about an invoice through the existing phone, WhatsApp and email, with the hours and no
+response-time promise; the footer links it (`footerTransparencyLink`). Verified on the current
+`out/`:
+
+```bash
+grep -c 'id="complaints"' out/צור-קשר/index.html     # 1
+grep -o 'href="/צור-קשר/#complaints"' out/index.html  # present in the footer
+node scripts/audit/links.mjs                         # brokenLinks 0
+```
+
+The ח.פ. and the legal entity name stay 🔶 (business-facts §B) and render nowhere.
 
 ### N16 — P2 · S · [✅ DONE 2026-11-08] The manifest is cast rather than narrowed
 
@@ -1423,7 +1568,7 @@ chrome to reach the content; the mobile-menu toggle was 40px (`h-10 w-10`).
 a skip link to `<main id="main" tabIndex={-1}>` (label `skipLinkLabel` in `lib/content.ts`) as the
 first focusable element, before the live-kit bar and the header; the menu toggle is `h-11 w-11`
 (44px), and the hero, final-CTA, service, pricing, thank-you and mobile-menu call / WhatsApp
-buttons are `Button size="lg"`. **Closed the same day:** the two buttons in the lead form's
+buttons are `Button size="lg"`. **Closed the same day** (commit `fba5957`): the two buttons in the lead form's
 delivery-failure alert (`form-whatsapp`, `form-call`) were `size="md"` — about 40px from
 `py-2.5` + `text-sm` — and are now `size="lg"` (`py-3.5` + `text-base`, about 52px), derived from
 the classes; `a11y.mjs` does not measure target size. The header call button is also `md` but is
@@ -1471,33 +1616,37 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    `_headers` for §12.1 and the report-only CSP for §12.2)~~ — shipped in the repo 2026-09-06, ADR 0004;
    live since the 2026-10-12/13 deploys (verified 2026-11-08).
 3. ~~**§10.1** font preloads~~ · ~~**§1.5** `og:url`~~ · ~~**§1.4** sitemap from data~~ ·
-   ~~**§12.1** `_headers`~~ · ~~**§3.3** triggers to content~~ · **§3.11–3.12** ·
-   ~~**§13.1** GTM to `<head>`~~ · ~~**§13.2** `data-cta`~~ — all struck items shipped in the repo
-   2026-09-06 (Sprint 1, commits `a0e0fe2` `13a6bdc` `cfff52f` `fee7f69`); also ~~§10.3~~, ~~N1~~,
-   ~~N9~~, ~~N10~~, ~~N13~~. §3.11–3.12 are the blog-cleanup remainder and did not ship.
+   ~~**§12.1** `_headers`~~ · ~~**§3.3** triggers to content~~ · ~~**§3.11–3.12**~~ ·
+   ~~**§13.1** GTM to `<head>`~~ · ~~**§13.2** `data-cta`~~ — shipped in the repo 2026-09-06
+   (Sprint 1, commits `a0e0fe2` `13a6bdc` `cfff52f` `fee7f69`); also ~~§10.3~~, ~~N1~~, ~~N9~~,
+   ~~N10~~, ~~N13~~. §3.11–3.12, the blog-cleanup remainder, shipped with Sprint 4.8 (`74a92d1`).
 4. ~~**§11.1** contrast (via N11)~~ · ~~**§11.2–11.5**~~ · ~~**N6 · N7**~~ — §11.1–11.5 and N11
    shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109`); N6 · N7 on 2026-09-06
-   with §1.1. → **Phase 1 = 2–4 + N1**, done except §3.11–3.12, the blog-cleanup remainder (now
-   Sprint 4.8).
+   with §1.1. → **Phase 1 = 2–4 + N1**, done in the repo.
 5. ~~**Phase 2 — schema:** §4.2 substance · §4.4 · §4.5 · §4.6 · §4.7/N2 · §4.8 · §4.9 · §4.10
    catalog half · §4.12 · §7.4 registry + `AboutPage` · N16~~ — shipped in the repo 2026-11-08
    (Sprint 2, commits `02a3144` `d8edb28`); `schema.mjs` → 0 failures, 0 warnings. §4.10's `Offer`
-   half stays ⏳ (business-facts §D) and is resolved by the N14 pivot, not by prices.
-6. **Sprint 4 — the truth pass (next):** §7.2 claims (`claims-grep` 5 is now half of what the audit
-   still fails) · N14 / §3.13 pricing pivot · §3.5 / §4.13 homepage FAQ · §6.2 homepage answer
-   block · N15 · §7.6 (bounded by B5) · §2.4–2.6 descriptions and titles · §3.11–3.12 blog debris.
-   Acceptance: `claims-grep.mjs` 0, home ≥ 800 words, `titles.mjs` description warnings 0.
-7. **Phase 3 — depth + navigation:** §3.1 / §3.2 (the decision on whether this domain ranks) ·
-   §2.3 · §5.2 · §9.1–9.4. Acceptance: `content-depth.mjs` floors + delta (the other 10 failures),
-   `links.mjs` 0 orphans and `notInChrome 0`.
-8. **Phase 4 — guides hub + block model:** §6.3 · §3.8 · §3.10 · §9.5 · §6.2 (ADR 0002, 0003) ·
-   §6.5 `llms.txt`.
+   half stays ⏳ (business-facts §D); the N14 pivot (Sprint 4) removed the authored prices it was
+   blocked on, leaving only the 🔶 visit band.
+6. ~~**Sprint 4 — the truth pass:** §7.2 claims · N14 / §7.3 / §3.13 pricing pivot · §3.5 / §4.13
+   homepage FAQ · §6.2 homepage and pricing answer blocks · N15 · §7.6 · §2.4–2.6 descriptions and
+   titles · §3.11–3.12 blog debris~~ — shipped in the repo 2026-11-08 (commits `1796ee7` `af8ba4c`
+   `74a92d1`): `claims-grep.mjs` 0, home 1535 unique / 800, `titles.mjs` 0 warnings,
+   `curlyQuotes 0`; audit 15 → 8. Partial by design: §3.13 (about and both indexes → Sprint 6.8),
+   §4.13 (service FAQs → 5.3), §6.2 (services, locations, posts → Sprints 5–7). Open: the change
+   set B reviewer should-fix items (Sprint 4 Exit) and the deploy.
+7. **Sprint 5 — service depth (next):** §3.2 · §6.2 and §4.13 for the 7 service pages · §9.4 ·
+   §2.4 re-derived inside the 120–160 window. Then **Sprint 6 — locations + navigation:** §3.1 (the
+   decision on whether this domain ranks) · §2.3 · §5.2 · §5.5 copy half · §9.1–9.3 · the rest of
+   §3.13. Acceptance: `content-depth.mjs` floors + delta (the 8 failures left), `links.mjs` 0
+   orphans and `notInChrome 0`, `claims-grep.mjs` still 0.
+8. **Phase 4 — guides hub + block model:** §6.3 · §3.8 · §3.10 · §9.5 · §6.2 for the posts
+   (ADR 0002, 0003) · §6.4 · §6.5 `llms.txt`.
 9. ~~**Phase 5 — engagement + CRO:** §8.1 · §8.3 · §8.4/N3 · §8.5 · N8 · §13.4–13.5 · §10.2 · N19~~
-   — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 PARTIAL —
-   two `md` buttons in the form's error alert); `a11y.mjs`,
-   `rtl-lint.mjs` and `cta-coverage.mjs` 0, `clientComponents` 3. Left: §8.2 (PARTIAL — the reviewer
-   sign-off on the privacy copy, and B2 / B10), §8.6 (PARTIAL — the GTM tag and B2), and the
-   engagement events (Sprint 8.1).
-10. **Phase 6 — E-E-A-T + AEO:** §7.2 · §7.6 · §6.5 · §7.5 photos (B4).
+   — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 closed
+   in `fba5957`, the form alert's buttons now `size="lg"`); `a11y.mjs`, `rtl-lint.mjs` and
+   `cta-coverage.mjs` 0, `clientComponents` 3. Left: §8.2 (PARTIAL — B2 / B10 only; the privacy
+   copy is signed off), §8.6 (PARTIAL — the GTM tag and B2), and the engagement events (Sprint 8.1).
+10. **Phase 6 — E-E-A-T + AEO:** ~~§7.2~~ · ~~§7.6~~ (Sprint 4) · §6.5 · §7.5 photos (B4).
 11. **Phase 7 — measurement:** §13.7 · §15.2 cadence · §15.3 (after B1, B2).
 12. Everything tagged `⏳ BLOCKED · owner` moves when [owner-actions.md](owner-actions.md) moves.

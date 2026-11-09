@@ -72,10 +72,10 @@ form, contact page) or `…ל${card.name}` (service sidebar); none asks for it. 
 | Page type          | Required positions                                                                                                                                                 |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Home               | `Hero` call + WhatsApp + the form card; `FinalCta`                                                                                                                 |
-| Service            | sidebar call + WhatsApp (untagged today, ×7); a pair **directly after the unresolved-variable block** (the `triggers` bullets, Phase 3); `FinalCta`                |
+| Service            | sidebar call + WhatsApp (tagged since `fee7f69`, ×7); a pair **directly after the unresolved-variable block** (the `triggers` bullets, Phase 3); `FinalCta`        |
 | Location           | a pair after the answer block once Phase 3 gives the page one; `FinalCta`                                                                                          |
-| Pricing            | **none today** (§8.5) — `pricing-call` + `pricing-whatsapp` beside the contact link, or `FinalCta`; the copy pivot is N14, a separate change                       |
-| Contact            | the form, call, WhatsApp, email — all untagged today                                                                                                               |
+| Pricing            | `pricing-call` + `pricing-whatsapp` under the answer block and again after the drivers (§8.5 ✅ `68a4a7f`, the pivot N14 ✅ `af8ba4c`); `FinalCta`                 |
+| Contact            | the form, call, WhatsApp, email — all tagged since `fee7f69`; the `#complaints` block's three since `af8ba4c`                                                      |
 | Post / guide       | **≤ 2 inline CTA blocks**, each after an unresolved-variable block, at most one the WhatsApp bridge (`engagement-ux`); build-enforced in `lib/guides.ts` (Phase 4) |
 | `/תודה/` (planned) | `thanks-call` + `thanks-whatsapp` as the immediate second touch (§8.3); legal pages and the 404 need nothing beyond the chrome                                     |
 
@@ -107,9 +107,9 @@ real anchor — no `window.open` is left (see 2.2).
 
 No invented testimonial, rating, badge, countdown or "X customers this month". The ten fabricated
 reviews are gone from the repo since 2026-08-17 and off the domain since the Sprint 0 deploy on 2026-09-06 — nothing may be built on the assumption that the live page is the repo; probe first. No
-`24/7` or `מיד` in an emergency CTA until business-facts §E is ✅ — `FinalCta` and `Hero` carry it
-today (§7.2: four claims, 168 renders on 42 pages as of 2026-08-24) beside a footer whose hours end
-at 18:00 (§7.6). Usable now: the sourced 150–350 ₪ visit fee, the process, the hours,
+`24/7` or `מיד` in an emergency CTA until business-facts §E is ✅ — `FinalCta` and `Hero` carried it
+until `1796ee7` (§7.2: four claims, 168 renders on 42 pages as of 2026-08-24) beside a footer whose
+hours ended at 18:00 (§7.6); both now read the published hours. Usable now: the sourced 150–350 ₪ visit fee, the process, the hours,
 `אחריות על העבודה` (`claims-grep.mjs`, `claims-verifier`).
 
 ## 2. The lead form — what is right, and the target spec

@@ -10,7 +10,7 @@ guide #7 duplicates guide #3, or a symptom page competes with the service page t
 
 **State as of 2026-08-23:** the hub does not exist. There is no `app/מדריכים/`, no `lib/guides.ts`,
 no `content/guides/`, and the only editorial model is `PostBlock = {type: "h" | "p" | "li"; text}`
-(`lib/posts.ts:9`). Phase 4 builds the route family and the block model (ADR 0002, ADR 0003) and
+(`lib/posts.ts`). Phase 4 builds the route family and the block model (ADR 0002, ADR 0003) and
 ships guides #1–#4 with it. Every decision below is made _now_ so that Phase 4 builds the right
 thing; nothing below is a live route. `/keyword-research` feeds this skill; `/new-guide` consumes
 its verdict; `article-auditor` gates what ships; `docs/content-calendar.md` is the queue.
@@ -73,7 +73,7 @@ instead of shipping a competing page. Until that file exists, `article-auditor` 
   belongs to pages that already rank for buying intent (`services`, `locations` in
   `lib/site-config.ts`; the `{service} ב{city}` set is 126 cells nobody builds — keyword-map §6).
 - **One Q/A string in exactly one `FAQPage` sitewide.** A guide FAQ question may not repeat a homepage
-  `faqs` question (`lib/content.ts:170-211`) or another guide's. `node scripts/audit/schema.mjs`
+  `faqs` question (`lib/content.ts`) or another guide's. `node scripts/audit/schema.mjs`
   checks the parity on the export (backlog §4.13).
 - **No two guides target the same Tier-3 query.** One symptom per URL: `לא נסגר` (#5), `לא נפתח`
   (#10) and `הפסקת חשמל` (#11) are three guides, not one with three H2s — and the legacy post
@@ -86,28 +86,33 @@ answer are not competing; pretending they are produces thin guides that dodge th
 
 ## The homepage-FAQ contract
 
-Do **not** shrink the homepage FAQ. It is the only `FAQPage` on the site (`app/page.tsx:33`) and it
+Do **not** shrink the homepage FAQ. It is the only `FAQPage` on the site (the `graph(` call in `app/page.tsx`) and it
 makes the homepage convert. Each question with a deep owner gains `moreAt: { href, label }` on its
 `faqs` entry; `Faq.tsx` renders it inside the answer panel **outside the `a` string**, so
 `faqJsonLd([...faqs])` still receives clean text. `lib/guides.ts` throws if a `moreAt` href names a
 slug that is not registered. The homepage passes more equity than any other page — this turns the
 biggest cannibalisation worry into the hub's strongest internal-link source.
 
-| Homepage FAQ (`lib/content.ts`)          | Owner                                                                 | Status      |
-| ---------------------------------------- | --------------------------------------------------------------------- | ----------- |
-| כמה זמן לוקח לתקן שער חשמלי?             | the תקלות overview guide (fold of `תקלות-נפוצות…`, cal. §4)           | ⏳ Phase 4  |
-| האם יש אחריות על התיקון?                 | stays home — no term is coming (business-facts §D)                    | no link-out |
-| מה כוללת תחזוקה שוטפת לשער?              | `/blog/תחזוקה-מונעת-לשערים-חשמליים/` once migrated to the block model | ⏳ Phase 4  |
-| איך לבחור שער חשמלי חדש?                 | #4 gate-type comparison                                               | ⏳ Phase 4  |
-| מה העלות של ביקור טכנאי לבדיקה?          | stays home → `/מחירון/` is already in the nav                         | no link-out |
-| האם אתם עובדים עם לקוחות פרטיים ועסקיים? | #3 ועד בית                                                            | ⏳ Phase 4  |
-| מה כוללת התקנה של שער חדש?               | #1 ת״י 900 (what a compliant installation must include)               | ⏳ Phase 4  |
-| איך ניתן ליצור קשר?                      | stays home; `/צור-קשר/`                                               | no link-out |
-| האם אתם מציעים שירותי חירום?             | #11 הפסקת חשמל ושחרור חירום                                           | ⏳ Phase 4+ |
-| כמה זמן לוקחת התקנה?                     | #4 (the matrix carries an install-duration axis)                      | ⏳ Phase 4  |
+Since `af8ba4c` (2026-11-08, Sprint 4.3) seven entries carry an interim `moreAt` to a page that
+exists today (`data-cta="faq-more"`, `links.mjs` → `brokenLinks 0`); each is retargeted to its guide
+when the guide ships.
 
-The `moreAt` wiring never edits the `a` strings. Deepening the 4–7-word answers is backlog §3.5 and
-the "אחריות מלאה" at `lib/content.ts:177` is `eeat-build`'s to soften — separate changes.
+| Homepage FAQ (`faqs` in `lib/content.ts`) | `moreAt` today (`af8ba4c`)           | Guide owner later                                           | Status             |
+| ----------------------------------------- | ------------------------------------ | ----------------------------------------------------------- | ------------------ |
+| כמה זמן לוקח לתקן שער חשמלי?              | `/blog/תקלות-נפוצות-בשערים-חשמליים/` | the תקלות overview guide (fold of `תקלות-נפוצות…`, cal. §4) | ✅ interim · Ph 4  |
+| האם יש אחריות על התיקון?                  | —                                    | stays home — no term is coming (business-facts §D)          | no link-out        |
+| מה כוללת תחזוקה שוטפת לשער?               | `/blog/תחזוקה-מונעת-לשערים-חשמליים/` | the same post once migrated to the block model              | ✅                 |
+| איך לבחור שער חשמלי חדש?                  | `/blog/שערים-חשמליים-השקעה/`         | #4 gate-type comparison                                     | ✅ interim · Ph 4  |
+| מה העלות של ביקור טכנאי לבדיקה?           | `/מחירון/`                           | stays `/מחירון/` (N14 pivot, "what determines the price")   | ✅                 |
+| האם אתם עובדים עם לקוחות פרטיים ועסקיים?  | `/services/שערים-לדירה/`             | #3 ועד בית                                                  | ✅ interim · Ph 4  |
+| מה כוללת התקנה של שער חדש?                | —                                    | #1 ת״י 900 (what a compliant installation must include)     | ⏳ Phase 4         |
+| איך ניתן ליצור קשר?                       | `/צור-קשר/`                          | stays `/צור-קשר/`                                           | ✅                 |
+| האם אתם מציעים שירותי חירום?              | `/blog/שער-חשמלי-לא-מגיב/`           | #11 הפסקת חשמל ושחרור חירום                                 | ✅ interim · Ph 4+ |
+| כמה זמן לוקחת התקנה?                      | —                                    | #4 (the matrix carries an install-duration axis)            | ⏳ Phase 4         |
+
+The `moreAt` wiring never edits the `a` strings. The thin 4–7-word answers were deepened in
+`af8ba4c` (backlog §3.5 ✅) and "אחריות מלאה" was softened to "אחריות על העבודה" in `1796ee7`
+(§7.2 ✅) — both separate changes from the link-outs, as this contract requires.
 
 ## Wiring — why an orphan is impossible
 
@@ -126,12 +131,14 @@ three-axis mesh city × gate type × symptom is `/internal-linking`'s.
 
 ## The pricing pivot
 
-`/מחירון/` publishes 9 ranges of which only the 150–350 ₪ visit fee is sourced (`lib/content.ts:157`,
-business-facts §D); real prices are **not coming**. So the hub never carries a price: component and
-comparison guides explain _what determines the price_ — fault type, gate weight and width, motor
-class, whether the existing motor is reusable, cabling run, whether the visit fee is credited — and
-link to `/מחירון/`, which keyword-map §10 pivots to the same framing. `כמה עולה…` queries route
-there, never to a guide. Prices, where quoted at all, interpolate from `priceRows`.
+`/מחירון/` published 9 ranges until `af8ba4c` (N14, 2026-11-08); only the 150–350 ₪ visit fee was
+sourced, and it is now the one number the page shows (`priceRows` → `visitFeeRange`, 🔶 as to
+whether it is current; business-facts §D). Real prices are **not coming**. So the hub never carries
+a price: component and comparison guides explain _what determines the price_ — fault type, gate
+weight and width, motor class, whether the existing motor is reusable, cabling run, whether the
+visit fee is credited — and link to `/מחירון/`, which has carried that framing since N14
+(keyword-map §10). `כמה עולה…` queries route
+there, never to a guide. Prices, where quoted at all, interpolate `visitFeeRange`.
 
 ## Cadence and the calendar
 

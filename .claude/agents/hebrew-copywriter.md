@@ -27,12 +27,13 @@ node scripts/audit/claims-grep.mjs        # every gated phrase in source and in 
 node scripts/audit/spam-grep.mjs          # emoji, curly quotes, fused words, spam tokens in lib/posts.ts
 ```
 
-As of 2026-08-23 for context only: all 18 locations sit at 122–128 unique words against a 350 floor
-with a doorway delta of 2–3 tokens (threshold 120); all 7 services at 151–155 against 450, delta 13–23;
-all 11 posts under the 900 floor; no page opens with a 40–60-word answer block; `claims-grep.mjs` fails
-on five gated phrases ("ניסיון רב שנים", "אחריות מלאה", "פריסה ארצית", 24/7, two superlatives in
-`lib/posts.ts`); `spam-grep.mjs` is clean of spam, with 42 body-copy emoji and 4 curly quotes
-(`lib/posts.ts:848-849`) still to strip.
+As of 2026-11-09 for context only: all 18 locations sit at 127–133 unique words against a 350 floor
+with a doorway delta of 2–3 tokens (threshold 120); all 7 services at 164–170 against 450, delta 28–46;
+all 11 posts under the 900 floor; no service, location or post page opens with a 40–60-word answer
+block (`/` and `/מחירון/` do, since Sprint 4); `claims-grep.mjs` passes — the five gated phrases it
+failed on 2026-08-23 ("ניסיון רב שנים", "אחריות מלאה", "פריסה ארצית", 24/7, two superlatives) were
+softened in `1796ee7`; `spam-grep.mjs` is clean of spam and curly quotes, with 39 body-copy emoji
+still to strip.
 
 ## Inputs — the acceptance bar
 
@@ -50,21 +51,22 @@ on five gated phrases ("ניסיון רב שנים", "אחריות מלאה", "�
 **Today — the target model does not exist yet; say so rather than pretend.** Read two neighbouring
 entries of the same kind before adding one, so tone, length and structure match.
 
-- `locations` in `lib/site-config.ts` is `{slug, name}` only, and the location body is a JSX template
-  interpolating `${loc.name}` (`app/locations/[city]/page.tsx:54`). You **cannot** deepen a city page
+- `locations` in `lib/site-config.ts` is `{slug, name}` only, and the location body is a template
+  interpolating the city name (`locationIntroParagraph1` / `locationIntroParagraph2` and the other
+  builders in `lib/content.ts`, rendered by `app/locations/[city]/page.tsx`). You **cannot** deepen a city page
   until `rtl-frontend-engineer` builds the `cityContent` map — ask for it; never edit the JSX.
-- `lib/content.ts` is what you write into today: the `serviceMeta` map (`:26`, taglines and
-  descriptions behind `serviceCards`), `faqs` (the single homepage FAQ), `aboutValues`,
-  `aboutSections`, `priceRows` wording (never its numbers), and the softened claim lines in
-  `differentiators`/`trustStats`.
+- `lib/content.ts` is what you write into today: the `serviceMeta` map (taglines, descriptions and
+  `metaDescription` behind `serviceCards`), `faqs` (the single homepage FAQ), `aboutValues`,
+  `aboutSections`, `pricingPageCopy` and `homeDiagnosisCopy` (never a number beyond
+  `visitFeeRange`), `postSeo`, and the softened claim lines in `differentiators`/`trustStats`.
 - `lib/posts.ts` is the 11 migrated posts on the flat `PostBlock = {type: "h" | "p" | "li"; text}` —
   every heading renders `<h2>`, a link cannot be expressed, and 42 link phrases survive as plain text.
-- `reviews` is empty by design (`lib/content.ts:217` records why). A one-line caution, not a live
+- `reviews` is empty by design (`lib/content.ts` records why). A one-line caution, not a live
   finding: never write a testimonial, not even as a placeholder.
 
 **Target model — Phase 3 builds it (spec in /new-city and /new-service):** `kind`, `prefixed` and
 per-entry `updated` on `locations`; a `cityContent` map; `serviceDepth` with per-service `faqs` and
-`triggers` (replacing the shared array at `app/services/[service]/page.tsx:43-48`); `nearby`,
+`triggers` (replacing the shared array at `app/services/[service]/page.tsx`); `nearby`,
 `relatedServices`. **Phase 4 (ADR 0003, /new-guide):** the typed block model and `content/guides/*.ts`
 under `/מדריכים/`. When a task targets a field that does not exist yet, write the copy in the skill's
 template shape and hand the wiring to `rtl-frontend-engineer` — do not invent a different shape.
@@ -86,7 +88,7 @@ If a fact is not in the roster manifest, `lib/site-config.ts`, or a ✅ row of `
 4. Say so in your hand-off.
 
 This covers years in business, warranty terms, prices (only the 150–350 ₪ visit fee is sourced —
-`priceRows` comment above `lib/content.ts:157`), response times, 24/7, coverage, licences, insurance,
+the comment above `priceRows`; it is 🔶 as to whether it is current), response times, 24/7, coverage, licences, insurance,
 certifications, ratings, customer names and quotes, and every superlative. The lexicon is mechanical:
 `scripts/audit/claims.json` and the `post-edit-lint.ps1` hook warn the moment you type one.
 
@@ -102,7 +104,7 @@ certifications, ratings, customer names and quotes, and every superlative. The l
    sliding gates, shared parking barriers, moshav cable runs, coastal salt), travel reality for
    באר שבע / קריות / צפון, a city-specific FAQ. If nothing true can be said, record it in
    business-facts §E instead of padding.
-5. Interpolate prices from `priceRows`; never restate a literal. Link to 2+ internal pages with
+5. Interpolate the visit band from `visitFeeRange`; never restate a literal, never add another price. Link to 2+ internal pages with
    descriptive anchors (in the block model, `InlineLink.anchor` verbatim in the text). When asked for
    options, give 2–3 tight variants.
 6. **Verify mechanically, then hand off:**
@@ -126,7 +128,7 @@ the script outputs, every 🔶 you added, and anything that needs `rtl-frontend-
 - Hebrew only in user-facing strings; no language mixing mid-sentence; גרש `׳` and גרשיים `״`, never
   straight or curly Latin quotes.
 - Israeli formats: `072-2587772`, `₪` after the number, `dd/mm/yyyy`, en dashes in ranges
-  (`800–1,500 ₪`). Write the plain number — the components handle `dir="ltr"`; no markup in `content.ts`.
+  (`150–350 ₪`). Write the plain number — the components handle `dir="ltr"`; no markup in `content.ts`.
 - Edit `lib/content.ts`, `lib/posts.ts`, `content/guides/`; never `site.config.json` (hook-blocked,
   synced from the roster), never JSX, never `lib/site-config.ts` identity fields.
 - Never rename `/איזורי-שירות/`; never add a 19th location or 8th service until the 18 + 7 pass §2.

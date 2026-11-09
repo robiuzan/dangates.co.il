@@ -53,7 +53,7 @@ to the prefilled message, a `tel:` link (`data-cta="form-call"`), and relabels t
 `leadFormErrorCopy.retryLabel` so retrying is one press. Its strings live in `leadFormErrorCopy` in
 `lib/content.ts`. The three failure paths (no-key misconfig, fetch `catch`, non-ok response) push
 `lead_error` with `reason` `network` or `http_<code>`; `popup_blocked` retired with `window.open`.
-Its two buttons are `size="md"` (≈40px) — the one tap-target gap left (backlog N19).
+Its two buttons are `size="lg"` (≈52px) since `fba5957` — the last tap-target gap, closed (backlog N19 ✅).
 
 **Still open under §8.6:** nothing consumes `lead_error`. No GTM tag or trigger reads it, and no GA4
 property exists to receive it (§13.7 ⏳ owner, B2). That is container work, not a repo change.
@@ -95,8 +95,9 @@ Shipped in `68a4a7f`: an optional `<select id="lf-city" name="city">` built from
 
 Shipped in `68a4a7f`: `pricing-call` and `pricing-whatsapp` beside `pricing-contact` in
 `PricingTeaser`, so `/מחירון/` has a call and a WhatsApp action inside `<main>`. The page's _copy_
-problem — eight of nine prices are authored estimates and real ones are not coming — is backlog
-N14 / §7.3 (Sprint 4.2), not a CRO change.
+problem — eight of nine prices were authored estimates and real ones are not coming — closed with
+N14 / §7.3 in `af8ba4c` (Sprint 4.2): the page explains what determines the price, and a second
+`pricing-call` / `pricing-whatsapp` pair sits under its answer block.
 
 ## `data-cta` coverage
 
@@ -120,13 +121,13 @@ Conversion work that adds pressure without adding proof makes the page worse.
 - Real reviews arrive one way: the Google Business Profile (`docs/owner-actions.md` §2.1–2.2, ⏳),
   quoted **verbatim** with name, rating and date into `reviews` — `docs/gbp-runbook.md`. Escalate to
   that; never substitute urgency copy.
-- What may be used today: the sourced technician-visit fee (150–350 ₪, `priceRows`), the five-step
+- What may be used today: the technician-visit band (150–350 ₪, `visitFeeRange`, 🔶 current), the five-step
   process, the hours, "אחריות על העבודה" (not a term). Not: years in business, a warranty term,
   licence, insurance, "פריסה ארצית" — `docs/business-facts.md` §B–§E; `claims-grep.mjs` fails a
   live 🔶 claim and `claims-verifier` reviews every copy change.
-- The footer hours (`Footer`) end at 18:00 directly beneath a `FinalCta`
-  promising 24/7 (§7.6) — one viewport, two stories. Bound the promise to what the owner confirms
-  (§5.4) rather than deleting the hours.
+- The footer hours (`Footer`) ended at 18:00 directly beneath a `FinalCta` promising 24/7 until
+  `1796ee7` (§7.6 ✅) — one viewport, two stories. Both now read `siteConfig.hours`; a CTA may add
+  availability only once the owner confirms it (§5.4, owner-actions 3.5).
 - The accent CTA's **hover** and the WhatsApp button failed AA contrast until 2026-11-08; they pass
   now (`accent-500` 6.79:1, `whatsapp` 5.42:1 — §11.1, N11 ✅). A CTA a person can't read is a
   conversion bug — keep `a11y.mjs` at 0.

@@ -16,8 +16,9 @@ paths:
   and add a row to business-facts.
 - `reviews` stays empty and `REVIEW_SOURCE_URL` stays `null` until verbatim reviews from a public
   profile exist. The `Reviews.tsx` gate depends on both — never bypass it.
-- `priceRows`: only the technician-visit range is sourced. Prices are interpolated from this array,
-  never restated as literals elsewhere.
+- `priceRows` holds only the technician-visit range (🔶 whether current) since N14 (`af8ba4c`) — the
+  eight authored per-gate ranges are gone; never add one back. Copy interpolates `visitFeeRange`,
+  never restates the literal elsewhere.
 - `lib/posts.ts` is **untrusted migrated input**. After any edit run
   `node scripts/audit/spam-grep.mjs`. The flat `PostBlock` model is slated for replacement by the
   guides block model (ADR 0003) — don't extend it ad hoc.

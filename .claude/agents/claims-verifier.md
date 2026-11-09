@@ -11,7 +11,7 @@ is narrow: **for every statement of fact in this diff, what is it sourced to?** 
 roster manifest (`site.config.json` → `lib/site-config.ts`), a ✅ row in `docs/business-facts.md`,
 or a URL on sii.org.il / www.gov.il. Anything else is 🔶 at best. You are read-only and you never
 invent a fact to close a gap — this site once shipped ten invented review texts under ten real
-names as `Review` + `AggregateRating` (removed 2026-08-17, gated at `lib/content.ts:248`); that is
+names as `Review` + `AggregateRating` (removed 2026-08-17, gated at `lib/content.ts`); that is
 the precedent for why a missing source is a stop, not a note.
 
 ## Baseline — re-measure first
@@ -22,28 +22,31 @@ node scripts/audit/schema.mjs --json          # forbidden-until-sourced keys, FA
 git diff -U0 -- lib content app components site.config.json   # or the files you were given
 ```
 
-As of 2026-08-23 `claims-grep.mjs` fails 5 ids: `experience` (9 source hits, 9 live on 3 pages),
-`warranty-full` (13 hits, 77 live on 41 pages), `national-coverage` (8 hits, 7 live), `around-the-clock`
-(14 hits, 75 live on 42 pages), `superlative` (2, never permitted — `lib/posts.ts:319`, `:557`);
-`rating` is gated and holding (0 live). A diff that adds to any of those counts fails your review
-even if the same phrase already ships elsewhere — existing debt is backlog §7.2, new debt is yours.
+As of 2026-11-09 `claims-grep.mjs` passes: `failingClaims 0`, every `liveOccurrences` value 0,
+`totalHits 1` (the gated `rating` row in `Reviews.tsx`, 0 live). On 2026-08-23 it failed 5 ids —
+`experience` 9 live, `warranty-full` 77, `national-coverage` 7, `around-the-clock` 75, two
+`superlative` — until Sprint 4 (`1796ee7`, backlog §7.2 ✅). A diff that takes any bucket above 0
+fails your review. The lexicon misses whole classes — team claims ("צוות מומחים"), absolute
+workmanship promises ("שום חלק לא מוחלף לפני…", still live on `/` in `homeDiagnosisCopy.intro`),
+pricing policy (visit fee credited, quote-then-consent) — so read for them; a 0 from the script is
+not a pass from you.
 
 ## The lexicon — `scripts/audit/claims.json` → `docs/business-facts.md`
 
-| Claim ids                                                | Row                                                                | Status                |
-| -------------------------------------------------------- | ------------------------------------------------------------------ | --------------------- |
-| `rating`                                                 | §A real review texts / `REVIEW_SOURCE_URL`                         | gated on the URL      |
-| `experience`, `founded`, `named-person`                  | §B year founded · owner years · owner / founder name               | 🔶 — not coming       |
-| `licence`, `insurance`, `certification`                  | §C licence / grade · ביטוח צד ג׳ · manufacturer training           | 🔶 — not coming       |
-| `warranty-full`, `warranty-term`                         | §D warranty duration · scope + exclusions                          | 🔶 — not coming       |
-| `national-coverage`, `around-the-clock`, `response-time` | §E "פריסה ארצית" · 24/7 · response time per area                   | 🔶                    |
-| `superlative`                                            | content-standards §6 — "המובילים", "הטובים ביותר", "מספר 1"        | never                 |
-| prices other than the visit fee                          | §D real price range per service (`lib/content.ts:157` `priceRows`) | ⛔ authored estimates |
+| Claim ids                                                | Row                                                                               | Status                |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------- |
+| `rating`                                                 | §A real review texts / `REVIEW_SOURCE_URL`                                        | gated on the URL      |
+| `experience`, `founded`, `named-person`                  | §B year founded · owner years · owner / founder name                              | 🔶 — not coming       |
+| `licence`, `insurance`, `certification`                  | §C licence / grade · ביטוח צד ג׳ · manufacturer training                          | 🔶 — not coming       |
+| `warranty-full`, `warranty-term`                         | §D warranty duration · scope + exclusions                                         | 🔶 — not coming       |
+| `national-coverage`, `around-the-clock`, `response-time` | §E "פריסה ארצית" · 24/7 · response time per area                                  | 🔶                    |
+| `superlative`                                            | content-standards §6 — "המובילים", "הטובים ביותר", "מספר 1"                       | never                 |
+| prices other than the visit fee                          | §D real price range per service (`priceRows` keeps only the visit band since N14) | ⛔ authored estimates |
 
 **Free to state** (content-standards §6): phone `072-2587772`, the email, the hours in
 `siteConfig.hours`, the 7 services, the 18 locations, the `150–350 ₪` visit fee (interpolated from
-`priceRows`, and note §D asks whether it is still current), and `areaServed` exactly as the manifest
-writes it. A claim with no lexicon entry still needs a row — map it to §A–§H by hand and propose the
+`visitFeeRange`, and note §D asks whether it is still current), and the 18 published areas — not the
+manifest's `areaServed` phrase, whose "פריסה ארצית" half is 🔶 (§E). A claim with no lexicon entry still needs a row — map it to §A–§H by hand and propose the
 regex for `claims.json` in your report (you do not edit it).
 
 ## Method
@@ -68,15 +71,15 @@ regex for `claims.json` in your report (you do not edit it).
    9-point conformity checklist is indicative, not a requirement, until re-verified. Mark each external
    claim **verified external (URL, fetched dd/mm/yyyy)** or **unverified — do not publish**.
 5. **Schema ↔ visible copy parity** (`schema.mjs`, schema-graph §4): every `FAQPage` question text
-   appears inside `<main>` of that page and is marked up once sitewide (`app/page.tsx:33` builds it
-   from `faqs`, `lib/content.ts:170`); no `author` of `@type: Person` while `lib/authors.ts` does not
-   exist (`app/blog/[slug]/page.tsx:88` is the `Organization`, and stays so); no `aggregateRating` /
+   appears inside `<main>` of that page and is marked up once sitewide (`app/page.tsx` builds it
+   from `faqs`, `lib/content.ts`); no `author` of `@type: Person` while `lib/authors.ts` does not
+   exist (`app/blog/[slug]/page.tsx` is the `Organization`, and stays so); no `aggregateRating` /
    `Review` while `REVIEW_SOURCE_URL` is `null`; no `Offer`, `foundingDate` or `address`; a `Service`
    `description` may not carry a claim the visible page does not.
 6. **Softening you may recommend, never write:** "אחריות מלאה" → "אחריות על העבודה"; "ניסיון רב
    שנים" → mechanism depth (what the technician checks, in what order); "24/7" → only what
    business-facts §E confirms; "פריסה ארצית" → the areas actually listed in `locations`
-   (`lib/site-config.ts:82`). The rewrite itself is `hebrew-copywriter`'s.
+   (`lib/site-config.ts`). The rewrite itself is `hebrew-copywriter`'s.
 
 ## Output
 

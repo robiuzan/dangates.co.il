@@ -36,7 +36,7 @@ edit-time warning and your count must agree. As of 2026-11-08 it reports 0 banne
    is **Critical** — it fails the build or silently produces nothing.
 2. **Hebrew dynamic routes.** `[service]`, `[city]`, `[slug]` params arrive percent-encoded during
    export. The silos match with `decodeURIComponent(param).normalize("NFC")`
-   (`app/services/[service]/page.tsx:27`, `app/locations/[city]/page.tsx:18`). A new Hebrew dynamic
+   (`findCard` in `app/services/[service]/page.tsx`, `findLocation` in `app/locations/[city]/page.tsx`). A new Hebrew dynamic
    route that skips this 404s in production and works in dev.
 3. **Strict typing.** No `any`; no non-null `!` to silence the compiler; every indexed read is
    `T | undefined` — narrowed, not asserted. The manifest is narrowed at the boundary by
@@ -71,7 +71,7 @@ SiteManifest`. Any new `as unknown as` is a finding.
 10. **Trailing slashes.** The export runs with `trailingSlash: true`; `navItems` and the crumb
     `href`s carry the `/` since `cfff52f` (N10 ✅). A new internal href without it is a finding — the
     export scan in backlog N10 is the proof.
-11. **Blog rendering.** `app/blog/[slug]/page.tsx:34-69` `renderBlocks` groups consecutive `li`
+11. **Blog rendering.** `app/blog/[slug]/page.tsx` `renderBlocks` groups consecutive `li`
     blocks into a `<ul>` via a mutable `list` array and `flush(key)`. Read it: flush keying, the
     trailing flush at `:69`, and whether `ul-${key}` collides with index-keyed siblings. The block
     model is `{ type: "h" | "p" | "li"; text }` only — no nested headings, tables or links yet (the

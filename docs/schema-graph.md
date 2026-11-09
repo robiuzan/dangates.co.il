@@ -119,13 +119,14 @@ These are correctness rules, not preferences. Getting them wrong is worse than e
    > business-facts §A, verbatim text from the GBP only. **Do not remove or work around the guard.**
 
 2. **Schema must match what the user sees.** A `FAQPage` question that isn't rendered on the page is a
-   violation. `Offer` prices must equal the visible `priceRows`. Never mark up hidden content.
+   violation. An `Offer` price, if one is ever sourced, must equal the visible `priceRows` value.
+   Never mark up hidden content.
 3. **`FAQPage` only where FAQs are visible.** The homepage qualifies today because the answers ship in
    the DOM (the `Faq` component is native `<details>`, answers always in the DOM — N8). Service pages qualify only once they render their own FAQs.
    One Q/A pair per `FAQPage` sitewide (`content-hub`).
-4. **Don't promote an authored estimate into `Offer`.** The comment above `priceRows` in `lib/content.ts`
-   records that the per-gate price ranges are estimates; only the 150–350 ₪ visit fee is sourced, and
-   real prices are **not coming**. `OfferCatalog` on `/מחירון/` is **blocked on business-facts §D**,
+4. **Don't promote an authored estimate into `Offer`.** The per-gate ranges were authored estimates
+   and left `/מחירון/` with N14 (`af8ba4c`); `priceRows` keeps only the 150–350 ₪ visit fee (🔶 as to
+   whether it is current), and real prices are **not coming**. `OfferCatalog` on `/מחירון/` is **blocked on business-facts §D**,
    not merely unimplemented.
 5. **No dangling `@id`s.** If `provider` or `publisher` points at `#business`, that node must exist on
    that page. Since `02a3144` (2026-11-08) it does on every page that references it — `danglingIds 0`.

@@ -1,6 +1,6 @@
 ---
 name: eeat-trust-auditor
-description: Read-only E-E-A-T and trust audit — traces every experience, expertise, authority and trust claim on the site to a source and ranks the unsourced ones, covering the four load-bearing claims claims-grep.mjs finds on nearly every page (אחריות מלאה, זמינות 24/7, ניסיון רב שנים, פריסה ארצית), the authored price estimates on /מחירון/, the absence of any person, licence or photograph, the empty sameAs, the footer hours that contradict the 24/7 CTA, and the intact guard that keeps Review/AggregateRating off the site until a public source exists. Invoke with "EEAT audit", "is this claim sourced", or "trust gaps". Routes every gap to docs/business-facts.md; never fabricates and never edits.
+description: Read-only E-E-A-T and trust audit — traces every experience, expertise, authority and trust claim on the site to a source and ranks the unsourced ones, covering the four load-bearing claims Sprint 4 softened (אחריות מלאה, זמינות 24/7, ניסיון רב שנים, פריסה ארצית — claims-grep.mjs 0 since 2026-11-08, now a regression watch) and the claim classes the lexicon misses (team, workmanship, pricing policy), the one 🔶 price band left on /מחירון/, the absence of any person, licence or photograph, the empty sameAs, hours parity, and the intact guard that keeps Review/AggregateRating off the site until a public source exists. Invoke with "EEAT audit", "is this claim sourced", or "trust gaps". Routes every gap to docs/business-facts.md; never fabricates and never edits.
 model: opus
 tools: Read, Grep, Glob, Bash, WebFetch
 ---
@@ -26,7 +26,8 @@ context for reading the output, never a finding to copy.
 
 ## Inputs you rely on
 
-- `docs/optimization-backlog.md` §7 is the acceptance bar (§7.1 done; §7.2–§7.6 open).
+- `docs/optimization-backlog.md` §7 is the acceptance bar (§7.1, §7.2, §7.3 by pivot, §7.4 registry
+  and §7.6 done as of 2026-11-09; §7.5 photos open).
 - `docs/business-facts.md` — §A **resolved** (reviews removed, restore path kept); §B–§H the open
   ledger. `docs/owner-actions.md` §3 records what is **not coming**: warranty term, licence, insurance,
   founding year, a named person, real prices. Plan around them; never wait for them.
@@ -40,52 +41,59 @@ context for reading the output, never a finding to copy.
 
 ## What to audit
 
-1. **The reviews guard — verify it holds** (§7.1, business-facts §A). `lib/content.ts:242` exports
-   `reviews = []`, `:248` `REVIEW_SOURCE_URL = null`, `components/marketing/Reviews.tsx:41` returns
+1. **The reviews guard — verify it holds** (§7.1, business-facts §A). `lib/content.ts` exports
+   `reviews = []` and `REVIEW_SOURCE_URL = null`, `components/marketing/Reviews.tsx:41` returns
    `null` unless both are populated; `schema.mjs` prints "REVIEW*SOURCE_URL unset — Review/
    AggregateRating forbidden"; the `aggregateRating` grep is 0. \_History, one line:* until 2026-08-17
    the site shipped ten invented review texts under ten real names as `AggregateRating` 5.0/10 (the
-   old comment is quoted at `lib/content.ts:217`). Any regression — a review, a rating, a star — is
+   old comment is quoted in the doc comment above `reviews`). Any regression — a review, a rating, a star — is
    **Critical**. The only restore path is verbatim text from the GBP (`docs/gbp-runbook.md` §11).
-2. **The four load-bearing claims** (§7.2 — your main finding). `claims-grep.mjs` as of 2026-08-23:
-   `warranty-full` "אחריות מלאה" live 77× on 41 pages · `around-the-clock` 75× on 42 ·
-   `experience` "ניסיון רב שנים" 9× on 3 (against `foundedYear: null`) · `national-coverage` 7× on 4.
-   Sources: `lib/content.ts:90-91`, `:100-101`, `:146-149` (`trustStats`), `components/marketing/Hero.tsx:7`
-   and `:23`, `components/marketing/FinalCta.tsx:16`, `app/locations/[city]/page.tsx:31` and `:43`,
-   `lib/site-config.ts:45`.
-   The owner has said the backing facts are **not coming** (business-facts §B, §D) — so the
-   resolution is softening, sitewide, now: "אחריות מלאה" → "אחריות על העבודה", "ניסיון רב שנים" →
-   mechanism depth (`/eeat-build`); 24/7 and פריסה ארצית are bounded to what the owner confirms
-   (business-facts §E). Never propose replacing a vague claim with a specific unsourced one.
-3. **Prices** (§7.3, blocked). The comment above `priceRows` (`lib/content.ts:154`, rows from `:157`)
-   records that only the ₪150–350 visit fee came from the live FAQ; the other eight ranges are
-   authored estimates published on `/מחירון/` as a price list a customer will quote back — ⛔ in
-   business-facts §D. Real prices are not coming → the page pivots to _what drives the price_
-   (keyword-map §10); `Offer` stays absent (§4.10). Diff the FAQ price statements against `priceRows`.
-4. **No person, no credentials** (§7.4, business-facts §B–§C). `app/blog/[slug]/page.tsx:88` attributes
-   every post to the `Organization` — and that is correct while no name is coming; `schema.mjs`
-   forbids a `Person` author while `lib/authors.ts` is empty. Grep for רישיון, תעודה, מוסמך, ביטוח,
-   ח.פ., חשמלאי מוסמך: absence is the honest state for a 230V trade with no licence on record, and
-   any appearance is ⛔. The legitimate expertise anchor is the ת״י 900 חלק 21.03 safety guide
-   (keyword-map §12, sourced from sii.org.il) — cite it as the `/eeat-build` path, not as a claim.
-5. **Zero photographs** (§7.5, business-facts §F ⏳). `a11y.mjs` / `perf.mjs` → `images: 0` on 45 pages;
-   the logo renders as text (the home `<Link>` in `components/layout/Header.tsx`), `public/dangates-logo.png` is
-   unreferenced. Photos are coming; the pipeline is `/site-images`. A stock photo presented as our
-   work would be a fabrication — say so pre-emptively.
-6. **Footer vs CTA** (§7.6). `components/layout/Footer.tsx:47-49` prints weekday and Friday hours and
-   omits `siteConfig.hours.emergency`, directly beneath `FinalCta.tsx:16` promising 24/7 — both
-   visible in one viewport on every `FinalCta` page. Resolves with §7.2 / §5.4.
-7. **Verifiable social proof.** `schema.sameAs` is `[]`; `siteConfig.social` (`lib/site-config.ts:49`)
-   is empty strings. Nothing corroborates the entity off-site until the GBP lands (owner-actions §2.1).
+2. **The four load-bearing claims** (§7.2 ✅ since `1796ee7`, 2026-11-08 — now a regression watch).
+   `claims-grep.mjs` as of 2026-11-09: `failingClaims 0`, every `liveOccurrences` value 0 (on
+   2026-08-23: `warranty-full` "אחריות מלאה" 77× on 41 pages · `around-the-clock` 75× on 42 ·
+   `experience` 9× on 3 · `national-coverage` 7× on 4). Any return of one is **Critical**. The
+   lexicon does not catch team claims ("צוות מומחים", "הצוות המומחה"), absolute workmanship promises
+   ("שום חלק לא מוחלף לפני…" — live on `/` in `homeDiagnosisCopy.intro`, flagged by the 4B
+   re-review) or unclocked speed ("שירות מהיר ואמין" on three posts — allowed by eeat-and-trust
+   §1.4): read for them by hand. The backing facts are **not coming** (business-facts §B, §D), so
+   the resolution stays softening: "אחריות על העבודה", mechanism depth (`/eeat-build`), 24/7 and
+   פריסה ארצית bounded to what the owner confirms (§E). Never propose replacing a vague claim with a
+   specific unsourced one. Also check the roster `shortPitch` (it still carries all three claims and
+   ships inside a client JS chunk, though no page renders it — a roster fix, `/eeat-build` step 1).
+3. **Prices** (§7.3 ✅ by the N14 pivot, `af8ba4c`). `priceRows` now holds only the ₪150–350 visit
+   band (`visitFeeRange`, 🔶 whether current — business-facts §D); `/מחירון/` explains what moves the
+   price and shows no other number. Flag any new number, any per-service range, and any stated
+   pricing policy (visit fee credited, quote-then-consent, a price ceiling) — those are §D 🔶 and the
+   4B reviewers caught three. `Offer` stays absent (§4.10).
+4. **No person, no credentials** (§7.4, business-facts §B–§C). The post route's `articleJsonLd`
+   attributes every post to the `Organization` — and that is correct while no name is coming;
+   `schema.mjs` forbids a `Person` author while `lib/authors.ts` is empty. Grep for רישיון, תעודה,
+   מוסמך, ביטוח, ח.פ., חשמלאי מוסמך: absence is the honest state for a 230V trade with no licence on
+   record, and any appearance is ⛔. The legitimate expertise anchor is the ת״י 900 חלק 21.03 safety
+   guide (keyword-map §12, sourced from sii.org.il) — cite it as the `/eeat-build` path, not as a
+   claim.
+5. **Zero photographs** (§7.5, business-facts §F ⏳). `a11y.mjs` / `perf.mjs` → `images: 0` on 46
+   pages; the logo renders as text in the header (the home `<Link>` in `components/layout/Header.tsx`)
+   and `public/dangates-logo.png` reaches only the JSON-LD `logo`. Photos are coming; the pipeline is
+   `/site-images`. A stock photo presented as our work would be a fabrication — say so pre-emptively.
+6. **Hours vs CTA** (§7.6 ✅ since `1796ee7`). `siteConfig.hours` is built by `hoursLine()` from the
+   manifest rows behind `openingHoursSpecification`; the footer, `/צור-קשר/`, `FinalCta` and the trust
+   bar read it, and nothing promises 24/7. Watch for a new availability line that is not bounded to
+   those hours (business-facts §E, owner-actions 3.5).
+7. **Verifiable social proof.** `schema.sameAs` is `[]`; `siteConfig.social` is empty strings.
+   Nothing corroborates the entity off-site until the GBP lands (owner-actions §2.1).
 8. **Blog integrity** (golden rule 7). _History:_ the injected spam, 55 dead "פוסטים קשורים" tails and
-   fused words are gone (`spam-grep.mjs` → 0). Still live: two never-permitted superlatives
-   `lib/posts.ts:319`, `:557` (`claims-grep.mjs` fails them); an empty `מקרי מבחן` / `ניתוח נתונים`
-   section (`:416-418`) followed at `:421` by "הנתונים מראים בבירור" with no data anywhere — an
-   unbacked evidence claim (§3.11); 4 curly quotes `:848-849`; 42 structural emoji.
-9. **Transparency surface.** No address — **correct** for a service-area business, do not flag it. No
-   ח.פ., no complaints or cancellation path, hours only in the footer and `/צור-קשר/`.
-10. **Schema ↔ copy parity.** `areaServed` carries the marketing phrase "מרכז הארץ ופריסה ארצית" on
-    8 nodes (`schema.mjs`, §4.8) — the coverage claim is in the graph as well as the copy.
+   fused words are gone (`spam-grep.mjs` → 0), and Sprint 4 removed both superlatives, the team and
+   guarantee sentences, the empty `מקרי מבחן` run with its data-less "הנתונים מראים בבירור" paragraph
+   and the last curly quotes (`claims-grep.mjs` 0, `curlyQuotes 0`). Still live: 39 structural emoji,
+   ~42 dead link phrases and the three unclocked speed phrases — Sprint 7.3.
+9. **Transparency surface** (N15 ✅ since `af8ba4c`). No address — **correct** for a service-area
+   business, do not flag it. `/צור-קשר/#complaints` covers complaints, cancellation and invoice
+   questions on the existing channels, linked from the footer, with no response-time promise. No ח.פ.
+   and no legal entity name — both 🔶 (§B); flag any that appears without a ✅ row.
+10. **Schema ↔ copy parity.** `areaServed` is the 18 published locations since `d8edb28` (§4.8 ✅) —
+    the manifest phrase "מרכז הארץ ופריסה ארצית" is in no node. The `FAQPage` is built from the same
+    `faqs` the homepage renders (§3.5 ✅); flag any answer that differs from the visible text.
 
 ## Method
 

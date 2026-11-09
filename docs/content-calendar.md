@@ -49,7 +49,7 @@ volumes; no volume exists for any of them and none may be added without a data s
 | #   | Pillar        | Family     | Working title (Hebrew)                                                      | Target query                                    | Evidence                                                               | Links down to                                                         | Status  | Owner facts needed                                                                                                                                                    |
 | --- | ------------- | ---------- | --------------------------------------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | בטיחות ותקנים | safety     | ת״י 900 חלק 21.03 — מה התקן דורש משער חשמלי, ומי אחראי כשהוא לא עומד בו     | `תקן שערים חשמליים` · `ת״י 900 שער חשמלי`       | §12 (sii.org.il; one competitor's flagship guide cites UL 325 instead) | all 7 services; `/אודות/`                                             | planned | none — buildable now. Two **external** facts to verify on sii.org.il / gov.il before publish: the 2006 date, whether a licensed electrician is legally required (§12) |
-| 2   | תקלות         | symptom    | שער חשמלי רועש או חורק — מאיפה הרעש מגיע ומה לבדוק לפני שקוראים לטכנאי      | `שער חשמלי רועש` · `שער חשמלי חורק`             | §2 Tier 3, §8.1 — no standalone page anywhere in the market            | שערים-נגררים (גלגלים/מסילה) · שערי-כנף (צירים/בוכנה) · שערים-מתרוממים | planned | none. Visit fee interpolates from `priceRows` (`lib/content.ts:157`); whether it is current is 🔶 (§D)                                                                |
+| 2   | תקלות         | symptom    | שער חשמלי רועש או חורק — מאיפה הרעש מגיע ומה לבדוק לפני שקוראים לטכנאי      | `שער חשמלי רועש` · `שער חשמלי חורק`             | §2 Tier 3, §8.1 — no standalone page anywhere in the market            | שערים-נגררים (גלגלים/מסילה) · שערי-כנף (צירים/בוכנה) · שערים-מתרוממים | planned | none. Visit fee interpolates from `priceRows` (`lib/content.ts`); whether it is current is 🔶 (§D)                                                                    |
 | 3   | ועד בית       | committee  | מחסום חניה בבית משותף — מה ועד הבית צריך לאשר, ומתי נדרש רוב של בעלי הדירות | `מחסום חניה ועד בית` · `התקנת מחסום בבית משותף` | §8.6 (communal property → committee approval)                          | שער-זרוע · שערים-לחניה · שערים-לדירה                                  | planned | none. The approval/majority thresholds must cite the law text (gov.il/nevo), not a competitor — `claims-verifier`                                                     |
 | 4   | בחירה         | comparison | שער נגרר, שער כנף או שער קונזולי — איזה שער מתאים לכניסה שלכם               | `שער קונזולי` · `שער נגרר או כנף`               | §8.4, §8.8, §11.6 (competitors run the matrix)                         | שערים-נגררים · שערי-כנף · שערים-לחניה                                 | planned | 🔶 does the business install cantilever gates — shapes the CTA, not the content. No 8th service (CLAUDE.md §12)                                                       |
 | 5   | תקלות         | symptom    | שער חשמלי לא נסגר עד הסוף — מה לבדוק, לפי הסדר                              | `שער חשמלי לא נסגר`                             | §2 Tier 3 (midrag, pro.co.il, masgernet)                               | שערים-נגררים · שערי-כנף · guide #7 (עינית)                            | planned | none. The content-standards §5 "good" answer block is this exact question — reuse it                                                                                  |
@@ -95,10 +95,11 @@ queries → `/מחירון/` pivoted to "what determines the price" (§10), not 
 tails) — and since the Sprint 0 deploy on 2026-09-06 so is the **live domain** (until then one post
 still served the injected token and all 11 ended in the dead "פוסטים קשורים" tail —
 [growth-roadmap.md](growth-roadmap.md) §1). In the clean build, **all 11 are under the 900-word
-floor** (438–584 unique words), all 11 open with scene-setting instead of an answer block, every
-heading renders `<h2>` (`app/blog/[slug]/page.tsx:55-59`), 42 in-copy link phrases are still plain
-text, 4 Latin curly quotes remain at `lib/posts.ts:848-849`, and 42 emoji (💡 ×33) are used as
-structure. Two clusters of three posts each cover one topic under three titles (benefits;
+floor** (439–574 unique words as of 2026-11-09), all 11 open with scene-setting instead of an
+answer block, every heading renders `<h2>` (the post route maps every `h` block to one), 42 in-copy
+link phrases are still plain text, and 39 emoji (💡 ×31) are used as structure. The last 4 Latin
+curly quotes, both superlatives and the empty `מקרי מבחן` section went in Sprint 4 (`1796ee7`
+`74a92d1`). Two clusters of three posts each cover one topic under three titles (benefits;
 maintenance).
 
 The decisions below are a **proposal**. Rewriting migrated posts needs owner approval
@@ -115,7 +116,7 @@ where it is; ADR 0002 moves a post to `/מדריכים/` only once it is rewritt
 | תחזוקה-מונעת-לשערים-חשמליים | 08/06/2025 | keep + migrate  | stays in `/blog/`, block model, pillar תקלות (prevention)                  | the most specific of the three maintenance posts; gains the inspection checklist and links to #2, #7, #15                         |
 | יתרונות-שער-חשמלי-לעסק      | 12/05/2025 | 301             | `/blog/שערים-חשמליים-השקעה/` (its לעסק section)                            | benefits post #2 of 3; the B2B angle that has real demand is ועד בית (guide #3), not generic "for your business"                  |
 | חשיבות-תחזוקת-שערים-חשמליים | 12/05/2025 | 301             | `/blog/תחזוקה-מונעת-לשערים-חשמליים/`                                       | maintenance post #2 of 3, shares a publish date with the one above                                                                |
-| החלפה-או-תיקון-שער-חשמלי    | 16/04/2025 | fold into guide | guide #12, 301                                                             | the one post with a decision question; carries the 4 curly quotes (`lib/posts.ts:848-849`) and a `למה לבחור ב…` section to drop   |
+| החלפה-או-תיקון-שער-חשמלי    | 16/04/2025 | fold into guide | guide #12, 301                                                             | the one post with a decision question; its 4 curly quotes went in `74a92d1`; a `למה לבחור ב…` section still to drop               |
 | שער-חשמלי-לא-מגיב           | 23/02/2025 | fold into guide | guide #6 (the remote half) + #11 (the power/manual-release half), 301 → #6 | one legacy post, two evidenced symptoms; splitting is what makes each rank                                                        |
 | שער-חשמלי-שעובד-כמו-חדש     | 30/01/2025 | 301             | `/blog/תחזוקה-מונעת-לשערים-חשמליים/`                                       | maintenance post #3 of 3                                                                                                          |
 
@@ -162,8 +163,8 @@ moves no longer need batching — edit `REDIRECTS.md` and rerun `node scripts/ge
 4. **The dangates 🔶 list** the auditors apply: the ₪150–350 visit fee is the only sourced price and
    is itself 🔶 current; no per-job price; no warranty term ("אחריות על העבודה", never "מלאה" with a
    number); no licence, insurance or founding year; no named person — `author` stays the
-   `Organization`; WhatsApp on the lead number is unconfirmed; 24/7 and "פריסה ארצית" are bounded
-   claims. External facts (ת״י 900, חוק החשמל) cite sii.org.il or gov.il, never a competitor.
+   `Organization`; WhatsApp goes to `+972556601006`, never the lead number (owner-actions 3.7); 24/7
+   and "פריסה ארצית" are 🔶 and the site claims neither since `1796ee7`. External facts (ת״י 900, חוק החשמל) cite sii.org.il or gov.il, never a competitor.
 5. **Every H2 in the hub is unique across all guides** — and the body under a similar heading is
    written from that guide's angle. The doorway test applies inside the hub exactly as it does across
    the 18 location pages.

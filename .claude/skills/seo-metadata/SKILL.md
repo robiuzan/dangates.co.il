@@ -15,13 +15,14 @@ node scripts/audit/links.mjs           # one H1, heading order, sitemap parity, 
 npm run audit -- --scope seo           # both, plus content-depth.mjs
 ```
 
-As of 2026-09-06 `titles.mjs` **passes**: 45 pages, 45 unique titles, 45 unique descriptions, brand
-once on every page, `ogUrlMissing 0` (§1.5 closed by `13a6bdc`). Its remaining output is 24
-warnings, none of them failures: **7 blog titles render at 63–72 chars** (§2.5); service
-descriptions run **163–229 chars** on 5 of 7, three of them 190–229 (§2.4); **2 blog descriptions
-end mid-sentence** with no terminal punctuation (§2.6); 10 more descriptions sit outside the 120–160
-band, the two legal pages worst at 40 and 57 (§2.4); 18 location descriptions are one interpolated
-token apart (§2.3). Re-run the script before quoting any of these.
+As of 2026-11-09 `titles.mjs` **passes with 0 warnings**: 46 pages, 46 unique titles, 46 unique
+descriptions, brand once on every page, `ogUrlMissing 0` (§1.5 closed by `13a6bdc`). The 24
+warnings it printed on 2026-09-06 — 7 blog titles at 63–72 chars (§2.5), service descriptions at
+163–229 chars (§2.4), 2 blog descriptions cut mid-sentence (§2.6), the two legal pages at 40 and 57 —
+went with Sprint 4.7 (`74a92d1`): `ServiceMeta.metaDescription`, `postSeo` and the rewritten index,
+legal and location descriptions. Not measured by the script: the 18 location descriptions are still
+one interpolated token apart (`locationMetaDescription(cityName)`, §2.3, Sprint 6.3). Re-run the
+script before quoting any of these.
 
 ## The template rule
 
@@ -44,9 +45,9 @@ title: card.name;
 title: `${card.name} | ${siteConfig.name}`;
 ```
 
-Fixed everywhere: `app/services/[service]/page.tsx:38` is `title: card.name`,
-`app/locations/[city]/page.tsx:30` is the bare `תיקון שערים חשמליים ב${loc.name}`, `/אודות/` is
-`title: "אודות"`. `titles.mjs` fails on a second brand token, so the regression cannot ship through
+Fixed everywhere: the service route's `generateMetadata` writes `title: card.name`, the location
+route writes the bare `locationPageTitle(loc.name)` (`תיקון שערים חשמליים ב${cityName}`), and
+`/אודות/` writes `title: crumbLabels.about`. `titles.mjs` fails on a second brand token, so the regression cannot ship through
 `npm run gate`. If a page ever needs the brand suppressed, use `title: { absolute: "…" }` — never a
 second brand token to "work around" the template.
 
@@ -73,13 +74,16 @@ produces `בשרון`/`בצפון` for the four region entries where the correct
 
 120–160 chars (`thresholds.json`), unique per route, ending in terminal punctuation, following
 keyword-map §5: service + place, one **true** differentiator, then an action with the phone.
-Service descriptions today are `card.description` — the page's opening paragraph verbatim — which is
-why they overrun; write a dedicated meta string in `lib/content.ts` (`serviceMeta`) instead.
-Locations need a per-city string from the Phase 3 `cityContent` map, not a template.
+Service descriptions are their own field since `74a92d1`: the route reads
+`ServiceMeta.metaDescription` and falls back to `card.description` (the page's opening paragraph,
+which overran at 163–229 chars when it doubled as the meta line). Keep them separate — a new service
+gets a `metaDescription` in `serviceMeta`, 120–160 chars, ending in punctuation. Posts read `postSeo`
+(title ≤ 60, description 120–160) before `post.title` / `post.excerpt`. Locations need a per-city
+string from the Phase 3 `cityContent` map, not a template.
 
 Only claim what `docs/business-facts.md` marks ✅. The warranty term, licence, insurance, years in
 business and 24/7 are 🔶 or ❌ — `claims-grep.mjs` fails the build on the lexicon. `אחריות מלאה`
-and `זמינות 24/7` appear in every location description today (§7.2) — soften when rewriting.
+and `זמינות 24/7` sat in every location description until `1796ee7` (§7.2 ✅); never bring them back.
 
 ## Canonicals
 
@@ -136,7 +140,7 @@ new route that skips this is the only way that number moves.
 
 `app/sitemap.ts` builds services, locations and posts from the data arrays, gives every entry a
 trailing slash, `encodeURI`s the Hebrew, and uses **real content dates** for `<lastmod>`
-(`services[].updated`, `locationsUpdated` at `lib/site-config.ts:112`, `posts[].updated ?? date`).
+(`services[].updated`, `locationsUpdated` at `lib/site-config.ts`, `posts[].updated ?? date`).
 Never `new Date()` — bump the dates only for real copy edits.
 
 The registry: `staticPages` in `lib/site-config.ts` (typed `StaticPage`, optional `noindex`) is the one list of the nine static routes; `app/sitemap.ts` derives from it and `links.mjs` cross-checks it against the `app/` tree both ways (§1.4, done 2026-09-06 in `c047d4d`). Add a top-level page → add its row, or `links.mjs` fails naming the route. Still open: `navItems` hrefs lack the trailing slash (N10). Phase 4: the guides registry `lib/guides.ts` (ADR 0002) appends the `/מדריכים/` entries the same way. Never hand-maintain a second URL list.

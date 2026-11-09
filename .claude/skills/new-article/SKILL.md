@@ -1,6 +1,6 @@
 ---
 name: new-article
-description: Repair, migrate or retire one of the 11 legacy blog posts under /blog/[slug]/ — the flat PostBlock model in lib/posts.ts and its limits, the remaining migration debt (curly quotes, superlatives, the empty מקרי מבחן section, 42 dead link phrases, an all-h2 outline), the keep / fold / 301 decisions in content-calendar §4, and the block-model migration per ADR 0003. New editorial never starts here — it goes through /new-guide. Use when cleaning or migrating a migrated post. Triggers: "fix the blog content", "clean up this post", "migrate the posts", "blog post", "מאמר ישן", "לתקן את הבלוג".
+description: Repair, migrate or retire one of the 11 legacy blog posts under /blog/[slug]/ — the flat PostBlock model in lib/posts.ts and its limits, the remaining migration debt (42 dead link phrases, 39 emoji, an all-h2 outline — the curly quotes, superlatives and the empty מקרי מבחן section went in Sprint 4), the keep / fold / 301 decisions in content-calendar §4, and the block-model migration per ADR 0003. New editorial never starts here — it goes through /new-guide. Use when cleaning or migrating a migrated post. Triggers: "fix the blog content", "clean up this post", "migrate the posts", "blog post", "מאמר ישן", "לתקן את הבלוג".
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 ---
 
@@ -26,22 +26,20 @@ As of 2026-08-23 the repo and `out/` are clean of injected spam (`spamHits: 0`, 
 `relatedTails: 0` — the 55 dead "פוסטים קשורים" headings and the 6 run-together words are gone; the
 PostToolUse hook re-checks every edit). What remains, all in `lib/posts.ts`:
 
-| Debt                                                                                            | Where                                                                   | Backlog |
-| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------- |
-| 4 Latin curly quotes (U+2019 around the brand) — use גרשיים `״` or drop them                    | `lib/posts.ts:848-849`                                                  | §3.12   |
-| Two "הדרך הטובה ביותר" superlatives — unprovable, replace with the mechanism                    | `lib/posts.ts:319`, `:557`                                              | §7.2    |
-| Three consecutive headings with no body; `:421` then claims `הנתונים מראים בבירור` with no data | `lib/posts.ts:416-418` (`מקרי מבחן`, `ניתוח נתונים`)                    | §3.11   |
-| 42 link phrases ("📌 למידע נוסף…", "היכנסו למחירון", "בקרו בעמוד צור קשר") as plain text        | the 42 emoji lines `spam-grep.mjs` counts (💡 ×33, 📌 ×4, 📞 ×4, 💬 ×1) | §3.8    |
-| Every heading renders `<h2>` — 15–31 sibling H2s per post, the source outline is gone           | `app/blog/[slug]/page.tsx:57` (`renderBlocks`, `:34`)                   | §3.10   |
-| No post opens with an answer block; all 11 are under the 900-word floor (438–584 unique)        | `content-depth.mjs` post rows                                           | §6.2    |
-| No post carries `updated:` — every `<lastmod>` is the 2025 publish date                         | `grep -n "updated:" lib/posts.ts` → nothing                             | §6.4    |
+| Debt                                                                                                         | Where                                                                   | Backlog   |
+| ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- | --------- |
+| ~42 link phrases ("📌 למידע נוסף…", "היכנסו למחירון", "בקרו בעמוד צור קשר") as plain text                    | the 39 emoji lines `spam-grep.mjs` counts (💡 ×31, 📌 ×4, 📞 ×3, 💬 ×1) | §3.8      |
+| Three unclocked speed phrases ("שירות מהיר ואמין", "מקצועי, מהיר ואמין") — allowed, but the last on the site | `שער-חשמלי-חוסך-זמן`, `שער-חשמלי-לא-מגיב`, `שער-חשמלי-שעובד-כמו-חדש`    | §7.2 note |
+| Every heading renders `<h2>` — 15–31 sibling H2s per post, the source outline is gone                        | `app/blog/[slug]/page.tsx` (`renderBlocks`)                             | §3.10     |
+| No post opens with an answer block; all 11 are under the 900-word floor (439–574 unique)                     | `content-depth.mjs` post rows                                           | §6.2      |
+| No post carries `updated:` — every `<lastmod>` is the 2025 publish date                                      | `grep -n "updated:" lib/posts.ts` → nothing                             | §6.4      |
 
 The first three are fixable today inside the flat model. The rest need the block model.
 
 ## The model today, and its ceiling
 
 ```ts
-// lib/posts.ts:9
+// lib/posts.ts
 export type PostBlock = { type: "h" | "p" | "li"; text: string };
 // Post = { slug, title, date, updated?, excerpt, blocks }
 ```
@@ -70,16 +68,20 @@ and nothing else — the guide is written to the `/new-guide` bar, not pasted.
 
 ## Operation A — clean a post today (flat model)
 
-1. Fix the row you came for: quotes at `:848-849`, superlatives at `:319` / `:557`, the empty
-   section at `:416-418` (delete it — there is no data to give it). Keep `date`; set `updated` to
-   today's ISO date on any body edit, so `app/sitemap.ts` (`p.updated ?? p.date`) and, after Phase 2,
+1. Fix the row you came for (the quotes, superlatives and empty section this step once named were
+   fixed in Sprint 4). Keep `date`; set `updated` to today's ISO date on any body edit — Sprint 4
+   edited seven post bodies without setting it (`grep -c "updated:" lib/posts.ts` → 0 as of
+   2026-11-09, backlog §6.4) — so `app/sitemap.ts` (`p.updated ?? p.date`) and, after Phase 2,
    `dateModified` move.
 2. Do **not** strip the 42 emoji link phrases yet — they mark where the real links go when the post
    migrates. Leave the emoji count to the migration.
 3. Re-run `spam-grep.mjs` and `grep -rniE 'onlyfans|leaked|casino|porn|allgatesrepair' lib/posts.ts`
    (must print nothing); `npm run gate`.
-4. Hand the diff to `hebrew-editor` → `claims-verifier`. A post that says "ניסיון רב" (`:850`) or
-   "אחריות מלאה" is a 🔶 hit — soften per business-facts §B/§D while you are in the file.
+4. Hand the diff to `hebrew-editor` → `claims-verifier`. A post that says "ניסיון רב", a team claim
+   ("צוות מומחים") or "אחריות מלאה" is a 🔶 hit — soften per business-facts §B/§D while you are in
+   the file. Sprint 4 (`1796ee7` `74a92d1`) already removed the ones the posts carried, plus the last
+   curly quotes, both superlatives and the empty `מקרי מבחן` section (`claims-grep.mjs` 0,
+   `curlyQuotes 0`).
 
 ## Operation B — migrate a "keep" post to the block model (Phase 4)
 
@@ -99,7 +101,7 @@ and nothing else — the guide is written to the `/new-guide` bar, not pasted.
    target. The `article-auditor` verdict gates publication exactly as for a guide.
 7. Rebuild; `content-depth.mjs` post row clears the floor and the answer-block proxy;
    `spam-grep.mjs` emoji count drops by the post's share; `links.mjs` → `relatedPostTargets` grows
-   past the 5 array-leading siblings that `app/blog/[slug]/page.tsx:77` `.slice(0, 4)` hands every
+   past the 5 array-leading siblings that `app/blog/[slug]/page.tsx` `.slice(0, 4)` hands every
    related link to today.
 
 ## Schema

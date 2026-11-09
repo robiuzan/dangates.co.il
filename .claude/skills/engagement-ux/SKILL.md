@@ -91,9 +91,9 @@ trust the page was written to build.
 - Every CTA anchor carries `data-cta` as `{location}-{action}` (`article-inline-call`,
   `article-aside-whatsapp`) — `cta-coverage.mjs` fails otherwise, and GTM reads nothing else.
 - 🔶 Never promise a response time in a CTA ("תוך שעה", "מיד") — business-facts §E.
-- Service pages today: the shared `triggers` bullets at `app/services/[service]/page.tsx:43` are
-  the unresolved-variable block; the page's CTA belongs directly after them, not only in
-  `FinalCta` at `:157`.
+- Service pages today: the per-service `serviceTriggers` bullets (shared by all seven until `cfff52f`)
+  are the unresolved-variable block; the page's CTA belongs directly after them, not only in
+  `FinalCta`.
 
 ## No pop-ups, no exit-intent, no chat widgets
 
@@ -121,7 +121,7 @@ applies unchanged: static export, no backend, ~dozens of clicks a month cannot i
 **body → related services → locations → FAQ → more guides → `FinalCta`.** The FAQ sits immediately
 before the banner on purpose — the last objection handler — and `FinalCta` must never be the only
 exit: a reader still deciding needs a lateral link. Related services by relevance, not
-`.slice(0, 4)` (`app/services/[service]/page.tsx:54`); locations all 18, not `Footer.tsx:76`'s
+`.slice(0, 4)` (the `others` list in `app/services/[service]/page.tsx`); locations all 18, not the footer's `locations.slice(0, 12)`'s
 `.slice(0, 12)` — both are `/internal-linking` Phase 3 work. "More guides" exists once `/מדריכים/`
 exists (Phase 4).
 

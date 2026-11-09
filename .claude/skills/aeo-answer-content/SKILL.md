@@ -126,8 +126,9 @@ An assistant picks the source that answers most precisely. Generic reassurance l
 with a number. What this site lacks (backlog §6.3), and where each gets built:
 
 - A **fault → what-determines-the-price map** (motor, לוח פיקוד, עינית, שלט, מסילה/גלגלים) — not a
-  price table: the per-gate ranges on `/מחירון/` are authored estimates (business-facts §D,
-  keyword-map §10 pivot). Say what moves the price; quote only the visit fee.
+  price table: the per-gate ranges `/מחירון/` carried were authored estimates and left with the N14
+  pivot (`af8ba4c`; business-facts §D, keyword-map §10). Say what moves the price; quote only the
+  visit fee (`visitFeeRange`).
 - **תיקון מול החלפה**: cost drivers, downtime, expected remaining life, when each is right.
 - **Gate-type selection**: נגרר / כנף / מתרומם / זרוע by plot width, slope, clearance, traffic.
 - **Operator lifespan and what shortens it** — mechanism depth, no invented years.
@@ -144,8 +145,9 @@ citations than ten reassuring pages.
 ## Freshness and authorship
 
 Assistants discount undated, unattributed content. The 11 posts emit `datePublished` and
-`dateModified` (`app/blog/[slug]/page.tsx:84-85`), but `dateModified` is pinned to the publish date
-and `updated` is set on 0 of 11 (backlog §6.4) — a freshness signal that says nothing. Set `updated`
+`dateModified` (`articleJsonLd`, from `updated ?? date` since `02a3144`), but `updated` is set on
+0 of 11 (backlog §6.4) — Sprint 4 edited seven post bodies without setting it — so `dateModified`
+still equals the publish date — a freshness signal that says nothing. Set `updated`
 only for a real copy change (`/new-article`).
 
 **Authorship: no person, by design** — the owner intake says no name is coming (owner-actions §3.3).

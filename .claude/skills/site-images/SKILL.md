@@ -38,7 +38,7 @@ photos (owner) ──► Media Studio  https://studio.imgquarry.com   (c:/Users/
 roster/sites/dangates.json  ═══ MERGES the `images` key only ═══►  site.config.json   (never hand-edit either)
         │  ops/validate-manifests.ps1  (Test-ImageRef: key not a URL · width/height ≥ 1 · altHe ≥ 6 chars with Hebrew · not a filename)
         ▼
-lib/site-config.ts  `manifest.images`  (lib/site-config.ts:20)
+lib/site-config.ts  `manifest.images`  (lib/site-config.ts)
         │
         ▼
 <SiteImage image={manifest.images.hero} sizes="…" priority />      import { SiteImage } from "@ishub/site-kit/components"

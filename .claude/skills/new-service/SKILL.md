@@ -18,16 +18,17 @@ service page is one `serviceMeta.description` paragraph; the trigger list, proce
 related grid are byte-identical across all seven, and the script subtracts every paragraph rendered
 verbatim on ≥ 3 routes. Deepening the seven that exist matters far more than adding an eighth.
 
-The worst single defect: `app/services/[service]/page.tsx:43-48` declares a module-scope `triggers`
-array — four "מתי כדאי לפנות אלינו" bullets rendered on **every** service page, so `השער נתקע, לא נסגר`
-appears on `/services/תריסי-גלילה-חשמליים/`, which is not a gate at all (backlog §3.3). Phase 1 moves
-it into `lib/content.ts` as a per-service field; Phase 3 gives it real per-service content.
+The worst single defect was a module-scope `triggers` array in `app/services/[service]/page.tsx` —
+four "מתי כדאי לפנות אלינו" bullets rendered on **every** service page, so `השער נתקע, לא נסגר`
+appeared on `/services/תריסי-גלילה-חשמליים/`, which is not a gate at all (backlog §3.3). Sprint 1
+(`cfff52f`) moved it into `lib/content.ts` as the per-service `serviceTriggers`; Phase 3 gives each
+list real per-service depth.
 
 ## The data model — the Phase-3 target
 
 **None of the depth model exists yet.** Today `services` entries are `{ slug, name, updated }`
-(`lib/site-config.ts:65-73`) and `serviceMeta` is `{ tagline, description, icon }`
-(`lib/content.ts:26`). `/improve §3.2` builds `serviceDepth`; until then **this skill is the spec**.
+(`lib/site-config.ts`) and `serviceMeta` is `{ tagline, description, metaDescription?, icon }`
+(`lib/content.ts`; `metaDescription` since `74a92d1`). `/improve §3.2` builds `serviceDepth`; until then **this skill is the spec**.
 
 ```ts
 // lib/site-config.ts — exists
@@ -44,7 +45,7 @@ metadata work.
 export interface ServiceDepth {
   answer: string; // 40–60 words: what this service is, for whom (content-standards §5)
   involves: string[]; // concretely: motor/drive fit, weight and width, duration, included / excluded
-  triggers: string[]; // PER SERVICE — replaces the shared array at app/services/[service]/page.tsx:43-48
+  triggers: string[]; // PER SERVICE — replaces the shared array at app/services/[service]/page.tsx
   caveats: string[]; // when this gate type is the wrong answer; what shortens motor life
   faqs: { q: string; a: string }[]; // 3–5, service-specific → FAQPage; each Q/A on exactly one page sitewide
   relatedServices: readonly ServiceSlug[]; // by relevance — replaces .slice(0, 4) at :54
@@ -77,10 +78,11 @@ not pages. What creates depth (and what a competitor's page usually lacks):
 ## Steps
 
 1. **Cap** — no eighth service until the seven pass `content-depth.mjs`. For a new one, append to
-   `services` (flagship-first; the array drives grid order) **and** add a `priceRows` row
-   (`lib/content.ts:157`) or `/מחירון/` silently omits it.
-2. **`serviceMeta`** — `tagline`, `description` (120–160 chars; it is also the meta description —
-   backlog §2.4), a valid `icon`.
+   `services` (flagship-first; the array drives grid order). No `priceRows` row — since N14
+   (`af8ba4c`) `priceRows` holds only the visit band and `/מחירון/` lists no per-service price.
+2. **`serviceMeta`** — `tagline`, `description` (the page's paragraph), `metaDescription` (the meta
+   line, 120–160 chars with terminal punctuation — its own field since `74a92d1`, backlog §2.4 ✅; the
+   route falls back to `description` only when it is absent), a valid `icon`.
 3. **`serviceDepth`** — the entry above. `triggers` **must** be specific to this service; that is the
    fix for the shared-array bug.
 4. **FAQs** — 3–5 service-specific Q/As. They become a `FAQPage` (`/schema-structured-data`);
@@ -88,12 +90,12 @@ not pages. What creates depth (and what a competitor's page usually lacks):
    so never copy a homepage FAQ here.
 5. **Route** — `app/services/[service]/page.tsx` renders from `serviceDepth`, in order: answer block
    under the H1 → involves → triggers → process (`processSteps` plus at least one service-specific
-   step or caveat) → price interpolated from `priceRows`, never restated as a literal → FAQ →
-   `relatedServices` → `locations` → CTA (content-standards §3). Delete the module-scope `triggers`
-   and the `.slice(0, 4)` at `:54` in the same change.
+   step or caveat) → what moves the price (the visit band from `visitFeeRange` at most, never a literal) → FAQ →
+   `relatedServices` → `locations` → CTA (content-standards §3). The module-scope `triggers` went in
+   `cfff52f`; delete the `.slice(0, 4)` that builds `others` in the same change.
 6. **Links** — `relatedServices` by relevance (`תריסי-גלילה-חשמליים` relates to motor and shutter
    topics, not to whatever sits first in the array) and 4–6 `locations`; `/internal-linking` §3–§4.
-7. **Metadata** — keyword-map §3: `title: card.name` (`app/services/[service]/page.tsx:38`) is
+7. **Metadata** — keyword-map §3: `title: card.name` (`app/services/[service]/page.tsx`) is
    already the bare subject; the layout template appends the brand and the doubled suffix is
    **fixed** (0 in `out/`). Keep it bare.
 8. **Schema** — since Sprint 2 (2026-11-08) a service page emits one `@graph` through `PageHeader`:
@@ -117,7 +119,7 @@ not pages. What creates depth (and what a competitor's page usually lacks):
 - [ ] `triggers` specific to this service — the shared array at `:43-48` is gone.
 - [ ] 3–5 service-specific FAQs, rendered on the page, each unique sitewide.
 - [ ] Opens with a 40–60 word answer block under a question-form heading.
-- [ ] Price interpolates from `priceRows`; no new number anywhere.
+- [ ] No per-service price; the visit band, if named, interpolates `visitFeeRange`; no new number anywhere.
 - [ ] `relatedServices` and `locations` declared; no `.slice(0, 4)`.
 - [ ] Title is the bare name; brand appears once.
 - [ ] `Service` + one `BreadcrumbList` today; `FAQPage` and a defined `#business` once Phase 2 lands.
@@ -126,9 +128,9 @@ not pages. What creates depth (and what a competitor's page usually lacks):
 ## Gotchas
 
 - Hebrew slugs arrive percent-encoded — keep the `decodeURIComponent().normalize("NFC")` matcher.
-- Never invent materials, durations, warranty terms or prices. 8 of the 9 `priceRows` are authored
-  estimates (the comment above `lib/content.ts:157`; business-facts §D) — do not add a tenth. Write
-  _what drives the price_ (keyword-map §10).
+- Never invent materials, durations, warranty terms or prices. 8 of the 9 `priceRows` were authored
+  estimates and were deleted with N14 (`af8ba4c`; business-facts §D) — do not add one back. Write
+  _what drives the price_ (keyword-map §10), as `/מחירון/` does.
 - "אחריות מלאה", "ניסיון רב שנים", "24/7" and "פריסה ארצית" are 🔶 — `claims-grep.mjs` fails on them.
   Say `אחריות על העבודה`; replace duration claims with mechanism depth (business-facts §B, §D, §E).
 - User-facing Hebrew never lives in a route file (the shared `triggers` array is the cautionary

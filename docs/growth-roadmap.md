@@ -68,6 +68,12 @@ And the fourth is a set of claims the export makes over 160 times that nobody ca
 insurance and founding year are **not coming** (§3 below). So the copy gets written around them —
 honestly, and soon — rather than waiting.
 
+**Update 2026-11-09:** done in the repo (Sprint 4, `1796ee7` `af8ba4c` `74a92d1`) — the work
+carries "אחריות על העבודה" with no term, the hours replace 24/7, the copy names the published areas
+instead of "פריסה ארצית", `/מחירון/` explains what determines the price instead of listing eight
+authored ranges, and `node scripts/audit/claims-grep.mjs` reports 0 live claims. None of it is on
+the domain until the next deploy.
+
 Everything below is sequenced accordingly.
 
 ---
@@ -113,7 +119,7 @@ longer produces a valid page; the four region entries (קריות, שרון, צ�
 Hebrew (`באזור השרון`, not `בשרון`); 7 service pages that differentiate on the mechanics of each gate
 type, with their own "when to call" list (today the shutters page says "השער נתקע") and their own
 FAQ; a header that reaches all 7 services and 18 locations in one hop; a footer that stops omitting
-six locations (`components/layout/Footer.tsx:76` slices to 12); service ↔ location cross-links that do not
+six locations (the footer's `locations.slice(0, 12)` slices to 12); service ↔ location cross-links that do not
 exist today; related links chosen by relevance instead of array order. The bar is
 [content-standards.md](content-standards.md); the doorway delta and word floors are measured, not
 assumed. **Blocked on you:** nothing — but §3.5–3.6 answers make it better.
@@ -143,7 +149,7 @@ you:** the GA4 property (§2.4) — without it the events fire into nothing.
 **Buys:** an authors registry that stays empty until someone is named, with the data-only path ready
 for that day; an `AboutPage` with `knowsAbout` (the standard, the gate types); "אחריות מלאה" softened
 sitewide to "אחריות על העבודה" and "ניסיון רב שנים" replaced by mechanism depth — claims the site can
-stand behind; `llms.txt` and per-bot `robots.ts` rules ready for the moment the edge block lifts; the
+stand behind (the registry, the `AboutPage` and the softening are in the repo since Sprints 2 and 4); `llms.txt` and per-bot `robots.ts` rules ready for the moment the edge block lifts; the
 photo pipeline wired the day photos arrive (Cloudflare Image Transformations are already on).
 **Blocked on you:** the AI-crawler toggle (§1.1), the profile URL (§2.1), the photos (§4.1).
 
@@ -223,7 +229,7 @@ predictions, which nobody can honestly make without the baseline §4.1 provides.
   cited in an assistant answer for a symptom query — checked by hand, logged with a date.
 - **Real 301s, no stubs, one origin** — `node scripts/audit/edge.mjs` exit 0.
 - **Every claim on the site traceable** — `node scripts/audit/claims-grep.mjs` exit 0; "אחריות מלאה"
-  and "ניסיון רב שנים" gone from the copy.
+  and "ניסיון רב שנים" gone from the copy (met in the repo 2026-11-09; live after the next deploy).
 - **Calls, WhatsApp clicks and form submissions counted as GA4 key events**, a `/תודה/` URL, and a
   Search Console baseline table in `rank-tracking.md` with a first monthly Δ.
 - **`/הצהרת-נגישות/` true in every particular** — `node scripts/audit/a11y.mjs` exit 0.

@@ -15,7 +15,7 @@ calendar row. Whether the result is publishable is `article-auditor`'s verdict â
 ## What exists today vs what Phase 4 builds
 
 **Nothing below exists as of 2026-08-23.** The only editorial model is
-`PostBlock = {type: "h" | "p" | "li"; text}` (`lib/posts.ts:9`). Phase 4 (`/improve` against ADR 0002
+`PostBlock = {type: "h" | "p" | "li"; text}` (`lib/posts.ts`). Phase 4 (`/improve` against ADR 0002
 and ADR 0003) builds the hub; this skill describes the model it builds so the first guides and the
 route family land together. If `lib/guide-types.ts` is absent when this skill is invoked, **stop at
 step 2** and route to `/improve` â€” never park a guide in `lib/posts.ts` or invent a one-off route.

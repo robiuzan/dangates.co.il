@@ -74,8 +74,8 @@ microphone=(), camera=()` — all from **Cloudflare zone rules**, so a zone chan
 8. **Foreign URLs (N4).** The Houston, Texas promo stub inherited from the cloned source was dropped with §1.1 rather than redirected — `edge.mjs` → `foreignStubs: 0`. Watch that no foreign-market path re-enters `REDIRECTS.md`; `/pages_automation/*` is deliberately left to 404.
 9. **Client-side injection.** No `innerHTML` from user input, no `eval`, no unsanitized URL params. Confirm rather than assume, and scan `out/` (`edge.mjs` → `sourceMaps`, `devBuildFiles` must be 0). The GTM snippet in `<head>` is now the only `dangerouslySetInnerHTML` in the export.
 10. **Content integrity.** `spam-grep.mjs` → `spamHits` must be 0 (the 2026-08-17 cleanup removed
-    injected adult spam from the migrated blog — history, not a live finding; the remaining warnings
-    are emoji and 4 curly quotes, which route to `hebrew-copywriter`).
+    injected adult spam from the migrated blog — history, not a live finding; the remaining warning
+    is the 39 body-copy emoji — the curly quotes went in `74a92d1` — which routes to `hebrew-copywriter`).
 
 ## Method
 

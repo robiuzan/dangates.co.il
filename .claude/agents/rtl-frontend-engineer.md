@@ -23,13 +23,13 @@ node scripts/audit/run-all.mjs --scope cro       # cta-coverage.mjs — data-cta
 node scripts/audit/links.mjs                     # chrome reach, orphans, one H1, heading order, breadcrumbs
 ```
 
-As of 2026-11-08, for context only (clean rebuild): the full audit exits **15** — `content-depth` 10
-and `claims-grep` 5, both copy work. On your axes everything reads 0: `rtl-lint.mjs`
+As of 2026-11-09, for context only: the full audit exits **8** — all `content-depth`, copy work
+(15 on 2026-11-08 before Sprint 4 cleared `claims-grep`). On your axes everything reads 0: `rtl-lint.mjs`
 `bannedUtilities 0 · hexLiterals 0`, `a11y.mjs` 0, `cta-coverage.mjs` `missingDataCta 0`, `schema.mjs`
 0 (`danglingIds 0`, `rawHebrewUrls 0`). Still open on yours: 6 locations outside the chrome
-(`links.mjs` `notInChrome 6` — the footer slices to 12, §9.2), related links by array order (§9.4),
-and two `size="md"` buttons in the form's error alert (N19). Sprints 2–3 cleared the rest
-(2026-08-23: exit 37).
+(`links.mjs` `notInChrome 6` — the footer slices to 12, §9.2) and related links by array order
+(§9.4). Sprints 2–4 cleared the rest, N19's two `md` buttons included (`fba5957`; 2026-08-23: exit
+37).
 
 ## Stack and constraints
 
@@ -91,8 +91,8 @@ there rather than inventing new ones:
   lock, `data-live-block` while open (§11.4 ✅). The §9.1 header disclosure reuses it.
 - No `sr-only` copy of visible text (§11.3 ✅); `Faq` stays native `<details>/<summary>`,
   server-rendered (N8 ✅).
-- Tap targets: `Button size="lg"` for any tap-first action on a phone. Open: the two `md` buttons in
-  `LeadForm`'s error alert (N19).
+- Tap targets: `Button size="lg"` for any tap-first action on a phone — the form's error alert
+  included since `fba5957` (N19 ✅).
 
 ## Schema wiring (`/schema-structured-data`)
 
@@ -108,8 +108,8 @@ by design; that guard is the rule made mechanical.
 ## Hebrew dynamic routes — the production-only trap
 
 Params for `[service]`, `[city]`, `[slug]` arrive **percent-encoded** during export. The silo routes
-match with `decodeURIComponent(param).normalize("NFC")` (`app/services/[service]/page.tsx:27`,
-`app/locations/[city]/page.tsx:18`). A new Hebrew dynamic route that skips this works in dev and 404s in
+match with `decodeURIComponent(param).normalize("NFC")` (`findCard` in `app/services/[service]/page.tsx`,
+`findLocation` in `app/locations/[city]/page.tsx`). A new Hebrew dynamic route that skips this works in dev and 404s in
 production. Static routes are the `staticPages` registry in `lib/site-config.ts` — a new top-level page needs a row there or `links.mjs` fails (§1.4, done 2026-09-06); `navItems` hrefs carry the trailing slash the export enforces (N10, closed 2026-09-06). `/תודה/` is the
 one `noindex` row — it stays out of the sitemap.
 

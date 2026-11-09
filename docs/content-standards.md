@@ -13,24 +13,26 @@ bar — is outside it and never counted) **minus every paragraph of ≥ 12 words
 ≥ 3 routes** (the shared `FinalCta` lead, the service teasers, the process steps). That is exactly what
 `content-depth.mjs` computes; the floors live in `scripts/audit/thresholds.json` and mirror this table.
 
-"Today" is the script's median for the type as of **2026-08-23**. Re-run before quoting.
+"Today" is the script's median for the type as of **2026-11-09** (after Sprint 4; the 2026-08-23
+value in brackets where it moved). Re-run before quoting.
 
-| Page type                     | Minimum unique body words | Today (`content-depth.mjs`)                                                                                    |
-| ----------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Homepage                      | 800                       | ~675 ❌ (887 total, 212 in shared blocks; the reviews section is gone)                                         |
-| Service page                  | 450                       | ~152 ❌ (7 of 7)                                                                                               |
-| Location page                 | 350                       | ~122 ❌ (18 of 18; 128 for the two-word names)                                                                 |
-| Blog post                     | 900                       | ~512 ❌ (11 of 11, range 438–584)                                                                              |
-| Guide (`/מדריכים/`)           | 900                       | route family not built yet (Phase 4)                                                                           |
-| Index page (services / areas) | 250                       | `/שירותים/` ~111 ❌ (323 total — its copy is all shared teasers) · `/איזורי-שירות/` ~111 ❌ · `/blog/` ~392 ✅ |
-| Pricing                       | 400                       | 144 ❌                                                                                                         |
-| About                         | 500                       | 277 ❌                                                                                                         |
-| Contact, legal, thank-you     | no minimum                | fine as-is                                                                                                     |
+| Page type                     | Minimum unique body words | Today (`content-depth.mjs`)                                                                                                                  |
+| ----------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Homepage                      | 800                       | 1535 ✅ (1764 total; 675 on 2026-08-24 after the reviews left — Sprint 4 added the answer block, the diagnosis section and real FAQ answers) |
+| Service page                  | 450                       | ~167 ❌ (7 of 7, range 164–170; ~152)                                                                                                        |
+| Location page                 | 350                       | ~127 ❌ (18 of 18, range 127–133; ~122)                                                                                                      |
+| Blog post                     | 900                       | ~512 ❌ (11 of 11, range 439–574)                                                                                                            |
+| Guide (`/מדריכים/`)           | 900                       | route family not built yet (Phase 4)                                                                                                         |
+| Index page (services / areas) | 250                       | `/שירותים/` 113 ❌ (342 total — 229 in shared blocks) · `/איזורי-שירות/` 98 ❌ · `/blog/` 392 ✅                                             |
+| Pricing                       | 400                       | 945 ✅ (144 — the "what determines the price" pivot, N14)                                                                                    |
+| About                         | 500                       | 307 ❌ (277)                                                                                                                                 |
+| Contact, legal, thank-you     | no minimum                | fine as-is                                                                                                                                   |
 
 A block rendered identically on another route earns no credit anywhere — a service page that reuses
-the homepage's `processSteps` gets nothing for those words, and the four shared "מתי כדאי לפנות
-אלינו" bullets hardcoded at `app/services/[service]/page.tsx:43-48` count on exactly one page, not
-seven. The script lists the shared paragraphs it subtracted (8 as of 2026-08-23).
+the homepage's `processSteps` gets nothing for those words, and the four "מתי כדאי לפנות אלינו"
+bullets once shared by all seven service pages counted on exactly one page, not seven (per-service
+`serviceTriggers` since `cfff52f`). The script lists the shared paragraphs it subtracted (8 as of
+2026-11-09).
 
 Word count is a floor, not a goal. A 500-word page that says five specific true things beats a
 900-word page that says one thing five ways — and the 11 blog posts are the proof: they clear 500 words
@@ -86,9 +88,11 @@ even a gate. The per-city and per-service content lands in `cityContent` / `serv
 3. What it involves, concretely: which motor and drive suit this gate type at what weight and width,
    duration, what's included and excluded.
 4. **Per-service** "when to call us" — not the shared four bullets currently hardcoded at
-   `app/services/[service]/page.tsx:43-48`, which put "השער נתקע" on the rolling-shutters page.
+   `app/services/[service]/page.tsx`, which put "השער נתקע" on the rolling-shutters page.
 5. Process — may reuse `processSteps` but must add at least one service-specific step or caveat.
-6. Price range for this service, interpolated from `priceRows` — never restated as a literal.
+6. No per-service price — none is sourced (business-facts §D). Where a price is needed at all it is
+   the visit band, interpolated from `visitFeeRange` (`priceRows`) — never restated as a literal; what
+   moves the price is explained, as `/מחירון/` does since N14.
 7. **Per-service FAQ**, 3–5 questions, feeding `FAQPage` — each Q/A on exactly one page sitewide.
 8. Related services chosen by relevance, plus links to 2–3 locations.
 9. CTA.
@@ -179,7 +183,8 @@ until confirmed. The owner has said most of these are **not coming**, so write a
 
 - "ניסיון רב שנים" or any duration of experience (`foundedYear` is `null`, and stays so)
 - Warranty length, scope or exclusions — write **"אחריות על העבודה"**, never "אחריות מלאה"
-- **Every per-gate price range** — `lib/content.ts:152-156` records them as authored estimates
+- **Every per-gate price range** — none is sourced; the eight authored estimates left `/מחירון/`
+  with N14 (`af8ba4c`), and `priceRows` keeps only the 🔶 visit band
 - 24/7 emergency availability, and any response-time promise
 - "פריסה ארצית" as a coverage claim
 - Licences, insurance, certifications, association membership
@@ -197,7 +202,7 @@ certification the business doesn't hold; a photo presented as our work that isn'
 
 > ✅ **Resolved 2026-08-17 — history.** The site shipped ten review texts attributed to ten real
 > reviewer names as `Review` + `AggregateRating`. `reviews` is now empty and gated behind
-> `REVIEW_SOURCE_URL` (`lib/content.ts:242`, `:248`; `components/marketing/Reviews.tsx:41`). Do not
+> `REVIEW_SOURCE_URL` (`reviews` and `REVIEW_SOURCE_URL` in `lib/content.ts`; `components/marketing/Reviews.tsx:41`). Do not
 > cite it as precedent, and restore only verbatim text from the GBP when it lands (business-facts §A).
 
 ---
@@ -206,10 +211,11 @@ certification the business doesn't hold; a photo presented as our work that isn'
 
 - Israeli formats: phone `072-2587772`, currency `₪` after the number, dates `dd/mm/yyyy`.
 - Hebrew abbreviations use גרש `׳` and גרשיים `״` — `רח׳`, `ח״פ` — not straight ASCII quotes, and not
-  the curly `’`/`”` the migrated blog wraps brand names in (4 remain, `lib/posts.ts:848-849`).
+  the curly `’`/`”` the migrated blog once wrapped brand names in (the last 4 went in `74a92d1`;
+  `spam-grep.mjs` → `curlyQuotes 0`).
 - Numerals stay LTR inside RTL text; the components wrap them with `dir="ltr"` and the `.ltr` helper.
   Write the plain number; don't add markup in `content.ts`.
-- Ranges use an en dash: `3–6 שעות`, `800–1,500 ₪`.
+- Ranges use an en dash: `3–6 שעות`, `150–350 ₪`.
 - No language mixing mid-sentence. English brand or material names get their own clause.
 - Copy lives in `lib/content.ts` (marketing), `lib/posts.ts` (the 11 legacy posts) and
   `content/guides/` (guides, Phase 4), never in JSX.
@@ -236,8 +242,9 @@ yet (Phase 3).
 - [x] No leftovers from the source theme (`allgatesrepair`) — 0.
 - [ ] **42 plain-text link references** ("📌 היכנסו למחירון", "בקרו בעמוד צור קשר") are still not links
       — needs the typed block model (Phase 4, ADR 0003; backlog §3.8).
-- [ ] 4 curly quotes (`lib/posts.ts:848-849`), 42 structural emoji, an empty `מקרי מבחן` section
-      (`:416-418`), two superlatives (`:319`, `:557`), a flat all-`<h2>` outline.
+- [x] No curly quotes, no empty `מקרי מבחן` section, no superlatives — `curlyQuotes 0`,
+      `superlative 0` since Sprint 4 (`1796ee7` `74a92d1`).
+- [ ] 39 structural emoji and a flat all-`<h2>` outline (Sprint 7.3; backlog §3.8, §3.10).
 
 Sanity check (must print nothing):
 

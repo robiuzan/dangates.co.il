@@ -213,8 +213,9 @@ spring clip. Independent sources agree on a **₪200–400 call-out/diagnosis ba
 supply-and-fit figures are widely published.
 
 **But this site cannot copy those numbers.** They are other companies' prices, and
-[business-facts.md](business-facts.md) records that 8 of the 9 figures already on `/מחירון/` were
-authored estimates rather than supplied by the business — and that real prices are **not** coming.
+[business-facts.md](business-facts.md) records that 8 of the 9 figures `/מחירון/` carried until
+Sprint 4 were authored estimates rather than supplied by the business — and that real prices are
+**not** coming. The page pivoted in `af8ba4c` (N14, 2026-11-08) and now carries only the 🔶 visit band.
 
 **So the play is not a price table. It is a page about what determines the price**, which ranks for the
 same intent, is more useful than a range, and requires no number this business hasn't confirmed:

@@ -74,7 +74,7 @@ numbers render backwards, prices lose their currency position, URLs fragment.
 `.ltr` is defined in `app/globals.css` as `direction: ltr; unicode-bidi: isolate`. Use it for phone
 numbers, emails, URLs, prices with `₪`, version strings, and code.
 
-**Write the plain value in `lib/content.ts`** — `072-2587772`, `800–1,500 ₪`. The component adds the
+**Write the plain value in `lib/content.ts`** — `072-2587772`, `150–350 ₪`. The component adds the
 isolation. Never put markup in the content file.
 
 ## Israeli formats
@@ -83,7 +83,7 @@ isolation. Never put markup in the content file.
   This site does **not** use the shared fleet number — `contact.phoneOverride: true`.
 - Currency: `₪` **after** the number — `1,500 ₪`.
 - Dates: `dd/mm/yyyy`.
-- Ranges: en dash, no spaces — `3–6 שעות`, `800–1,500 ₪`.
+- Ranges: en dash, no spaces — `3–6 שעות`, `150–350 ₪`.
 - Thousands separator: comma.
 
 ## Hebrew punctuation
@@ -91,9 +91,9 @@ isolation. Never put markup in the content file.
 Use **גרש** `׳` (U+05F3) and **גרשיים** `״` (U+05F4) in Hebrew abbreviations — `רח׳`, `ח״פ`, `ע״מ`.
 Not the ASCII `'` and `"`, which render wrong and read as English punctuation.
 
-The migrated blog bodies in `lib/posts.ts` were cleaned on 2026-08-17; `scripts/audit/spam-grep.mjs`
-still finds **4 Latin curly quotes** around the brand name at `lib/posts.ts:848-849` (backlog
-§3.12) and 42 emoji in body copy. Fix them when you touch a post; never copy the pattern into new
+The migrated blog bodies in `lib/posts.ts` were cleaned on 2026-08-17, and the last 4 Latin curly
+quotes went in `74a92d1` (backlog §3.12 ✅ — `spam-grep.mjs` → `curlyQuotes 0`); it still finds 39
+emoji in body copy (2026-11-09). Fix them when you touch a post; never copy the pattern into new
 copy. Re-run `spam-grep.mjs` after any edit to that file (golden rule 7).
 
 ## The percent-encoded route trap
@@ -107,7 +107,7 @@ return items.find((i) => i.slug.normalize("NFC") === target);
 
 Both `NFC` normalizations matter — Hebrew with niqqud or certain composed forms won't match otherwise.
 A route that skips this **works in dev and 404s in production**. Copy the existing matcher from
-`app/services/[service]/page.tsx:27` or `app/locations/[city]/page.tsx:18`. `app/blog/[slug]` takes
+`findCard` in `app/services/[service]/page.tsx` or `findLocation` in `app/locations/[city]/page.tsx`. `app/blog/[slug]` takes
 Hebrew slugs too, and the Phase 4 `app/מדריכים/[slug]/` route (ADR 0002) must use the same matcher.
 
 The same concern drives `encodeURI` in `app/sitemap.ts` and `schemaPath()` in

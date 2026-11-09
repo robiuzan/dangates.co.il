@@ -61,9 +61,10 @@ context, not findings to copy.
    the first row; if any allowed crawler is refused, everything else is capped until it reopens.
    Repo side: the per-bot `Allow` list in `app/robots.ts` has been live since the Sprint 0 deploy on 2026-09-06
    (`/aeo-answer-content` Gate 1).
-2. **Answer blocks** (§6.2). `content-depth.mjs` answer-block proxy — as of 2026-08-23, 0 of 36
+2. **Answer blocks** (§6.2). `content-depth.mjs` answer-block proxy — as of 2026-11-09, 0 of 36
    service, location and post pages open with a 40–60-word paragraph (services open with 3–4 words,
-   locations 16–17, posts 1 — an emoji line). Spec: content-standards §5, buyer vocabulary עינית /
+   locations 19–20, posts 1); `/` (46 words) and `/מחירון/` (45) have one since `af8ba4c` — the proxy
+   does not cover them, so read them. Spec: content-standards §5, buyer vocabulary עינית /
    לוח פיקוד. Closed page by page in Phases 3–4, never by a sitewide template paragraph (that is a
    shared block `content-depth.mjs` subtracts).
 3. **Extractability — N8.** The `Faq` component is native `<details>/<summary>`: every answer is in
@@ -92,9 +93,9 @@ context, not findings to copy.
    (keyword-map §12, sourced from sii.org.il) is the strongest citable anchor available without a
    single business fact. Prices are **not coming** — a "what drives the price" page is citable; an
    invented ₪ figure is not.
-8. **Structured data as machine context.** 45/45 pages emit JSON-LD; 18 locations and 8 static pages
-   carry **only `BreadcrumbList`**; `FAQPage` on 1 page (§4.13) whose half-length answers are exactly
-   what an assistant would quote (§3.5). Point, don't re-audit.
+8. **Structured data as machine context.** 45/45 pages emit one `@graph` (Sprint 2 — until then 18
+   locations and 8 static pages carried only `BreadcrumbList`; `schema.mjs` 0 as of 2026-11-09); `FAQPage` on 1 page (§4.13) — its answers were 4–12 words until
+   `af8ba4c` gave all ten real ones (§3.5 ✅), and they are what an assistant would quote. Point, don't re-audit.
 
 ## Method
 

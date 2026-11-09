@@ -131,7 +131,8 @@ Verdict, the report path, the §6 next-up list, and the sentence "nothing was de
 content-depth 10 · schema 5 · cta-coverage 5 · claims-grep 5 · rtl-lint 2 · a11y 4 · perf 1 · edge
 4; links and spam-grep pass. Which of these are expected until which phase is the table in
 `/qa-build-gate`; the first `/audit full` report is the baseline every later Δ is measured against.
-Re-run the script — this paragraph is context, not the source of truth.
+Re-run the script — this paragraph is context, not the source of truth. Since then Sprints 1–4
+cut it to **8**, all `content-depth` (2026-11-09; the `/qa-build-gate` table is the current cut).
 
 ## Gotchas
 

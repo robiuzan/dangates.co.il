@@ -29,8 +29,9 @@ canonical strings — copy, never retype).
 - **There is no address anywhere** — not in the manifest, the schema, or `/צור-קשר/`. That is
   consistent and correct for a service-area business. **Do not add one to "improve local SEO."** An
   invented or borrowed address is a profile-suspension risk, not a ranking tactic (backlog §4.11, §5.6).
-- The footer shows `siteConfig.serviceArea` (`מרכז הארץ ופריסה ארצית`) and the phone. For an
-  address-less business that is the right NAP surface.
+- The footer shows `serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר", `lib/content.ts`) and the
+  phone. It replaced `siteConfig.serviceArea` — the manifest phrase `מרכז הארץ ופריסה ארצית` — in
+  `1796ee7`. For an address-less business that is the right NAP surface.
 - The phone is `072-2587772` with `contact.phoneOverride: true` — the one fleet site that does not
   use the shared `055-6601006`. Never "correct" it.
 
@@ -70,7 +71,7 @@ URL arrives nothing changes on the site. When it does:
 
 `prefixed` carries the preposition so no template guesses; `kind` drives the schema type — `City`
 versus `AdministrativeArea` (schema-graph §5). **Neither field exists yet** — today an entry is
-`{ slug, name }` only (`lib/site-config.ts:82-100`). Phase 3 builds them through `/new-city`; until
+`{ slug, name }` only (`lib/site-config.ts`). Phase 3 builds them through `/new-city`; until
 then write region copy with the correct form by hand in the per-city content, never in a template.
 
 ## 4. The doorway policy — non-negotiable
@@ -109,11 +110,14 @@ No 19th location until step 1 is done. Scaling a doorway pattern multiplies risk
 
 ## 6. Coverage honesty
 
-`schema.areaServed` claims `מרכז הארץ ופריסה ארצית`, and the location set includes צפון, דרום, קריות,
-באר שבע and חיפה — well outside המרכז. An `areaServed` the business cannot actually service is a
-liability: it produces leads it can't serve and a claim it can't defend. Emergency 24/7 availability is
-claimed sitewide and has the same exposure. Both are 🔶 in `docs/business-facts.md` §E (backlog
-§5.4); `claims-grep.mjs` flags `פריסה ארצית` in new copy. Write around them until answered.
+The manifest `schema.areaServed` still says `מרכז הארץ ופריסה ארצית`, and the location set includes
+צפון, דרום, קריות, באר שבע and חיפה — well outside המרכז. An `areaServed` the business cannot actually
+service is a liability: it produces leads it can't serve and a claim it can't defend. Emergency 24/7
+availability has the same exposure. Both are 🔶 in `docs/business-facts.md` §E (backlog §5.4). The
+site writes around them since Sprints 2 and 4: the JSON-LD `areaServed` is the 18 published
+locations (`d8edb28`), and the copy carries neither phrase (`1796ee7` — `claims-grep.mjs`
+`national-coverage 0`, `around-the-clock 0` live). `claims-grep.mjs` fails either in new copy; the
+roster value waits on the owner (B5).
 
 ## 7. Schema for a service-area business
 
@@ -129,7 +133,7 @@ becomes a list of those nodes instead of a marketing phrase typed as `Administra
 
 ## 8. Internal equity
 
-Six of 18 location pages are absent from the sitewide chrome — `components/layout/Footer.tsx:76`
+Six of 18 location pages are absent from the sitewide chrome — `components/layout/Footer.tsx`
 renders `locations.slice(0, 12)` (backlog §9.2; `links.mjs` names the six). No service page links to
 a city and no location links to another (§9.3). Phase 3 builds the header reach, the full footer and
 the `nearby`/`relatedServices` mesh — `/internal-linking`.

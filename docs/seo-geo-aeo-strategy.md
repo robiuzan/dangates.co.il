@@ -19,16 +19,16 @@
 
 ## 0. Current state — verified 2026-08-24 (AI crawlers re-verified 2026-09-06)
 
-| Signal                                        | State                                                | Consequence                                                                                                                                                                                                                          |
-| --------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `schema.sameAs`                               | `[]` in `site.config.json`                           | No entity graph; Google and every assistant infer the business from one unlinked domain. Lands in the roster, never here (golden rule 2).                                                                                            |
-| `googleSiteVerification` · `ga4MeasurementId` | both `null`                                          | Search Console **unverified**, GA4 unprovisioned — every priority below is inferred, not observed; conversions are counted nowhere ([owner-actions.md](owner-actions.md) §2.3–2.4; backlog §13.7).                                   |
-| `foundedYear`                                 | `null`, and **not coming**                           | No `foundingDate`; "ניסיון רב שנים" is unsourced and is replaced by mechanism depth (business-facts §B; backlog §7.2).                                                                                                               |
-| Reviews / ratings                             | `reviews = []`, `REVIEW_SOURCE_URL = null` — gated   | `Review` and `AggregateRating` **forbidden** until quoted verbatim from a public profile. Ten fabricated reviews are gone from the repo since 2026-08-17 and off the domain since the Sprint 0 deploy on 2026-09-06 — golden rule 1. |
-| Google Business Profile                       | ⏳ owner is producing it                             | For a service-area trade business this outranks every on-page lever in this repo ([gbp-runbook.md](gbp-runbook.md)).                                                                                                                 |
-| AI crawlers                                   | **200** on the full-UA probe as of 2026-09-06 — open | Was an enforced **403** to 10 of 10 AI signatures on 2026-08-23/24 (backlog §6.1, now ✅; owner-actions §1.1). A zone setting that can close again with no repo change — re-probed before every AEO claim.                           |
-| Content depth                                 | 41 of 45 pages under their word floor                | Locations score a doorway delta of 2–3 tokens against 120; services 13–23 (`content-depth.mjs`; backlog §3.1, §3.2).                                                                                                                 |
-| Unconfirmed claims                            | four phrases render 168 times on 42 pages            | "אחריות מלאה", "24/7", "ניסיון רב שנים", "פריסה ארצית" — the lexicon in `scripts/audit/claims.json` (backlog §7.2).                                                                                                                  |
+| Signal                                        | State                                                                                              | Consequence                                                                                                                                                                                                                          |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `schema.sameAs`                               | `[]` in `site.config.json`                                                                         | No entity graph; Google and every assistant infer the business from one unlinked domain. Lands in the roster, never here (golden rule 2).                                                                                            |
+| `googleSiteVerification` · `ga4MeasurementId` | both `null`                                                                                        | Search Console **unverified**, GA4 unprovisioned — every priority below is inferred, not observed; conversions are counted nowhere ([owner-actions.md](owner-actions.md) §2.3–2.4; backlog §13.7).                                   |
+| `foundedYear`                                 | `null`, and **not coming**                                                                         | No `foundingDate`; "ניסיון רב שנים" is unsourced and is replaced by mechanism depth (business-facts §B; backlog §7.2).                                                                                                               |
+| Reviews / ratings                             | `reviews = []`, `REVIEW_SOURCE_URL = null` — gated                                                 | `Review` and `AggregateRating` **forbidden** until quoted verbatim from a public profile. Ten fabricated reviews are gone from the repo since 2026-08-17 and off the domain since the Sprint 0 deploy on 2026-09-06 — golden rule 1. |
+| Google Business Profile                       | ⏳ owner is producing it                                                                           | For a service-area trade business this outranks every on-page lever in this repo ([gbp-runbook.md](gbp-runbook.md)).                                                                                                                 |
+| AI crawlers                                   | **200** on the full-UA probe as of 2026-09-06 — open                                               | Was an enforced **403** to 10 of 10 AI signatures on 2026-08-23/24 (backlog §6.1, now ✅; owner-actions §1.1). A zone setting that can close again with no repo change — re-probed before every AEO claim.                           |
+| Content depth                                 | 41 of 45 pages under their word floor (39 as of 2026-11-09 — home and pricing pass since Sprint 4) | Locations score a doorway delta of 2–3 tokens against 120; services 13–23 then, 28–46 now (`content-depth.mjs`; backlog §3.1, §3.2).                                                                                                 |
+| Unconfirmed claims                            | four phrases rendered 168 times on 42 pages — 0 since Sprint 4 (`1796ee7`)                         | "אחריות מלאה", "24/7", "ניסיון רב שנים", "פריסה ארצית" — the lexicon in `scripts/audit/claims.json` (backlog §7.2 ✅; `claims-grep.mjs` 0 as of 2026-11-09).                                                                         |
 
 **Strategic implication.** On-page work has a ceiling. The ranking hierarchy for a service-area
 business — profile, reviews, then depth, citations, technical SEO ([growth-roadmap.md](growth-roadmap.md)
@@ -76,12 +76,12 @@ and the 7 pass the doorway test in content-standards §2 (CLAUDE.md §12).
 
 ### 1.2 Explicitly not doing
 
-| Not doing                                                         | Why                                                                                                    |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| A `{service}-{city}` page per cell                                | The doorway pattern; a domain-level penalty (content-standards §2, keyword-map §6)                     |
-| A `LocalBusiness` node per city, or a street address              | One business with no premises; an invented address is a suspension risk (schema-graph §5; §4.11 HOLDS) |
-| A price table copied from the market                              | Their prices are theirs; 8 of 9 published ranges are authored estimates (competitors §3; backlog §7.3) |
-| Brand pages, a named author, a rating, a licence, a warranty term | Brands 🔶 until business-facts §C (keyword-map §9); the rest ❌ not coming (owner-actions §3.1–3.3)    |
+| Not doing                                                         | Why                                                                                                      |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| A `{service}-{city}` page per cell                                | The doorway pattern; a domain-level penalty (content-standards §2, keyword-map §6)                       |
+| A `LocalBusiness` node per city, or a street address              | One business with no premises; an invented address is a suspension risk (schema-graph §5; §4.11 HOLDS)   |
+| A price table copied from the market                              | Their prices are theirs; ours were 8 of 9 authored until N14 removed them (competitors §3; backlog §7.3) |
+| Brand pages, a named author, a rating, a licence, a warranty term | Brands 🔶 until business-facts §C (keyword-map §9); the rest ❌ not coming (owner-actions §3.1–3.3)      |
 
 ---
 
@@ -190,10 +190,12 @@ Every service page, location page, post and guide carries, in this order:
 
 - **An answer block first** — 40–60 words as the first `<p>` after the `<h1>`, complete in the first
   sentence, self-contained, buyer vocabulary (`thresholds.json` `answerBlock`; content-standards §5).
-  As of 2026-08-24, **0 of 36** service, location and post pages have one (backlog §6.2). Beneath
+  As of 2026-11-09, **0 of 36** service, location and post pages have one (backlog §6.2); `/` and
+  `/מחירון/` have theirs since Sprint 4 (46 and 45 words). Beneath
   it, **question-form H2s** with real `<h3>`s — the typed block model (ADR 0003), not a wall of `<h2>`s.
 - **One `FAQPage` question per page sitewide** (`content-hub`; `schema.mjs` checks parity). The
-  homepage FAQ is not shrunk; deep owners get a `moreAt` link-out. Its answers run 4–12 words (§3.5).
+  homepage FAQ is not shrunk; deep owners get a `moreAt` link-out. Its answers ran 4–12 words until
+  `af8ba4c` gave all ten real answers and seven `moreAt` links (§3.5 ✅).
 - **Answers in the DOM at first paint** — `<details>/<summary>`, not `display:none` (N8); never mark up an unrendered answer.
 - **Captioned tables**, definition blocks ("שער נגרר הוא…") and comparison blocks — the formats
   assistants lift; every guide family carries one required table (`new-guide`).
@@ -213,7 +215,8 @@ in build order ([content-calendar.md](content-calendar.md) §2):
 2. **Mechanism depth per gate type** — which motor and drive suit which weight and width, what
    shortens an operator's life, the self-fix boundary where 230V work must stop.
 3. **"What determines the price"** — fault type, gate weight, motor class, motor reuse, cabling run,
-   whether the visit fee is credited (N14; keyword-map §10). The 150–350 ₪ visit fee interpolates from `priceRows`.
+   whether the visit fee is credited (N14 ✅ since `af8ba4c`; keyword-map §10). The 150–350 ₪ visit
+   fee interpolates from `visitFeeRange` (`priceRows`).
 
 **`public/llms.txt`** ships from `.claude/skills/aeo-answer-content/templates/llms.txt` (backlog
 §6.5): NAP from the manifest, the 7 services and 18 areas with percent-encoded canonicals, and a

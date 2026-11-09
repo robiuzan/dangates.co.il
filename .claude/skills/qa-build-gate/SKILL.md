@@ -1,6 +1,6 @@
 ---
 name: qa-build-gate
-description: The release gate before any deploy on dangates — Step 0 `npm run audit:env`, a clean rebuild that clears `.next/` the hook-approved way, `npm run gate` (lint → typecheck → format:check → build → audit) read against the known-baseline table (re-cut 2026-11-08 to 15 expected failures, down from 26 and 37) so a run is judged on regressions rather than on that baseline, seven raw sanity greps a human can eyeball, the auditor sweep routed from docs/agent-roster.md §3, and the stop-ship list. Use before every deploy or when asked whether the site is ready to ship. Triggers: "run the build gate", "is this ready to ship", "pre-deploy check", "QA the site", "verify the build", "מוכן לעלות לאוויר", "בדיקה לפני פריסה".
+description: The release gate before any deploy on dangates — Step 0 `npm run audit:env`, a clean rebuild that clears `.next/` the hook-approved way, `npm run gate` (lint → typecheck → format:check → build → audit) read against the known-baseline table (re-cut 2026-11-09 to 8 expected failures, all content-depth, down from 15, 26 and 37) so a run is judged on regressions rather than on that baseline, seven raw sanity greps a human can eyeball, the auditor sweep routed from docs/agent-roster.md §3, and the stop-ship list. Use before every deploy or when asked whether the site is ready to ship. Triggers: "run the build gate", "is this ready to ship", "pre-deploy check", "QA the site", "verify the build", "מוכן לעלות לאוויר", "בדיקה לפני פריסה".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -13,7 +13,7 @@ the start of the gate, not the end. Two rules frame every step:
   if anything under `app/ components/ lib/ public/` is newer than `out/index.html` it exits without
   measuring. Numbers from an old `out/` describe a build nobody shipped.
 - **Judge on regressions, not on the baseline.** `npm run audit` does not exit 0 today and will not
-  until Sprints 4–6 land (§Known baseline — 15 as of 2026-11-08). A gate run passes when every failure it prints is in that table
+  until Sprints 5–7 land (§Known baseline — 8 as of 2026-11-09). A gate run passes when every failure it prints is in that table
   (or in the latest `docs/audits/` report) and no watched metric moved the wrong way.
 
 ## Step 0 — the environment's own self-test
@@ -41,9 +41,9 @@ way to clear `.next/`. `next build` rewrites `out/` itself.
 (`main.js`, `fallback/main.js`, `fallback/amp.js`) — a `next dev` run's artifacts surviving into the
 export, uploaded on every deploy. Deleting them from `out/` afterwards is not the fix; clearing
 `.next/` is. `node scripts/audit/perf.mjs` holds the line (`maxJsFileBytes` 1 MB in
-`scripts/audit/thresholds.json`, `devBuildFiles` in `edge.mjs`); as of 2026-11-08 a clean export is
-7.8 MB in 137 files (the live-kit surfaces added ≈1.15 MB in 2026-10), 30 JS chunks totalling 757 KB,
-largest 173 KB.
+`scripts/audit/thresholds.json`, `devBuildFiles` in `edge.mjs`); as of 2026-11-09 a clean export is
+8.01 MB in 137 files (the live-kit surfaces added ≈1.15 MB in 2026-10), 30 JS chunks totalling
+762 KB, largest 173 KB.
 
 ## Step 2 — `npm run gate`
 
@@ -62,29 +62,29 @@ table against the baseline below. Every inline grep the old gate carried now liv
 weight/preloads → `perf.mjs`, `_redirects`/`_headers`/dead hosts → `edge.mjs`, blog debris →
 `spam-grep.mjs`, unconfirmed claims → `claims-grep.mjs`.
 
-### Known baseline — as of 2026-11-08 (post-Sprints 2–3), `npm run audit` exits 15
+### Known baseline — as of 2026-11-09 (post-Sprint 4), `npm run audit` exits 8
 
-Re-cut from a clean-rebuild `npm run audit -- --scope full --json` on 2026-11-08, after Sprint 2
-(`02a3144` `d8edb28`) and Sprint 3 (`7cfcf4c` `60ce109` `68a4a7f`). The previous baseline was 26
-on 2026-09-06 (37 on 2026-08-23); `schema` 5 → 0, `a11y` 4 → 0 and `rtl-lint` 2 → 0 moved to ✅,
-and nothing moved the wrong way.
+Re-cut from `npm run audit -- --scope full --json` on 2026-11-09 against the `out/` built from
+`74a92d1`, after Sprint 4 (`1796ee7` `af8ba4c` `74a92d1`). The previous baseline was 15 on
+2026-11-08 (26 on 2026-09-06, 37 on 2026-08-23); `claims-grep` 5 → 0 moved to ✅, `content-depth`
+10 → 8 (the home and pricing floors pass), and nothing moved the wrong way.
 
-| Check                 | Fails | What is failing                                                                                                                                                      | Expected until                                                                            |
-| --------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `content-depth`       | 10    | floors: home, about, pricing, both indexes, 18 locations, 7 services, 11 posts · doorway delta < 120 on all 18 + 7                                                   | Sprint 4 (home §3.13/§6.2), Sprints 5–6 (§3.1, §3.2, §3.13), posts Sprint 7 (§3.8, §3.10) |
-| `claims-grep`         | 5     | live unconfirmed: warranty-full 77, around-the-clock 75, experience 9, national-coverage 7 · superlative 2                                                           | Sprint 4 (§7.2; superlatives §3.11–3.12)                                                  |
-| `schema`              | 0     | ✅ since `d8edb28` (§4.2, §4.4–§4.9, §4.12, N2) — `danglingIds` 18 → 0, `rawHebrewUrls` 18 → 0, `WebSite` on `/`, `Service` on 18 locations; 0 warnings              | keep at 0                                                                                 |
-| `a11y`                | 0     | ✅ since `68a4a7f` (§11.1–§11.3, N11, §8.1) — every contrast pair ≥ 5.42:1, lists intact, per-field `aria-invalid`; 0 warnings                                       | keep at 0                                                                                 |
-| `rtl-lint`            | 0     | ✅ since `7cfcf4c` (§11.5) — `bannedUtilities` 3 → 0, `hexLiterals` 7 → 0                                                                                            | keep at 0                                                                                 |
-| `titles`              | 0     | ✅ since `13a6bdc` (§1.5) — `ogUrlMissing` 45 → 0                                                                                                                    | keep at 0                                                                                 |
-| `cta-coverage`        | 0     | ✅ since `fee7f69` (§13.2) — `missingDataCta` 24 → 0; the `/מחירון/` warning gone since `68a4a7f` (§8.5)                                                             | keep at 0                                                                                 |
-| `perf`                | 0     | ✅ since `13a6bdc` (§10.1, §10.3) — `fontPreloads` 0 → 2, `unusedDeps` → `[]`; the RSC-payload warning (§1.3) stays                                                  | keep at 0                                                                                 |
-| `edge`                | 0     | ✅ since `a0e0fe2` (§1.1 ADR 0004, §12.1, §12.4/N5, N4) — 37 stubs → 72 real 301 rules, `_headers` owned, 0 dead-host artifacts; the `llms.txt` warning (§6.5) stays | keep at 0                                                                                 |
-| `export`              | 0     | pass — asserts `out/` is a current build of the source tree (N12)                                                                                                    | keep at 0                                                                                 |
-| `links` · `spam-grep` | 0     | pass — their metrics are the regression watch-list below                                                                                                             | keep at 0                                                                                 |
+| Check                 | Fails | What is failing                                                                                                                                                                                                      | Expected until                                                        |
+| --------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `content-depth`       | 8     | floors: about 307/500, areas index 98/250, services index 113/250, 18 locations 127–133/350, 7 services 164–170/450, 11 posts 439–574/900 · doorway delta < 120 on all 18 locations (2–3) and all 7 services (28–46) | Sprint 5 (§3.2), Sprint 6 (§3.1, §3.13), posts Sprint 7 (§3.8, §3.10) |
+| `claims-grep`         | 0     | ✅ since `1796ee7` (§7.2, §7.6) — `failingClaims` 5 → 0, every `liveOccurrences` 0; `totalHits 1` is the gated rating row in `Reviews.tsx`                                                                           | keep at 0                                                             |
+| `schema`              | 0     | ✅ since `d8edb28` (§4.2, §4.4–§4.9, §4.12, N2) — `danglingIds` 18 → 0, `rawHebrewUrls` 18 → 0, `WebSite` on `/`, `Service` on 18 locations; 0 warnings                                                              | keep at 0                                                             |
+| `a11y`                | 0     | ✅ since `68a4a7f` (§11.1–§11.3, N11, §8.1) — every contrast pair ≥ 5.42:1, lists intact, per-field `aria-invalid`; 0 warnings                                                                                       | keep at 0                                                             |
+| `rtl-lint`            | 0     | ✅ since `7cfcf4c` (§11.5) — `bannedUtilities` 3 → 0, `hexLiterals` 7 → 0                                                                                                                                            | keep at 0                                                             |
+| `titles`              | 0     | ✅ since `13a6bdc` (§1.5) — `ogUrlMissing` 45 → 0; 0 warnings since `74a92d1` (§2.4–§2.6, 24 → 0)                                                                                                                    | keep at 0                                                             |
+| `cta-coverage`        | 0     | ✅ since `fee7f69` (§13.2) — `missingDataCta` 24 → 0; the `/מחירון/` warning gone since `68a4a7f` (§8.5)                                                                                                             | keep at 0                                                             |
+| `perf`                | 0     | ✅ since `13a6bdc` (§10.1, §10.3) — `fontPreloads` 0 → 2, `unusedDeps` → `[]`; the RSC-payload warning (§1.3) stays                                                                                                  | keep at 0                                                             |
+| `edge`                | 0     | ✅ since `a0e0fe2` (§1.1 ADR 0004, §12.1, §12.4/N5, N4) — 37 stubs → 72 real 301 rules, `_headers` owned, 0 dead-host artifacts; the `llms.txt` warning (§6.5) stays                                                 | keep at 0                                                             |
+| `export`              | 0     | pass — asserts `out/` is a current build of the source tree (N12)                                                                                                                                                    | keep at 0                                                             |
+| `links` · `spam-grep` | 0     | pass — their metrics are the regression watch-list below                                                                                                                                                             | keep at 0                                                             |
 
 The ✅ rows are green **in the repo**. Sprint 1 is live (the 2026-10-12/13 deploys, probed
-2026-11-08); Sprints 2 and 3 are not deployed yet. `edge` in particular measures files, not
+2026-11-08); Sprints 2, 3 and 4 are not deployed yet. `edge` in particular measures files, not
 responses — the live probe is `deploy-dangates`'s job.
 
 Phases are the "Suggested order of work" at the end of `docs/optimization-backlog.md`. When a
@@ -96,15 +96,18 @@ gate even though the check itself still passes): `links` → `orphans 0`, `broke
 `linksToStubs 0`, `pagesNotExactlyOneH1 0`, `headingSkips 0`, `breadcrumbPages 44`,
 `sitemapUrls 45`, `contentPages 46` (45 + the `noindex` `/תודה/`), `staticRoutesRegistered 10` ·
 `titles` → `pages 46`, `uniqueTitles 46`, `uniqueDescriptions 46` ·
-`spam-grep` → `spamHits 0`, `fusedWords 0`, `relatedTails 0`, `curlyQuotes 4` · `claims-grep`
-`liveOccurrences` → `rating 0`, `named-person 0`, `licence 0`, `insurance 0`, `founded 0` ·
+`titles` → 0 warnings (since `74a92d1`) ·
+`spam-grep` → `spamHits 0`, `fusedWords 0`, `relatedTails 0`, `curlyQuotes 0`, `emojiCount 39` ·
+`claims-grep` → `failingClaims 0`, `totalHits 1`, every `liveOccurrences` value 0 ·
+`content-depth` → home `belowFloor 0` (1535 unique), pricing `belowFloor 0` (945 unique) ·
 `schema` → `pagesWithJsonLd 45`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 1` · `perf` →
 `largestJsBytes 172834`, `clientComponents 3` (`LeadForm`, `MobileMenu`, `Reveal`), `fontPreloads 2`,
 `unusedDeps []`, `devBuildFiles 0`, `sourceMaps 0` · `rtl-lint` → `bannedUtilities 0`,
 `hexLiterals 0` · `a11y` → `unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 ·
-`titles` → `ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, `ctaElements 119`,
-`distinctTaggedElements 30` (113 / 24 after Sprint 1; 115 / 26 with the fleet live-kit's card —
-CLAUDE.md §14; 119 / 30 with the pricing and thank-you CTAs of Sprint 3) · `edge` → `stubs 0`, `redirectRules 72`, `redirectsFile true`, `headersFile true`,
+`titles` → `ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, `ctaElements 125`,
+`distinctTaggedElements 35` (113 / 24 after Sprint 1; 115 / 26 with the fleet live-kit's card —
+CLAUDE.md §14; 119 / 30 with the pricing and thank-you CTAs of Sprint 3; 125 / 35 with Sprint 4's
+pricing, FAQ link-out and complaints CTAs) · `edge` → `stubs 0`, `redirectRules 72`, `redirectsFile true`, `headersFile true`,
 `deadHostArtifacts 0`, `foreignStubs 0`.
 
 **Live surfaces (CLAUDE.md §14).** `npm run build` now runs the kit's gates in `prebuild` and

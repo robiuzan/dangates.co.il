@@ -116,13 +116,13 @@ app/
 
 ### Scope: a narrow set, not a mirror
 
-| Translate                                                                                     | Never translate                                                      |
-| --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Home                                                                                          | The 18 `/locations/[city]/` pages — doorway pages already (§3.1)     |
-| The 7 `/services/[service]/` pages, starting with 3–4 flagship ones                           | The 11 `/blog/[slug]/` posts — untrusted, mid-repair (golden rule 7) |
-| `/שירותים/` → `/en/services/`, `/איזורי-שירות/` → `/en/service-areas/`                        | `/מדריכים/` and every guide (ADR 0002) — Hebrew authority, no export |
-| `/אודות/` → `/en/about/`, `/צור-קשר/` → `/en/contact/`                                        | `/מחירון/` until the N14 pivot lands — 8 of 9 prices are unsourced   |
-| `/מדיניות-פרטיות/` → `/en/privacy/`, `/הצהרת-נגישות/` → `/en/accessibility/` (must stay true) |                                                                      |
+| Translate                                                                                     | Never translate                                                          |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Home                                                                                          | The 18 `/locations/[city]/` pages — doorway pages already (§3.1)         |
+| The 7 `/services/[service]/` pages, starting with 3–4 flagship ones                           | The 11 `/blog/[slug]/` posts — untrusted, mid-repair (golden rule 7)     |
+| `/שירותים/` → `/en/services/`, `/איזורי-שירות/` → `/en/service-areas/`                        | `/מדריכים/` and every guide (ADR 0002) — Hebrew authority, no export     |
+| `/אודות/` → `/en/about/`, `/צור-קשר/` → `/en/contact/`                                        | `/מחירון/` — pivoted in `af8ba4c` (N14); still Hebrew-only until decided |
+| `/מדיניות-פרטיות/` → `/en/privacy/`, `/הצהרת-נגישות/` → `/en/accessibility/` (must stay true) |                                                                          |
 
 First cut: home, 3–4 services, contact — about 6 pages. Ceiling: the left column, ~13 pages. The
 right column is not a phase 2; it is the boundary.
@@ -196,21 +196,21 @@ Next resolves each against `metadataBase` and percent-escapes the Hebrew, so the
 
 ### What forks per locale, and what must not
 
-| Concern           | Rule                                                                                                                                                                                                                                                  |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lang` + `dir`    | Per-locale root layout, **server-side**. Never a client-side `document.dir` flip — visible reflow.                                                                                                                                                    |
-| Title template    | Hebrew: `%s \| ${siteConfig.name}`. English: `%s \| ${siteConfig.nameEn}`. Brand exactly once, either way.                                                                                                                                            |
-| Canonical         | Self-referencing per locale. Never cross-locale.                                                                                                                                                                                                      |
-| `openGraph`       | Per-locale `ogBase` (`seo-metadata`): `locale: "he_IL"` vs `en_US`; same `images` from `ogImageMeta(manifest.images)` — the manifest already carries an English `alt` and a Hebrew `altHe`.                                                           |
-| `sitemap.ts`      | One sitemap, both trees, each entry with its `alternates.languages`.                                                                                                                                                                                  |
-| JSON-LD           | `inLanguage` per page (`he-IL` today on `BlogPosting`; `en` on English pages). **One business node, one `@id`** — `${manifest.url}/#business` — referenced from both trees. `WebSite` (§4.9): `["he", "en"]`.                                         |
-| Business `name`   | Hebrew, unchanged. `siteConfig.nameEn` goes in `alternateName` — the business is one entity in two languages, not two businesses.                                                                                                                     |
-| NAP               | Byte-identical: `072-2587772`, `info@dangates.co.il`, the manifest `openingHours`. **No street address in either language** — none exists, and English does not license inventing one.                                                                |
-| Hours copy        | `siteConfig.hours` is hand-typed Hebrew; the English rendering says the same times. The 24/7 emergency string is 🔶 (owner-actions 3.5) — it does not enter English before it is confirmed.                                                           |
-| Dates / currency  | `dd/mm/yyyy` and `₪` after the number in both — Israeli conventions, not the locale's.                                                                                                                                                                |
-| Slugs             | English slugs in Latin, translated. Hebrew slugs unchanged. **Never transliterate a Hebrew slug.**                                                                                                                                                    |
-| `llms.txt` (§6.5) | Stays Hebrew-primary; add an English section, not a second file.                                                                                                                                                                                      |
-| `robots.ts`       | Unchanged. Whatever the Cloudflare edge does to AI crawlers applies to `/en/` too — 200 to every probed bot as of 2026-09-06 (§6.1 ✅), after a 2026-08 block that can return without a repo change; re-probe per `aeo-answer-content`, never assume. |
+| Concern           | Rule                                                                                                                                                                                                                                                                    |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lang` + `dir`    | Per-locale root layout, **server-side**. Never a client-side `document.dir` flip — visible reflow.                                                                                                                                                                      |
+| Title template    | Hebrew: `%s \| ${siteConfig.name}`. English: `%s \| ${siteConfig.nameEn}`. Brand exactly once, either way.                                                                                                                                                              |
+| Canonical         | Self-referencing per locale. Never cross-locale.                                                                                                                                                                                                                        |
+| `openGraph`       | Per-locale `ogBase` (`seo-metadata`): `locale: "he_IL"` vs `en_US`; same `images` from `ogImageMeta(manifest.images)` — the manifest already carries an English `alt` and a Hebrew `altHe`.                                                                             |
+| `sitemap.ts`      | One sitemap, both trees, each entry with its `alternates.languages`.                                                                                                                                                                                                    |
+| JSON-LD           | `inLanguage` per page (`he-IL` today on `BlogPosting`; `en` on English pages). **One business node, one `@id`** — `${manifest.url}/#business` — referenced from both trees. `WebSite` (§4.9): `["he", "en"]`.                                                           |
+| Business `name`   | Hebrew, unchanged. `siteConfig.nameEn` goes in `alternateName` — the business is one entity in two languages, not two businesses.                                                                                                                                       |
+| NAP               | Byte-identical: `072-2587772`, `info@dangates.co.il`, the manifest `openingHours`. **No street address in either language** — none exists, and English does not license inventing one.                                                                                  |
+| Hours copy        | `siteConfig.hours` is built from the manifest `openingHours` by `hoursLine()` (Hebrew day names); the English rendering says the same times. No 24/7 string exists since `1796ee7` — 24/7 is 🔶 (owner-actions 3.5) and enters neither language before it is confirmed. |
+| Dates / currency  | `dd/mm/yyyy` and `₪` after the number in both — Israeli conventions, not the locale's.                                                                                                                                                                                  |
+| Slugs             | English slugs in Latin, translated. Hebrew slugs unchanged. **Never transliterate a Hebrew slug.**                                                                                                                                                                      |
+| `llms.txt` (§6.5) | Stays Hebrew-primary; add an English section, not a second file.                                                                                                                                                                                                        |
+| `robots.ts`       | Unchanged. Whatever the Cloudflare edge does to AI crawlers applies to `/en/` too — 200 to every probed bot as of 2026-09-06 (§6.1 ✅), after a 2026-08 block that can return without a repo change; re-probe per `aeo-answer-content`, never assume.                   |
 
 ### The audit gate is single-locale today
 
@@ -249,7 +249,7 @@ language-independent) → `ts-react-reviewer` for the markup.
 - [ ] One `#business` `@id` across locales; `alternateName` from `siteConfig.nameEn`
 - [ ] NAP byte-identical; no address in either language; no 🔶 claim enters English
 - [ ] `/איזורי-שירות/` untouched; no Hebrew slug transliterated
-- [ ] Locations, posts, guides and (until N14) `/מחירון/` not translated
+- [ ] Locations, posts, guides and `/מחירון/` not translated (N14 landed in `af8ba4c`; translating the pricing page is its own decision)
 - [ ] `claims.json` extended with English patterns; `titles.mjs` and `links.mjs` cover both trees
 - [ ] Every English page human-written or human-reviewed; no client-side or edge locale redirect
 - [ ] `npm run gate` passes with no failure absent from the latest `docs/audits/` report

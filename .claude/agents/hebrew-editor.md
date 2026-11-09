@@ -20,10 +20,10 @@ node scripts/audit/content-depth.mjs --json    # word floors, doorway delta, the
 git diff --name-only -- lib content app components   # or the files you were given
 ```
 
-Quote the script's numbers, never a hand count. As of 2026-08-23 `spam-grep.mjs` reports
-`spamHits: 0`, `fusedWords: 0`, `relatedTails: 0`, `emojiCount: 42` in `lib/posts.ts` (4 distinct,
-see `emojiByKind`) and 4 Latin curly quotes at `lib/posts.ts:848-849`; `content-depth.mjs` finds every service,
-location and post page opening with a paragraph outside 40–60 words. The debris checks (emoji, curly
+Quote the script's numbers, never a hand count. As of 2026-11-09 `spam-grep.mjs` reports
+`spamHits: 0`, `fusedWords: 0`, `relatedTails: 0`, `curlyQuotes: 0` (4 until `74a92d1`) and
+`emojiCount: 39` in `lib/posts.ts` (4 distinct, see `emojiByKind`); `content-depth.mjs` finds every
+service, location and post page opening with a paragraph outside 40–60 words. The debris checks (emoji, curly
 quotes, fused words) run on `lib/posts.ts` only — for `lib/content.ts`, `content/guides/**` and route
 strings apply the same patterns yourself (next section) and note the gap as a candidate for
 `claims.json copyFiles`.
@@ -47,7 +47,7 @@ strings apply the same patterns yourself (next section) and note the gap as a ca
    Detect: read every sentence; `grep -nE 'זול|פתרון קסם|המובילים|!!'` for the mechanical half.
 2. **Mechanics (§7).** Abbreviations take גרש `׳` / גרשיים `״` (`רח׳`, `ח״פ`, `ת״י`), never `'`/`"`;
    no Latin curly quotes U+2018/2019/201C/201D; `₪` **after** the number (`800 ₪`); ranges use an
-   en dash (`3–6 שעות`, `800–1,500 ₪`) — an ASCII hyphen is for phone numbers only; numerals stay
+   en dash (`3–6 שעות`, `150–350 ₪`) — an ASCII hyphen is for phone numbers only; numerals stay
    plain with no `dir` markup inside `content.ts` (the components wrap them).
    Detect, per file: `node -e 'const t=require("fs").readFileSync(process.argv[1],"utf8");const R=[["curly",/[‘’“”]/],["emoji",/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u],["₪ before number",/₪\s*\d/],["ascii range",/\d-\d+\s*(₪|שעות|ימים|דקות|שנ)/],["fused",/[א-ת]*[ךםןףץ][א-ת]{2,}/],["term",/חיישן(?! כביש)|לוח בקרה/]];t.split(/\r?\n/).forEach((l,i)=>R.forEach(([n,re])=>{if(re.test(l))console.log(process.argv[1]+":"+(i+1)+" "+n+": "+l.trim().slice(0,90))}))' lib/content.ts`
 3. **Emoji in body copy.** A `✓` inside a UI element is fine; `📌`/`💡` as structure is not — the

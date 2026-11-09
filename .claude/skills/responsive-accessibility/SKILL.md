@@ -1,6 +1,6 @@
 ---
 name: responsive-accessibility
-description: WCAG 2.1 AA and Israeli IS 5568 compliance for dangates, measured by scripts/audit/a11y.mjs and rtl-lint.mjs — both scripts at 0 since Sprint 3 (2026-11): contrast in every state (the accent-500 hover and the whatsapp tokens that fixed 2.76:1 and 1.98:1), 44px tap targets (two md buttons left in the form's error alert), keyboard and focus order with the skip link and the MobileMenu focus trap/Escape, semantic landmarks and one H1, lists never broken by a Reveal wrapper, no doubled screen-reader text, FAQ answers in the DOM via details, per-field form errors with aria-invalid and aria-describedby, reduced motion, and keeping /הצהרת-נגישות/ truthful. Use before shipping or when auditing accessibility. Triggers: "accessibility pass", "WCAG", "contrast check", "tap targets", "keyboard navigation", "נגישות", "IS 5568", "ת״י 5568".
+description: WCAG 2.1 AA and Israeli IS 5568 compliance for dangates, measured by scripts/audit/a11y.mjs and rtl-lint.mjs — both scripts at 0 since Sprint 3 (2026-11): contrast in every state (the accent-500 hover and the whatsapp tokens that fixed 2.76:1 and 1.98:1), 44px tap targets (the form's error-alert buttons too, since fba5957 — N19 closed), keyboard and focus order with the skip link and the MobileMenu focus trap/Escape, semantic landmarks and one H1, lists never broken by a Reveal wrapper, no doubled screen-reader text, FAQ answers in the DOM via details, per-field form errors with aria-invalid and aria-describedby, reduced motion, and keeping /הצהרת-נגישות/ truthful. Use before shipping or when auditing accessibility. Triggers: "accessibility pass", "WCAG", "contrast check", "tap targets", "keyboard navigation", "נגישות", "IS 5568", "ת״י 5568".
 ---
 
 # Accessibility — WCAG 2.1 AA + IS 5568
@@ -98,8 +98,8 @@ decorative, and `SiteImage` refuses an empty `alt` at compile time. Figures get 
 
 - 44×44 px minimum for anything tappable, with spacing. The `MobileCtaBar` halves are `py-3.5`
   full-width anchors and the phone-first CTAs are `Button size="lg"` — verify the rendered height,
-  not the class. **Open (N19):** the two buttons in `LeadForm`'s delivery-failure alert are
-  `size="md"` (≈40px). No script measures target size.
+  not the class. The two buttons in `LeadForm`'s delivery-failure alert moved `size="md"` → `size="lg"`
+  (≈52px) in `fba5957`, closing N19. No script measures target size.
 - The `h-16 lg:hidden` spacer in `app/layout.tsx` keeps the fixed bar off the footer — keep it.
 - Test at 360 px; text reflows to 320 px without horizontal scroll; 200 % zoom loses nothing.
 

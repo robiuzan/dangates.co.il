@@ -150,8 +150,9 @@ from the guide's own FAQ blocks so rule 2 below cannot drift.
    violation; each Q/A string appears in exactly one `FAQPage` sitewide. The homepage qualifies because
    `Faq` ships every answer in the DOM — native `<details>` since `7cfcf4c` (N8 ✅); it used
    `hidden={!isOpen}` before, which kept parity but hid the text.
-3. **`Offer` / `priceSpecification` / `offers`** — 8 of the 9 `priceRows` are authored estimates
-   (the comment above `priceRows` in `lib/content.ts`) and real prices are **not coming** (business-facts §D).
+3. **`Offer` / `priceSpecification` / `offers`** — 8 of the 9 `priceRows` were authored estimates and
+   left with N14 (`af8ba4c`); the one left is the 🔶 visit band, and real prices are **not coming**
+   (business-facts §D).
 4. **`address`** — a service-area business with no premises; absent is correct. The Rich Results Test
    will flag it; record the trade-off (backlog §4.11), never invent a `PostalAddress`.
 5. **`foundingDate`** follows `foundedYear` (`null`, not coming) — the kit already omits it.
@@ -184,13 +185,13 @@ bar; the missing-`address` warning is the documented trade-off.
 
 ## Gotchas
 
-- `jsonLdScript([a, b])` is a JSON array, not a graph — that is exactly what `app/page.tsx:33` does
-  today and why `schema.mjs` warns on `/`.
+- `jsonLdScript([a, b])` is a JSON array, not a graph — that is what `app/page.tsx` did until
+  `02a3144` and why `schema.mjs` warned on `/`; it now passes one `graph(...)`.
 - `prune()` is shallow: an empty nested object (`publisher: {}`) survives and becomes a dangling
   reference. Build nested nodes complete or leave them out.
 - `noUncheckedIndexedAccess` is on: `ogImageMeta(m.images)?.[0]?.url` — both optional chains are needed.
-- The `triggers` list on service pages (`app/services/[service]/page.tsx:43-48`) is shared by all 7 —
-  a per-service `FAQPage` must wait for per-service FAQs in `lib/content.ts` (Phase 3, `/new-service`),
-  or seven pages mark up identical questions and fail the sitewide-once rule.
+- The service pages share their process steps and CTA card (the `triggers` are per-service since
+  `cfff52f`) — a per-service `FAQPage` must wait for per-service FAQs in `lib/content.ts` (Phase 3,
+  `/new-service`), or seven pages mark up identical questions and fail the sitewide-once rule.
 - Business facts in the graph come from the manifest chain (`/dangates-architecture`). If a value is
   not there, the node field stays absent and a row goes to `docs/business-facts.md`.

@@ -1,6 +1,6 @@
 ---
 name: cro-engagement-auditor
-description: Read-only conversion and engagement audit of the dangates.co.il export — data-cta coverage from cta-coverage.mjs, the lead form as a regression watch (the delivery-failure alert, per-field aria-invalid errors, the Israeli phone pattern, the consent link, the city field and the /תודה/ route — all shipped by 2026-11; still open: no tag consumes the form events until GA4 exists), CTA presence per page type, the sticky mobile bar, the footer hours contradicting the 24/7 CTA, TOC on long pages, FAQ answers hidden in the DOM, event-taxonomy coverage and related-link monotony. Reports in the docs/audits row format with a backlog id on every finding. Invoke with "CRO audit", "why aren't leads tracked", "check the form", or "engagement audit".
+description: Read-only conversion and engagement audit of the dangates.co.il export — data-cta coverage from cta-coverage.mjs, the lead form as a regression watch (the delivery-failure alert, per-field aria-invalid errors, the Israeli phone pattern, the consent link, the city field and the /תודה/ route — all shipped by 2026-11; still open: no tag consumes the form events until GA4 exists), CTA presence per page type, the sticky mobile bar, footer hours vs CTA parity (fixed 2026-11-08 — a regression watch), TOC on long pages, FAQ answers hidden in the DOM, event-taxonomy coverage and related-link monotony. Reports in the docs/audits row format with a backlog id on every finding. Invoke with "CRO audit", "why aren't leads tracked", "check the form", or "engagement audit".
 model: sonnet
 tools: Read, Grep, Glob, Bash
 ---
@@ -35,8 +35,7 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
      (`noindex`, out of the sitemap, a `tel:` link) reached by a full load after `lead_submit`;
      §13.4 / §13.5 `lead_submit` with `page`, `service`, `city`, `placement`, `site`, plus
      `form_start` and `form_submit_attempt` — never PII. Read every `trackEvent` / `track(` push.
-   - **Open (N19):** the error alert's two buttons are `size="md"` (≈40px) — a phone tap target
-     under the 44px floor.
+   - The error alert's two buttons are `size="lg"` (≈52px) since `fba5957` (N19 ✅) — keep them there.
 2. **CTA presence per page type.** `cta-coverage.mjs` warns on a commercial page whose `<main>`
    has no call / WhatsApp / form CTA. None does since `68a4a7f`: `/מחירון/` carries
    `pricing-call` and `pricing-whatsapp` beside `pricing-contact` (§8.5 ✅). Check that every
@@ -46,11 +45,10 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
    `<Footer />`; the WhatsApp half uses the `whatsapp` tokens since `7cfcf4c` (5.42:1, was 1.98:1 on
    `#25D366` — §11.1 ✅); a conversion path that fails AA is a CRO finding too, so keep `a11y.mjs` at 0. Tap height `py-3.5` — measure, and
    confirm both halves stay ≥ 44 px.
-4. **Footer hours vs the 24/7 CTA (§7.6).** `Footer` prints
-   `hours.weekday` and `hours.friday` only (ends 18:00, no emergency line), directly beneath a
-   `FinalCta` that promises "זמינות 24/7 לחירום" (`FinalCta`; `Hero` repeats it — the strings
-   live in `lib/content.ts` since N13). Flag the contradiction inside one viewport; the truth of 24/7 is
-   business-facts §E / backlog §5.4, not yours to settle.
+4. **Footer hours vs the CTA (§7.6 ✅ since `1796ee7`).** `Footer`, `/צור-קשר/`, `FinalCta` and the
+   trust bar all read `siteConfig.hours` (built from the manifest rows behind
+   `openingHoursSpecification`); nothing promises 24/7. Flag any CTA that adds availability outside
+   those hours — the truth of 24/7 is business-facts §E / backlog §5.4, not yours to settle.
 5. **TOC on long pages.** The rule (`/engagement-ux`) is a table of contents on any page over 900
    unique words. `content-depth.mjs` medians show no such page exists today — every post is under the
    900 floor — so record "no page qualifies yet; re-check when `/מדריכים/` lands (Phase 4)".
@@ -65,8 +63,8 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
    `engaged_time`, `toc_click`, `faq_open`, `related_click`, `outbound_click` — Sprint 8.1). GA4 is
    unprovisioned and no container tag consumes any of it (§13.7, owner, B2) — say so once, under
    owner-blocked, not per finding.
-8. **Related-link monotony (§9.4).** `app/services/[service]/page.tsx:54` and
-   `app/blog/[slug]/page.tsx:77` both `.slice(0, 4)` in array order; `links.mjs` warns which pages
+8. **Related-link monotony (§9.4).** The `others` lists in `app/services/[service]/page.tsx`
+   and `app/blog/[slug]/page.tsx` both `.slice(0, 4)` in array order; `links.mjs` warns which pages
    receive no related link at all. Relevance-based `relatedServices` / `nearby` are Phase 3
    (`/internal-linking`); the data fields do not exist yet.
 9. **Honest-trust gate.** Any CTA block, badge or microcopy that leans on "אחריות מלאה", "24/7",

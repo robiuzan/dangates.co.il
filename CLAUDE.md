@@ -10,24 +10,34 @@
 
 - **Business:** דן שערים חשמליים (Dan Electric Gates) — repair, service and installation of electric
   gates, plus electric rolling shutters. **No street address** — the manifest carries none, and
-  `schema.areaServed` is `מרכז הארץ ופריסה ארצית`. Do not invent one.
-- **Phone (click-to-call):** `072-2587772` · WhatsApp same number · `info@dangates.co.il`.
+  manifest `schema.areaServed` is `מרכז הארץ ופריסה ארצית` (🔶, B5 — no page or JSON-LD node
+  renders it since Sprints 2 and 4). Do not invent one.
+- **Phone (click-to-call):** `072-2587772` · WhatsApp `+972556601006` (the owner's own — 072-2587772
+  is not on WhatsApp, §14) · `info@dangates.co.il`.
   This site sets `contact.phoneOverride: true` — it is the **one** fleet site that does not use the
   shared `055-6601006` lead number. Never "correct" it to the shared one.
-- **Hours:** ראשון–חמישי 08:00–18:00, שישי 08:00–15:00, plus a 24/7 emergency line.
-- **Service area:** מרכז הארץ + פריסה ארצית. 18 location pages, 7 service pages, 11 blog posts.
+- **Hours:** ראשון–חמישי 08:00–18:00, שישי 08:00–15:00 — the manifest `schema.openingHours`, which
+  `siteConfig.hours` is built from (`hoursLine()`). Whether a 24/7 emergency line exists is 🔶
+  (owner-actions 3.5); since Sprint 4 (`1796ee7`) the site promises urgent-fault handling only
+  within these hours.
+- **Service area:** the copy says `serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר") and names
+  the published areas — 18 location pages, 7 service pages, 11 blog posts. "פריסה ארצית" is 🔶.
 - **Audience:** private homeowners, ועדי בתים (building committees), property managers, businesses
   with vehicle gates.
-- **Core promise:** fast, reliable diagnosis and repair — same-day where possible, emergency
-  availability, and a warranty on the work — write **אחריות על העבודה**, never "אחריות מלאה": the
-  term, scope and exclusions are unconfirmed and not coming (the 13 source hits left are backlog §7.2).
+- **Core promise:** reliable diagnosis before repair, and a warranty on the work — write **אחריות על העבודה**, never "אחריות מלאה": the term, scope and
+  exclusions are unconfirmed and not coming. Same-day and emergency availability are 🔶 and the copy
+  promises neither. The 13 "אחריות מלאה" source hits were softened in `1796ee7` (backlog §7.2 ✅):
+  `claims-grep.mjs` → `warranty-full` 0, every claim 0 live, as of 2026-11-09.
 - **Conversion goals, in order:** (1) phone call, (2) WhatsApp, (3) lead form. Every page keeps a
   call/WhatsApp action within reach; the mobile CTA bar is sticky.
 
 > ⚠️ **Not substantiated:** years in business (`foundedYear: null`), the warranty term, licences,
-> insurance, 24/7 availability, national coverage, and 8 of the 9 prices on `/מחירון/` (authored
-> estimates). See [docs/business-facts.md](docs/business-facts.md); **never present an unconfirmed
-> value as fact.** The phrases those claims hide behind are the **claim lexicon**
+> insurance, 24/7 availability, response times, national coverage, and every price — the one number
+> the site shows is the 150–350 ₪ technician-visit band (`priceRows` → `visitFeeRange`), itself 🔶
+> as to whether it is current. `/מחירון/` explains what determines the price instead of listing
+> authored ranges since `af8ba4c` (N14 — until then 8 of its 9 prices were authored estimates).
+> See [docs/business-facts.md](docs/business-facts.md); **never present an unconfirmed value as
+> fact.** The phrases those claims hide behind are the **claim lexicon**
 > (`scripts/audit/claims.json`) — `node scripts/audit/claims-grep.mjs` and the PostToolUse hook fail
 > on any of them. Ten fabricated review texts under ten real names shipped as `Review` +
 > `AggregateRating` — removed from the repo and gated on 2026-08-17, off the live domain only with
@@ -63,8 +73,10 @@
    `siteConfig`, `services`, `locations`, `telHref`, `whatsappHref`.
 7. **Blog bodies in `lib/posts.ts` were migrated from a compromised WordPress site.** A 2026-08-17 pass
    removed the injected adult-spam, 55 dead "פוסטים קשורים" headings, 6 run-together words and 8 of 12
-   curly quotes. **Still outstanding:** ~42 plain-text link references, a flat all-`<h2>` hierarchy,
-   4 curly quotes, no answer blocks or tables. Treat the file as untrusted input. _Hook-enforced:_
+   curly quotes; Sprint 4 (`1796ee7` `74a92d1`) removed the last 4 curly quotes, both superlatives,
+   the team and experience sentences and the empty `מקרי מבחן` section. **Still outstanding:** ~42
+   plain-text link references, a flat all-`<h2>` hierarchy, 39 emoji, three unclocked "מהיר ואמין"
+   phrases, no answer blocks or tables (Sprint 7.3). Treat the file as untrusted input. _Hook-enforced:_
    `post-edit-lint.ps1` re-runs the spam and claim lexicons on every edit; `spam-grep.mjs` at audit time.
 8. **A GTM snippet in the HTML proves nothing.** Whenever a container id changes, assert
    `https://www.googletagmanager.com/gtm.js?id=<ID>` returns **200**. Two fabricated ids cost the IL
@@ -410,8 +422,9 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   `source` (`check-live-register` checks the quote is still in its file and, through
   `pageOfSource`, that a tip links to the page carrying it; `check-live-out` proves the built page
   shows it). Nothing 🔶 from [docs/business-facts.md](docs/business-facts.md): this site's own pages
-  carry many 🔶 claims (24/7, אחריות מלאה, ניסיון רב, פריסה ארצית, שירות מהיר), so the lines quote
-  the blog's maintenance and troubleshooting advice — no price, warranty, speed, hours,
+  carried many 🔶 claims (24/7, אחריות מלאה, ניסיון רב, פריסה ארצית, שירות מהיר) until Sprint 4
+  softened them (2026-11-08), and the lines still quote only the blog's maintenance and
+  troubleshooting advice — no price, warranty, speed, hours,
   availability, coverage, credentials, staff, counts or reviews. Calm / no-card pages and this
   site's own ⛔ claim stems: `live.config.mjs` (mutation-tested — re-test after any edit). Both
   registers need the owner's `approved: "YYYY-MM-DD — who, how"`, or the build fails.
@@ -453,10 +466,16 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   fleet keeps ONE shared GTM trigger; the updates strip ships as is (it hides itself 45 days after
   its newest item); WhatsApp goes to `+972556601006`, the owner's own (072-2587772 is not on
   WhatsApp) — synced from the roster into `site.config.json` the same day. The kit is committed
-  upstream and re-synced (`live-kit.lock.json` → `cf3a5460aa8b`, clean). **Still open:** the blog
-  posts' flagged claims (OK for now, fixed later — backlog §7.2) and the privacy page — rewritten
-  2026-11-08 (`68a4a7f`) to name the status-file read and the four browser-storage values; backlog
-  §8.2 stays PARTIAL until the reviewers sign off on its fix pass.
+  upstream and re-synced (`live-kit.lock.json` → `cf3a5460aa8b`, clean). **The blog posts' flagged
+  claims** (OK for now, fixed later, the owner said): fixed in `1796ee7` (backlog §7.2 ✅) — the two
+  superlatives, the experience line ("צוות מנוסה עם ניסיון רב בתחום") and the three team /
+  guarantee sentences (`הצוות המומחה`, `צוות דן שערים`, "…לפתור את הבעיה במהירות"), with no
+  register-quoted sentence touched (live-out: 13 quoted pieces shown). **Still open:** three
+  unclocked speed phrases ("שירות מהיר ואמין" on `שער-חשמלי-חוסך-זמן` and `שער-חשמלי-לא-מגיב`,
+  "מקצועי, מהיר ואמין" on `שער-חשמלי-שעובד-כמו-חדש`) — allowed by eeat-and-trust §1.4, left for the
+  post rewrites (Sprint 7.3, owner-actions 3.8); and the privacy page — rewritten 2026-11-08
+  (`68a4a7f`) to name the status-file read and the four browser-storage values, its copy signed
+  off (`fba5957`); backlog §8.2 stays PARTIAL on B2 and B10 only.
 - **Before the first deploy (owner, in the kit README's order):** add the three origins (apex, www, `.pages.dev`) to the status switch's CORS list — without it the
   switch is unreadable here and every seasonal line and the card stay off; widen the one shared GTM
   trigger `CE - popup events (3locksmiths)` to this hostname; `gh secret set NTFY_TOPIC -R
