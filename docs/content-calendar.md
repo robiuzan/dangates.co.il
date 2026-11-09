@@ -13,7 +13,7 @@ module-load throws, `content/guides/<slug>.ts` one module per guide, and `app/מ
 **published** in the repo; #5–#16 are **planned**. The 11 posts still use the flat
 `PostBlock = {type: "h" | "p" | "li"; text}` in `lib/posts.ts` — moving them waits on
 owner-actions 3.8 (§4). `node scripts/audit/content-depth.mjs` is the measurement: guide
-`belowFloor 0`, median 2395.5 unique words / 900 (2026-11-09).
+`belowFloor 0`, median 2470.5 unique words / 900 (2026-11-09 at `2b0d802`, with the TOC; 2395.5 at `89439b7`).
 
 **Status key:** planned · drafting · review (`article-auditor` + `hebrew-editor` + `claims-verifier`)
 · published. **Owner-facts column:** 🔶 = a [business-facts.md](business-facts.md) row the guide

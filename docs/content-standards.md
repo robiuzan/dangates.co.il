@@ -16,17 +16,17 @@ bar — is outside it and never counted) **minus every paragraph of ≥ 12 words
 "Today" is the script's median for the type as of **2026-11-09** (after Sprint 5, `225ff45`; the
 2026-08-23 value in brackets where it moved). Re-run before quoting.
 
-| Page type                     | Minimum unique body words | Today (`content-depth.mjs`)                                                                                                                     |
-| ----------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Homepage                      | 800                       | 1765 ✅ (1781 total; 675 on 2026-08-24 after the reviews left — Sprint 4 added the answer block, the diagnosis section and real FAQ answers)    |
-| Service page                  | 450                       | 1387 ✅ (7 of 7, range 1294–1542 — the Sprint 5 depth modules; 167–173 before, ~152 on 2026-08-23)                                              |
-| Location page                 | 350                       | 842 ✅ (18 of 18, range 717–1022, as of 2026-11-09 — the Sprint 6 `cityContent` modules; 139–145 before, ~122 on 2026-08-23)                    |
-| Blog post                     | 900                       | ~513 ❌ (11 of 11, range 442–577)                                                                                                               |
-| Guide (`/מדריכים/`)           | 900                       | built in Sprint 7 (`89439b7`): 4 pages, `belowFloor 0`, median 2395.5 unique (2026-11-09); `lib/guides.ts` also throws below 900 at module load |
-| Index page (services / areas) | 250                       | `/שירותים/` 1018 ✅ · `/איזורי-שירות/` 456 ✅ (Sprint 6 `content/pages/`; 336 and 101 before) · `/blog/` 400 ✅ — as of 2026-11-09              |
-| Pricing                       | 400                       | 914 ✅ (144 — the "what determines the price" pivot, N14; 945 before 4F cut the repeated visit band)                                            |
-| About                         | 500                       | 1145 ✅ (Sprint 6 `content/pages/about.ts`, as of 2026-11-09; 320 before, 277 on 2026-08-23)                                                    |
-| Contact, legal, thank-you     | no minimum                | fine as-is                                                                                                                                      |
+| Page type                     | Minimum unique body words | Today (`content-depth.mjs`)                                                                                                                                                                                             |
+| ----------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Homepage                      | 800                       | 1762 ✅ (1778 total, 2026-11-09 at `2b0d802`; 675 on 2026-08-24 after the reviews left — Sprint 4 added the answer block, the diagnosis section and real FAQ answers)                                                   |
+| Service page                  | 450                       | 1468 ✅ (7 of 7, range 1380–1630, 2026-11-09 at `2b0d802` — the Sprint 5 depth modules plus the TOC since `98e38f0`; 1387 at `225ff45`, 167–173 before, ~152 on 2026-08-23)                                             |
+| Location page                 | 350                       | 887 ✅ (14 of 14, range 714–1118, 2026-11-09 at `2b0d802` — the Sprint 6 `cityContent` modules, four retired in `7ed1acd`, a TOC on five since `98e38f0`; 842 over 18 at `7c3f2db`, 139–145 before, ~122 on 2026-08-23) |
+| Blog post                     | 900                       | 518 ❌ (11 of 11 under the floor, range 447–582, 2026-11-09) — the post rewrite waits on owner-actions 3.8                                                                                                              |
+| Guide (`/מדריכים/`)           | 900                       | built in Sprint 7 (`89439b7`): 4 pages, `belowFloor 0`, median 2470.5 unique (2026-11-09 at `2b0d802`, with the TOC; 2395.5 before); `lib/guides.ts` also throws below 900 at module load                               |
+| Index page (services / areas) | 250                       | `/שירותים/` 1018 ✅ · `/איזורי-שירות/` 526 ✅ (456 at `7c3f2db`, rewritten for one region in `7ed1acd`) · `/blog/` 548 ✅ · `/מדריכים/` 870 ✅ — Sprints 6–7 `content/pages/` (336 and 101 before), as of 2026-11-09    |
+| Pricing                       | 400                       | 914 ✅ (144 — the "what determines the price" pivot, N14; 945 before 4F cut the repeated visit band)                                                                                                                    |
+| About                         | 500                       | 1197 ✅ (Sprint 6 `content/pages/about.ts` plus the TOC since `98e38f0`, 2026-11-09; 1145 at `7c3f2db`, 320 before, 277 on 2026-08-23)                                                                                  |
+| Contact, legal, thank-you     | no minimum                | fine as-is                                                                                                                                                                                                              |
 
 A block rendered identically on another route earns no credit anywhere — a service page that reuses
 the homepage's `processSteps` gets nothing for those words, and the four "מתי כדאי לפנות אלינו"
@@ -36,7 +36,8 @@ bullets once shared by all seven service pages counted on exactly one page, not 
 seven service-card descriptions render on `/` and `/שירותים/` only, so they count on both — which is
 why `/שירותים/` and the homepage rose without new copy. A page-level reading, not the script, decides
 whether an index has copy of its own — since Sprint 6.8 (`7c3f2db`) `/שירותים/`, `/איזורי-שירות/`
-and `/אודות/` each render their own `content/pages/` module (1018, 456 and 1145 unique).
+and `/אודות/` each render their own `content/pages/` module (1018, 526 and 1197 unique as of
+2026-11-09 at `2b0d802`; 456 and 1145 at `7c3f2db`).
 
 Word count is a floor, not a goal. A 500-word page that says five specific true things beats a
 900-word page that says one thing five ways — and the 11 blog posts are the proof: they clear 500 words
@@ -89,8 +90,8 @@ even a gate, and since Sprint 5 its page is written with the shutter's own parts
 content lives in `content/services/<slug>.ts`, typed and checked by `lib/service-depth.ts`
 (`serviceDepth`, built 2026-11-09 — `new-service`). The per-city content lives in
 `content/locations/<slug>.ts`, typed and checked by `lib/city-content.ts` (`cityContent`, built
-2026-11-09 in Sprint 6 — `new-city`); `content-depth.mjs` → `locationMedianDelta 343.5`, 18 of 18 at or
-above the floor, as of 2026-11-09.
+2026-11-09 in Sprint 6 — `new-city`); `content-depth.mjs` → `locationMedianDelta 343`, 14 of 14 at or
+above the floor, as of 2026-11-09 at `2b0d802` (343.5 over 18 at `7c3f2db`).
 
 ---
 

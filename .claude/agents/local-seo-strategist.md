@@ -89,12 +89,13 @@ number below is "as of 2026-08-23" context for reading the output, not a finding
    `FAQPage` — `docs/schema-graph.md` §5, `locationServiceJsonLd` in `lib/jsonld.ts` (§4.2 ✅, not
    deployed yet). Check it holds. **Never** a `LocalBusiness` per city, never a
    `PostalAddress`.
-8. **Internal equity** (§9.2 ✅, §9.3 ✅, §9.1 open). The footer renders every location since
+8. **Internal equity** (§9.1 ✅, §9.2 ✅, §9.3 ✅). The footer renders every location since
    `7c3f2db` — 14 since `7ed1acd` → `links.mjs` `notInChrome: 0`, `chromeLinks 31`; since Sprint 5 (`225ff45`) each service page links 5–6
    cities (13 distinct, no unconfirmed region), and since Sprint 6 each location links 2–4
    neighbours from `nearbyPairs` (חיפה 1 since `7ed1acd` — נתניה, the nearest published page) and
    the services that fit it. Judge whether the pairs are real
-   geography. Still open: the header's one-hop reach (Sprint 6.5, `/internal-linking`).
+   geography. Since `fd72698` (Sprint 6.5) the header reaches all 14 locations and 7 services in one
+   hop too (21 hrefs in the homepage `<header>`), and the mesh has 0 asymmetric edges.
 9. **Freshness.** Each `locations` entry carries its own `updated` since `7c3f2db`, read by
    `app/sitemap.ts` (§2.3 ✅) — all 14 at 2026-11-09 because all were rewritten that day. A date
    bumped without a copy change is the finding.

@@ -27,7 +27,7 @@ node scripts/audit/links.mjs                  # orphans, one H1, heading order, 
 ```
 
 As of 2026-11-09 (Sprint 7, `89439b7`) `content-depth.mjs` reports `guide` 4 pages, `belowFloor 0`,
-median 2395.5 unique / 900, and `guides-index` 870 / 250. `routeType()` in
+median 2395.5 unique / 900 (2470.5 since each guide gained a TOC in `98e38f0`), and `guides-index` 870 / 250. `routeType()` in
 `scripts/audit/lib/pages.mjs` classifies `/מדריכים/` and `/מדריכים/<slug>/`; `requiredTypes()` in
 `scripts/audit/schema.mjs` still asks a `guide` only for `BreadcrumbList` — you check the article
 type (`TechArticle` for safety and component, `Article` otherwise) and `FAQPage` by hand.

@@ -65,8 +65,11 @@ computed in every state; never a hex in JSX. Flag any visible brand change befor
   Tab and Shift+Tab cycle inside while open, page scroll locked, and `data-live-block` on the open
   panel so the live-kit card cannot cover it.
 
-Reuse this pattern — do not invent another — for the services/locations disclosure that
-`/internal-linking` calls for (Sprint 6.5). Tab order follows DOM order — correct in RTL; never
+The services/locations disclosures `/internal-linking` called for reuse it since `fd72698`
+(Sprint 6.5, §9.1 ✅): `MobileMenu` carries the two groups inside its trap, and the desktop
+`DesktopNav` triggers keep `aria-controls` + `aria-expanded`, Escape back to the trigger and
+`data-live-block` while open — non-modal, so no Tab trap and no scroll lock, and an outside click
+closes them. Do not invent a third pattern. Tab order follows DOM order — correct in RTL; never
 reorder visually with CSS.
 
 ## FAQ answers must be in the DOM (N8 ✅)

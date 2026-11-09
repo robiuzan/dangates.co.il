@@ -34,8 +34,8 @@ one-off route.
 
 Also in place: `scripts/audit/lib/pages.mjs` `routeType()` classifies `/מדריכים/` as `guides-index`
 / `guide`; `thresholds.json` carries `guide: 900` and `guides-index: 250`; `content-depth.mjs`
-measures the answer block on `guide` pages. As of 2026-11-09 the four guides measure 2395.5 unique
-words (median) and open with answers of 56–58 words.
+measures the answer block on `guide` pages. As of 2026-11-09 (at `2b0d802`) the four guides measure 2470.5 unique
+words (median; 2395.5 before each gained a TOC in `98e38f0`) and open with answers of 56–58 words.
 
 ## The family table
 

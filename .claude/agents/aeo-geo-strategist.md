@@ -90,7 +90,7 @@ context, not findings to copy.
    `edge.mjs` → `llmsTxt true`. Live 404 until the next deploy — after it, probe the live URL for
    200 behind the Gate 1 row.
 7. **Citable substance** (§6.3 ✅ · repo for the hub and guides #1–#4 since `89439b7`). The four
-   guides each carry a captioned table and clear the 900 floor (median 2395.5 unique); the 11 posts
+   guides each carry a captioned table and clear the 900 floor (median 2470.5 unique since the TOC, `98e38f0`; 2395.5 before); the 11 posts
    still circle the right topics and answer them without a number, table or specification; all sit under the 900 floor with 42 unlinked link
    phrases and a flat all-`<h2>` body (§3.8, §3.10). _History:_ the injected spam and dead "פוסטים
    קשורים" tails are gone (`spam-grep.mjs` → 0). Substance is built in `/content-hub` pillars via

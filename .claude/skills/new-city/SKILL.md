@@ -16,7 +16,7 @@ node scripts/audit/links.mjs                  # chrome reach, orphans, breadcrum
 node scripts/audit/schema.mjs                 # Service + areaServed, FAQPage parity per location
 ```
 
-As of 2026-11-09 (after `7ed1acd`): location 14 pages, `belowFloor 0`, unique 714–1048 against the
+As of 2026-11-09 (at `2b0d802`): location 14 pages, `belowFloor 0`, unique 714–1118 against the
 **350** floor (median 887), `locationMedianDelta 343` against the **120** threshold in
 `scripts/audit/thresholds.json` (every page 292–439); `notInChrome 0`, `faqPages 26`. Before Sprint 6 every page carried 122–145 unique
 words and a delta of 2–3 tokens — the city name was the only variable (backlog §3.1, §5.3).

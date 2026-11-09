@@ -17,11 +17,11 @@ conversion — `claims-verifier` fails that.
 ```bash
 node scripts/audit/run-all.mjs --scope cro --json   # cta-coverage; refuses a stale out/ (N12) — report "stale, rebuild first" and stop
 node scripts/audit/a11y.mjs --json                  # the LeadForm, Faq, Header, TrustBar and contrast findings
-node scripts/audit/links.mjs --json                 # related-link concentration, chrome reach (§9.4, §9.2)
+node scripts/audit/links.mjs --json                 # related-link concentration, chrome reach (§9.4, §9.2, §9.1)
 grep -rn "trackEvent\|dataLayer" components app lib # every event the site pushes today
 ```
 
-Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.mjs` **passes**: 113 CTA elements on 45 pages, **113 tagged, 0 missing**, 24 distinct tagged elements across 17 values in the export, 6 chrome CTAs counted once; `missingByKind` all 0. §13.2 closed 2026-09-06 (commit `fee7f69`) — the last 24 untagged instances were the service-page sticky card ×7, the contact page's three, the form's submit and WhatsApp fallback, the footer `mailto:` and the pricing contact link. Two source values (`form-call` and one `form-whatsapp`) render only in the form's error state, so the export scan sees 17 of the 18 that exist — check `grep -rho 'data-cta="[^"]*"' app components | sort -u` before calling that a gap. Coverage is now a **regression watch**, not a finding: any new CTA without a value moves `missingDataCta` off 0. With the fleet live-kit (CLAUDE.md §14, measured 2026-10-12 on the draft build) the export reads 115 CTA elements, 115 tagged, 26 distinct tagged elements across 19 values, 8 chrome CTAs: the seasonal card's `popup-call` and `popup-whatsapp` on every page, counted once as chrome. Its values are printed by `lib/live/render.mjs` (a locked kit copy), so the `app components` grep does not see them — grep `out/` for them. **As of 2026-11-08** (clean rebuild, repo, after Sprint 3): `ctaElements 119 · withDataCta 119 · missingDataCta 0 · distinctValues 23 · distinctTaggedElements 30 · chromeCtas 8`, 0 warnings — Sprint 3 added `pricing-call`, `pricing-whatsapp`, `thanks-call` and `thanks-whatsapp`.
+Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.mjs` **passes**: 113 CTA elements on 45 pages, **113 tagged, 0 missing**, 24 distinct tagged elements across 17 values in the export, 6 chrome CTAs counted once; `missingByKind` all 0. §13.2 closed 2026-09-06 (commit `fee7f69`) — the last 24 untagged instances were the service-page sticky card ×7, the contact page's three, the form's submit and WhatsApp fallback, the footer `mailto:` and the pricing contact link. Two source values (`form-call` and one `form-whatsapp`) render only in the form's error state, so the export scan sees 17 of the 18 that exist — check `grep -rho 'data-cta="[^"]*"' app components | sort -u` before calling that a gap. Coverage is now a **regression watch**, not a finding: any new CTA without a value moves `missingDataCta` off 0. With the fleet live-kit (CLAUDE.md §14, measured 2026-10-12 on the draft build) the export reads 115 CTA elements, 115 tagged, 26 distinct tagged elements across 19 values, 8 chrome CTAs: the seasonal card's `popup-call` and `popup-whatsapp` on every page, counted once as chrome. Its values are printed by `lib/live/render.mjs` (a locked kit copy), so the `app components` grep does not see them — grep `out/` for them. **As of 2026-11-08** (clean rebuild, repo, after Sprint 3): `ctaElements 119 · withDataCta 119 · missingDataCta 0 · distinctValues 23 · distinctTaggedElements 30 · chromeCtas 8`, 0 warnings — Sprint 3 added `pricing-call`, `pricing-whatsapp`, `thanks-call` and `thanks-whatsapp`. **As of 2026-11-09** (current `out/`, at `2b0d802`): `ctaElements 144 · withDataCta 144 · missingDataCta 0 · distinctValues 34 · distinctTaggedElements 46 · chromeCtas 8`, one warning — six `article-*` values off the `{location}-{action}` convention (a naming decision for tracking-analytics, since `89439b7`).
 
 ## Checks
 
@@ -49,10 +49,13 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
    trust bar all read `siteConfig.hours` (built from the manifest rows behind
    `openingHoursSpecification`); nothing promises 24/7. Flag any CTA that adds availability outside
    those hours — the truth of 24/7 is business-facts §E / backlog §5.4, not yours to settle.
-5. **TOC on long pages.** The rule (`/engagement-ux`) is a table of contents on any page over 900
-   unique words. Since Sprint 7 (`89439b7`) the four guides qualify (median 2395.5 unique) —
-   check that `GuideView` renders their TOC; the home, service and services-index pages also clear
-   900 on `content-depth.mjs` and are judged by the same rule. The posts are all under it.
+5. **TOC on long pages (N20 ✅ since `98e38f0`) — a regression watch.** The rule (`/engagement-ux`)
+   is `buildToc` in `lib/toc.ts`: a TOC only past 900 words **and** 4+ H2s, rendered by the server
+   `components/ui/Toc.tsx` as `nav[data-toc]` after the answer block. As of 2026-11-09, 17 pages
+   carry one — the 4 guides, the 7 services, `/אודות/`, and חיפה, יבנה, ירושלים, פתח-תקווה,
+   ראשון-לציון — 163 links, 0 missing targets (`grep -l 'data-toc' -r out --include=index.html`).
+   The homepage and the services index clear 900 words but are not wired to `buildToc`; flag that
+   as a Low finding only if their H2 count earns one. The posts are all under 900.
 6. **FAQ answers in the DOM (N8).** The `Faq` component is native `<details>/<summary>`, so
    every answer is in the DOM, visible to find-in-page, with zero client JS (`/engagement-ux`, §10.2).
    Flag any regression to `hidden` answers.
@@ -60,10 +63,13 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
    `form_start`, `form_submit_attempt`, `lead_submit` with dimensions, `lead_error`, and the
    `whatsapp_click` the error alert's link pushes; `tel_click`, `whatsapp_click` and `email_click`
    ride on `data-cta` (all tagged) — there is no `window.open` left for a click trigger to miss. The
-   `/תודה/` page view exists as a route. Missing: every engagement event (`scroll_depth`,
-   `engaged_time`, `toc_click`, `faq_open`, `related_click`, `outbound_click` — Sprint 8.1). GA4 is
-   unprovisioned and no container tag consumes any of it (§13.7, owner, B2) — say so once, under
-   owner-blocked, not per finding.
+   `/תודה/` page view exists as a route. Since `98e38f0` (2026-11-09, Sprint 8.1, N20) the six
+   engagement events (`scroll_depth`, `engaged_time`, `toc_click`, `faq_open`, `related_click`,
+   `outbound_click`) are pushed too, from the one leaf `components/engagement/EngagementEvents.tsx`
+   (`lib/hooks/useEngagementEvents.ts`) — check its parameters against the taxonomy and that no
+   push carries PII; `related_click` reads `data-related` on the cards. GA4 is unprovisioned and no
+   container tag consumes any of it (§13.7, owner, B2) — say so once, under owner-blocked, not per
+   finding.
 8. **Related-link monotony (§9.4, PARTIAL).** Since Sprint 5 (`225ff45`) the service pages render
    declared `relatedServices`, cities and posts (`relatedServiceTargets 7`, no service-page
    warning). The post route's `others` list in `app/blog/[slug]/page.tsx` still takes

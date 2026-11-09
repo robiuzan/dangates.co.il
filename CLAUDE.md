@@ -135,7 +135,8 @@ transpilePackages: ["@ishub/site-kit"],
 app/
   layout.tsx              # metadata, Rubik, GTM, <html lang="he" dir="rtl">
   page.tsx                # homepage — LocalBusiness + FAQPage JSON-LD
-  sitemap.ts robots.ts    # /sitemap.xml (46 URLs since 7ed1acd; 50 after Sprint 7), /robots.txt
+  sitemap.ts robots.ts    # /sitemap.xml (46 URLs since 7ed1acd; 50 after Sprint 7), /robots.txt —
+                          #   per-bot Allow + RSC_PAYLOAD_DISALLOW (the index.txt payloads, §1.3, 2b0d802)
   llms.txt/route.ts       # /llms.txt — generated from lib/llms.ts, never hand-written (Sprint 7)
   not-found.tsx           # 404
   services/[service]/     # 7 pages — Service + FAQPage JSON-LD, rendered from serviceDepth
@@ -146,13 +147,15 @@ app/
   מדיניות-פרטיות/ הצהרת-נגישות/
   תודה/                   # thank-you page after a confirmed lead — noindex, outside the sitemap
 components/
-  ui/          Button Container Section SectionHeading Reveal
-  layout/      Header (server shell) MobileMenu (client leaf) Footer PageHeader MobileCtaBar
+  ui/          Button Container Section SectionHeading Reveal Toc (build-time TOC, server, Sprint 8)
+  layout/      Header (server shell) DesktopNav + MobileMenu (the two client nav leaves — every
+               service and location in one hop, Sprint 6.5) Footer PageHeader MobileCtaBar
   marketing/   Hero TrustBar ServicesGrid WhyUs Process PricingTeaser
                ServiceAreas Reviews Faq FinalCta
                ContentSections (AnswerBlock · BulletedBlock — the depth-module renderers, Sprint 6)
   article/     ArticleBody GuideView blocks chrome — the guide block renderer, TOC and CTAs (Sprint 7)
   forms/       LeadForm
+  engagement/  EngagementEvents — the one client leaf behind the six engagement events (Sprint 8.1)
   live/        Live.tsx — the fleet live-kit surfaces, server components only (§14)
 lib/
   site-config.ts   # ⭐ NAP, services[7], locations[14] (kind · prefixed · updated), telHref, whatsappHref
@@ -165,7 +168,10 @@ lib/
   guide-types.ts   # the typed block model (ADR 0003): Guide, Block, Family, Pillar, the per-family consts
   guides.ts        # ⭐ the guides registry, relatedGuides, the reverse index + module-load throws (Sprint 7)
   llms.ts          # buildLlmsTxt() — /llms.txt from siteConfig, staticPages, services, locations, guides
-  nav.ts           # the header nav: navItems plus the hub entry while the registry holds a guide
+  nav.ts           # the header nav: headerMenus (every service / location, from the data) + headerLinks
+  toc.ts           # buildToc(): a page's own H2s → TOC items, only past 900 words and 4+ headings
+  engagement.ts    # relatedAttr() — the data-related contract the engagement leaf reads
+  hooks/           # useEngagementEvents.ts — the six events of docs/event-taxonomy.md, no PII
   jsonld.ts        # site-local JSON-LD builders — one @graph per page (§8)
   manifest.ts      # parseManifest(): narrows site.config.json at the boundary, throws on a bad key
   authors.ts       # empty Author registry — no person is coming; a Person author is forbidden while empty
@@ -272,9 +278,12 @@ See the `hebrew-rtl` skill for the full rule set.
   compiler — handle the null case. `noUncheckedIndexedAccess` means indexed reads are
   `T | undefined`; narrow them.
 - **RSC by default.** Add `"use client"` only for state, effects, or browser APIs. Keep client
-  components small and leaf-level. Currently client (3, `perf.mjs` → `clientComponents`, as of
-  2026-11-08): `LeadForm`, `MobileMenu`, `Reveal` — `Faq` became native `<details>` and `Header` a
-  server shell around the `MobileMenu` leaf in Sprint 3. (The
+  components small and leaf-level. Currently client (5, `perf.mjs` → `clientComponents`, as of
+  2026-11-09): `LeadForm`, `MobileMenu`, `Reveal`, `DesktopNav` (`fd72698`, the header
+  disclosures) and `EngagementEvents` (`98e38f0`, renders nothing) — each on the `KNOWN_CLIENT`
+  ledger in `scripts/audit/rtl-lint.mjs`, added in the same change. It was 3 from Sprint 3, when
+  `Faq` became native `<details>` and `Header` a server shell. A new client file joins that ledger
+  in the change that adds it; the TOC is server-rendered and adds none. (The
   live surfaces add none: `components/live/Live.tsx` is server-only and their browser behaviour is
   the static `public/assets/live.js` — §14.)
 - Imports use the `@/*` alias. No `../../..` chains.
@@ -497,7 +506,8 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   `<LiveDialogs/>` last in `<body>`, `<LiveUpdates/>` after `<TrustBar/>`,
   `suppressHydrationWarning` on `<html>`, `lib/live/live-core.css` imported after `globals.css`; the
   404 marks itself calm (`<div data-live-calm-page hidden />` in `app/not-found.tsx`); the open
-  mobile menu carries `data-live-block` (`MobileMenu.tsx`, since Sprint 3 split it out of `Header`). The `--live-*` colours and the 992–1023px
+  mobile menu carries `data-live-block` (`MobileMenu.tsx`, since Sprint 3 split it out of `Header`),
+  and so does an open header disclosure (`DesktopNav.tsx`, since `fd72698`). The `--live-*` colours and the 992–1023px
   band override close `app/globals.css`: this site's mobile layout runs to 1023px (Tailwind `lg`),
   so in that band the bar follows the phone rule (closed on evergreen days, calm pages and the 404)
   and the card stops above the sticky call bar; the evergreen line shows from 1024px.

@@ -47,7 +47,7 @@ tokens its nearest sibling lacked (`node scripts/audit/content-depth.mjs`, doorw
 median of 122 unique words against a 350-word floor. Sprint 6 gave each its own copy (`7c3f2db`,
 2026-11-09: 717–1022 unique words, delta 288–428). You then answered owner-actions 3.6 the same
 day: קריות, צפון, דרום and באר שבע are not served, so their pages were retired with 301s
-(`7ed1acd`), and the 14 left measure 714–1048 unique words, delta 292–439. The 7 service pages differed
+(`7ed1acd`), and the 14 left measure 714–1048 unique words (714–1118 once five gained a table of contents), delta 292–439. The 7 service pages differed
 by 13–23 tokens on ~152 words against 450 until Sprint 5 gave each its own depth copy (`225ff45`,
 2026-11-09: 1294–1542 unique words, delta 404–468). 41 of the 45 content pages were under their
 floor on 2026-08-23; 11 are as of 2026-11-09 (the 11 posts). Doorway clusters are an explicit Google spam policy and
@@ -133,7 +133,9 @@ of array order. The bar is [content-standards.md](content-standards.md); the doo
 floors are measured, not assumed. **Where it stands (2026-11-09, in the repo, not deployed):** the
 service pages since `225ff45`; the location pages, the region grammar, the full footer, the
 mesh and the three index pages since `7c3f2db`, and the four unserved pages retired in `7ed1acd` —
-14 location pages, delta 292–439 against 120, `notInChrome 0`. Still to do: the header (Sprint 6.5) and the post-page related links (Sprint 7.3, which waits on your approval of the post rewrite — §3.8). **From you:**
+14 location pages, delta 292–439 against 120, `notInChrome 0` — and the header in `fd72698`, which
+now reaches every service and location in one hop. Still to do: the post-page related links
+(Sprint 7.3, which waits on your approval of the post rewrite — §3.8). **From you:**
 your 3.6 answer is in (2026-11-09); setting your Google Business Profile service area to the same 14
 places is yours (gbp-runbook §2); §3.5 makes the rest better.
 
@@ -149,7 +151,7 @@ table or an answer block. Three of the 11 migrated posts survive; the rest fold 
 redirect (calendar §4 — **needs your approval**, §3.8). **Where it stands (2026-11-09, in the repo,
 not deployed):** the hub and the first four guides shipped in `89439b7` — the ת״י 900 page, a noisy
 gate, a car-park barrier in a shared building, and sliding vs swing vs cantilever — each over the
-900-word floor (median 2395.5 unique), plus `llms.txt`. Every legal and standards fact in them was
+900-word floor (median 2395.5 unique then, 2470.5 with the table of contents), plus `llms.txt`. Every legal and standards fact in them was
 read on sii.org.il, gov.il or the statute text first: the "official since October 2006" date turned
 out to be wrong and is left out, and no law sets a special majority for a gate. **Blocked on you:**
 the post rewrite and the keep / fold / redirect moves (§3.8), whether the statute text read on
@@ -161,8 +163,11 @@ he.wikisource is a good enough source (§3.10), and whether you install cantilev
 crawlers instead of hidden until clicked; a `/תודה/` page so a form submission is a URL that can be
 counted; consent wording on the form; the city field the form declares but never collects; a CTA on
 `/מחירון/` — the highest-intent page and the only commercial page without one; engagement events
-(`tel_click`, `whatsapp_click`, `form_start`, `lead_submit` with page/service/city). **Blocked on
-you:** the GA4 property (§2.4) — without it the events fire into nothing.
+(`tel_click`, `whatsapp_click`, `form_start`, `lead_submit` with page/service/city). **Where it
+stands (2026-11-09, in the repo, not deployed):** all of it — the form, `/תודה/` and the pricing CTA
+in Sprint 3 (2026-11-08); the table of contents (17 long pages) and the six reading events (scroll
+depth, engaged time, TOC, FAQ, related and outbound clicks) in `98e38f0`. **Blocked on you:** the
+GA4 property (§2.4) — without it the events fire into nothing.
 
 ### Phase 6 — Trust and AI visibility
 

@@ -18,7 +18,9 @@ text-right`. A genuinely direction-agnostic case must carry the literal comment
   `whatsapp` / `whatsapp-hover` / `whatsapp-foreground` token set (since Sprint 3, 2026-11-08) —
   never inline a green literal. `rtl-lint.mjs` reads `hexLiterals 0` today; keep it there.
 - RSC by default. `"use client"` only for state, effects or browser APIs, on the smallest leaf.
-  Currently client (3, as of 2026-11-08): `LeadForm`, `MobileMenu`, `Reveal`.
+  Currently client (5, as of 2026-11-09): `LeadForm`, `MobileMenu`, `Reveal`, `DesktopNav`,
+  `EngagementEvents` — the `KNOWN_CLIENT` ledger in `scripts/audit/rtl-lint.mjs` (3 until
+  `fd72698`).
 - Every CTA anchor/button (`tel:`, `wa.me`, `mailto:`, submit) carries a `data-cta` attribute
   (`scripts/audit/cta-coverage.mjs` fails otherwise).
 - Copy never lives in JSX — import it from `lib/content.ts`; business facts from `lib/site-config.ts`.

@@ -13,9 +13,10 @@ Measure before quoting:
 node scripts/audit/content-depth.mjs          # floors, doorway delta, answer-block proxy, shared blocks
 ```
 
-As of 2026-11-09 the service type has `belowFloor 0`: 1294–1542 unique words inside `<main>`
-(median 1387) against the **450** floor, and a doorway delta of 404–468 tokens (`serviceMedianDelta
-438`) against the **120** threshold. Before Sprint 5 they carried 167–173 unique words and a delta
+As of 2026-11-09 (at `2b0d802`) the service type has `belowFloor 0`: 1380–1630 unique words inside
+`<main>` (median 1468; 1294–1542, median 1387, before each page gained a TOC in `98e38f0`) against
+the **450** floor, and a doorway delta of 403–466 tokens (`serviceMedianDelta 437`) against the
+**120** threshold. Before Sprint 5 they carried 167–173 unique words and a delta
 of 28–50 (151–155 and 13–23 on 2026-08-23) — one paragraph of their own each, the rest shared. The
 script's `--json` gives only per-type medians; per-page values need a scratch run over its own
 `contentPages()` / `tokens()` helpers in `scripts/audit/lib/pages.mjs`.

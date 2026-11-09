@@ -47,8 +47,10 @@ lib/site-config.ts        manifest (= parseManifest() from lib/manifest.ts) · s
         ├─► lib/page-content.ts   ← content/pages/*.ts — /שירותים/, /איזורי-שירות/, /אודות/ (Sprint 6)
         ├─► lib/jsonld.ts    the JSON-LD builders: one @graph per page (since Sprint 2, 2026-11-08)
         ├─► lib/authors.ts   empty Author registry — no person is coming
+        ├─► lib/nav.ts       headerMenus (every service / location) · headerLinks — the one-hop header (Sprint 6.5)
+        ├─► lib/toc.ts       buildToc() — the build-time TOC past 900 words and 4+ H2s (Sprint 8.1)
         ▼
-app/**/page.tsx  →  components/{ui,layout,marketing,forms}/**
+app/**/page.tsx  →  components/{ui,layout,marketing,forms,article,engagement,live}/**
 ```
 
 **Identity and NAP go up to the roster. Wording goes in `lib/content.ts`. Article bodies go in
@@ -75,7 +77,7 @@ and reverse index in `lib/guides.ts` with its module-load throws, one module per
 Nothing on the layout is planned-but-unbuilt now. (`lib/jsonld.ts` and `lib/authors.ts` were built
 in Sprint 2, 2026-11-08.)
 
-## Routes — 50 URLs in the sitemap (since Sprint 7)
+## Routes — 46 URLs in the sitemap (since `7ed1acd`; 50 after Sprint 7)
 
 | Route                                                                                             | Source                             | Count |
 | ------------------------------------------------------------------------------------------------- | ---------------------------------- | ----- |
@@ -83,7 +85,7 @@ in Sprint 2, 2026-11-08.)
 | `/שירותים/` `/איזורי-שירות/` `/מחירון/` `/אודות/` `/צור-קשר/` `/מדיניות-פרטיות/` `/הצהרת-נגישות/` | Hebrew-named dirs under `app/`     | 7     |
 | `/מדריכים/` · `/מדריכים/{slug}/` — the guides hub (Sprint 7, ADR 0002)                            | `app/מדריכים/page.tsx` · `[slug]/` | 1+4   |
 | `/services/{slug}/`                                                                               | `app/services/[service]/page.tsx`  | 7     |
-| `/locations/{slug}/`                                                                              | `app/locations/[city]/page.tsx`    | 18    |
+| `/locations/{slug}/`                                                                              | `app/locations/[city]/page.tsx`    | 14    |
 | `/blog/` · `/blog/{slug}/`                                                                        | `app/blog/page.tsx` · `[slug]/`    | 1+11  |
 | `/תודה/` — `noindex`, **not** in the sitemap (since 2026-11-08, §8.3)                             | `app/תודה/page.tsx`                | +1    |
 | `/llms.txt` — a generated text route, not a page; not in the sitemap (Sprint 7, §6.5)             | `app/llms.txt/route.ts`            | +1    |
@@ -123,13 +125,13 @@ deploys; the 8 for the retired location pages go live with the next deploy.
 
 ## What `@ishub/site-kit` gives you
 
-| Subpath        | Symbols                                                                                 | Used here                                                                                                                                      |
-| -------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `./contact`    | `telHref`, `whatsappHref`, `phoneDisplay`                                               | yes                                                                                                                                            |
-| `./seo`        | `localBusinessJsonLd`, `serviceJsonLd`, `faqJsonLd`, `breadcrumbJsonLd`, `jsonLdScript` | yes — wrapped by `lib/jsonld.ts`; `PageHeader` emits each page's one `@graph` with its `BreadcrumbList` (44 nested routes); never add a second |
-| `./analytics`  | `gtmHeadSnippet`, `gtmNoScriptSrc`, `trackEvent`                                        | yes — the init script in `<head>`, the `<noscript>` iframe in `<body>` (`app/layout.tsx`, §13.1 ✅)                                            |
-| `./media`      | `mediaUrl`, `srcsetFor`, `ogImageMeta`, `preloadPropsFor`                               | only `ogImageMeta`                                                                                                                             |
-| `./components` | `SiteImage` (Cloudflare `/cdn-cgi/image` srcset, compile-time `alt`)                    | **unused** — zero `<img>` sitewide; `/site-images` when photos land                                                                            |
+| Subpath        | Symbols                                                                                 | Used here                                                                                                                              |
+| -------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `./contact`    | `telHref`, `whatsappHref`, `phoneDisplay`                                               | yes                                                                                                                                    |
+| `./seo`        | `localBusinessJsonLd`, `serviceJsonLd`, `faqJsonLd`, `breadcrumbJsonLd`, `jsonLdScript` | yes — wrapped by `lib/jsonld.ts`; `PageHeader` emits each page's one `@graph` with its `BreadcrumbList` (45 pages); never add a second |
+| `./analytics`  | `gtmHeadSnippet`, `gtmNoScriptSrc`, `trackEvent`                                        | yes — the init script in `<head>`, the `<noscript>` iframe in `<body>` (`app/layout.tsx`, §13.1 ✅)                                    |
+| `./media`      | `mediaUrl`, `srcsetFor`, `ogImageMeta`, `preloadPropsFor`                               | only `ogImageMeta`                                                                                                                     |
+| `./components` | `SiteImage` (Cloudflare `/cdn-cgi/image` srcset, compile-time `alt`)                    | **unused** — zero `<img>` sitewide; `/site-images` when photos land                                                                    |
 
 Schema reality (`node scripts/audit/schema.mjs`, 2026-11-08): 0 failures, 0 warnings. Every content
 page emits one `@graph` built by `lib/jsonld.ts`; the business node is on every page that references

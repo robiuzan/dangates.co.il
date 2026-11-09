@@ -28,7 +28,7 @@ node scripts/audit/spam-grep.mjs          # emoji, curly quotes, fused words, sp
 ```
 
 As of 2026-11-09 (after `7ed1acd`) for context only: the 14 locations pass since `7c3f2db`
-(714–1048 unique words against 350, delta 292–439 against 120; the four the owner does not serve —
+(714–1118 unique words against 350 — 714–1048 before five gained a TOC in `98e38f0` — delta 292–439 against 120; the four the owner does not serve —
 קריות, צפון, דרום, באר שבע — were retired on owner-actions 3.6); the 7 services pass since `225ff45` (1294–1542 against
 450, delta 404–468); `/שירותים/`, `/איזורי-שירות/` and `/אודות/` pass on their own copy; all 11
 posts under the 900 floor; no post page opens with a 40–60-word answer block (every other page type

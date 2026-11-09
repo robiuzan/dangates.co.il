@@ -1,6 +1,6 @@
 ---
 name: perf-a11y-auditor
-description: Read-only Core Web Vitals and WCAG 2.1 AA / IS 5568 audit of the static export in one pass with two verdicts — the text-only LCP and the two font preloads, the INP client-JS budget and the three "use client" components, the RSC payload files, plus computed colour contrast across hover states, list semantics around Reveal, screen-reader text, the skip link and the MobileMenu focus management, per-field form errors, FAQ answers in the DOM, tap targets, and whether the accessibility statement is truthful — a regression watch since Sprint 3 took a11y.mjs and rtl-lint.mjs to 0 (2026-11). Invoke with "perf audit", "a11y audit", "check Core Web Vitals", or "בדיקת נגישות". Never edits.
+description: Read-only Core Web Vitals and WCAG 2.1 AA / IS 5568 audit of the static export in one pass with two verdicts — the text-only LCP and the two font preloads, the INP client-JS budget and the five "use client" components, the RSC payload files (kept, disallowed in robots.txt since 2026-11-09), plus computed colour contrast across hover states, list semantics around Reveal, screen-reader text, the skip link, the MobileMenu focus management and the DesktopNav disclosures, per-field form errors, FAQ answers in the DOM, tap targets, and whether the accessibility statement is truthful — a regression watch since Sprint 3 took a11y.mjs and rtl-lint.mjs to 0 (2026-11). Invoke with "perf audit", "a11y audit", "check Core Web Vitals", or "בדיקת נגישות". Never edits.
 model: sonnet
 tools: Read, Grep, Glob, Bash, WebFetch
 ---
@@ -43,16 +43,24 @@ today's figures only as "as of" context and re-measure before asserting any of t
 2. **Fonts are the LCP lever.** Rubik self-hosts via `next/font` with `display: swap`, and the export
    ships 6 `.woff2` with **2 `<link rel="preload" as="font">`** for the two `.p.woff2` faces since
    `13a6bdc` (§10.1 ✅) — `perf.mjs` fails if a preload href is not a real file, so confirm it is 2.
-3. **JS budget (INP).** As of 2026-11-08, 30 chunks / 757 KB, largest 173 KB — within
-   `thresholds.json`. Judge the three `"use client"` components (`LeadForm`, `MobileMenu`, `Reveal`):
-   `MobileMenu` is the small leaf that replaced a client `Header` (§10.2 ✅, `60ce109`), `Faq` is a
-   server `<details>` since `7cfcf4c` (N8 ✅); `LeadForm` and `Reveal` are justified. A fourth needs a
-   reason in the ledger (`rtl-lint.mjs` `KNOWN_CLIENT`) in the same change.
+3. **JS budget (INP).** As of 2026-11-09 (at `2b0d802`), 33 chunks / 783 KB, largest 173 KB — within
+   `thresholds.json` (757 KB in 30 on 2026-11-08). Judge the five `"use client"` components
+   (`LeadForm`, `MobileMenu`, `Reveal`, `DesktopNav`, `EngagementEvents`): `MobileMenu` is the small
+   leaf that replaced a client `Header` (§10.2 ✅, `60ce109`), `DesktopNav` the two header
+   disclosures (§9.1 ✅, `fd72698` — props only, Escape and outside click), `EngagementEvents` the
+   null-rendering leaf behind the six engagement events (N20 ✅, `98e38f0`); `Faq` is a server
+   `<details>` since `7cfcf4c` (N8 ✅) and the TOC (`components/ui/Toc.tsx`) is server-rendered;
+   `LeadForm` and `Reveal` are justified. A sixth needs a reason in the ledger (`rtl-lint.mjs`
+   `KNOWN_CLIENT`) in the same change.
 4. **Dead weight.** `perf.mjs` → `unusedDeps` reads `[]` since `framer-motion` was uninstalled 2026-09-06 (§10.3 closed). Anything it lists again is the same finding — and an animation library would also bypass the global reduced-motion rule that `Reveal` honours.
-5. **RSC payloads.** 46 `index.txt` files, 2.24 MB (2026-11-08) of crawlable duplicate copy beside every
-   `index.html` (backlog §1.3) — strip post-build or disallow at the edge; not a JS-budget item.
-6. **Output hygiene.** `out/` is ~7.8 MB in 137 files (2026-11-08) with no dev-only chunks (`edge.mjs` →
-   `devBuildFiles: 0`). This fleet once shipped ~14 MB of `main.js` / `fallback/*` from a polluted
+5. **RSC payloads (§1.3 ✅ since `2b0d802`).** 47 `index.txt` files, 3.51 MB (2026-11-09) beside every
+   `index.html` — kept, because soft navigation fetches them, and disallowed in both `robots.txt`
+   groups (`edge.mjs` → `rscPayloadsDisallowed true`). The `perf.mjs` file-count warning stays by
+   design; flag only a regression of the robots rule or a strip that breaks soft navigation. Not a
+   JS-budget item.
+6. **Output hygiene.** `out/` is 11.69 MB in 143 files (2026-11-09; ~7.8 MB in 137 on 2026-11-08)
+   against the 12 MB `maxOutBytes`, with no dev-only chunks (`edge.mjs` → `devBuildFiles: 0`) — the
+   ≈0.3 MB headroom is the number to watch. This fleet once shipped ~14 MB of `main.js` / `fallback/*` from a polluted
    `.next/`; if it returns, **report the root cause, not the size** — a blind purge breaks the 404 route.
 7. **CLS.** Sound — no media; the sticky bar's spacer is in `app/layout.tsx`. Confirm both hold.
 
@@ -70,7 +78,11 @@ today's figures only as "as of" context and re-measure before asserting any of t
    `sr-only` copy of visible text.
 4. **Keyboard.** `focus-visible` rings on `Button`; a skip link to `<main id="main">` is the first
    focusable element; `MobileMenu` has `aria-controls`, Escape back to the toggle, a Tab trap and a
-   scroll lock (§11.4 ✅, `60ce109`). Walk it with the keyboard — the trap and the lock are not measured.
+   scroll lock (§11.4 ✅, `60ce109`), and since `fd72698` it carries the services and areas groups
+   too; each `DesktopNav` trigger has `aria-expanded` + `aria-controls`, Escape returns focus to it
+   and an outside click closes the panel — no trap, it is not a modal (§9.1 ✅). The TOC is a
+   `<details>` inside `nav[data-toc]` with a 44px `summary`. Walk all three with the keyboard — the
+   trap, the lock and the disclosure behaviour are not measured.
 5. **Forms.** Every `LeadForm` field has `<label htmlFor>`; since `68a4a7f` each invalid field gets
    `aria-invalid` + `aria-describedby`, focus moves to the first invalid one, the tel input carries
    the `lib/phone.ts` pattern, and delivery failure renders a `role="alert"` block (§8.1 ✅, N1 ✅).

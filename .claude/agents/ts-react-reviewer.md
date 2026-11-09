@@ -1,6 +1,6 @@
 ---
 name: ts-react-reviewer
-description: Read-only TypeScript/React and static-export correctness review — RSC versus "use client" boundaries (LeadForm, MobileMenu, Reveal today), strict typing under noUncheckedIndexedAccess, business facts and copy imported from site-config/content rather than hardcoded, valid HTML semantics, RTL-safe Tailwind utilities, the hex literals rtl-lint.mjs counts, dead types and dependencies, trailing-slash hrefs, and output:"export" compatibility. Invoke with "review this component", "is this static-export safe", or "TS/React check". Advises only; never edits.
+description: Read-only TypeScript/React and static-export correctness review — RSC versus "use client" boundaries (LeadForm, MobileMenu, Reveal, DesktopNav, EngagementEvents today), strict typing under noUncheckedIndexedAccess, business facts and copy imported from site-config/content rather than hardcoded, valid HTML semantics, RTL-safe Tailwind utilities, the hex literals rtl-lint.mjs counts, dead types and dependencies, trailing-slash hrefs, and output:"export" compatibility. Invoke with "review this component", "is this static-export safe", or "TS/React check". Advises only; never edits.
 model: sonnet
 tools: Read, Grep, Glob, Bash
 ---
@@ -43,9 +43,11 @@ edit-time warning and your count must agree. As of 2026-11-08 it reports 0 banne
    `parseManifest()` in `lib/manifest.ts` since `02a3144` (N16 ✅) — it used to be cast `as unknown as
 SiteManifest`. Any new `as unknown as` is a finding.
 4. **RSC boundaries.** `"use client"` only for state, effects or browser APIs, kept leaf-level.
-   Inventory today (`rtl-lint.mjs` → `clientComponentFiles`, 2026-11-08): `components/forms/LeadForm.tsx`,
-   `components/layout/MobileMenu.tsx`, `components/ui/Reveal.tsx`. Sprint 3 removed two: `Faq` is a
-   server `<details>` (N8 ✅) and `Header` a server shell around the `MobileMenu` leaf (§10.2 ✅). Any
+   Inventory today (`rtl-lint.mjs` → `clientComponentFiles`, 2026-11-09): `components/forms/LeadForm.tsx`,
+   `components/layout/MobileMenu.tsx`, `components/ui/Reveal.tsx`, `components/layout/DesktopNav.tsx`
+   (`fd72698`, the header disclosures) and `components/engagement/EngagementEvents.tsx` (`98e38f0`,
+   renders nothing). Sprint 3 removed two: `Faq` is a server `<details>` (N8 ✅) and `Header` a server
+   shell around the two nav leaves (§10.2 ✅); `components/ui/Toc.tsx` is a server component. Any
    file outside this set carrying the directive is a finding until justified and added to
    `KNOWN_CLIENT`.
 5. **Single source of truth.** Phone, email, service names and location slugs come from
@@ -62,7 +64,8 @@ SiteManifest`. Any new `as unknown as` is a finding.
    The sanctioned exception carries the literal marker `direction-agnostic` on the line (backlog §11.5).
 8. **Valid HTML semantics.** Watch for any wrapper component interposed between a list and its
    items (`Process` was fixed in `7cfcf4c`, §11.2 ✅), `sr-only` copy of visible text (§11.3 ✅), a
-   disclosure without `aria-controls` (`MobileMenu` has it, §11.4 ✅), and form fields without
+   disclosure without `aria-controls` (`MobileMenu` and each `DesktopNav` trigger have it, §11.4 ✅,
+   §9.1 ✅), and form fields without
    `aria-invalid` / `aria-describedby` on error (`LeadForm` has both since `68a4a7f`, §8.1 ✅).
 9. **Dead code and dependencies.** `perf.mjs` `unusedDeps` is `[]` since `framer-motion` was removed 2026-09-06 (§10.3) — anything it lists again is this finding.
    The dead `types/index.d.ts` is deleted (N3 ✅, `68a4a7f`) and the form collects `city` itself (§8.4). `components/layout/Footer.tsx` derives the year at build time since 2026-09-06 (N9 closed); it used to hardcode `const year = 2026` with an

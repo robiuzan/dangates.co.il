@@ -1,7 +1,7 @@
 # Performance guidelines — Core Web Vitals budgets for a text-only static export
 
 > **Layer:** standards. This file decides the byte budgets a build must meet, the Core Web Vitals
-> the live site is held to, and which of the three client components earn their hydration. The
+> the live site is held to, and which of the five client components earn their hydration. The
 > `performance-web-vitals` skill is the how-to (`site-images` for the day photos land); the
 > `perf-a11y-auditor` agent audits against this file; `scripts/audit/perf.mjs` measures it and
 > `edge.mjs` covers output hygiene and the headers file. Reads with:
@@ -91,7 +91,7 @@ an owner toggle nobody has flipped (§6.2 below), so the only numbers are lab ru
 | Metric                            | Target   | Hard fail | Primary lever on this site                                       |
 | --------------------------------- | -------- | --------- | ---------------------------------------------------------------- |
 | **LCP** Largest Contentful Paint  | < 2.0 s  | > 2.5 s   | Rubik on the critical path — the missing preload (§4 below)      |
-| **INP** Interaction to Next Paint | < 150 ms | > 200 ms  | Hydration JS from the three client components (§2 below)         |
+| **INP** Interaction to Next Paint | < 150 ms | > 200 ms  | Hydration JS from the five client components (§2 below)          |
 | **CLS** Cumulative Layout Shift   | < 0.05   | > 0.1     | Font swap; the sticky bar's spacer; image boxes when photos land |
 | **TTFB**                          | < 400 ms | > 800 ms  | Static HTML on Cloudflare's edge — already the case (§5 below)   |
 
@@ -112,17 +112,21 @@ LCP path** and §10.1 is the highest-value performance change available; as of 2
 
 ## 2. JavaScript budget — INP
 
-`perf.mjs` → `jsTotalBytes 756903` across 30 files, largest 172,834 (2026-11-08, clean rebuild); the
-11 chunks `/` referenced weighed 154,682 bytes gzipped on 2026-09-06 — for a site whose interactive
-surface is a menu toggle and a lead form. The three `"use client"` files since Sprint 3 (there were
-four until 2026-11-08: `Faq` became native `<details>` in `7cfcf4c`, and `Header` a server shell
-around the `MobileMenu` leaf in `60ce109` — §10.2 ✅):
+`perf.mjs` → `jsTotalBytes 782961` across 33 files, largest 172,834 (2026-11-09, current `out/` at
+`2b0d802`; 756,903 across 30 on 2026-11-08); the 11 chunks `/` referenced weighed 154,682 bytes
+gzipped on 2026-09-06 — for a site whose interactive surface is two header disclosures, a menu
+toggle and a lead form. Five `"use client"` files since 2026-11-09 (four until 2026-11-08, then
+three: `Faq` became native `<details>` in `7cfcf4c` and `Header` a server shell around the
+`MobileMenu` leaf in `60ce109` — §10.2 ✅; `DesktopNav` joined in `fd72698` and `EngagementEvents`
+in `98e38f0`):
 
-| Component                          | Why it is client       | Verdict                                                                                                                          | Backlog      |
-| ---------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| `components/layout/MobileMenu.tsx` | open state, focus trap | The leaf that replaced a client `Header`: toggle, panel, Escape, Tab trap, scroll lock. Keep the nav tree out of it.             | §10.2, §11.4 |
-| `components/forms/LeadForm.tsx`    | fetch + form state     | Genuinely client. It grew with the §8.1 validation and the §13.4–§13.5 events; keep it a leaf and keep copy in `lib/content.ts`. | §8.1, §13.4  |
-| `components/ui/Reveal.tsx`         | `IntersectionObserver` | Correct implementation, wrong shape — §2.1 below.                                                                                | §10.2        |
+| Component                                    | Why it is client                       | Verdict                                                                                                                                         | Backlog      |
+| -------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `components/layout/MobileMenu.tsx`           | open state, focus trap                 | The leaf that replaced a client `Header`: toggle, panel, Escape, Tab trap, scroll lock. The nav data arrives as props from the server shell.    | §10.2, §11.4 |
+| `components/layout/DesktopNav.tsx`           | open state, Escape, outside click      | The two header disclosures (every service, every location — §9.1). Native `<details>` cannot close on Escape or an outside click; props only.   | §9.1         |
+| `components/forms/LeadForm.tsx`              | fetch + form state                     | Genuinely client. It grew with the §8.1 validation and the §13.4–§13.5 events; keep it a leaf and keep copy in `lib/content.ts`.                | §8.1, §13.4  |
+| `components/ui/Reveal.tsx`                   | `IntersectionObserver`                 | Correct implementation, wrong shape — §2.1 below.                                                                                               | §10.2        |
+| `components/engagement/EngagementEvents.tsx` | document listeners, `dataLayer` pushes | Renders nothing; mounted once in `app/layout.tsx`; passive listeners and one rAF-throttled scroll handler (`lib/hooks/useEngagementEvents.ts`). | N20          |
 
 ### 2.1 `Reveal` — the pattern, not the implementation
 
@@ -153,7 +157,8 @@ target. One change removed a client component and closed N8; keep it that way.
   surface and the temptation to animate around the reduced-motion reset. **Uninstalled 2026-09-06**
   (§10.3, commit `13a6bdc`); `perf.mjs` → `unusedDeps: []`. If motion is ever wanted, the answer is
   CSS — do not reinstall it.
-- **45 RSC `index.txt` payloads**, 1,434,799 bytes as of 2026-08-24 (§1.3) — one beside every
+- **47 RSC `index.txt` payloads**, 3,511,790 bytes as of 2026-11-09 (45 and 1,434,799 on
+  2026-08-24; §1.3) — one beside every
   `index.html` for `next/link` prefetch; not on the JS budget, but crawlable duplicates of every
   page's copy. Decided 2026-11-09 (backlog §1.3): the files stay, because a soft link click fetches
   them (`1ac37ff`), and `app/robots.ts` disallows `/index.txt` and `/*/index.txt` for every user agent;
@@ -161,8 +166,9 @@ target. One change removed a client component and closed N8; keep it that way.
 
 ### 2.4 The `"use client"` ledger and the rules
 
-`scripts/audit/rtl-lint.mjs` carries the known set — `LeadForm`, `MobileMenu`, `Reveal` since
-2026-11-08 — and warns on any file outside it; `perf.mjs` reports the same census as
+`scripts/audit/rtl-lint.mjs` carries the known set — `DesktopNav`, `MobileMenu`, `LeadForm`,
+`Reveal`, `EngagementEvents` since 2026-11-09 (`LeadForm`, `MobileMenu` and `Reveal` alone from
+2026-11-08 until `fd72698`) — and warns on any file outside it; `perf.mjs` reports the same census as
 `clientComponentFiles`. **That set is the ledger.** A new client component is added to it in the
 same change with the reason in the commit; a removed one comes out so the audit cannot silently
 accept it back — as `Faq` and `Header` did in Sprint 3.
@@ -314,9 +320,9 @@ Lab scores on a static export flatter the site; INP only shows its cost with rea
 | `out/` ≤ 12,000,000 B; no JS file > 1,000,000 B; total JS ≤ 1,200,000 B       | `perf.mjs` fail / fail / warn (`thresholds.perf`)                                                          | — (§10.4 HOLDS); tighten total → §10.2                                                     |
 | Per-route gzip budgets (§0.2 above)                                           | not measured                                                                                               | not yet → new (`perf.mjs` metrics)                                                         |
 | Two font preloads, no more                                                    | `perf.mjs` fails on 0; nothing caps the count                                                              | §10.1; cap → new                                                                           |
-| RSC `index.txt` payloads                                                      | `perf.mjs` warn                                                                                            | §1.3                                                                                       |
+| RSC `index.txt` payloads kept, disallowed in `robots.txt`                     | `perf.mjs` warn (file count); `edge.mjs` → `rscPayloadsDisallowed`                                         | §1.3 ✅ (`2b0d802`)                                                                        |
 | No unused dependency; no new one without a reason                             | `perf.mjs` warn (unused); CLAUDE.md §12 + `ts-react-reviewer` (new)                                        | §10.3; new-dep check → new                                                                 |
-| `"use client"` only from the ledger                                           | `rtl-lint.mjs` warn (`KNOWN_CLIENT`); `perf.mjs` census                                                    | ✅ 3 since 2026-11-08 (§10.2, N8)                                                          |
+| `"use client"` only from the ledger                                           | `rtl-lint.mjs` warn (`KNOWN_CLIENT`); `perf.mjs` census                                                    | ✅ 5 since 2026-11-09 (3 from 2026-11-08; §10.2, N8, §9.1, N20)                            |
 | `Reveal` never between a list and its items                                   | `a11y.mjs`                                                                                                 | §11.2 ✅                                                                                   |
 | FAQ answers in the DOM, not `display:none`                                    | `schema.mjs` (FAQPage parity); visibility itself unmeasured                                                | N8 ✅ (native `<details>`)                                                                 |
 | Every `<img>` sized, Hebrew alt, one `priority`                               | `perf.mjs` warn (size); `a11y.mjs` fail (alt); `SiteImage` types; priority unmeasured                      | — (0 images); priority → §10.5                                                             |

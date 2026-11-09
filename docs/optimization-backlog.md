@@ -22,7 +22,10 @@ content (`7c3f2db`): **1** failure, `content-depth` post floor (11 of 11 posts u
 again 2026-11-09 after Sprint 7 (`89439b7`, the guides hub, four guides and `llms.txt`): still
 **1**, the same post floor, which now waits on the owner (owner-actions 3.8; Sprint 7.3) — and
 again 2026-11-09 after the owner answered 3.6 (the roster sync `8e8843d`, then `7ed1acd` retiring
-the four unserved location pages): still **1**, the same post floor.
+the four unserved location pages): still **1**, the same post floor — and again 2026-11-09 after
+the Sprint 6 header (`fd72698`) and the Sprint 8 TOC, engagement events and RSC-payload rules
+(`98e38f0` `2b0d802`): still **1**, the same post floor (`npm run audit -- --scope full` on the
+current `out/`, every other check 0).
 
 **Severity:** P0 = shipping something wrong or harmful · P1 = material ranking/conversion loss ·
 P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half a day · L = multi-day.
@@ -75,8 +78,10 @@ Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region p
 Sprint 5 service depth, the Sprint 6 location and index-page content (`7c3f2db`) and the Sprint 7
 guides hub, first four guides and `llms.txt` (`89439b7`) have shipped in the repo, and the owner's
 3.6 answer closed the five 🔶 location entries on 2026-11-09 (`8e8843d` `7ed1acd`: four retired
-with 301s, שרון kept). Not owner-blocked and still open: the header (§9.1, Sprint 6.5), the reviewer sign-offs on record, and
-the deploy (with the guide dates set to the deploy day first — `deploy-dangates`). The post rewrite
+with 301s, שרון kept). The header's one-hop reach (§9.1, Sprint 6.5) shipped in `fd72698`, the TOC
+and the six engagement events (N20, Sprint 8.1) in `98e38f0`, and the RSC-payload rules (§1.3,
+Sprint 8.5) in `2b0d802`, all 2026-11-09. Not owner-blocked and still open: the reviewer sign-offs on
+record, and the deploy (with the guide dates set to the deploy day first — `deploy-dangates`). The post rewrite
 (§3.8, §3.10, §9.5, the post half of §6.2, §6.4 and §9.4) waits on owner-actions 3.8 — see
 "Suggested order of work" below.
 
@@ -154,13 +159,14 @@ wholesale rather than merging, and `url: null` does not typecheck). `titles.mjs`
 **`notFoundClaimsUrl` must be `false`** — it fails if the 404 declares either a canonical or an
 `og:url`. Any future identity tag on this page needs the same treatment.
 
-### 1.3 — P1 · M · [✅ DONE 2026-11-09 — repo side, not deployed] 47 RSC payload files ship to production as crawlable duplicates
+### 1.3 — P1 · M · [✅ DONE 2026-11-09 · repo] 47 RSC payload files shipped to production as crawlable duplicates
 
 `perf.mjs` → `rscPayloads: 45`, `rscBytes` ≈ 1.43 MB (as of 2026-08-23); `rscPayloads 51`,
 `rscBytes` 3.54 MB after the Sprint 7 hub and guides (`89439b7`); `rscPayloads 47`, `rscBytes`
-3.23 MB as of 2026-11-09 after `7ed1acd` retired four location pages. Next emits an `index.txt`
-RSC payload beside every `index.html`. They contain the full readable copy of every page, sit at
-crawlable URLs, and `robots.txt` allows them.
+3.23 MB after `7ed1acd` retired four location pages, and 3.51 MB once the TOC and the header
+disclosures landed (`98e38f0`, `fd72698`). Next emits an `index.txt` RSC payload beside every
+`index.html`. They contain the full readable copy of every page and sit at crawlable URLs, and until
+`2b0d802` `robots.txt` allowed them.
 
 **Decision (2026-11-09, Sprint 8R): keep the files, disallow them in `app/robots.ts`.** Deleting them is
 ruled out: commit `1ac37ff` keeps link clicks soft, and in a static export a soft navigation fetches the
@@ -175,6 +181,18 @@ noindex would conflict; the rule is the one mechanism, and it stops the fetch it
 still be listed bare if something links to it, and nothing does. Proof: `edge.mjs` →
 `rscPayloadsDisallowed true` (fails if any `out/robots.txt` group lacks either rule and `_headers` sends no
 noindex for them); `perf.mjs` → `rscPayloads` unchanged (the files stay).
+
+**Closed 2026-11-09** by commit `2b0d802` (Sprint 8 row 8.5). Verified on the current `out/`:
+
+```bash
+node scripts/audit/edge.mjs   # ✅ rscPayloadsDisallowed true · redirectRules 80 · stubs 0 · llmsTxt true · sourceMaps 0 · devBuildFiles 0
+node scripts/audit/perf.mjs   # ✅ rscPayloads 47 · rscBytes 3511790 — the files stay; the "47 RSC payload files" warning still prints
+grep -c 'Disallow: /\*/index.txt' out/robots.txt   # 2 — the * group and the 11-bot AI-crawler group, each beside Allow: /
+ls out/index.txt                                     # present — soft navigation still has its payload
+```
+
+The `perf.mjs` warning is a file count, not a crawl finding, and stays by design. Not live until the
+next deploy — read `https://dangates.co.il/robots.txt` after it.
 
 ### 1.4 — P2 · S · [✅ DONE 2026-09-06] `staticPages` in the sitemap was a hand-maintained array of 9
 
@@ -1347,13 +1365,32 @@ Not part of this row: the per-field `aria-invalid` errors (§8.1) and the `/תו
 Skill: `internal-linking`. Script: `links.mjs` (orphans, chrome reach, related-link concentration,
 heading order, breadcrumbs).
 
-### 9.1 — P1 · M · [NOT STARTED] Header reaches no service or location page in one hop
+### 9.1 — P1 · M · [✅ DONE 2026-11-09 · repo] Header reached no service or location page in one hop
 
-`Header.tsx` renders `navItems` only; `links.mjs` → chrome = 28 hrefs until 2026-11-09, 34 once
-the footer listed all 18 locations (§9.2, `7c3f2db`), 35 with the hub entry (`89439b7`), and
-**31** since `7ed1acd` retired four location pages (owner-actions 3.6) — the footer lists all 14;
-the header is unchanged. The target is now the 7 services and 14 locations in one hop. Posts are
-reachable only via indexes and related links. Still open — Sprint 6.5.
+Until `fd72698` `Header.tsx` rendered `navItems` only; `links.mjs` → chrome = 28 hrefs until
+2026-11-09, 34 once the footer listed all 18 locations (§9.2, `7c3f2db`), 35 with the hub entry
+(`89439b7`), and 31 since `7ed1acd` retired four location pages (owner-actions 3.6) — the footer
+carried every service and location, the header none.
+
+**Closed 2026-11-09** by commit `fd72698` (Sprint 6 row 6.5, change set 6N). `lib/nav.ts` builds
+`headerMenus` from `services` and `locations` (so a new entry appears without a hand edit) and
+`headerLinks` from what is left of `headerNav`; the server `Header` shell hands both to two client
+leaves. `DesktopNav` opens two non-modal disclosures (services, service areas) with `aria-expanded`
+and `aria-controls`, Escape back to the trigger, an outside click to close and `data-live-block`
+while open; `MobileMenu` carries the same two groups inside its existing focus trap (Sprint 3.3,
+`60ce109`). Labels in `headerMenuCopy`. Verified on the current `out/`:
+
+```bash
+sed -n '/<header/,/<\/header>/p' out/index.html | grep -oE 'href="/(services|locations)/[^"]*"' | sort -u | wc -l
+# 21 — 7 /services/ + 14 /locations/, every service and location in one hop
+node scripts/audit/links.mjs     # ✅ notInChrome 0 · orphans 0 · brokenLinks 0 · chromeLinks 31 · headingSkips 0
+node scripts/audit/a11y.mjs      # ✅ 0 failures · 0 warnings · unlabeledControls 0 · emptyLinks 0
+node scripts/audit/rtl-lint.mjs  # ✅ bannedUtilities 0 · hexLiterals 0 · clientComponents 5 (DesktopNav on the KNOWN_CLIENT ledger)
+```
+
+`chromeLinks` stays 31 because the footer already carried the same 21 hrefs; the change is the
+header reach, not new chrome targets. Posts and guides are still reached only via indexes and
+related links (the `links.mjs` info line), by design. Not live until the next deploy.
 
 ### 9.2 — P1 · S · [✅ DONE 2026-11-09] Six location pages are missing from the chrome
 
@@ -1371,6 +1408,15 @@ node scripts/audit/links.mjs   # ✅ notInChrome 0 · chromeLinks 34 (28 + the s
 
 Since `7ed1acd` (2026-11-09) the footer still renders `locations.map`, now all 14:
 `links.mjs` → `notInChrome 0` · `chromeLinks 31` · `orphans 0` · `brokenLinks 0`.
+
+**Re-verified 2026-11-09 after `fd72698`** (Sprint 6 change set 6N), which gave every footer service
+and location link a 44px row on a phone (`min-h-11`, compact again from `lg`) and moved the four
+footer labels into `footerCopy`. Measured on the current `out/`:
+
+```bash
+sed -n '/<footer/,/<\/footer>/p' out/index.html | grep -oE 'href="/locations/[^"]*"' | sort -u | wc -l   # 14 — every location
+node scripts/audit/links.mjs   # ✅ notInChrome 0 · chromeLinks 31 · orphans 0 · brokenLinks 0
+```
 
 ### 9.3 — P1 · M · [✅ DONE 2026-11-09] The service ↔ location mesh is one-way
 
@@ -1407,7 +1453,17 @@ node scripts/audit/links.mjs   # ✅ orphans 0 · notInChrome 0 · brokenLinks 0
 # service → location: the 7 service pages link 5–6 cities each, 13 distinct (שרון by design not among them)
 ```
 
-The header half of §9 is §9.1, not this row.
+**Re-verified 2026-11-09 after `fd72698`** (Sprint 6 change set 6N) with a scratch read of every
+location and service page's `<main>` links on the current `out/`:
+
+```bash
+# location → location: 14 of 14 pages link 1–4 neighbours (חיפה 1, נתניה); 0 asymmetric edges
+# location → service: 14 of 14 pages link 4–7 service pages
+# service → location: 7 of 7 pages link 5–6 cities, 13 distinct; 0 cities that fail to link back
+node scripts/audit/links.mjs   # ✅ orphans 0 · notInChrome 0 · brokenLinks 0 · relatedServiceTargets 7
+```
+
+The header half of §9 is §9.1, closed in the same change set.
 
 ### 9.4 — P2 · S · [PARTIAL 2026-11-09 · service half done] Related items are selected by array order
 
@@ -1429,7 +1485,8 @@ node scripts/audit/links.mjs   # relatedServiceTargets 7 — every service page 
 **Still open:** the post route's `others` list is still `posts.filter(…).slice(0, 4)`; `links.mjs`
 still warns "post pages: the first 4 related links on every page come from the same 5 array-leading
 siblings; 6 of 11 post pages receive no related link" (`relatedPostTargets 5`, re-measured
-2026-11-09 at `89439b7`). Not owner-blocked in itself, but it is carried in Sprint 7.3, which
+2026-11-09 at `2b0d802`; `98e38f0` tagged the related cards with `data-related` for
+`related_click` but did not change the selection). Not owner-blocked in itself, but it is carried in Sprint 7.3, which
 rewrites the post route and is ⏳ BLOCKED · owner 3.8; it can be split out if the wait runs long.
 
 ### 9.5 — P1 · M · [⏳ BLOCKED · owner 3.8] The blog contains zero links
@@ -1485,8 +1542,16 @@ node scripts/audit/perf.mjs       # ✅ clientComponents 3 · jsFiles 30 · jsTo
 node scripts/audit/rtl-lint.mjs   # ✅ clientComponentFiles LeadForm.tsx, MobileMenu.tsx, Reveal.tsx
 ```
 
-Sprint 8.1's engagement-events leaf, when it lands, is the fourth and must be added to the ledger in
-the same change.
+**The ledger grew by design on 2026-11-09 to 5**, each leaf added to `KNOWN_CLIENT` in
+`scripts/audit/rtl-lint.mjs` in its own change: `DesktopNav` (`fd72698`, §9.1 — Escape and an
+outside click must close a header disclosure, which native `<details>` cannot do) and
+`EngagementEvents` (`98e38f0`, N20 — the one leaf behind the six engagement events; it renders
+nothing). The budget held:
+
+```bash
+node scripts/audit/perf.mjs       # ✅ clientComponents 5 · jsFiles 33 · jsTotalBytes 782961 · largestJsBytes 172834 · maxJsTotalBytes 1200000
+node scripts/audit/rtl-lint.mjs   # ✅ EngagementEvents, LeadForm, DesktopNav, MobileMenu, Reveal — no unexpected-client warning
+```
 
 ### 10.3 — P2 · S · [✅ DONE 2026-09-06] `framer-motion` was a dependency imported nowhere
 
@@ -1574,8 +1639,8 @@ Escape handler and no scroll lock.
 shell; `MobileMenu` is the client leaf: panel `id="mobile-menu"` + `aria-controls` on the 44px
 toggle, Escape closes and returns focus to the toggle, Tab and Shift+Tab cycle inside the open
 panel, the page scroll is locked while open, and the open panel keeps the live-kit's
-`data-live-block` so the seasonal card cannot cover it. This is the pattern the §9.1 dropdown
-reuses (Sprint 6.5). Verified after a clean rebuild:
+`data-live-block` so the seasonal card cannot cover it. The §9.1 header disclosures reused it in
+`fd72698` (Sprint 6.5; non-modal on desktop, so no trap there). Verified after a clean rebuild:
 
 ```bash
 node scripts/audit/a11y.mjs   # ✅ 0 warnings — "mobile menu has no focus management" is gone
@@ -2062,6 +2127,41 @@ grep -rn 'size="lg"' components app | wc -l             # 13
 node scripts/audit/a11y.mjs                             # ✅ 0 failures · 0 warnings
 ```
 
+### N20 — P2 · M · [✅ DONE 2026-11-09 · repo] No table of contents and no engagement event anywhere
+
+Filed 2026-11-09 for Sprint 8 row 8.1, which had no backlog row ("new (§10.2 budget)"). Until then
+no page carried a table of contents — the guides, the seven service pages and `/אודות/` all run past
+~900 words — and none of the six engagement events in `docs/event-taxonomy.md` ("Engagement
+events") was pushed, so reading depth, FAQ use and related-link clicks were unmeasurable even once
+GA4 exists.
+
+**Closed 2026-11-09 in the repo** by commit `98e38f0` (Sprint 8 change set 8T). The TOC is built at
+render time: `buildToc` (`lib/toc.ts`) takes a page's own H2s and returns a list only when the prose
+passes `TOC_MIN_WORDS` (900) **and** there are `TOC_MIN_HEADINGS` (4) or more; a duplicate id throws
+at build. `components/ui/Toc.tsx` is a server component — one `nav[data-toc]` landmark around a
+native `<details>`, labelled `tocLabel`, placed after the answer block — so it adds no client JS. The
+six events (`scroll_depth`, `engaged_time`, `toc_click`, `faq_open`, `related_click`,
+`outbound_click`) come from one leaf, `components/engagement/EngagementEvents.tsx` (mounted once in
+`app/layout.tsx`, wiring in `lib/hooks/useEngagementEvents.ts`, the `data-related` contract in
+`lib/engagement.ts`): passive listeners, one rAF-throttled scroll handler, no PII. It is on the
+client ledger in the same change (§10.2). Verified on the current `out/`:
+
+```bash
+grep -l 'data-toc' -r out --include=index.html | wc -l
+# 17 — the 4 guides (8, 10, 11, 14 items), the 7 services (9 each), /אודות/ (10), and the 5 cities
+# that pass the bar: חיפה 9, יבנה 9, ירושלים 10, פתח-תקווה 10, ראשון-לציון 9
+# scratch anchor check over those 17 pages: 163 TOC links, 0 missing targets, 0 duplicate ids
+grep -l 'data-related' -r out --include=index.html | wc -l   # 36 pages carry related cards tagged for related_click
+node scripts/audit/perf.mjs       # ✅ clientComponents 5 · jsTotalBytes 782961 / 1200000 · largestJsBytes 172834
+node scripts/audit/rtl-lint.mjs   # ✅ EngagementEvents on KNOWN_CLIENT · bannedUtilities 0 · hexLiterals 0
+node scripts/audit/a11y.mjs       # ✅ 0 failures · 0 warnings
+```
+
+The bar is judged per page, so the TOC set moves when copy does (the other 9 cities sit under it).
+**Counted nowhere yet:** the events reach `dataLayer` only; the GTM Custom Event tags and a GA4
+property to receive them wait on **B2** (owner-actions 2.4) — Sprint 8.2. Not live until the next
+deploy.
+
 ---
 
 ## §15. Environment
@@ -2135,9 +2235,12 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    (`8e8843d` roster sync, `7ed1acd`): קריות, צפון, דרום and באר שבע retired with 301s to
    `/איזורי-שירות/`, שרון kept; 14 location pages, `belowFloor 0`, `locationMedianDelta 343`,
    `sitemapUrls 46`, `redirectRules 80`; ~~§5.4 coverage half~~ too (the availability half waits
-   on 3.5). **Next:** §9.1 header reach to the 7 services and 14 locations (row 6.5, not
-   owner-blocked), local-seo-strategist and claims-verifier sign-off on record, the owner's GBP
-   service area set to the same 14 places (gbp-runbook §2), then the deploy.
+   on 3.5). ~~§9.1 header reach to the 7 services and 14 locations (row 6.5)~~ — shipped in the
+   repo 2026-11-09 (commit `fd72698`): 21 service and location hrefs in the homepage `<header>`,
+   `notInChrome 0`, `orphans 0`, `clientComponents` 4 with `DesktopNav`; §9.2 and §9.3 re-verified
+   (14 of 14 footer locations, 0 asymmetric mesh edges); audit still 1. **Next:** local-seo-strategist
+   and claims-verifier sign-off on record, the owner's GBP service area set to the same 14 places
+   (gbp-runbook §2, B3), then the deploy.
 9. **Phase 4 — guides hub + block model:** ~~§6.3 the hub and guides #1–#4 · §6.5 `llms.txt` ·
    §6.2 for `/blog/`, `/צור-קשר/`, the hub and the guides~~ — shipped in the repo 2026-11-09
    (Sprint 7, commit `89439b7`): guide `belowFloor 0` (median 2395.5 unique / 900), `faqPages 30`,
@@ -2152,8 +2255,15 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
     — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 closed
     in `fba5957`, the form alert's buttons now `size="lg"`); `a11y.mjs`, `rtl-lint.mjs` and
     `cta-coverage.mjs` 0, `clientComponents` 3. Left: §8.2 (PARTIAL — B2 / B10 only; the privacy
-    copy is signed off), §8.6 (PARTIAL — the GTM tag and B2), and the engagement events (Sprint 8.1).
+    copy is signed off) and §8.6 (PARTIAL — the GTM tag and B2). ~~The engagement events and the
+    TOC (N20, Sprint 8.1)~~ — shipped in the repo 2026-11-09 (commit `98e38f0`): a TOC on 17 pages,
+    163 anchors, 0 missing; the six events from one leaf, `clientComponents` 5; counted nowhere
+    until B2.
 11. **Phase 6 — E-E-A-T + AEO:** ~~§7.2~~ · ~~§7.6~~ (Sprint 4) · ~~§6.5~~ (Sprint 7, `89439b7`,
     live after the deploy) · §7.5 photos (B4).
-12. **Phase 7 — measurement:** §13.7 · §15.2 cadence · §15.3 (after B1, B2).
+12. **Phase 7 — measurement:** ~~§1.3 the RSC payloads (Sprint 8.5)~~ — shipped in the repo
+    2026-11-09 (commit `2b0d802`): kept for soft navigation, disallowed in both `robots.txt` groups,
+    `edge.mjs` → `rscPayloadsDisallowed true`. **⏳ BLOCKED · owner:** §13.7 and §15.3 (Sprint 8.2,
+    after B1, B2), Cloudflare Web Analytics (Sprint 8.4, B9). Open: the §15.2 monthly cadence with the
+    AI-citation panel (Sprint 8.3 — it needs the owner or a human with the four assistants).
 13. Everything tagged `⏳ BLOCKED · owner` moves when [owner-actions.md](owner-actions.md) moves.

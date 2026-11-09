@@ -28,8 +28,10 @@ copy work (5 before the Sprint 6 content `7c3f2db`; 8 before Sprint 5; 15 on 202
 Sprint 4 cleared `claims-grep`). On your axes everything reads 0: `rtl-lint.mjs`
 `bannedUtilities 0 · hexLiterals 0`, `a11y.mjs` 0, `cta-coverage.mjs` `missingDataCta 0`, `schema.mjs`
 0 (`danglingIds 0`, `rawHebrewUrls 0`), `links.mjs` `notInChrome 0` (the footer lists every location since
-`7c3f2db` — 14 since `7ed1acd`). Still open on yours: the header's one-hop reach (§9.1, Sprint 6.5) and related links by
-array order on the post pages (§9.4; the service pages use declared lists since `225ff45`). Sprints 2–4 cleared the rest, N19's two `md` buttons included (`fba5957`; 2026-08-23: exit
+`7c3f2db` — 14 since `7ed1acd`), and the header reaches every service and location in one hop since
+`fd72698` (§9.1 ✅, `DesktopNav` + `MobileMenu`). Still open on yours: related links by array order
+on the post pages (§9.4; the service pages use declared lists since `225ff45`), which rides with
+the post rewrite (Sprint 7.3, owner 3.8). Sprints 2–4 cleared the rest, N19's two `md` buttons included (`fba5957`; 2026-08-23: exit
 37).
 
 ## Stack and constraints
@@ -52,8 +54,9 @@ you never deploy; that is `/deploy-dangates`, and it asks.
 
 - **No `any`. No non-null `!`.** An indexed read is `T | undefined` — narrow it.
 - **RSC by default.** `"use client"` only for state, effects or browser APIs, kept leaf-level. Client
-  today (since 2026-11-08): `LeadForm`, `MobileMenu`, `Reveal` (`rtl-lint.mjs` inventories them in
-  `KNOWN_CLIENT`). Don't grow that set without adding to the ledger in the same change.
+  today (since 2026-11-09, 5): `LeadForm`, `MobileMenu`, `Reveal`, `DesktopNav` (`fd72698`) and
+  `EngagementEvents` (`98e38f0`) — `rtl-lint.mjs` inventories them in `KNOWN_CLIENT`; it was the
+  first three from 2026-11-08. Don't grow that set without adding to the ledger in the same change.
 - **Single source of truth.** `siteConfig`, `services`, `locations`, `telHref`, `whatsappHref()` from
   `@/lib/site-config`; strings from `@/lib/content`. Never hardcode the phone, a service name or a slug.
 - **Copy never lives in JSX.** Any Hebrew you need goes to `lib/content.ts` via `hebrew-copywriter`,
@@ -90,7 +93,9 @@ there rather than inventing new ones:
 - Forms: per-field `aria-invalid` + `aria-describedby`, focus to the first invalid field, the
   `lib/phone.ts` pattern, a rendered failure branch (§8.1, N1 ✅ — `/conversion-cro`).
 - Disclosure menus: copy `MobileMenu` — `aria-controls`, Escape back to the toggle, Tab trap, scroll
-  lock, `data-live-block` while open (§11.4 ✅). The §9.1 header disclosure reuses it.
+  lock, `data-live-block` while open (§11.4 ✅). The §9.1 header disclosures (`DesktopNav`,
+  `fd72698`) reuse its `aria-*`, Escape and `data-live-block` parts but are non-modal — no Tab trap,
+  no scroll lock, an outside click closes them.
 - No `sr-only` copy of visible text (§11.3 ✅); `Faq` stays native `<details>/<summary>`,
   server-rendered (N8 ✅).
 - Tap targets: `Button size="lg"` for any tap-first action on a phone — the form's error alert

@@ -12,7 +12,7 @@ guide #7 duplicates guide #3, or a symptom page competes with the service page t
 the next deploy). `app/מדריכים/` (index + `[slug]`), `lib/guide-types.ts` (the ADR 0003 block
 model), `lib/guides.ts` (the registry, the reverse index and the module-load throws below) and
 `content/guides/` with guides #1–#4: `תקן-900-שער-חשמלי`, `שער-חשמלי-רועש`, `מחסום-חניה-ועד-בית`,
-`שער-נגרר-כנף-או-קונזולי`. `content-depth.mjs` → guide `belowFloor 0`, median 2395.5 unique / 900;
+`שער-נגרר-כנף-או-קונזולי`. `content-depth.mjs` → guide `belowFloor 0`, median 2470.5 unique / 900 (2395.5 before the TOC, `98e38f0`);
 `links.mjs` → `orphans 0`. The 11 legacy posts still use the flat `PostBlock` model in
 `lib/posts.ts`; moving them waits on owner-actions 3.8. `/keyword-research` feeds this skill; `/new-guide` consumes
 its verdict; `article-auditor` gates what ships; `docs/content-calendar.md` is the queue.

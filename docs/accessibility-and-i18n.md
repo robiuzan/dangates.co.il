@@ -32,7 +32,7 @@ serves the 2026-10-13 build, whose state is the "Was" column.
 | Contrast, interaction state                  | accent hover (`accent-500`) 6.79:1 · `whatsapp-hover` 6.63:1                                                          | 2.76:1 · 3.1:1                                             | §11.1 · N11 ✅               |
 | `<img>` on the export                        | 0 — nothing to alt-check until photos land (business-facts §F)                                                        | 0                                                          | `a11y.mjs` → `imgCount`      |
 | Unlabeled controls · empty links             | 0 · 0                                                                                                                 | 0 · 0                                                      | `a11y.mjs`                   |
-| Client components                            | 3: `LeadForm`, `MobileMenu`, `Reveal`                                                                                 | 4: `Header`, `Faq`, `LeadForm`, `Reveal`                   | `perf.mjs` · `rtl-lint.mjs`  |
+| Client components                            | 3: `LeadForm`, `MobileMenu`, `Reveal` — **5 since 2026-11-09** (+ `DesktopNav`, `EngagementEvents`; re-measured)      | 4: `Header`, `Faq`, `LeadForm`, `Reveal`                   | `perf.mjs` · `rtl-lint.mjs`  |
 | `/הצהרת-נגישות/`                             | claims ת״י 5568 + **WCAG 2.1 AA** (corrected from 2.0 on 2026-11-08); its four bullets match what the scripts measure | false on contrast, keyboard and screen-reader support (§2) | §2 below                     |
 | Locale                                       | one: `he-IL`, `dir: rtl`, set once in `app/layout.tsx`; OG `locale` `he_IL`; `inLanguage` from the manifest           | same                                                       | `site.config.json`           |
 | `hreflang`, language switcher, English pages | none                                                                                                                  | none                                                       | —                            |
@@ -107,8 +107,10 @@ manual keyboard or screen-reader pass has been recorded.
   minimum of 24 px is not the bar). Verify `MobileCtaBar`'s rendered height, not its class; raise
   the hamburger and `Button size="md"`, or reserve `md` for desktop-only actions.
 - **Menus are real disclosures:** `id` on the panel, `aria-controls` + `aria-expanded` on the
-  toggle, Escape closes and returns focus, focus confined while open, body scroll locked. Do not copy
-  the current `Header` pattern into the services/locations menu `internal-linking` calls for (§9.1).
+  toggle, Escape closes and returns focus, focus confined while open, body scroll locked — the
+  `MobileMenu` leaf since `60ce109`. The services/locations menus (§9.1 ✅, `fd72698`) follow it: the
+  mobile groups sit inside that trap, and the desktop `DesktopNav` disclosures are non-modal (no
+  trap, no lock; Escape and an outside click close them).
 - **Skip link** — `דילוג לתוכן הראשי` → `#main`, visually hidden until focused, first in the DOM.
 - **No keyboard trap** Escape cannot leave. **Motion respects `prefers-reduced-motion`** — the global
   reset in `app/globals.css` and the JS check in `Reveal` both exist; keep both. No `framer-motion`.

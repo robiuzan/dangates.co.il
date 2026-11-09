@@ -17,7 +17,7 @@ node scripts/audit/links.mjs           # chrome reach (notInChrome), orphans
 node scripts/audit/schema.mjs          # Service/areaServed + FAQPage per location page
 ```
 
-As of 2026-11-09 (after `7ed1acd`) every location page clears the measured proxy: 714–1048 unique
+As of 2026-11-09 (at `2b0d802`) every location page clears the measured proxy: 714–1118 unique
 words against a 350 floor and a doorway delta of 292–439 against 120 (`locationMedianDelta 343`,
 14 pages); the 7 services pass since Sprint 5 (`225ff45`). Before Sprint 6 (`7c3f2db`) the
 locations scored a delta of 2–3 on 122–145 words — one template with the city name swapped. What is
@@ -157,8 +157,8 @@ Since `7c3f2db` (2026-11-09) the footer renders every location — 14 since `7ed
 `notInChrome 0`, `chromeLinks 31`,
 backlog §9.2 ✅), and the mesh runs both ways (§9.3 ✅): each service page links the cities its
 `ServiceDepth.locations` declares (Sprint 5), and each location page links its neighbours from
-`lib/nearby.ts` and the services that fit it. Still open: a header that reaches the 7 services and
-14 locations in one hop (§9.1, Sprint 6.5) — `/internal-linking`.
+`lib/nearby.ts` and the services that fit it. Since `fd72698` (2026-11-09, §9.1 ✅, Sprint 6.5) the
+header reaches the 7 services and 14 locations in one hop as well — `/internal-linking`.
 
 ## Checklist
 

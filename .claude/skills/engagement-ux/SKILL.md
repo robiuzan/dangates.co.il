@@ -24,32 +24,41 @@ node scripts/audit/run-all.mjs --scope cro      # data-cta coverage, pages with 
 node scripts/audit/run-all.mjs --scope perf     # client components, unused deps, JS budget
 ```
 
-As of 2026-11-08 (clean rebuild, repo): no TOC anywhere; no engagement event pushed anywhere; 3
-`"use client"` components (`LeadForm`, `MobileMenu`, `Reveal`). Closed since: the FAQ is native
-`<details>` with every answer in the DOM (N8, `7cfcf4c`, which took `Faq` out of the client set),
-every CTA carries `data-cta` (`cta-coverage.mjs` → 0 missing, §13.2) and `framer-motion` is
-uninstalled (§10.3). The form events (`form_start`, `form_submit_attempt`, `lead_submit` with
-dimensions) shipped in `68a4a7f`; the six engagement events below did not.
-`cro-engagement-auditor` reads the same scripts — cite its report, not these numbers.
+As of 2026-11-09 (current `out/`, repo, at `2b0d802`): a build-time TOC on 17 pages and the six
+engagement events pushed from one leaf — both since `98e38f0` (Sprint 8.1, backlog N20); 5
+`"use client"` components (`EngagementEvents`, `LeadForm`, `DesktopNav`, `MobileMenu`, `Reveal` —
+`perf.mjs` → `clientComponents 5`; it was 3 from Sprint 3 until `fd72698` added `DesktopNav`).
+Closed before that: the FAQ is native `<details>` with every answer in the DOM (N8, `7cfcf4c`,
+which took `Faq` out of the client set), every CTA carries `data-cta` (`cta-coverage.mjs` → 0
+missing, §13.2), `framer-motion` is uninstalled (§10.3), and the form events (`form_start`,
+`form_submit_attempt`, `lead_submit` with dimensions) shipped in `68a4a7f`. Every event is pushed
+but **counted nowhere** until GA4 exists (B2). `cro-engagement-auditor` reads the same scripts —
+cite its report, not these numbers.
 
 ## TOC — build-time, for pages past ~900 words
 
-- **Threshold:** 4+ level-2 headings, which in practice means ~900+ words (content-standards §1:
-  posts and guides). Service and location pages at today's depth (~150 words) get no TOC; they get
-  one only after Phase 3 rewrites them past the floor.
-- **Derived from the block array at build** — zero client JS. Every H2 gets a stable `id` (a slug of
-  the heading text), which also gives AEO section targeting something to anchor to. The block model
-  that makes this derivable is built for the guides since Sprint 7 (`lib/guide-types.ts`,
-  `guideHeadings()` in `lib/guides.ts`); the 11 `/blog/` posts are still `{type:"h"|"p"|"li"; text}`
-  with no ids and no TOC until their migration (owner-actions 3.8).
-- **Pattern:** galbath `components/article/chrome.tsx` `ArticleToc` — one component, an explicit
-  `variant: "mobile" | "desktop"`, one visible element per call site. Mobile = a collapsed
-  `<details>` in the flow so it never pushes the answer block below the fold; desktop = a
-  `sticky top-24` `<nav aria-label="תוכן העניינים">` in the aside, with the call + WhatsApp card
-  below it. Its structure is in `components/article/` since Sprint 7 (`chrome.tsx`, `GuideView.tsx`); galbath's
-  `lib/articles.ts` imports were not copied.
+Built in `98e38f0` (2026-11-09, Sprint 8.1 — backlog N20). The rule and where it lives:
+
+- **Threshold — both bars, judged per page:** `buildToc` (`lib/toc.ts`) returns items only when the
+  page's prose passes `TOC_MIN_WORDS` (900) **and** it has `TOC_MIN_HEADINGS` (4) or more H2s;
+  otherwise `[]` and nothing renders. The prose is the same data the page maps (or a guide's
+  registry `wordCount`), so the count cannot drift from the copy. As of 2026-11-09: 17 pages — the
+  4 guides, the 7 service pages, `/אודות/`, and the five cities over the bar (חיפה, יבנה, ירושלים,
+  פתח-תקווה, ראשון-לציון); the other 9 cities sit under it. The set moves when copy does.
+- **Derived at build** — zero client JS. Every linked H2 carries a stable `id` from `headingId()`
+  (the same slug the guide renderer uses, so AEO section targeting has something to anchor to) and
+  `scroll-mt-24` so the sticky header never covers the target; a duplicate id throws at build. On the
+  11 `/blog/` posts the flat `{type:"h"|"p"|"li"; text}` model still has no ids and the posts sit
+  under 900 words — no TOC until their migration (owner-actions 3.8).
+- **Pattern:** one server component, `components/ui/Toc.tsx` — a `nav[data-toc]` landmark labelled
+  `tocLabel` ("תוכן העניינים") around a native `<details>`, collapsed by default so it never pushes
+  the answer block below the fold, and the **same single element on desktop** (no second hidden
+  variant, so no doubled landmark — the galbath gotcha below). It sits directly after the answer
+  block: the service, location and about routes render it themselves, `GuideView` passes it as
+  `afterAnswer`. Proof on the export: 163 TOC links over the 17 pages, 0 missing targets, 0
+  duplicate ids.
 - **RTL:** logical utilities only (`ps-*`, `ms-*`, `start-*`) — `rules/rtl-markup.md` lints the file.
-- Links are `#id` anchors, so `toc_click` is the only event they need (see below).
+- Links are `#id` anchors, so `toc_click` (read from `nav[data-toc]`) is the only event they need.
 
 ## FAQ — `<details>`/`<summary>`, not a client accordion (done 2026-11-08)
 
@@ -59,8 +68,8 @@ did not click, to find-in-page and to crawlers that honour visibility, plus hydr
 that rendered it. Since `7cfcf4c` it follows `templates/Faq.tsx`: a server component, one `<details>`
 per item, the `<h3>` question inside `<summary>`, the answer as a `<div>` child, `open` on the first
 item, `name="faq"` for an exclusive accordion where supported (independent disclosures elsewhere).
-`a11y.mjs` no longer warns (N8) and `perf.mjs` counts 3 client components. Any new FAQ surface uses
-the same shape.
+`a11y.mjs` no longer warns (N8) and `Faq` left the client set (3 then; 5 since `fd72698` and
+`98e38f0` added `DesktopNav` and `EngagementEvents`). Any new FAQ surface uses the same shape.
 
 Keep the `FaqItem` shape (`{ q, a }`) — `faqs` in `lib/content.ts` and `faqJsonLd` consume it.
 Per-service FAQs shipped in Sprint 5 (`225ff45`, `new-service`): each service page renders its
@@ -89,9 +98,9 @@ that appears because we are 40 % down the page reads as "this was an ad all alon
 trust the page was written to build.
 
 - **≤ 2 CTA blocks per guide**, at most one of them the WhatsApp "send a photo of the gate" bridge.
-  Build-enforced in the Phase-4 registry (`lib/guides.ts`, copied from galbath `lib/articles.ts`,
-  which throws `"N CTA blocks; the cap is 2"` at module load). Until that registry exists the cap
-  is a review rule for `article-auditor`.
+  Build-enforced since Sprint 7 (`89439b7`): `lib/guides.ts` throws "N CTA blocks; the cap for
+  <family> is <cap>" at module load from `familyCtaCap` (the galbath `lib/articles.ts` pattern).
+  On the other page types the cap stays a review rule for `cro-engagement-auditor`.
 - Every CTA anchor carries `data-cta` as `{location}-{action}` (`article-inline-call`,
   `article-aside-whatsapp`) — `cta-coverage.mjs` fails otherwise, and GTM reads nothing else.
 - 🔶 Never promise a response time in a CTA ("תוך שעה", "מיד") — business-facts §E.
@@ -127,8 +136,9 @@ before the banner on purpose — the last objection handler — and `FinalCta` m
 exit: a reader still deciding needs a lateral link. Related services by relevance — the service
 pages use declared `relatedServices`, cities and posts since Sprint 5 (`225ff45`); the post route's
 `others` list still takes `.slice(0, 4)` (Sprint 7.3). Locations all 14 — the footer renders them
-all and each location page links its `nearby` neighbours since Sprint 6 (`7c3f2db`); the header is
-still Sprint 6.5 (`/internal-linking`). "More guides" is the `relatedGuides` list on each guide since Sprint 7 (`89439b7`).
+all and each location page links its `nearby` neighbours since Sprint 6 (`7c3f2db`), and the header
+reaches every service and location in one hop since `fd72698` (Sprint 6.5, `/internal-linking`). Each
+related card carries `data-related` (`relatedAttr()` in `lib/engagement.ts`) for `related_click`. "More guides" is the `relatedGuides` list on each guide since Sprint 7 (`89439b7`).
 
 ## Engagement events — exactly `docs/event-taxonomy.md`
 
@@ -139,9 +149,10 @@ Six events, names and parameters verbatim from the "Engagement events (Phase 5)"
 `site: "dangates"`. **No PII** (golden rule 10) — the question text and a path are the most
 specific strings allowed.
 
-Implementation: `templates/useEngagementEvents.ts` → `lib/hooks/useEngagementEvents.ts`, mounted by
-one null-rendering client leaf (`components/engagement/EngagementEvents.tsx`) in `app/layout.tsx`.
-Passive listeners, one rAF-throttled scroll handler, `toggle` captured at the document (it does not
+Implementation (built in `98e38f0`, from `templates/useEngagementEvents.ts`):
+`lib/hooks/useEngagementEvents.ts`, mounted once by one null-rendering client leaf
+(`components/engagement/EngagementEvents.tsx`) in `app/layout.tsx`, on the `KNOWN_CLIENT` ledger in
+`scripts/audit/rtl-lint.mjs`; `usePathname` re-arms the once-per-view marks. Passive listeners, one rAF-throttled scroll handler, `toggle` captured at the document (it does not
 bubble), `related_click` read from `data-related="service|location|guide|post"` on the card link.
 GTM consumes them as Custom Event triggers; GA4 is **owner-blocked** (backlog §13.7,
 owner-actions §2.4) — events are pushed but counted nowhere until the property lands. Do not add
@@ -167,12 +178,12 @@ collapsed by default. Test at 360 px wide with the bar visible.
 - [ ] `npm run build` before any assertion (N12).
 - [ ] Faq is a server component with `<details>`/`<summary>`; `a11y.mjs` shows no N8 warning;
       `faqJsonLd` text still equals the visible text (`schema.mjs` FAQ parity).
-- [ ] TOC only where 4+ H2s; ids stable; one visible TOC per viewport; `aria-label="תוכן העניינים"`.
+- [ ] TOC through `buildToc` (900 words and 4+ H2s) and `<Toc>` only; ids stable; one TOC element per page; `aria-label` from `tocLabel`.
 - [ ] Answer block first; sentence ≤ 25 words; H2 ≤ 200 words; a list/table per ~300 words.
 - [ ] ≤ 2 CTA blocks, each after an unresolved-variable block, each with `data-cta`.
 - [ ] Exit order ends FAQ → guides → `FinalCta`, never a bare `FinalCta`.
 - [ ] Events match `docs/event-taxonomy.md` names and parameters; `site: "dangates"`; no PII.
-- [ ] No new `"use client"` beyond the one events leaf; no new dependency; `rtl-lint.mjs` clean.
+- [ ] No new `"use client"` beyond the five on the ledger (the events leaf is already one of them); no new dependency; `rtl-lint.mjs` clean.
 - [ ] Hand copy to `hebrew-editor` → `claims-verifier`; markup to `ts-react-reviewer`.
 
 ## Gotchas
