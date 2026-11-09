@@ -16,13 +16,16 @@ import type { Guide } from "@/lib/guide-types";
  * The law — read 2026-11-09 on the he.wikisource consolidated text of חוק המקרקעין, התשכ״ט-1969
  * (NOT the official Reshumot publication — the copy says so beside every quote; whether that source
  * is acceptable is owner-actions 3.10), recorded in docs/research/2026-11-08-standards-and-law.md §C:
- *   ⛔ NO section sets a majority for a gate or a parking barrier. Never state one, never imply one,
- *     and never give the table a "majority required" column.
+ *   ⛔ NO section sets a majority for the general assembly's own decision to install a gate or a
+ *     parking barrier. Never state one, never imply one, and never give the table a "majority
+ *     required" column. §59ג (an owner's accessibility route) is a separate provision — see the
+ *     research file §C.
  *   VERIFIED model bylaws (they apply under §64 where the building's own registered bylaws are
  *     silent — say the building's bylaws may differ): §5(א) the assembly decides "דרכי ניהולו של
  *     הרכוש המשותף והשימוש בו"; §12(א) "יתקבלו ברוב דעות"; §13(ב) one vote per apartment; §7(א) notice
  *     four days ahead; §8(א) the quorum of half the apartments ONLY with its notice condition, and
- *     §8(ב) (a later hour the same day, "בכל מספר של משתתפים") beside it.
+ *     §8(ב) (the notice may set «שעה אחרת באותו יום» — another hour, never "a later" one; that
+ *     meeting is lawful "בכל מספר של משתתפים") beside it.
  *   §12(ב) is never cut before "מסוג או שיעור שלא פורשו"; §58(א) does spell out a charge (upkeep and
  *     management), so whether a barrier cost binds an objecting owner is OPEN — a question for a
  *     lawyer or the מפקח על רישום מקרקעין, never answered by the guide. Never legal advice.
@@ -53,11 +56,13 @@ export const guide = {
 
   blocks: [
     // Question form for the committee family: what the committee checks — the decision belongs to the
-    // building, the building's bylaws may differ from the model ones, no statute sets a gate majority.
+    // building, the building's bylaws may differ from the model ones, and no section we read sets a
+    // majority for the general assembly's own decision to install a barrier for the building
+    // (§59ג's accessibility route is separate).
     {
       kind: "answer",
       q: "⟨TODO: question-form H2 — unique across the hub⟩",
-      a: "⟨TODO: 40–60 מילים — החניה המשותפת היא רכוש משותף, ולכן מחסום הוא החלטה של האסיפה ולא של דייר; לפי התקנון המצוי החלטות מתקבלות ברוב דעות, אבל התקנון הרשום של הבית יכול לקבוע אחרת; אין בחוק סעיף שקובע רוב מיוחד למחסום.⟩",
+      a: "⟨TODO: 40–60 מילים — מה הוועד בודק (רישום החניה, חלוקת העלות, המפרט); לפי התקנון המצוי האסיפה מחליטה על ניהול הרכוש המשותף והשימוש בו (סעיף 5(א)); בלי רוב, בלי ״רכוש משותף״ כעובדה, בלי ״אין רוב מיוחד״; מתנגד לתשלום — שאלה לעורך דין⟩",
     },
     {
       kind: "paragraph",

@@ -30,8 +30,14 @@ export const city: CityContent = {
     "תיקון והתקנה של שערים חשמליים בחיפה עצמה: שערים נגררים על מדרונות הכרמל, שערי חניה בבנייני מגורים ומחסומים בפארק מת״ם. התקשרו ובדקו מתי אפשר להגיע.",
   answerHeading: "האם אתם מתקנים שערים חשמליים בחיפה?",
   // The one link below this page's FAQ is נתניה (lib/nearby.ts): the nearest page on the site, not a
-  // close town, so the shared "אילו ערים ואזורים קרובים?" would misdescribe it.
-  nearbyHeading: "איזה עמוד באתר הוא הקרוב ביותר לחיפה?",
+  // close town, so the shared "אילו ערים ואזורים קרובים?" would misdescribe it. The heading asks
+  // about a city, not a page — a page is not near anything (P3) — and the region page (שרון) is not a
+  // city, so נתניה answers it.
+  nearbyHeading: "איזו עיר עם עמוד באתר היא הקרובה ביותר לחיפה?",
+  // Answers the heading: geography only — the coast towns between the two (lib/nearby.ts), none
+  // with a page of its own. No coverage, travel or availability.
+  nearbyNote:
+    "מבין הערים שיש להן עמוד באתר, הקרובה ביותר לחיפה היא נתניה, דרומית לה לאורך החוף. בין שתיהן שוכנות זכרון יעקב, קיסריה וחדרה, שאין להן עמוד משלהן.",
   answer:
     "כן, אנחנו נותנים שירות בחיפה עצמה: תיקון, תחזוקה והתקנה של שערים חשמליים, כמו שערים נגררים, שערי חניה, שערים מתרוממים ומחסומים. בעיר שבנויה על מדרונות הכרמל ולצד הים, שלושה דברים מעמיסים על השערים: שיפוע הכניסה, מי גשם שזורמים אל המסילה ומלח שמגיע מהים. כדי לבדוק מתי אפשר להגיע לאבחון, התקשרו אלינו או שלחו הודעה דרך כפתור הוואטסאפ באתר.",
   localNotes: [

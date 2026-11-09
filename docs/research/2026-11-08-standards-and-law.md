@@ -75,7 +75,8 @@ Status key: VERIFIED (primary source read) · PARTLY (source says less than the 
 - §7(א) (VERIFIED 2026-11-09): notice of the meeting's date and place goes to all owners "ארבעה ימים
   לפחות לפני המועד". §8(א) (corrected 2026-11-09): the meeting is lawful "אם הודעה על קיומה נמסרה כאמור
   בסעיף 7 והשתתפו בה בעליהן של מחצית הדירות לפחות, בעצמם או על ידי באי כוח". §8(ב): the notice may set
-  a later hour the same day if there is no quorum; the meeting held then is lawful "בכל מספר של משתתפים".
+  another hour the same day if there is no quorum («בשעה אחרת באותו יום» — not "a later hour", corrected
+  2026-11-10, article-auditor); the meeting held then is lawful "בכל מספר של משתתפים".
   - ⛔ Never state the half-the-apartments quorum without the notice condition and without §8(ב)
     (aeo-geo-strategist M2, 2026-11-09).
 - §12(ב) (corrected 2026-11-09), full wording: "החלטה המטילה על בעל דירה חובות או תשלומים מסוג או שיעור

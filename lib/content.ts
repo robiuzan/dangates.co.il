@@ -997,7 +997,9 @@ export const leadFormValidationCopy = {
 export const leadFormMessageCopy = {
   greeting: "שלום, אני",
   service: "מעוניין/ת ב:",
-  city: "אזור:",
+  // The value is a city or a region name ("אזור השרון"), so the label names both — "אזור:" read
+  // "אזור: אזור השרון." before a region. Same words as `leadFormValidationCopy.citySelect`.
+  city: "עיר או אזור:",
   phone: "טלפון לחזרה:",
   notSpecified: "לא צוין",
   emailSubject: "פנייה חדשה מהאתר —",
@@ -1214,8 +1216,9 @@ export const pricingPageCopy = {
   metaTitle: "מחירון תיקון שערים חשמליים",
   // "…נקבע באבחון במקום" said when the price is set (owner-actions 3.4 is open; audit 2026-11-09
   // H2, borderline). The meta and the answer now say what the price depends on, never when a quote
-  // is given or whether it binds.
-  metaDescription: `מה קובע את מחיר תיקון שער חשמלי: סוג התקלה, משקל השער ורוחבו, סוג המנוע, מינוע שער קיים וחיווט. ביקור טכנאי ואבחון ${visitFeeRange}, והתיקון לפי מה שהאבחון מוצא.`,
+  // is given or whether it binds. Both price clauses carry a verb (P3): the visit "עולה" the band,
+  // and "מחיר התיקון תלוי" in what the diagnosis finds — 150 characters with the band.
+  metaDescription: `מה קובע את מחיר תיקון שער חשמלי: סוג התקלה, משקל השער ורוחבו, סוג המנוע וחיווט. ביקור טכנאי ואבחון עולה ${visitFeeRange}, ומחיר התיקון תלוי במה שהאבחון מוצא.`,
   /** keyword-map §4 pricing H1 — also the `WebPage` name and the crumb's page. */
   h1: "מחירון תיקון והתקנת שערים חשמליים",
   crumbLabel: "מחירון",

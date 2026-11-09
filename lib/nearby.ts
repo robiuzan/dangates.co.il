@@ -48,8 +48,8 @@ export const nearbyPairs: readonly NearbyPair[] = [
   //    distant place is added to fill a count, and not the שרון region: a region pairs only with its
   //    own towns (/new-city step 4), and חיפה is not one of them. The shared heading over these links
   //    (`locationPageCopy.nearbyHeading`) asks for close places, which נתניה is not, so חיפה's module
-  //    carries its own `nearbyHeading` asking which page on the site is the nearest — true for a
-  //    single far link. The shared heading never says "closest": on the other pages a nearer page
+  //    carries its own `nearbyHeading` asking which city with a page on the site is the nearest — true
+  //    for a single far link — and a `nearbyNote` naming the coast towns in between. The shared heading never says "closest": on the other pages a nearer page
   //    can exist without being paired. The reverse side counts too: נתניה's list holds חיפה, so
   //    נתניה's module carries a heading that asks which listed place is farther as well.
   //  - אשקלון had only the retired דרום and באר שבע, leaving just אשדוד. Its next-nearest published

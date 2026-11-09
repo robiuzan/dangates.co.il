@@ -6,8 +6,10 @@
  *   - public/_redirects present; rules resolve to emitted content pages, are percent-encoded, and no
  *     from-path is still shadowed by a stub directory under public/
  *   - public/_headers (and the out/_headers copy) declares HSTS, X-Frame-Options, nosniff, Referrer-Policy,
- *     Permissions-Policy and a Content-Security-Policy(-Report-Only) carrying frame-ancestors, each as a
- *     header line under the `/*` rule — a name that appears only in a comment does not count (audit L13)
+ *     Permissions-Policy and a Content-Security-Policy(-Report-Only), each as a header line under the
+ *     `/*` rule — a name that appears only in a comment does not count (audit L13). X-Frame-Options is
+ *     the framing protection in force; the CSP's frame-ancestors is only staged for the day the CSP is
+ *     enforced, because a Report-Only policy never blocks with it, so its presence protects nothing yet
  *   - no .github/workflows/deploy.yml, public/CNAME, public/.htaccess; no foreign-market stub dirs
  *   - llms.txt present — public/llms.txt, or out/llms.txt emitted by app/llms.txt/route.ts (Sprint 7); out/robots.txt quoted (what this file says is not what the edge does)
  *   - .env.example ↔ process.env usage drift; stale cPanel comment in next.config.mjs
@@ -126,7 +128,12 @@ export function parseHeadersFile(text) {
   return rules;
 }
 
-/** What is wrong with the `/*` rule of a `_headers` text: missing headers, a CSP with no frame-ancestors. */
+/**
+ * What is wrong with the `/*` rule of a `_headers` text: a missing required header (X-Frame-Options is
+ * the one that protects against framing today) or a CSP that does not stage frame-ancestors. The
+ * directive never blocks in a Report-Only policy, so it is checked as staging for enforcement, never
+ * as protection.
+ */
 export function starRuleProblems(text) {
   const star = parseHeadersFile(text).get("/*");
   if (!star) return ["no `/*` rule"];
@@ -138,7 +145,9 @@ export function starRuleProblems(text) {
   else if (
     !(star.get(cspName) ?? []).some((v) => /(^|;)\s*frame-ancestors\s+\S/i.test(v))
   )
-    problems.push("the CSP has no frame-ancestors directive");
+    problems.push(
+      "the CSP does not stage a frame-ancestors directive for the day it is enforced (X-Frame-Options is the protection in force; a Report-Only policy never blocks with it)",
+    );
   return problems;
 }
 

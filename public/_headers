@@ -40,9 +40,11 @@
 # public/assets/live.js reads the fleet status switch https://imgquarry.com/status/fleet.json once
 # per page view, credentials omitted. Its two inline scripts (live-calm, live-head) fall under the
 # same 'unsafe-inline' as GTM, and /assets/live.js under 'self'.
-# frame-ancestors 'self' mirrors X-Frame-Options: SAMEORIGIN above (added 2026-11-09, audit L13): the
-# header does the blocking today, the directive reports through the CSP and takes over when the CSP is
-# switched to enforcing. scripts/audit/edge.mjs fails if either header goes missing from the /* block.
+# X-Frame-Options: SAMEORIGIN above is the framing protection in force. frame-ancestors 'self' below
+# cannot block while the policy is Report-Only (whether a browser reports it differs: CSP3 §4.2.5
+# reports, CSP2 §7.7 said ignore); it is staged for the day the CSP is enforced (backlog §12.2).
+# scripts/audit/edge.mjs fails if X-Frame-Options, or the staged directive, goes missing from the /*
+# block.
   Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://api.web3forms.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com https://imgquarry.com; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://imgquarry.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'self' https://api.web3forms.com; object-src 'none'; frame-ancestors 'self'
 
 # Hashed build assets are immutable — safe to cache hard. HTML keeps the Pages default

@@ -32,7 +32,8 @@ export const city: CityContent = {
   answerHeading: "איך יודעים אם תוכלו לתקן שער חשמלי או תריס בירושלים?",
   // מודיעין is close; רחובות is the far end of the ירושלים–רחובות pair in lib/nearby.ts (the audit
   // 2026-11-09 L6 finding), so the shared "אילו ערים ואזורים קרובים?" would misdescribe it.
-  nearbyHeading: "אילו ערים קרובות לירושלים, ואיזו עיר ברשימה רחוקה יותר?",
+  // Two links, one close and one far, so the heading asks about one of each (P3).
+  nearbyHeading: "איזו עיר ברשימה קרובה לירושלים, ואיזו רחוקה יותר?",
   // Answers the heading: geography only, the close/far split lib/nearby.ts records.
   nearbyNote: "מודיעין קרובה לירושלים. רחובות רחוקה יותר.",
   answer:

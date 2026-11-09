@@ -132,11 +132,11 @@
     },
     {
       "id": "durability-promise",
-      "pattern": "להבטחת תוצאות|תוצאות (?:לאורך|מובטחות)|(?:ה|ל)?(?:תיקון|תיקונים|עבודה|עבודות|התקנה|התקנות) (?:עמיד(?:ים|ה|ות)?|שמחזיק(?:ים|ה|ות)?)|(?:עמיד(?:ים|ה)?|שמחזיק(?:ים|ה|ות)?) לאורך (?:זמן|שנים)|מבטיח(?:ים|ה|ות)? [^.]{0,30}לאורך (?:זמן|שנים)|עמידות לאורך זמן",
+      "pattern": "להבטחת תוצאות|תוצאות (?:לאורך|מובטחות)|(?:ה|ל)?(?:תיקון|תיקונים|עבודה|עבודות|התקנה|התקנות) (?:עמיד(?:ים|ה|ות)?|שמחזיק(?:ים|ה|ות)?)|(?:עמיד(?:ים|ה)?|שמחזיק(?:ים|ה|ות)?) לאורך (?:זמן|שנים)|[ימת]בטיח(?:ו|ים|ה|ות)? [^.]{0,40}לאורך (?:זמן|שנים)|עמידות לאורך זמן|(?:תוכלו|נוכל|יכול(?:ים|ה|ות)?) (?:להבטיח|ליהנות)[^.]{0,60}(?:לאורך|למשך) (?:זמן|שנים)",
       "section": "D",
       "row": "Warranty scope + exclusions",
       "status": "unconfirmed",
-      "note": "Added in P1 after the 2026-11-09 audit (M1, M4). A durability promise reads as a warranty-scope promise. Describe the method (match the part to the gate, check what wore it out), never how long the repair lasts. Advice that a maintained part lasts longer is not a promise and does not match. Widened in fix pass 2 (claims-verifier): a service that guarantees smooth operation for years, and the heading עמידות לאורך זמן."
+      "note": "Added in P1 after the 2026-11-09 audit (M1, M4). A durability promise reads as a warranty-scope promise. Describe the method (match the part to the gate, check what wore it out), never how long the repair lasts. Advice that a maintained part lasts longer is not a promise and does not match. Widened in fix pass 2 (claims-verifier): a service that guarantees smooth operation for years, and the heading עמידות לאורך זמן. Widened again in P3: the future and present forms of a guarantee (יבטיח, יבטיחו, תבטיח, מבטיח, מבטיחים) followed within the same sentence by operation over time (לאורך זמן or לאורך שנים). The infinitive purpose clause (כדי להבטיח…) is advice, not a promise, and stays outside. Widened in P3 fix pass 1 (article-auditor): a modal + infinitive (תוכלו/נוכל/יכולים להבטיח, תוכלו ליהנות) followed by לאורך/למשך זמן/שנים is a promise."
     },
     {
       "id": "price-list-pointer",

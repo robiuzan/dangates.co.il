@@ -237,8 +237,11 @@ until confirmed. The owner has said most of these are **not coming**, so write a
   the work is done, never when the price is given or how long the repair lasts
 - A pointer to a full or published price list ("בקרו במחירון המלא", "מחירון השירותים שלנו") —
   `/מחירון/` explains what determines the price and shows only the visit band since N14 (lexicon id
-  `price-list-pointer`, mapped to the §D row "Real price range per service"). Write "בעמוד המחירון
-  באתר מוסבר מה קובע את העלות"
+  `price-list-pointer`, mapped to the §D row "Real price range per service"). Point at what the
+  page explains — what sets the cost — and tie the pointer to the block before it: a check that
+  turned up a fault, a repair the reader is weighing, a part the section just described. Never drop
+  one fixed sentence after unrelated blocks; a pointer that would read the same after any list is
+  filler
 
 **The claim lexicon is mechanical.** `scripts/audit/claims.json` maps each of those phrases to its
 business-facts row and status; the PostToolUse hook (`.claude/hooks/post-edit-lint.ps1`) warns the
