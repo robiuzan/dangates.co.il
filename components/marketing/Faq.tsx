@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 
 /**
@@ -10,11 +11,16 @@ import { ChevronDown } from "lucide-react";
  *   - `open` on the first item keeps the accordion's old default
  *   - `name="faq"` makes the group exclusive where supported (one open at a time) and degrades to
  *     independent disclosures elsewhere
+ *   - an optional `moreAt` renders as a real <Link> in its own paragraph AFTER the answer paragraph,
+ *     inside the <details> body — the answer text itself stays clean, so it is byte-identical to
+ *     what faqJsonLd receives (callers pass only { q, a } to the schema)
  *   - the chevron rotates on [open] via the group-open variant; min-h-11 keeps a 44px tap target
  */
 export interface FaqItem {
   q: string;
   a: string;
+  /** A link-out to the route that answers this question in full; visible only, never in JSON-LD. */
+  moreAt?: { href: string; label: string };
 }
 
 export function Faq({ items }: { items: readonly FaqItem[] }) {
@@ -31,7 +37,20 @@ export function Faq({ items }: { items: readonly FaqItem[] }) {
               aria-hidden
             />
           </summary>
-          <div className="px-5 pb-5 text-sm leading-relaxed text-gray-600">{item.a}</div>
+          <div className="px-5 pb-5 text-sm leading-relaxed text-gray-600">
+            <p>{item.a}</p>
+            {item.moreAt && (
+              <p className="mt-3">
+                <Link
+                  href={item.moreAt.href}
+                  data-cta="faq-more"
+                  className="inline-flex min-h-11 items-center font-semibold text-secondary underline underline-offset-4 hover:text-primary focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+                >
+                  {item.moreAt.label}
+                </Link>
+              </p>
+            )}
+          </div>
         </details>
       ))}
     </div>

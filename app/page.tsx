@@ -11,6 +11,7 @@ import { TrustBar } from "@/components/marketing/TrustBar";
 import { ServicesGrid } from "@/components/marketing/ServicesGrid";
 import { WhyUs } from "@/components/marketing/WhyUs";
 import { Process } from "@/components/marketing/Process";
+import { Diagnosis } from "@/components/marketing/Diagnosis";
 import { PricingTeaser } from "@/components/marketing/PricingTeaser";
 import { ServiceAreas } from "@/components/marketing/ServiceAreas";
 import { Reviews } from "@/components/marketing/Reviews";
@@ -35,7 +36,8 @@ export const metadata: Metadata = {
 const jsonLd = graph(
   businessNode(manifest),
   websiteJsonLd(manifest),
-  faqJsonLd([...faqs]),
+  // Only { q, a }: the visible `moreAt` link-out is not part of the answer the schema repeats.
+  faqJsonLd(faqs.map(({ q, a }) => ({ q, a }))),
 );
 
 export default function HomePage() {
@@ -54,7 +56,8 @@ export default function HomePage() {
       <ServicesGrid />
       <WhyUs />
       <Process />
-      <PricingTeaser />
+      <Diagnosis />
+      <PricingTeaser withMoreLink />
       <ServiceAreas />
       <Reviews />
 

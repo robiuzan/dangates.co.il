@@ -1,49 +1,123 @@
 import type { Metadata } from "next";
-import { manifest } from "@/lib/site-config";
+import { MessageCircle, Phone } from "lucide-react";
+import { manifest, telHref, whatsappHref } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { pageNode } from "@/lib/jsonld";
+import {
+  crumbLabels,
+  pricingCtaCopy,
+  pricingPageCopy,
+  type PriceDriver,
+} from "@/lib/content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
+import { Button } from "@/components/ui/Button";
 import { PricingTeaser } from "@/components/marketing/PricingTeaser";
 
 const pricingUrl = routeUrl("מחירון");
-const pricingTitle = "מחירון תיקון והתקנת שערים חשמליים";
-const pricingDescription =
-  "מחירון להתרשמות לתיקון והתקנת שערים חשמליים: ביקור טכנאי, תיקון מנוע, החלפת מסילה, תחזוקה והתקנת שער חדש. עלות ביקור טכנאי 150–350 ₪; המחיר הסופי לפי אבחון.";
 
 export const metadata: Metadata = {
   alternates: { canonical: pricingUrl },
-  title: pricingTitle,
-  description: pricingDescription,
+  title: pricingPageCopy.metaTitle,
+  description: pricingPageCopy.metaDescription,
   openGraph: {
     ...ogBase,
     url: pricingUrl,
-    title: pricingTitle,
-    description: pricingDescription,
+    title: pricingPageCopy.metaTitle,
+    description: pricingPageCopy.metaDescription,
   },
 };
 
-// A plain WebPage: no Offer, no price (prices are authored estimates — backlog §4.10).
-const nodes = [pageNode(manifest, "WebPage", { path: "/מחירון/", name: pricingTitle })];
+// A plain WebPage: no Offer, no price (the only number is the visit band — backlog §4.10, N14).
+const nodes = [
+  pageNode(manifest, "WebPage", { path: "/מחירון/", name: pricingPageCopy.h1 }),
+];
+
+// The copy is `as const`, so its drivers are a tuple of differently-shaped literals; widen to the
+// interface to read the optional `items` / `after` uniformly.
+const drivers: readonly PriceDriver[] = pricingPageCopy.drivers;
+const { answer, quoteTips } = pricingPageCopy;
+
+const listClass = "mt-4 list-disc space-y-2 ps-6 leading-relaxed text-gray-700";
+const h2Class = "font-heading text-2xl font-bold text-primary";
 
 export default function PricingPage() {
   return (
     <>
       <PageHeader
-        title="מחירון תיקון והתקנת שערים חשמליים"
+        title={pricingPageCopy.h1}
         nodes={nodes}
-        subtitle="מחירים הוגנים ושקופים. הטווחים מובאים להתרשמות; המחיר הסופי נקבע לאחר אבחון בשטח — תמיד ברור מראש."
         crumbs={[
-          { label: "בית", href: "/" },
-          { label: "מחירון", href: "/מחירון/" },
+          { label: crumbLabels.home, href: "/" },
+          { label: pricingPageCopy.crumbLabel, href: "/מחירון/" },
         ]}
       />
+
+      {/* The answer block is the first paragraph under the H1 (no PageHeader subtitle). */}
+      <Section tone="white">
+        <div className="mx-auto max-w-3xl">
+          <h2 className={h2Class}>{answer.heading}</h2>
+          <p className="mt-4 text-lg leading-relaxed text-gray-800">{answer.text}</p>
+          <p className="mt-3 leading-relaxed text-gray-600">{pricingPageCopy.subtitle}</p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <Button href={telHref} data-cta="pricing-call" variant="outline" size="lg">
+              <Phone className="h-5 w-5" aria-hidden />
+              {pricingCtaCopy.callLabel}
+            </Button>
+            <Button
+              href={whatsappHref(quoteTips.whatsappMessage)}
+              data-cta="pricing-whatsapp"
+              variant="whatsapp"
+              size="lg"
+            >
+              <MessageCircle className="h-5 w-5" aria-hidden />
+              {pricingCtaCopy.whatsappLabel}
+            </Button>
+          </div>
+        </div>
+      </Section>
+
+      <Section tone="muted">
+        <div className="mx-auto max-w-3xl space-y-12">
+          {drivers.map((driver) => (
+            <div key={driver.id} id={driver.id} className="scroll-mt-24">
+              <h2 className={h2Class}>{driver.heading}</h2>
+              {driver.paragraphs.map((text) => (
+                <p key={text} className="mt-4 leading-relaxed text-gray-700">
+                  {text}
+                </p>
+              ))}
+              {driver.items && (
+                <ul className={listClass}>
+                  {driver.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              )}
+              {driver.after && (
+                <p className="mt-4 leading-relaxed text-gray-700">{driver.after}</p>
+              )}
+            </div>
+          ))}
+
+          <div id="quote-tips" className="scroll-mt-24">
+            <h2 className={h2Class}>{quoteTips.heading}</h2>
+            <p className="mt-4 leading-relaxed text-gray-700">{quoteTips.intro}</p>
+            <ul className={listClass}>
+              {quoteTips.items.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <p className="mt-4 leading-relaxed text-gray-700">{quoteTips.after}</p>
+          </div>
+        </div>
+      </Section>
+
       <PricingTeaser directCta />
+
       <Section tone="muted">
         <p className="mx-auto max-w-2xl text-center text-sm text-gray-500">
-          הטווחים מובאים להתרשמות בלבד ועשויים להשתנות לפי סוג השער, מצבו, סוג המנוע
-          והחלקים הנדרשים. עלות ביקור טכנאי לבדיקה היא 150–350 ₪. המחיר המחייב יינתן רק
-          לאחר אבחון בשטח.
+          {pricingPageCopy.footnote}
         </p>
       </Section>
     </>

@@ -9,6 +9,7 @@ import {
   contactHeroTitle,
   contactHeroSubtitle,
   contactPageCopy,
+  contactTransparencyCopy,
   defaultWhatsappMessage,
   leadFormHeading,
   serviceAreaLine,
@@ -136,6 +137,77 @@ export default function ContactPage() {
             <div className="mt-5">
               <LeadForm placement="contact" />
             </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* The transparency surface (backlog N15): complaints, cancellation and invoice questions
+          through the channels that already exist. The footer links here by id. */}
+      <Section id={contactTransparencyCopy.id} tone="muted">
+        <div className="grid gap-10 lg:grid-cols-2">
+          <div>
+            <h2 className="font-heading text-xl font-bold text-primary">
+              {contactTransparencyCopy.heading}
+            </h2>
+            <p className="mt-3 leading-relaxed text-gray-700">
+              {contactTransparencyCopy.intro}
+            </p>
+            <ul className="mt-5 space-y-4">
+              {contactTransparencyCopy.topics.map((topic) => (
+                <li key={topic.title}>
+                  <h3 className="font-semibold text-gray-900">{topic.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-gray-600">
+                    {topic.body}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+            <p className="font-semibold text-gray-900">
+              {contactTransparencyCopy.channelsLead}
+            </p>
+            <ul className="mt-4 space-y-3 text-gray-700">
+              <li className="flex flex-wrap items-center gap-x-3">
+                <span className="text-sm text-gray-500">
+                  {contactTransparencyCopy.phoneLabel}
+                </span>
+                <a
+                  href={telHref}
+                  data-cta="complaints-call"
+                  className="inline-flex min-h-11 items-center font-medium hover:text-primary"
+                  dir="ltr"
+                >
+                  {siteConfig.phone}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={whatsappHref(contactTransparencyCopy.whatsappMessage)}
+                  data-cta="complaints-whatsapp"
+                  className="inline-flex min-h-11 items-center font-medium hover:text-primary"
+                >
+                  {contactTransparencyCopy.whatsappLabel}
+                </a>
+              </li>
+              <li className="flex flex-wrap items-center gap-x-3">
+                <span className="text-sm text-gray-500">
+                  {contactTransparencyCopy.emailLabel}
+                </span>
+                <a
+                  href={`mailto:${siteConfig.email}`}
+                  data-cta="complaints-email"
+                  className="inline-flex min-h-11 items-center font-medium hover:text-primary"
+                  dir="ltr"
+                >
+                  {siteConfig.email}
+                </a>
+              </li>
+            </ul>
+            <p className="mt-4 text-sm leading-relaxed text-gray-600">
+              {contactTransparencyCopy.hoursLine}
+            </p>
           </div>
         </div>
       </Section>

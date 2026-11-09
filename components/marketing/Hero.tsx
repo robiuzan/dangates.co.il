@@ -1,6 +1,11 @@
 import { Check, MessageCircle, Phone } from "lucide-react";
 import { siteConfig, telHref, whatsappHref } from "@/lib/site-config";
-import { heroCopy, defaultWhatsappMessage, leadFormHeading } from "@/lib/content";
+import {
+  heroCopy,
+  homeAnswerBlock,
+  defaultWhatsappMessage,
+  leadFormHeading,
+} from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { LeadForm } from "@/components/forms/LeadForm";
@@ -22,7 +27,10 @@ export function Hero() {
           <h1 className="font-heading text-3xl leading-tight font-extrabold sm:text-4xl lg:text-5xl">
             {heroCopy.h1}
           </h1>
-          <p className="mt-5 max-w-xl text-lg text-white/85">{heroCopy.lead}</p>
+          {/* The answer block (backlog §6.2) is the first paragraph under the H1. */}
+          <p className="mt-5 max-w-xl text-base text-white/85 sm:text-lg">
+            {homeAnswerBlock}
+          </p>
 
           <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
             {heroCopy.points.map((p) => (

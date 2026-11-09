@@ -25,6 +25,23 @@ exists and the container has the tag (owner-actions §2.4, Track B B2).
 | `lead_error`           | POST failed (no-key misconfig, fetch catch, non-ok response)                                                  | `form`, `page`, `placement`, `site`, `reason` (`network` or `http_<code>`) — `popup_blocked` retired with `window.open`                                                                                | Custom Event                                                                                                                                                                                                                                                                                                                                                            | ✅ ships from `LeadForm.tsx` (N1 closed 2026-09-06); nothing consumes it yet — backlog §8.6 PARTIAL               |
 | _(page view)_ `/תודה/` | thank-you route after a confirmed submit; `noindex`, outside the sitemap, listed `calm` for the live surfaces | —                                                                                                                                                                                                      | Page View trigger on path `/תודה/` → GA4 conversion, Google Ads conversion                                                                                                                                                                                                                                                                                              | ✅ route shipped `68a4a7f` (backlog §8.3); the container trigger is owner work                                    |
 
+**`data-cta` values added in Sprint 4B** (the pricing pivot and the transparency surface). They follow
+`{location}-{action}`, and each names one element kind:
+
+| `data-cta`            | Element                                                                                            | Event            |
+| --------------------- | -------------------------------------------------------------------------------------------------- | ---------------- |
+| `pricing-call`        | `/מחירון/` — the call button under the answer block (the pair after the drivers already used it)   | `tel_click`      |
+| `pricing-whatsapp`    | `/מחירון/` — the WhatsApp button under the answer block, prefilled with the quote-tips message     | `whatsapp_click` |
+| `complaints-call`     | `/צור-קשר/#complaints` — the phone number in the complaints and cancellation block                 | `tel_click`      |
+| `complaints-whatsapp` | `/צור-קשר/#complaints` — the WhatsApp link in the same block                                       | `whatsapp_click` |
+| `complaints-email`    | `/צור-קשר/#complaints` — the email address in the same block                                       | `email_click`    |
+| `faq-more`            | a homepage FAQ `moreAt` link-out; a navigation link, not a call, but `/צור-קשר/` is a contact link | _(none)_         |
+
+The three `complaints-*` values read as `placement: "contact"` — the block sits on the contact page —
+so the container can map them to that placement without a new one (owner work, with the rest of the
+container). `faq-more` fires no conversion event — the tag exists so `cta-coverage.mjs` can see that the one
+`moreAt` that points at `/צור-קשר/` is tagged.
+
 ## Engagement events (Phase 5, `engagement-ux`)
 
 | Event            | Fires                                              | Parameters                                  | Purpose                                    |

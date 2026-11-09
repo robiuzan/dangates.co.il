@@ -2,7 +2,7 @@
  * content.ts — display content for the site, derived from the dangates.co.il live-site audit
  * (דן שערים חשמליים). Business data (NAP, slugs, locations) stays in site-config.ts; this file
  * holds the Hebrew marketing copy and per-section content. Faithful to the live site; no
- * invented facts (indicative price ranges are flagged as estimates in the pricing UI).
+ * invented facts — the only published price is the technician visit band (`priceRows`).
  */
 import { locations, services, siteConfig, type ServiceSlug } from "@/lib/site-config";
 
@@ -229,65 +229,111 @@ export const trustStats: readonly TrustStat[] = [
 ];
 
 /**
- * Indicative price ranges. The technician visit fee (150–350 ₪) is from the live-site FAQ;
- * the per-gate repair/install ranges are ESTIMATES authored to be honest where exact figures
- * are unknown. Final price is always set after an on-site inspection.
+ * The one price this site publishes: the technician visit and diagnosis band, from the live-site
+ * FAQ. The eight per-gate repair and install ranges that used to follow it were authored estimates
+ * (business-facts §D ⛔), and real prices are not coming — so they are deleted, and /מחירון/
+ * explains what determines the price instead (`pricingPageCopy`, backlog N14). Copy that names
+ * the band interpolates `visitFeeRange`; nothing retypes it.
  */
 export const priceRows = [
+  // 🔶 confirm — business-facts §D: is the 150–350 ₪ visit fee still current
   { service: "ביקור טכנאי ואבחון", from: "150–350 ₪" },
-  { service: "תיקון מנוע לשער חשמלי", from: "800–1,500 ₪" },
-  { service: "החלפת מסילה נעה", from: "600–1,200 ₪" },
-  { service: "תחזוקה כללית (בדיקה, ניקוי ושימון)", from: "400–900 ₪" },
-  { service: "תיקון שער נגרר / שער כנף", from: "800–1,800 ₪" },
-  { service: "תיקון שער מתרומם / שער לחניה", from: "900–2,000 ₪" },
-  { service: "תיקון שער זרוע", from: "700–1,600 ₪" },
-  { service: "תיקון / התקנת תריס גלילה חשמלי", from: "800–2,200 ₪" },
-  { service: "התקנת שער חשמלי חדש", from: "החל מ-3,500 ₪" },
 ] as const;
 
-/** Homepage FAQ — verbatim from the live-site audit (10 Q&A). */
-export const faqs = [
+/** The visit band, for interpolation — the only number any pricing copy may carry. */
+export const visitFeeRange: string = priceRows[0].from;
+
+/** An optional link from a homepage FAQ answer to the page that answers it in full. */
+export interface FaqLink {
+  /** An existing route, trailing slash. */
+  href: string;
+  /** Hebrew link text, rendered after the answer — never inside the `a` string. */
+  label: string;
+}
+
+/** One homepage FAQ item. `q` and `a` feed the `FAQPage`; `moreAt` is visible only. */
+export interface HomeFaq {
+  q: string;
+  a: string;
+  moreAt?: FaqLink;
+}
+
+/**
+ * Homepage FAQ — the site's only `FAQPage` (backlog §3.5, §4.13). Every answer is true per
+ * docs/business-facts.md: no availability outside the hours, no response time, no warranty term,
+ * no price beyond the visit band. `moreAt` (content-hub contract) points at a route that exists
+ * today and answers more fully; `Faq.tsx` renders it after the answer, outside the `a` string, so
+ * `faqJsonLd` still receives clean text. No question here appears in lib/posts.ts or elsewhere in
+ * this file — one Q/A per `FAQPage` sitewide.
+ */
+export const faqs: readonly HomeFaq[] = [
   {
     q: "כמה זמן לוקח לתקן שער חשמלי?",
-    a: "התיקון אורך לרוב בין שעה ליום עבודה, תלוי בסוג התקלה ובזמינות החלקים.",
+    a: "ניקוי ויישור של עינית, החלפת סוללה בשלט או קידוד שלט מחדש הם בדרך כלל עבודה קצרה. החלפת לוח פיקוד, קבל הנעה או מנוע לוקחת יותר זמן, ותלויה גם בזמינות החלק המתאים לדגם. תיקון מכני, כמו מסילה עקומה, גלגל שחוק או ציר שבור, תלוי בהיקף הנזק. האבחון מברר איזה מהמקרים האלה הוא שלכם.",
+    moreAt: {
+      href: "/blog/תקלות-נפוצות-בשערים-חשמליים/",
+      label: "על התקלות הנפוצות בשערים חשמליים",
+    },
   },
   {
     q: "האם יש אחריות על התיקון?",
-    a: "כן. אנחנו נותנים אחריות על העבודה בתיקונים ובהתקנות שלנו. לפני שמסיימים, בודקים את השער מקצה לקצה כדי לוודא שהתקלה נפתרה.",
+    a: "כן. על תיקונים ועל התקנות שביצענו ניתנת אחריות על העבודה. לפני שמסיימים בודקים את השער מקצה לקצה: פתיחה וסגירה עד הסוף, תגובה לשלט, ועצירה כשהעינית מזהה מכשול. אם אחרי הביקור השער לא מתנהג כמו שצריך, התקשרו ותארו מה קורה. את היקף האחריות על העבודה שלכם שאלו כשקובעים את הביקור.",
   },
   {
     q: "מה כוללת תחזוקה שוטפת לשער?",
-    a: "התחזוקה כוללת בדיקת המנוע ולוח הפיקוד, ניקוי המסילות, ניקוי ויישור העיניות ושימון החלקים הנעים.",
+    a: "תחזוקה שוטפת עוברת על החלקים שנשחקים. מנקים את המסילה מאבנים, מחול ומעלים, ומשמנים את הצירים, את הגלגלים או את הקפיצים, לפי סוג השער. מנקים ומיישרים את העיניות, ובודקים שהשער עוצר כשיש מכשול בדרכו. בודקים גם את המנוע, את לוח הפיקוד ואת החיווט, ואת השלטים והסוללות שלהם. המטרה היא לתפוס שחיקה לפני שהיא מעמיסה על המנוע.",
+    moreAt: {
+      href: "/blog/תחזוקה-מונעת-לשערים-חשמליים/",
+      label: "המדריך לתחזוקה מונעת של שערים חשמליים",
+    },
   },
   {
     q: "איך לבחור שער חשמלי חדש?",
-    a: "יש להתחשב בסוג השער, אופן הפתיחה, החומר והצרכים האישיים שלכם.",
+    a: "מתחילים מהמקום שיש בכניסה. שער נגרר צריך לאורך הגדר מקום פנוי ברוחב הפתח, כדי שהשער יחליק לצדו. שער כנף צריך שטח פנוי לתנועת הכנפיים, וקרקע שאינה עולה בכיוון הפתיחה. שער מתרומם חוסך מקום בחזית חניה סגורה, ומחסום זרוע מתאים לחניה משותפת עם תנועה רבה. אחר כך משקל השער ורוחבו קובעים איזה מנוע מתאים לו.",
+    moreAt: {
+      href: "/blog/שערים-חשמליים-השקעה/",
+      label: "מה כדאי לדעת לפני התקנת שער חשמלי",
+    },
   },
   {
     q: "מה העלות של ביקור טכנאי לבדיקה?",
-    a: "עלות ביקור טכנאי לבדיקת שער היא 150–350 ₪, תלוי במיקום ובשעה.",
+    // 🔶 confirm — business-facts §D: the band is still current; whether it is credited against
+    // the repair is unconfirmed, so it is a question to ask, never a policy.
+    a: `עלות ביקור טכנאי לבדיקת שער היא ${visitFeeRange}. את הסכום המדויק לשער שלכם שאלו כשקובעים את הביקור. בביקור מאבחנים את התקלה, ומחיר התיקון עצמו נקבע אחרי האבחון: לפי החלק שנכשל, סוג השער והעבודה שנדרשת סביבו. אם חשוב לכם לדעת אם עלות הביקור מתקזזת ממחיר התיקון, שאלו על כך בשיחה, לפני שקובעים את הביקור.`,
+    moreAt: { href: "/מחירון/", label: "מה קובע את המחיר של תיקון שער חשמלי" },
   },
   {
     q: "האם אתם עובדים עם לקוחות פרטיים ועסקיים?",
-    a: "כן, אנו משרתים את שני הסקטורים.",
+    a: "כן. אנחנו עובדים עם בעלי בתים פרטיים, ועדי בתים, חברות ניהול ועסקים. כל אחד מהם מגיע עם שער אחר. בבית פרטי זה לרוב שער נגרר או שער כנף בכניסה לחניה. בבניין מגורים זה שער חניה משותף או מחסום, עם שלטים רבים ולעתים אינטרקום. בעסק זה שער שנפתח פעמים רבות ביום, ולכן נשחק מהר יותר.",
+    moreAt: {
+      href: "/services/שערים-לדירה/",
+      label: "שערים חשמליים לבנייני מגורים",
+    },
   },
   {
+    // What a fitting involves as a job, not a package — what a quote includes is 🔶
+    // (business-facts §D "What the price includes / excludes").
     q: "מה כוללת התקנה של שער חדש?",
-    a: "ייעוץ, התקנה והתאמה אישית.",
+    a: "התקנה מתחילה במדידה: רוחב הפתח, משקל השער, סוג הקרקע ונקודת החשמל הקרובה. לפי המדידה בוחרים את סוג השער ואת המנוע שמתאים לו. העבודה עצמה כוללת את המסילה או הצירים, את המנוע ואת לוח הפיקוד, את העיניות והשלטים, ואת החיווט שמחבר ביניהם. בסוף מכוונים את נקודות העצירה ובודקים את השער מקצה לקצה.",
   },
   {
     q: "איך ניתן ליצור קשר?",
-    a: "ניתן ליצור קשר טלפוני או דרך האתר.",
+    a: `בטלפון ${siteConfig.phone}, בוואטסאפ דרך הכפתור באתר, בדוא״ל ${siteConfig.email} או בטופס הפנייה. שעות הפעילות: ${siteConfig.hours.weekday}, ${siteConfig.hours.friday}. כדי שהשיחה תתחיל מהמקום הנכון, ספרו מה סוג השער, מה בדיוק קורה לו ובאיזו עיר הוא נמצא. תמונה או סרטון קצר בוואטסאפ עוזרים להבין את התקלה עוד לפני הביקור.`,
+    moreAt: { href: "/צור-קשר/", label: "כל דרכי הפנייה בעמוד צור קשר" },
   },
   {
     q: "האם אתם מציעים שירותי חירום?",
-    a: `בשעות הפעילות (${siteConfig.hours.weekday}, ${siteConfig.hours.friday}) מטפלים גם בתקלות דחופות, כמו שער שנתקע פתוח. התקשרו, ונבדוק יחד מתי אפשר להגיע.`,
+    a: `בשעות הפעילות (${siteConfig.hours.weekday}, ${siteConfig.hours.friday}) מטפלים גם בתקלות דחופות, כמו שער שנתקע פתוח או רכב שנשאר סגור בחניה. התקשרו, ונבדוק יחד מתי אפשר להגיע. עד אז, ברוב השערים יש מנגנון שחרור ידני שמאפשר להזיז את השער ביד. בדקו איך הוא פועל בהוראות היצרן, ואל תפעילו כוח על שער שתקוע במסילה.`,
+    moreAt: {
+      href: "/blog/שער-חשמלי-לא-מגיב/",
+      label: "מה עושים כשהשער החשמלי לא מגיב",
+    },
   },
   {
     q: "כמה זמן לוקחת התקנה?",
-    a: "משך ההתקנה תלוי בסוג השער ובדרישות הלקוח.",
+    a: "זה תלוי בעיקר בשאלה אם השער עצמו כבר קיים. מינוע שער קיים, כלומר הוספת מנוע, לוח פיקוד ועיניות לשער ידני תקין, קצר בהרבה מהתקנת שער חדש, שצריך קודם לייצר או להזמין. גם עבודות הכנה מאריכות את הזמן: יציקת בסיס למנוע, הנחת מסילה, או העברת כבל חשמל ארוך מהבית אל השער.",
   },
-] as const;
+];
 
 /**
  * Customer reviews — EMPTY BY DESIGN.
@@ -816,4 +862,261 @@ export const privacyPageCopy = {
 export const pricingCtaCopy = {
   callLabel: "התקשרו לקבלת הצעה",
   whatsappLabel: "שלחו הודעה בוואטסאפ",
+} as const;
+
+// ── Sprint 4B: the pricing pivot, the homepage answer and mechanism, the transparency surface ──
+// Copy only — the route and component wiring renders these exports (no JSX here). Every number is
+// the visit band from `visitFeeRange`; every contact detail comes from `siteConfig`.
+
+/**
+ * components/marketing/PricingTeaser.tsx — on / and /מחירון/ (backlog N14). Replaces the
+ * "ranges for reference" copy hardcoded in the component: the table now holds the visit band
+ * only, so the copy says what the repair price depends on and links to /מחירון/. `more` is for
+ * the homepage; on /מחירון/ itself it would link the page to itself.
+ */
+export const pricingTeaserCopy = {
+  eyebrow: "מחירון",
+  title: "ממה מורכב המחיר של תיקון שער חשמלי?",
+  subtitle: `ביקור טכנאי ואבחון עולה ${visitFeeRange}. מחיר התיקון עצמו תלוי בחלק שנכשל, במשקל השער וברוחבו, בסוג המנוע ובחיווט, ונקבע אחרי האבחון.`,
+  tableCaption: "עלות ביקור טכנאי ואבחון",
+  serviceHeader: "שירות",
+  priceHeader: "מחיר",
+  note: "* את הסכום המדויק שאלו כשקובעים את הביקור. מחיר התיקון נקבע אחרי האבחון.",
+  quoteLabel: "בקשו הצעת מחיר לשער שלכם",
+  more: { href: "/מחירון/", label: "מה קובע את המחיר — בעמוד המחירון" },
+} as const;
+
+/** One "what drives the price" section on /מחירון/: a question-form H2, prose, an optional list. */
+export interface PriceDriver {
+  /** A stable Latin id for the section anchor. */
+  id: string;
+  heading: string;
+  paragraphs: readonly string[];
+  /** Rendered as a bulleted list after the paragraphs. */
+  items?: readonly string[];
+  /** A paragraph after the list. */
+  after?: string;
+}
+
+/**
+ * app/מחירון/page.tsx — the page becomes "what determines the price" (backlog N14, §3.13;
+ * keyword-map §10; eeat-and-trust §5.1). Render order: `h1` → `answer` (heading + text, directly
+ * under the H1) → each of `drivers` → `quoteTips` → the PricingTeaser (the visit band and the
+ * CTAs) → `footnote`. Each driver says WHY it moves the price, with no ₪ figure: real per-job
+ * prices are ❌ not coming (business-facts §D), and the visit band is 🔶 still current. Whether the
+ * visit fee is credited against the repair is 🔶 — written as a question to ask, never a policy.
+ * No `Offer` schema (backlog §4.10).
+ */
+export const pricingPageCopy = {
+  /** <title> — keyword-map §3 pricing formula; the layout template appends the brand. */
+  metaTitle: "מחירון תיקון שערים חשמליים",
+  metaDescription: `מה קובע את מחיר תיקון שער חשמלי: סוג התקלה, משקל השער ורוחבו, סוג המנוע, מינוע שער קיים וחיווט. ביקור טכנאי ואבחון ${visitFeeRange}, ומחיר התיקון נקבע באבחון במקום.`,
+  /** keyword-map §4 pricing H1 — also the `WebPage` name and the crumb's page. */
+  h1: "מחירון תיקון והתקנת שערים חשמליים",
+  crumbLabel: "מחירון",
+  subtitle:
+    "בהמשך העמוד מוסבר מה מזיז את המחיר של תיקון שער ולמה, ומה כדאי לספר לנו בטלפון כדי שנבין מראש איזו עבודה צפויה.",
+  answer: {
+    heading: "כמה עולה תיקון שער חשמלי, ומה קובע את המחיר?",
+    text: `מחיר תיקון שער חשמלי נקבע באבחון במקום: ביקור טכנאי ואבחון עולה ${visitFeeRange}, ומחיר התיקון עצמו תלוי בחלק שנכשל. אותו סימן יכול לנבוע מסוללה בשלט, מעינית, מלוח הפיקוד או מהמנוע. את המחיר מזיזים גם משקל השער ורוחבו, סוג המנוע, האפשרות להשאיר את המנוע הקיים, והגישה והחיווט.`,
+  },
+  drivers: [
+    {
+      id: "fault",
+      heading: "למה סוג התקלה משנה את המחיר יותר מכל דבר אחר?",
+      paragraphs: [
+        "כל רכיב בשער הוא עבודה אחרת, עם חלק אחר וזמן עבודה אחר. לכן השאלה הראשונה היא לא איזה שער יש לכם, אלא מה בדיוק נכשל בו.",
+      ],
+      items: [
+        "מנוע — החלק היקר במערכת. לפעמים התקלה היא רק קבל ההנעה או גלגלי השיניים שבתוכו, ואז מתקנים בלי להחליף את המנוע כולו.",
+        "לוח פיקוד — הכרטיס האלקטרוני שמנהל את המנוע, את העיניות ואת השלטים. כרטיס שנשרף בנחשול מתח מוחלף, והגדרה שזזה מתוקנת בכיוון.",
+        "עיניות — לרוב ניקוי ויישור, ולעתים החלפת זוג עיניות או חיווט שנפגע. זו בדרך כלל עבודה קטנה יחסית.",
+        "שלט ומקלט — סוללה, קידוד מחדש או שלט חדש. כשכל השלטים מפסיקים לעבוד יחד, הבעיה עשויה להיות במקלט, וזו עבודה אחרת.",
+        "מסילה — בשער נגרר, מסילה עקומה או שקועה מעמיסה על המנוע. יישור של קטע קצר שונה מהחלפת המסילה לכל אורך השער.",
+        "צירים — בשער כנף, ציר שחוק או משוחרר גורם לכנף לשקוע ולהתחכך. החלפת ציר כוללת לפעמים גם ריתוך במסגרת.",
+        "ספק כוח — שנאי או ספק שנכשלו משביתים את כל המערכת, גם כשהמנוע והכרטיס תקינים. החלק קטן, אבל צריך לאתר אותו נכון.",
+      ],
+      after:
+        "תקלה אחת יכולה להסתיר אחרת. מסילה תקועה מאלצת את המנוע לעבוד קשה מדי, ומנוע חדש על אותה מסילה יישחק גם הוא.",
+    },
+    {
+      id: "weight-width",
+      heading: "איך משקל השער ורוחבו משפיעים על המחיר?",
+      paragraphs: [
+        "שער כבד ורחב צריך מנוע חזק יותר, מסילה וגלגלים שנושאים את המשקל, וצירים עבים יותר. כל אחד מהחלקים האלה עולה יותר בגרסה הכבדה.",
+        "גם העבודה עצמה משתנה. פירוק והרכבה של כנף כבדה דורשים יותר ידיים וזמן, ושער כנף כפול מופעל בדרך כלל בשני מנועים ובשתי זרועות.",
+        "לכן כדאי לדעת כבר בשיחה הראשונה מה רוחב הפתח בערך, ומה חומר השער: ברזל מלא, פרופילים או אלומיניום.",
+      ],
+    },
+    {
+      id: "motor-class",
+      heading: "למה סוג המנוע משנה את המחיר?",
+      paragraphs: [
+        "מנועים נבדלים בכוח, בעומס העבודה שהם בנויים לו ובמנגנון ההנעה. מנוע לשער של בית פרטי, שנפתח כמה פעמים ביום, שונה ממנוע לשער חניה של בניין או של עסק.",
+        "בשער כנף יש מנועי זרוע, מנועים הידראוליים עם בוכנה ומנועים תת־קרקעיים. בשער נגרר המנוע מניע את השער דרך פס שיניים. לכל סוג חלקי חילוף אחרים, במחיר ובזמינות שונים.",
+        "כשמחליפים מנוע, מתאימים אותו לשער ולשימוש, ולא בהכרח לדגם הישן. מנוע חלש מדי לשער כבד יישחק מהר ויחזור להיתקע.",
+      ],
+    },
+    {
+      id: "motor-reuse",
+      heading: "אפשר להשאיר את המנוע הקיים, או שצריך מנוע חדש?",
+      paragraphs: [
+        "כשהמנוע הקיים תקין או ניתן לתיקון, משאירים אותו ומטפלים רק במה שנכשל. זה בדרך כלל הכיוון החסכוני יותר, אבל לא תמיד הנכון.",
+        "מנוע חדש נדרש כשהמנוע נשרף, כשחלקי החילוף שלו כבר לא זמינים, או כשהוא חלש מדי לשער. תיקון של מנוע שלא מתאים לשער רק דוחה את התקלה הבאה.",
+        "מינוע שער קיים, כלומר הוספת מנוע לשער ידני, הוא מקרה אחר: שם המחיר תלוי במצב השער עצמו. שער שתקוע במסילה או שוקע על הציר צריך תיקון מכני לפני שמחברים אליו מנוע.",
+      ],
+    },
+    {
+      id: "access-cabling",
+      heading: "למה הגישה לשער והחיווט משפיעים על המחיר?",
+      paragraphs: [
+        "מנוע צריך חשמל, ולוח הפיקוד צריך חיבור לעיניות, לשלטים ולפעמים לאינטרקום. כשנקודת החשמל רחוקה מהשער, צריך להעביר כבל, לפעמים בחפירה מתחת לשביל או לאספלט.",
+        "בבית עם חצר ארוכה, במגרש במושב או בחניה תת־קרקעית של בניין, מעבר הכבל יכול להיות חלק משמעותי מהעבודה. גם גישה קשה למנוע, מאחורי צמחייה, בתוך קיר או בבור, מאריכה את העבודה.",
+        "שווה לספר בשיחה איפה נמצא השקע או לוח החשמל הקרוב לשער, והאם כבר יש צנרת לכבלים.",
+      ],
+    },
+    {
+      // 🔶 confirm — business-facts §D: "Is the 150–350 ₪ visit fee still current" and "Is the
+      // visit fee waived on repair". The band interpolates; the credit is a question, not a policy.
+      // When and how a repair quote is given before work starts is not confirmed either — it is
+      // written as a question to ask, never as a stated practice. Restore the original credit
+      // question as the heading only once §D answers it.
+      id: "visit-fee",
+      heading: "מה כולל ביקור הטכנאי, ומה כדאי לשאול לפני שקובעים אותו?",
+      paragraphs: [
+        `ביקור טכנאי ואבחון עולה ${visitFeeRange}. את הסכום המדויק שאלו כשקובעים את הביקור. בביקור בודקים את השער לפי סדר: חשמל, שלט ומקלט, עיניות, לוח פיקוד, מנוע ומכניקה, עד שמגיעים למקור התקלה.`,
+        "שאלו גם, לפני שקובעים, איך ומתי מקבלים את הצעת המחיר לתיקון.",
+        "שאלה ששווה לשאול בטלפון, לפני שקובעים: האם עלות הביקור מתקזזת ממחיר התיקון, אם מחליטים לתקן. שאלו מראש, כדי שהתשובה תהיה ברורה עוד לפני שהטכנאי מגיע.",
+      ],
+    },
+    {
+      id: "found-on-opening",
+      heading: "מה יכול להתגלות רק כשפותחים את המנוע?",
+      paragraphs: [
+        "חלק מהתקלות נראות רק בפירוק: גלגל שיניים שחוק בתוך המנוע, חיווט שאכלו מכרסמים, או חלודה בבסיס שמתחת לכיסוי. ממצא כזה יכול לשנות את היקף העבודה.",
+        "כדי שלא תהיה הפתעה, סכמו איתנו לפני התיקון מה עושים אם מתגלה בפירוק תקלה נוספת.",
+      ],
+    },
+  ] satisfies readonly PriceDriver[],
+  quoteTips: {
+    heading: "איך מקבלים הערכה קרובה יותר כבר בטלפון?",
+    intro:
+      "ככל שנדע יותר לפני הביקור, כך יהיה ברור יותר איזו עבודה צפויה ואילו חלקים כדאי להביא. ספרו לנו:",
+    items: [
+      "סוג השער: נגרר, כנף אחת או שתיים, מתרומם, מחסום זרוע או תריס גלילה.",
+      "מה בדיוק קורה: לא נפתח, נעצר באמצע, לא נסגר עד הסוף, מרעיש או לא מגיב לשלט.",
+      "מתי זה התחיל: אחרי הפסקת חשמל, אחרי סערה, אחרי מכה מרכב, או בהדרגה.",
+      "האם יש סימן חיים: נורית שנדלקת במקלט, צפצוף, או זמזום מהמנוע בלי תנועה.",
+      "רוחב הפתח בערך, וממה השער עשוי.",
+      "הדגם והיצרן, אם הם כתובים על המנוע או על לוח הפיקוד.",
+      "תמונה או סרטון קצר בוואטסאפ: השער בתנועה, המנוע ולוח הפיקוד מבחוץ, בלי לפתוח מכסים שיש מתחתם חשמל.",
+    ],
+    after:
+      "גם עם כל הפרטים, המחיר הסופי נקבע רק באבחון במקום. השיחה עוזרת להבין מראש אם מדובר בכיוון, בהחלפת חלק או בעבודה גדולה יותר.",
+    whatsappMessage:
+      "היי, אני רוצה לברר מחיר לתיקון שער חשמלי. מצרף/ת תמונה של השער ותיאור של התקלה:",
+  },
+  footnote: `המחיר היחיד שמופיע בעמוד הוא עלות ביקור הטכנאי והאבחון, ${visitFeeRange}. מחיר כל תיקון או התקנה נקבע באבחון בשטח, לפי הגורמים שבעמוד.`,
+} as const;
+
+/**
+ * app/page.tsx — the homepage answer block (backlog §6.2, content-standards §5), rendered as the
+ * first paragraph directly under the H1. What the business does, for whom, where (מרכז הארץ and
+ * the published areas — no wider region promised, business-facts §E) and how to reach it.
+ */
+export const homeAnswerBlock = `ב${siteConfig.name} מתקנים, מתחזקים ומתקינים שערים חשמליים ותריסי גלילה חשמליים: שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה, שערי זרוע ומחסומים. אנחנו עובדים עם בעלי בתים, ועדי בתים, חברות ניהול ועסקים, במרכז הארץ ובאזורים שמופיעים באתר. אפשר להתקשר בטלפון ${siteConfig.phone}, לשלוח וואטסאפ או להשאיר פרטים בטופס.`;
+
+/** A titled short paragraph — one diagnosis step on the homepage, one topic on /צור-קשר/. */
+export interface TitledText {
+  title: string;
+  body: string;
+}
+
+/**
+ * app/page.tsx — the homepage section on how a fault is diagnosed and how the price is formed
+ * (backlog §3.13, §6.2). Page-unique: none of it repeats `differentiators`, `processSteps`, a
+ * service card or `pricingPageCopy` verbatim. Render: eyebrow + `heading` → `intro` → `checks` as
+ * an ordered list → `priceHeading` (H3) → `priceParagraphs` → a link to `link.href`.
+ */
+export const homeDiagnosisCopy = {
+  eyebrow: "אבחון ומחיר",
+  heading: "איך מאבחנים תקלה בשער חשמלי, ואיך נקבע המחיר?",
+  intro:
+    "אותו סימן יכול להגיע מכמה מקומות שונים. שער שלא נסגר עד הסוף יכול לנבוע מעינית מלוכלכת, מגלגל תקוע, מהגדרה בלוח הפיקוד או ממנוע שמאבד כוח. לכן האבחון עובר על המערכת לפי סדר קבוע, מהפשוט אל המורכב, ושום חלק לא מוחלף לפני שברור שהוא מקור התקלה.",
+  checks: [
+    {
+      title: "אספקת החשמל",
+      body: "בודקים שהחשמל מגיע ללוח הפיקוד: המפסק, הנתיך והחיבורים. שער שלא מגיב בכלל נבדק קודם כאן, כי בלי מתח אף רכיב אחר לא יפעל.",
+    },
+    {
+      title: "השלט והמקלט",
+      body: "בודקים את הסוללה בשלט ואת הקידוד שלו מול המקלט. כשרק שלט אחד לא עובד והשאר כן, התקלה כמעט תמיד בשלט עצמו ולא בשער.",
+    },
+    {
+      title: "העיניות",
+      body: "עינית מלוכלכת, מוסטת או מסונוורת משמש נמוכה מזהה מכשול שלא קיים, ועוצרת את הסגירה. ניקוי ויישור פותרים חלק גדול מהמקרים של שער שלא נסגר.",
+    },
+    {
+      title: "לוח הפיקוד",
+      body: "בודקים את ההגדרות, כמו נקודות העצירה, כוח המנוע וזמן הסגירה האוטומטית, ואת הכרטיס עצמו. נחשול מתח או ברק יכולים לשרוף רכיב בכרטיס, ואז השער נראה כאילו המנוע מת.",
+    },
+    {
+      title: "המנוע",
+      body: "מקשיבים למנוע ובודקים אם הוא מזמזם בלי לזוז, מתחמם או מאבד כוח באמצע התנועה. לפעמים האשם הוא קבל ההנעה, חלק קטן שמחליפים בלי להחליף את המנוע.",
+    },
+    {
+      title: "המכניקה",
+      body: "בודקים את המסילה והגלגלים, את הצירים ואת קפיצי האיזון. כל גרירה מכנית מעמיסה על המנוע, ולכן מתקנים אותה לפני שמחליטים שהמנוע הוא הבעיה.",
+    },
+  ] satisfies readonly TitledText[],
+  // The visit band and the "what the repair price depends on" line live in `pricingTeaserCopy`,
+  // which renders directly after this section on / — so this closing says only what the teaser
+  // does not, and carries no number.
+  priceHeading: "למה אין מחיר אחד לשער שלא נפתח?",
+  priceParagraphs: [
+    "החלפת עינית, החלפת לוח פיקוד והחלפת מנוע הן שלוש עבודות שונות, עם חלק אחר וזמן עבודה אחר. לכן מחיר התיקון נקבע רק אחרי האבחון, כשכבר ברור מה נכשל.",
+  ],
+  link: { href: "/מחירון/", label: "כל מה שקובע את המחיר, בעמוד המחירון" },
+} as const;
+
+/**
+ * app/צור-קשר/page.tsx — the transparency surface (backlog N15; eeat-and-trust §5.1). How to raise
+ * a complaint, cancel or move a visit, or ask about an invoice, through the channels that already
+ * exist — phone, WhatsApp and email, rendered from `siteConfig` / `telHref` / `whatsappHref` beside
+ * each label. No response-time promise, no fee or refund policy, no legal citation. Render as a
+ * section with `id={contactTransparencyCopy.id}` so the footer link lands on it.
+ */
+export const contactTransparencyCopy = {
+  id: "complaints",
+  heading: "איך מגישים תלונה, מבטלים ביקור או שואלים על חשבונית?",
+  intro:
+    "פניות כאלה עוברות באותם ערוצים שבהם פונים אלינו לתיקון: טלפון, וואטסאפ ודוא״ל. כתבו או אמרו בתחילת הפנייה במה מדובר, כדי שנדע לאן לשייך אותה.",
+  topics: [
+    {
+      title: "תלונה על עבודה שבוצעה",
+      body: "ספרו מה בוצע, מתי ובאיזו כתובת, ומה לדעתכם לא תקין. תמונה או סרטון של השער עוזרים להבין מה קורה.",
+    },
+    {
+      title: "ביטול ביקור או שינוי המועד",
+      body: "התקשרו או כתבו בוואטסאפ, וציינו את השם ואת המועד שתיאמנו. כדאי להודיע מוקדם ככל האפשר, כדי שאפשר יהיה לתאם מועד אחר.",
+    },
+    {
+      title: "שאלה על חשבונית או על תשלום",
+      body: "כתבו בדוא״ל את השם, את תאריך העבודה ואת השאלה. אם יש בידיכם את החשבונית או את הקבלה, צרפו אותה.",
+    },
+  ] satisfies readonly TitledText[],
+  channelsLead: "אפשר לפנות בכל אחד מהערוצים:",
+  phoneLabel: "טלפון",
+  whatsappLabel: "וואטסאפ",
+  emailLabel: "דוא״ל",
+  hoursLine: `שעות הפעילות: ${siteConfig.hours.weekday}, ${siteConfig.hours.friday}. הודעה בוואטסאפ או בדוא״ל אפשר לשלוח גם מחוץ לשעות האלה.`,
+  whatsappMessage: "היי, יש לי פנייה בנוגע לביקור או לעבודה שבוצעה:",
+  // 🔶 confirm ח.פ. — business-facts: the legal entity name and its ח״פ / ע״מ number would go here,
+  // as a line under `hoursLine`, once the owner supplies them. Nothing renders until then.
+} as const;
+
+/** components/layout/Footer.tsx — the one-line link to the transparency block on /צור-קשר/. */
+export const footerTransparencyLink = {
+  label: "תלונות, ביטולים ושאלות על חשבונית",
+  href: `/צור-קשר/#${contactTransparencyCopy.id}`,
 } as const;

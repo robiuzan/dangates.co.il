@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { siteConfig, telHref, services, locations } from "@/lib/site-config";
-import { footerCopy, serviceAreaLine } from "@/lib/content";
+import { footerCopy, footerTransparencyLink, serviceAreaLine } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 
 export function Footer() {
@@ -122,6 +122,14 @@ export function Footer() {
             <li>
               <Link href="/צור-קשר" className="text-white/70 hover:text-white">
                 צור קשר
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={footerTransparencyLink.href}
+                className="text-white/70 hover:text-white"
+              >
+                {footerTransparencyLink.label}
               </Link>
             </li>
             <li>
