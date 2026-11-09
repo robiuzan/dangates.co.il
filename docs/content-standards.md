@@ -232,8 +232,11 @@ until confirmed. The owner has said most of these are **not coming**, so write a
   credited against the repair — and durability promises about the work (lexicon ids
   `quote-before-work`, `no-obligation`, `durability-promise`, mapped to the §D rows "What the price
   includes / excludes", "Is the visit fee waived on repair" and "Warranty scope + exclusions"; the
-  ids match the phrasings the 2026-11-09 audit found; a credited visit fee, a binding quote, a price
-  ceiling and a quote by phone are `claims-verifier` judgment). Say what the price depends on and how
+  pricing ids match the phrasings the 2026-11-09 audit found, and since `379eb0e` `durability-promise`
+  matches the class — any form of a guarantee (יבטיח, תבטיח, מבטיחים, or תוכלו / נוכל / יכולים
+  להבטיח, תוכלו ליהנות) followed in the same sentence by לאורך / למשך זמן or שנים; a purpose clause
+  (כדי להבטיח…) is advice and stays outside; a credited visit fee, a binding quote, a price ceiling
+  and a quote by phone are `claims-verifier` judgment). Say what the price depends on and how
   the work is done, never when the price is given or how long the repair lasts
 - A pointer to a full or published price list ("בקרו במחירון המלא", "מחירון השירותים שלנו") —
   `/מחירון/` explains what determines the price and shows only the visit band since N14 (lexicon id

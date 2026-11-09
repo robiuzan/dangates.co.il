@@ -27,7 +27,9 @@ the Sprint 6 header (`fd72698`) and the Sprint 8 TOC, engagement events and RSC-
 (`98e38f0` `2b0d802`): still **1**, the same post floor — and again 2026-11-09 after the
 [2026-11-09 full audit](audits/2026-11-09-full.md)'s pre-deploy polish (`8768ce2` `9886dd1`):
 still **1**, the same post floor (`npm run audit -- --scope full` on the current `out/`, every
-other check 0, and the `links` related-post warning and the `cta-coverage` naming warning gone).
+other check 0, and the `links` related-post warning and the `cta-coverage` naming warning gone) —
+and again 2026-11-10 after the polish's last pass (`379eb0e`, the review findings P1 and P2 left
+open): still **1**, the same post floor.
 
 **Severity:** P0 = shipping something wrong or harmful · P1 = material ranking/conversion loss ·
 P2 = real improvement · P3 = polish. **Effort:** S = under an hour · M = half a day · L = multi-day.
@@ -87,7 +89,9 @@ agent-fixable rows shipped the same day as the pre-deploy polish: `8768ce2` (the
 policy, durability, price-list, mains-work and client-base lines; four new lexicon ids — §7.2,
 §7.3, §7.4) and `9886dd1` (honest far-neighbour headings, «אזור השרון», both dates on every post,
 related posts by relevance, the article `data-cta` names, `frame-ancestors` and an edge check on
-`_headers` — §9.3, §5.2, §6.4, §9.4, N21, §12.1). Not owner-blocked and still open: the deploy
+`_headers` — §9.3, §5.2, §6.4, §9.4, N21, §12.1); `379eb0e` (2026-11-09) closed what their review
+left open (the committee guide's quorum row, the last guarantee-for-years post lines with a wider
+`durability-promise`, `frame-ancestors` described as staged — §6.3, §7.2, §12.1). Not owner-blocked and still open: the deploy
 (with the guide dates set to the deploy day first — `deploy-dangates`), and the next content step,
 guide #5 «שער חשמלי לא נסגר עד הסוף» (audit H3, §6.3 — not started). The post rewrite (§3.8,
 §3.10, §9.5 and the post half of §6.2) waits on owner-actions 3.8 — see "Suggested order of work"
@@ -520,8 +524,8 @@ domain. Deleted 2026-08-17; `spam-grep.mjs` → `relatedTails: 0`. The route ren
 
 Migration stripped every `<a>`. The posts say "היכנסו למחירון", "בקרו בעמוד צור קשר", "📌 למידע נוסף" as
 plain text — anchor text written, target obvious, link missing. `spam-grep.mjs` also counts the
-structural emoji those phrases hang off: 28 as of 2026-11-09 after `8768ce2` (💡 ×22, 📞 ×3, 📌 ×2,
-💬 ×1 — 39 after 4F, 42 before Sprint 4 rewrote three post sentences). `8768ce2` also rewrote the
+structural emoji those phrases hang off: 27 as of 2026-11-10 after `379eb0e` (💡 ×22, 📞 ×3, 📌 ×1,
+💬 ×1 — 28 after `8768ce2`, 39 after 4F, 42 before Sprint 4 rewrote three post sentences). `8768ce2` also rewrote the
 six "full price list" pointers among the phrases (audit M2), since `/מחירון/` publishes one number.
 
 This is the cheapest internal-linking win on the site (§9.5) but needs the typed block model
@@ -561,7 +565,7 @@ grep -c 'מקרי מבחן\|ניתוח נתונים\|הנתונים מראים' 
 ```
 
 The rest of the blog's structural debt is not this row: the ~42 dead link phrases (§3.8), the flat
-all-`<h2>` outline (§3.10) and the 28 emoji (39 until `8768ce2`, `spam-grep.mjs`) go with the
+all-`<h2>` outline (§3.10) and the 27 emoji (28 until `379eb0e`, 39 until `8768ce2`, `spam-grep.mjs`) go with the
 block-model migration, Sprint 7.3. Commit
 `9195c9b` (4F) rewrote this post's "שירות מהיר ואמין" CTA sentence and gave it `updated:
 "2026-11-09"` (§6.4).
@@ -1061,7 +1065,13 @@ the first `<p>` after the H1 is now each post's own opening paragraph — 45–6
 at all. Those openings are still the generic scene-setting content-standards §5 quotes as "Bad"
 (audit H1), so the posts' half stays open.
 
-**Still open:** real answer blocks on the 11 posts, as of 2026-11-09 — they come with the post
+**Re-measured 2026-11-10 after `379eb0e`**, which rewrote the post lines that promised operation
+for years, two `סיכום` headings and the `/מחירון/` meta description (both price clauses now carry a verb — 150
+characters, read from `out/מחירון/index.html`): `content-depth.mjs` still prints no answer-block
+warning, pricing stays 1126 unique / 400, and the posts measure 453–599 unique / 900. No post gained
+an answer block.
+
+**Still open:** real answer blocks on the 11 posts, as of 2026-11-10 — they come with the post
 rewrite (Sprint 7.3 / 7.6), ⏳ BLOCKED · owner 3.8. Do not read the silent proxy as closure.
 
 ### 6.3 — P1 · L · [✅ DONE 2026-11-09 · repo · the hub and guides #1–#4; #5–#16 planned] Nothing on the site is worth citing over a competitor
@@ -1198,7 +1208,7 @@ attributed to ten real named reviewers, invented cities, a hardcoded 5-star disp
 `components/marketing/Reviews.tsx` returns `null` unless reviews **and** a source URL exist —
 the guard is the rule made mechanical. Restore path: business-facts §A, verbatim only.
 
-### 7.2 — P1 · M · [✅ DONE 2026-11-08] Four load-bearing claims appeared on nearly every page with nothing behind them
+### 7.2 — P1 · M · [✅ DONE 2026-11-08 · durability class 2026-11-09 `379eb0e`] Four load-bearing claims appeared on nearly every page with nothing behind them
 
 `claims-grep.mjs` as of 2026-08-23: `warranty-full` ("אחריות מלאה") live on 41 pages ·
 `around-the-clock` on 42 · `experience` ("ניסיון רב שנים", against `foundedYear: null`) on 3 ·
@@ -1272,6 +1282,23 @@ node scripts/audit/claims-grep.mjs
 Mutation-tested in the change (`8768ce2`, commit-time proof): the old `lib/content.ts` and
 `lib/posts.ts` lines hit each new id (quote-before-work 3, no-obligation 1, durability-promise 5),
 and seven neutral sentences — «שימון המסילה מאריך את חיי הגלגלים לאורך זמן» among them — hit none.
+
+**Third follow-up closed 2026-11-09** by commit `379eb0e` (the findings the P1 and P2 reviews left
+open). The `durability-promise` pattern matched only the present participle, so the posts' future
+and modal guarantees — «יבטיחו את תפקודו המושלם לאורך שנים», «תוכלו להבטיח תפקוד תקין של השער
+לאורך זמן» — were live. They now give maintenance advice without a guarantee, and the id catches
+the class: a guarantee in any tense (יבטיח, יבטיחו, תבטיח, מבטיח, מבטיחים), or a modal + להבטיח /
+ליהנות, followed within the sentence by לאורך / למשך זמן or שנים. A purpose clause (כדי להבטיח…)
+is advice and stays outside. Verified on the current `out/`:
+
+```bash
+node scripts/audit/claims-grep.mjs
+# ✅ pass · claimsChecked 18 · failingClaims 0 · totalHits 1 (the gated rating row) · every liveOccurrences 0
+#    durability-promise 0 live · commentHits 24
+# the new pattern over `git show fc2427f:lib/posts.ts` (comment lines dropped): 6 hits; the old pattern: 0
+# the new pattern over the current lib/posts.ts: 0
+# scratch read of out/**/index.html: «יבטיחו» / «המושלם» 0 pages
+```
 
 ### 7.3 — P1 · M · [✅ DONE 2026-11-08 · resolved by the N14 pivot] Eight of nine published prices were authored estimates
 
@@ -1845,7 +1872,7 @@ node scripts/audit/rtl-lint.mjs   # ✅ bannedUtilities 0 · hexLiterals 0 · di
 
 Skill: `web-security-headers`. Scripts: `edge.mjs` · `spam-grep.mjs`. Reviewer: `security-auditor`.
 
-### 12.1 — P1 · M · [✅ DONE 2026-09-06 · repo] The live security headers were not owned by this repo
+### 12.1 — P1 · M · [✅ DONE 2026-09-06 · repo · guarded `9886dd1` · wording `379eb0e` 2026-11-09] The live security headers were not owned by this repo
 
 The site returns HSTS (180d), `X-Frame-Options: SAMEORIGIN`, `Permissions-Policy`, `nosniff` and
 `Referrer-Policy` — all from **Cloudflare zone rules**. `edge.mjs` → `headersFile: false`. A zone
@@ -1865,18 +1892,25 @@ On the apex the zone rule still wins where both speak (HSTS reads `15552000`, th
 shows the repo's values ([owner-actions.md](owner-actions.md) §1.3).
 
 **Guarded in the repo 2026-11-09** by commit `9886dd1` (audit L13). Until then nothing in CI
-noticed if `_headers` lost a header, and the CSP had no `frame-ancestors`. The report-only CSP now
-carries `frame-ancestors 'self'`, mirroring `X-Frame-Options: SAMEORIGIN` (the header still does
-the blocking; the directive takes over when the CSP is enforced, §12.2). `edge.mjs` parses
-`public/_headers` and the built `out/_headers` and **fails** unless the `/*` rule sends HSTS,
-`X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy` and a CSP with
-`frame-ancestors` — a header named only in a comment does not count. Verified on the current
-`out/`:
+noticed if `_headers` lost a header, and the CSP had no `frame-ancestors`. `X-Frame-Options:
+SAMEORIGIN` is the framing protection in force; the report-only CSP carries `frame-ancestors
+'self'` only **staged** for the day the CSP is enforced (§12.2) — a Report-Only policy never blocks
+with it. `edge.mjs` parses `public/_headers` and the built `out/_headers` and **fails** unless the
+`/*` rule sends HSTS, `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy` and a
+CSP that stages `frame-ancestors` — a header named only in a comment does not count. Verified on the
+current `out/`:
 
 ```bash
 node scripts/audit/edge.mjs   # ✅ headerProblems 0 · headersFile true · redirectRules 80 · rscPayloadsDisallowed true
 # commit-time mutation tests (9886dd1): drop HSTS, drop frame-ancestors, HSTS only in a comment → each exits 1
 ```
+
+**Wording corrected 2026-11-09** by commit `379eb0e`: until then the `_headers` comment, and this
+row, said the directive "mirrors" the header and reports through the CSP — whether a browser
+reports it under Report-Only differs by CSP level. The comment and `edge.mjs`'s message now call it
+staged and name `X-Frame-Options` as the protection in
+force. Verified on the current `out/`: `edge.mjs` → `headerProblems 0`; `out/_headers` carries
+"staged for the day" and no longer "mirrors X-Frame-Options".
 
 Not live until the next deploy; the zone-rule deletion stays the owner's (§1.3).
 
@@ -2511,6 +2545,11 @@ Ships with a fixture; unusable until the Search Console token lands (§13.7).
    `claimsChecked 18`, every id 0 live, `relatedPostTargets 11`, no `links` or `cta-coverage`
    warning, `headerProblems 0`, `outBytes 11509453`; audit still 1 (the post floor). Owner rows
    added: owner-actions 1.5 (training crawlers, B13), 3.11 (ירושלים, B11), 3.12 (ח״פ, B12).
+   9b. ~~**The polish's last pass — what the P1 and P2 reviews left open:** §7.2 durability class ·
+   §12.1 `frame-ancestors` wording · §6.3 the committee quorum row · §6.2 `/מחירון/` meta~~ —
+   shipped in the repo 2026-11-09 (commit `379eb0e`, then this docs pass): `durability-promise` 0
+   live, `headerProblems 0`, `emojiCount 27`, `outBytes 11512187`; audit still 1 (the post floor).
+   **Next:** the deploy (owner, 5.6) and guide #5.
 10. ~~**Phase 5 — engagement + CRO:** §8.1 · §8.3 · §8.4/N3 · §8.5 · N8 · §13.4–13.5 · §10.2 · N19~~
     — shipped in the repo 2026-11-08 (Sprint 3, commits `7cfcf4c` `60ce109` `68a4a7f`; N19 closed
     in `fba5957`, the form alert's buttons now `size="lg"`); `a11y.mjs`, `rtl-lint.mjs` and

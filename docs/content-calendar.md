@@ -15,7 +15,7 @@ reviewed** in the repo (§6 rule 7's "published": the gate passes and the sitema
 הסוף» (§2 row 5; the 2026-11-09 full audit, H3) — not started. The 11 posts still use the flat
 `PostBlock = {type: "h" | "p" | "li"; text}` in `lib/posts.ts` — moving them waits on
 owner-actions 3.8 (§4). `node scripts/audit/content-depth.mjs` is the measurement: guide
-`belowFloor 0`, median 2511.5 unique words / 900 (2026-11-09 at `9886dd1`; 2470.5 at `2b0d802`
+`belowFloor 0`, median 2514 unique words / 900 (2026-11-10 at `379eb0e`; 2511.5 at `9886dd1`, 2470.5 at `2b0d802`
 with the TOC, 2395.5 at `89439b7`).
 
 **Status key:** planned · drafting · review (`article-auditor` + `hebrew-editor` + `claims-verifier`)
@@ -105,12 +105,12 @@ queries → `/מחירון/` pivoted to "what determines the price" (§10), not 
 tails) — and since the Sprint 0 deploy on 2026-09-06 so is the **live domain** (until then one post
 still served the injected token and all 11 ended in the dead "פוסטים קשורים" tail —
 [growth-roadmap.md](growth-roadmap.md) §1). In the clean build, **all 11 are under the 900-word
-floor** (447–583 unique words, `content-depth.mjs` as of 2026-11-09), all 11 open with
+floor** (453–599 unique words, `content-depth.mjs` as of 2026-11-10), all 11 open with
 scene-setting instead of an answer block (45–60 words since `9886dd1` took the date out of the first
 `<p>`, so the proxy no longer flags them — the openings are still not answers), every heading renders
 `<h2>` (the post route maps every `h` block to one), the in-copy link phrases are still plain text
-(~42 at migration; the six price-list pointers were rewritten in `8768ce2`), and 28 emoji (💡 ×22)
-are used as structure (`spam-grep.mjs`; 39 before `8768ce2`). The last 4 Latin
+(~42 at migration; the six price-list pointers were rewritten in `8768ce2`), and 27 emoji (💡 ×22)
+are used as structure (`spam-grep.mjs`; 28 before `379eb0e`, 39 before `8768ce2`). The last 4 Latin
 curly quotes, both superlatives and the empty `מקרי מבחן` section went in Sprint 4 (`1796ee7`
 `74a92d1`). Two clusters of three posts each cover one topic under three titles (benefits;
 maintenance).

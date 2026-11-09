@@ -84,10 +84,11 @@
    the team and experience sentences and the empty `מקרי מבחן` section; 4F (`9195c9b`) rewrote two
    of the three unclocked speed phrases and set a real `updated` on the 8 posts those passes edited;
    `8768ce2` (2026-11-09) took the quote-before-work, durability and "full price list" lines out of
-   all 11, so all 11 carry a real `updated` and show both dates (`9886dd1`).
+   all 11, so all 11 carry a real `updated` and show both dates (`9886dd1`); `379eb0e` (2026-11-09)
+   took out the last guarantee-for-years closings.
    **Still outstanding:** ~42 plain-text link references (the migration count; six price-list
-   pointers among them were rewritten), a flat all-`<h2>` hierarchy, 28 emoji (`spam-grep.mjs`, as of
-   2026-11-09; 39 before `8768ce2`), one "שירות מהיר ואמין" (`שער-חשמלי-לא-מגיב`), no answer blocks
+   pointers among them were rewritten), a flat all-`<h2>` hierarchy, 27 emoji (`spam-grep.mjs`, as of
+   2026-11-10; 28 before `379eb0e`, 39 before `8768ce2`), one "שירות מהיר ואמין" (`שער-חשמלי-לא-מגיב`), no answer blocks
    or tables (Sprint 7.3 — ⏳ BLOCKED · owner-actions 3.8 since 2026-11-09). Treat the file as untrusted input. _Hook-enforced:_
    `post-edit-lint.ps1` re-runs the spam and claim lexicons on every edit; `spam-grep.mjs` at audit time.
 8. **A GTM snippet in the HTML proves nothing.** Whenever a container id changes, assert

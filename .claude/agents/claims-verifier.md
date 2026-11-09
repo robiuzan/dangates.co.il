@@ -29,8 +29,10 @@ As of 2026-11-09 `claims-grep.mjs` passes: `failingClaims 0`, every `liveOccurre
 fails your review. The lexicon misses whole classes — team claims ("צוות מומחים"), absolute
 workmanship promises beyond the four phrases `workmanship-absolute` catches (the "שום חלק לא מוחלף
 לפני…" line you flagged on `/` in 4B was removed in 4F, `9195c9b`), pricing policy (visit fee
-credited, quote-then-consent — the ids `quote-before-work`, `no-obligation`, `durability-promise`
-and `price-list-pointer` match only the phrasings the 2026-11-09 audit found; a credited visit fee,
+credited, quote-then-consent — the ids `quote-before-work`, `no-obligation` and
+`price-list-pointer` match only the phrasings the 2026-11-09 audit found, while `durability-promise`
+matches the class since `379eb0e` (a guarantee in any tense or a modal + להבטיח / ליהנות, then
+לאורך / למשך זמן or שנים in the same sentence — a purpose clause stays outside); a credited visit fee,
 a binding quote, a price ceiling and a quote by phone are yours to catch), response-time wording outside the lexicon ("בהקדם", "מענה מיידי" —
 4F took both out of the form's success state) — so read for them; a 0 from the script is not a
 pass from you. Nor does it read the client bundle: the manifest `areaServed` "מרכז הארץ ופריסה

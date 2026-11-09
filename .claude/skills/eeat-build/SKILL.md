@@ -29,7 +29,8 @@ bucket at 0. Since `8768ce2` (2026-11-09) the lexicon has 18 ids (`claimsChecked
 `workmanship-absolute` (4F, `9195c9b`) catches "ללא פשרות", "בלי פשרות", "מצוינות בכל" and
 "למצוינות", and `quote-before-work`, `no-obligation`, `durability-promise` and `price-list-pointer`
 catch the pricing-policy, no-obligation, durability and "full price list" lines the 2026-11-09 audit
-found (H2, M1, M2). It still has no pattern for team claims
+found (H2, M1, M2); since `379eb0e` `durability-promise` catches the whole class — a guarantee in
+any tense, or a modal + להבטיח / ליהנות, followed by operation over time. It still has no pattern for team claims
 ("צוות מומחים") or for other absolute promises (like the "שום חלק לא מוחלף…" line 4F took off `/`)
 — those are `claims-verifier` judgment. The numbers move; the script is the truth.
 
