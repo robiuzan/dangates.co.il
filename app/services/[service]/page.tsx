@@ -95,9 +95,7 @@ export default function ServicePage({ params }: { params: { service: string } })
   // The table of contents: every H2 of the article column after the answer block, in page order,
   // gated on the prose length the column renders (lib/toc.ts).
   const faqHeading = serviceDepthCopy.faqHeading(card.name);
-  const upfront = depth.upfront
-    ? [depth.upfront.cost, depth.upfront.check, depth.upfront.ask]
-    : [];
+  const upfront = [depth.upfront.cost, depth.upfront.check, depth.upfront.ask];
   const steps = serviceProcessSteps(depth);
   const tocHeadings = [
     ...upfront.map((section) => section.heading),
@@ -171,7 +169,7 @@ export default function ServicePage({ params }: { params: { service: string } })
 
             <Toc items={toc} />
 
-            {depth.upfront && <ContentSections sections={upfront} />}
+            <ContentSections sections={upfront} />
 
             <h2
               id={headingId(servicePageCopy.processHeading)}

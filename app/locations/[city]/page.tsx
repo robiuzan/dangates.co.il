@@ -129,7 +129,7 @@ export default function LocationPage({ params }: { params: { city: string } }) {
   const neighbourhoods = content.neighborhoods ?? [];
   const glance = content.glance;
   const tocHeadings: TocHeading[] = [
-    ...(glance ? [glance.heading] : []),
+    glance.heading,
     ...content.localNotes.map((section) => section.heading),
     ...(neighbourhoods.length > 0 ? [neighbourhoodsHeading] : []),
     servicesHeading,
@@ -140,9 +140,10 @@ export default function LocationPage({ params }: { params: { city: string } }) {
     ...(written
       ? [content.answerHeading, content.answer]
       : [locationIntroParagraph1(loc.prefixed), locationIntroParagraph2(loc.prefixed)]),
-    ...(glance
-      ? [glance.heading, glance.cost.text, glance.process.text, glance.check.text]
-      : []),
+    glance.heading,
+    glance.cost.text,
+    glance.process.text,
+    glance.check.text,
     ...content.localNotes.flatMap((section) => [section.heading, ...section.paragraphs]),
     neighbourhoodsHeading,
     ...neighbourhoods,

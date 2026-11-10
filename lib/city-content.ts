@@ -145,13 +145,13 @@ export interface CityContent {
    * `nearbyHeading` that asks which listed place is farther. Absent → the links follow the H2 directly.
    */
   nearbyNote?: string;
-  /** Optional (for now): the short local cost / process / check block. See `CityGlance`. */
-  glance?: CityGlance;
+  /** The short local cost / process / check block. See `CityGlance`. */
+  glance: CityGlance;
   /**
-   * Optional: guides to list on this page ahead of the reverse index, in this order
+   * 1–2 guides to list on this page ahead of the reverse index, in this order
    * (`guidesForLocationPage` in lib/guides.ts). The import above is type-only: no runtime cycle.
    */
-  guides?: readonly GuideSlug[];
+  guides: readonly GuideSlug[];
 }
 
 export const cityContent: Record<LocationSlug, CityContent> = {
@@ -216,34 +216,37 @@ function validateCityContent(): void {
       assertInlineLinks(`${owner} note "${note.heading}"`, note.paragraphs, note.links);
     }
     const glance = content.glance;
-    if (glance) {
-      if (glance.heading.trim() === "")
-        throw new Error(`${owner}.glance.heading is empty.`);
-      for (const part of ["cost", "process", "check"] as const) {
-        const { text, links } = glance[part];
-        const where = `${owner}.glance.${part}`;
-        const words = text.split(/\s+/).filter(Boolean).length;
-        if (words < 15 || words > 75) {
-          throw new Error(`${where} is ${words} words; must be 15–75.`);
-        }
-        if (text.includes("₪") || text.includes(visitFeeRange)) {
-          throw new Error(`${where} states a figure: glance copy never carries a price.`);
-        }
-        assertInlineLinks(where, [text], links);
+    if (content.guides.length < 1 || content.guides.length > 2) {
+      throw new Error(
+        `${owner}.guides has ${content.guides.length} entries; must be 1 or 2.`,
+      );
+    }
+    if (glance.heading.trim() === "")
+      throw new Error(`${owner}.glance.heading is empty.`);
+    for (const part of ["cost", "process", "check"] as const) {
+      const { text, links } = glance[part];
+      const where = `${owner}.glance.${part}`;
+      const words = text.split(/\s+/).filter(Boolean).length;
+      if (words < 15 || words > 75) {
+        throw new Error(`${where} is ${words} words; must be 15–75.`);
       }
-      if (!glance.cost.links.some((l) => l.href === "/מחירון/")) {
-        throw new Error(`${owner}.glance.cost must link to "/מחירון/".`);
+      if (text.includes("₪") || text.includes(visitFeeRange)) {
+        throw new Error(`${where} states a figure: glance copy never carries a price.`);
       }
-      if (!glance.process.links.some((l) => l.href.startsWith("/services/"))) {
-        throw new Error(`${owner}.glance.process must link to a "/services/" page.`);
-      }
-      if (
-        !glance.check.links.some(
-          (l) => l.href.startsWith("/services/") || l.href.startsWith("/מדריכים/"),
-        )
-      ) {
-        throw new Error(`${owner}.glance.check must link to a service or a guide.`);
-      }
+      assertInlineLinks(where, [text], links);
+    }
+    if (!glance.cost.links.some((l) => l.href === "/מחירון/")) {
+      throw new Error(`${owner}.glance.cost must link to "/מחירון/".`);
+    }
+    if (!glance.process.links.some((l) => l.href.startsWith("/services/"))) {
+      throw new Error(`${owner}.glance.process must link to a "/services/" page.`);
+    }
+    if (
+      !glance.check.links.some(
+        (l) => l.href.startsWith("/services/") || l.href.startsWith("/מדריכים/"),
+      )
+    ) {
+      throw new Error(`${owner}.glance.check must link to a service or a guide.`);
     }
     for (const { q } of content.faqs) {
       const key = normalizeQuestion(q);

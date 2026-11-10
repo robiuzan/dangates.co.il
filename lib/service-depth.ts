@@ -99,16 +99,16 @@ export interface ServiceDepth {
   /** 1–3 slugs of existing posts in lib/posts.ts. */
   relatedPosts: readonly string[];
   /**
-   * Optional (for now): the cost / check / ask sections shown between the table of contents and the
-   * process list. See `ServiceUpfront` for the rules the copy follows. Absent: the page shows none.
+   * The cost / check / ask sections shown between the table of contents and the process list.
+   * See `ServiceUpfront` for the rules the copy follows.
    */
-  upfront?: ServiceUpfront;
+  upfront: ServiceUpfront;
   /**
-   * Optional: the one process step specific to this gate type, inserted directly after the shared
+   * The one process step specific to this gate type, inserted directly after the shared
    * step titled "אבחון והסבר". A title and a body in the shape of `processSteps`; no promise of
    * timing, price or availability.
    */
-  processStep?: { title: string; body: string };
+  processStep: { title: string; body: string };
   /**
    * Optional: a replacement body for a shared process step that is false for this service, keyed by
    * the step's title in `processSteps`. Same rules as `processStep`.
@@ -129,7 +129,7 @@ export function serviceProcessSteps(
       title: step.title,
       body: depth.processStepBodies?.[step.title] ?? step.body,
     });
-    if (step.title === "אבחון והסבר" && depth.processStep) steps.push(depth.processStep);
+    if (step.title === "אבחון והסבר") steps.push(depth.processStep);
   }
   return steps;
 }
@@ -206,33 +206,31 @@ function validateServiceDepth(): void {
       assertInlineLinks(`${owner} section "${sec.heading}"`, prose(sec), sec.links);
       checkTable(`${owner} section "${sec.heading}"`, sec.table);
     }
-    if (depth.upfront) {
-      const { cost, check, ask } = depth.upfront;
-      for (const [name, sec] of [
-        ["cost", cost],
-        ["check", check],
-        ["ask", ask],
-      ] as const) {
-        const where = `${owner}.upfront.${name}`;
-        assertInlineLinks(where, prose(sec), sec.links);
-        checkTable(where, sec.table);
-        const tableText = sec.table
-          ? [sec.table.caption, ...sec.table.head, ...sec.table.rows.flat()]
-          : [];
-        for (const text of [sec.heading, ...prose(sec), ...tableText]) {
-          if (text.includes("₪") || text.includes(visitFeeRange)) {
-            throw new Error(
-              `${where} states a figure ("${text}"): upfront copy never carries a price.`,
-            );
-          }
+    const { cost, check, ask } = depth.upfront;
+    for (const [name, sec] of [
+      ["cost", cost],
+      ["check", check],
+      ["ask", ask],
+    ] as const) {
+      const where = `${owner}.upfront.${name}`;
+      assertInlineLinks(where, prose(sec), sec.links);
+      checkTable(where, sec.table);
+      const tableText = sec.table
+        ? [sec.table.caption, ...sec.table.head, ...sec.table.rows.flat()]
+        : [];
+      for (const text of [sec.heading, ...prose(sec), ...tableText]) {
+        if (text.includes("₪") || text.includes(visitFeeRange)) {
+          throw new Error(
+            `${where} states a figure ("${text}"): upfront copy never carries a price.`,
+          );
         }
       }
-      if (!cost.links?.some((l) => l.href === "/מחירון/")) {
-        throw new Error(`${owner}.upfront.cost must link to "/מחירון/".`);
-      }
-      if ((ask.list?.length ?? 0) < 3) {
-        throw new Error(`${owner}.upfront.ask.list needs at least 3 questions.`);
-      }
+    }
+    if (!cost.links?.some((l) => l.href === "/מחירון/")) {
+      throw new Error(`${owner}.upfront.cost must link to "/מחירון/".`);
+    }
+    if ((ask.list?.length ?? 0) < 3) {
+      throw new Error(`${owner}.upfront.ask.list needs at least 3 questions.`);
     }
     for (const { q } of depth.faqs) {
       const key = normalizeQuestion(q);

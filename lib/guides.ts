@@ -142,7 +142,7 @@ export function guidesForLocation(slug: LocationSlug): Guide[] {
  * in declared order, then the reverse index (`guidesForLocation`), de-duplicated by slug.
  */
 export function guidesForLocationPage(slug: LocationSlug): Guide[] {
-  const picked: readonly string[] = cityContent[slug].guides ?? [];
+  const picked: readonly string[] = cityContent[slug].guides;
   const chosen = picked.flatMap((s) => guideBySlug.get(s.normalize("NFC")) ?? []);
   const seen = new Set<string>();
   return [...chosen, ...guidesForLocation(slug)].filter((g) => {
@@ -617,20 +617,16 @@ for (const s of services) {
   const depth = serviceDepth[s.slug];
   const owner = `serviceDepth["${s.slug}"]`;
   for (const section of depth.sections) assertGuideLinks(owner, section.links);
-  if (depth.upfront) {
-    for (const section of [depth.upfront.cost, depth.upfront.check, depth.upfront.ask]) {
-      assertGuideLinks(`${owner}.upfront`, section.links);
-    }
+  for (const section of [depth.upfront.cost, depth.upfront.check, depth.upfront.ask]) {
+    assertGuideLinks(`${owner}.upfront`, section.links);
   }
 }
 for (const l of locations) {
   const city = cityContent[l.slug];
   const owner = `cityContent["${l.slug}"]`;
   for (const note of city.localNotes) assertGuideLinks(owner, note.links);
-  if (city.glance) {
-    for (const part of [city.glance.cost, city.glance.process, city.glance.check]) {
-      assertGuideLinks(`${owner}.glance`, part.links);
-    }
+  for (const part of [city.glance.cost, city.glance.process, city.glance.check]) {
+    assertGuideLinks(`${owner}.glance`, part.links);
   }
 }
 for (const [name, content] of Object.entries(pageContent)) {
