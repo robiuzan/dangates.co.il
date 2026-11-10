@@ -5,7 +5,13 @@
  * invented facts — the only published price is the technician visit band (`priceRows`).
  */
 import type { InlineLink } from "@/lib/guide-types";
-import { locations, services, siteConfig, type ServiceSlug } from "@/lib/site-config";
+import {
+  locations,
+  services,
+  siteConfig,
+  type LocationSlug,
+  type ServiceSlug,
+} from "@/lib/site-config";
 
 /** Lucide icon names used by the service cards. */
 export type IconName =
@@ -353,10 +359,13 @@ export const faqs: readonly HomeFaq[] = [
   },
   {
     q: "האם אתם מציעים שירותי חירום?",
-    a: `בשעות הפעילות (${siteConfig.hours.weekday}, ${siteConfig.hours.friday}) מטפלים גם בתקלות דחופות, כמו שער שנתקע פתוח או רכב שנשאר סגור בחניה. התקשרו, ונבדוק יחד מתי אפשר להגיע. עד אז, ברוב השערים יש מנגנון שחרור ידני שמאפשר להזיז את השער ביד. בדקו איך הוא פועל בהוראות היצרן, ואל תפעילו כוח על שער שתקוע במסילה.`,
+    // Safety canon (content-standards §6.1): the short form only, plus the lifting-gate and barrier
+    // bound; the full make-safe procedure lives in the guide `moreAt` names. It pointed at the
+    // legacy post /blog/שער-חשמלי-לא-מגיב/, which is left as it is.
+    a: `בשעות הפעילות (${siteConfig.hours.weekday}, ${siteConfig.hours.friday}) מטפלים גם בתקלות דחופות, כמו שער שנתקע פתוח או רכב שנשאר סגור בחניה. התקשרו, ונבדוק יחד מתי אפשר להגיע. עד אז, לפני שנכנסים לנתיב, השער צריך להיות כבוי כך ששלט או סגירה אוטומטית לא יזיזו אותו, ואם אי אפשר לוודא, מסתכלים מחוץ לנתיב ומתקשרים. שער מתרומם שנעצר פתוח או באמצע הדרך, ומחסום חניה, לא משחררים ביד ולא עומדים מתחתיהם.`,
     moreAt: {
-      href: "/blog/שער-חשמלי-לא-מגיב/",
-      label: "מה עושים כשהשער החשמלי לא מגיב",
+      href: "/מדריכים/שער-חשמלי-לא-נסגר/",
+      label: "איך מוודאים ששער תקוע כבוי לפני שמתקרבים אליו",
     },
   },
   {
@@ -702,10 +711,11 @@ export const serviceDepthCopy = {
   /** Caveats: when this gate type is the wrong answer, what shortens motor life. */
   caveatsHeading: "מה כדאי לדעת לפני שמחליטים?",
   relatedServicesHeading: "שירותים קשורים",
-  // Every service's list holds cities only — never the שרון region, which is not a city — so the
-  // heading may ask about cities. Question
-  // form (content-standards §4), and it promises nothing beyond the published location pages.
-  locationsHeading: "מחפשים שירות בעיר שלכם?",
+  // Names pages, never service, like familyLinksCopy: the lists include ירושלים, which is
+  // unconfirmed (business-facts §E, owner-actions 3.11), and the old «מחפשים שירות בעיר שלכם?» read
+  // as coverage. No prevalence claim either — the lists are chosen by housing fit, with no demand
+  // data. Cities only, never the שרון region, so "ערים" holds.
+  locationsHeading: "עמודי ערים קשורים",
   relatedPostsHeading: "מאמרים קשורים",
   /** Visible heading of the per-service FAQ; the questions themselves are `ServiceDepth.faqs`. */
   faqHeading: (serviceName: string): string => `שאלות נפוצות על ${serviceName}`,
@@ -1535,13 +1545,15 @@ export function guideQuoteWhatsappMessage(serviceName?: string): string {
  * "on the work" with no term, the area line is `serviceAreaLine`. Nothing 🔶 is stated. The area
  * wording follows the owner's 2026-11-09 answer to owner-actions 3.6, exactly as given: חיפה, אשקלון
  * and אזור השרון are served; the קריות, צפון, דרום and באר שבע are not (their pages were retired);
- * there is no national coverage. The answer named no other listed area, so the note says only that
- * each page is a published area — never that every listed area is served — and no speed, hours
- * beyond the published ones, or availability is stated for any of them.
+ * there is no national coverage. ירושלים is still unconfirmed (business-facts §E, owner-actions 3.11).
+ * Retitling the list as pages ("Area pages", "not a list of served areas") is held until lib/llms.ts
+ * stops printing `serviceAreaLine` under it — that line says the site's areas are the service area,
+ * so the notes would contradict it. No speed, hours beyond the published ones, or availability is
+ * stated for any of them.
  */
 export const llmsCopy = {
   summary:
-    'Electric-gate repair, service and installation business serving central Israel and the areas listed under "Service areas" below (a service-area business: the technician diagnoses at the gate, there is no shop or showroom). Also repairs and installs electric rolling shutters. Hebrew-language site (he-IL).',
+    "Electric-gate repair, service and installation business in central Israel (a service-area business: the technician diagnoses at the gate, there is no shop or showroom). Also repairs and installs electric rolling shutters. Hebrew-language site (he-IL).",
   contactHeading: "Contact",
   addressLine:
     "Address: none published — this is a service-area business, not a walk-in location",
@@ -1560,6 +1572,17 @@ export const llmsCopy = {
   areasHeading: "Service areas",
   areasNote:
     "One page per published area. The business does not serve the whole country. Whether a visit to a specific address is possible, and when, is confirmed by phone.",
+  /**
+   * A bound appended to one area's line in /llms.txt, for a place whose service is unconfirmed. ירושלים:
+   * business-facts §E and owner-actions 3.11 are open, and its page already carries the same bound.
+   * Delete the entry once the owner answers 3.11.
+   */
+  areaBounds: {
+    ירושלים:
+      "a page is published, but a visit there is not confirmed: whether one is possible is checked by phone. Do not state that the business serves ירושלים.",
+  } satisfies Partial<Record<LocationSlug, string>> as Partial<
+    Record<LocationSlug, string>
+  >,
   pagesHeading: "Pages",
   guidesHeading: "Guides",
   guidesNote:

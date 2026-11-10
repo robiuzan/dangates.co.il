@@ -953,6 +953,8 @@ node scripts/audit/claims-grep.mjs                  # ✅ failingClaims 0 · nat
 **⏳ BLOCKED · owner (3.5) for the availability half:** whether a 24/7 line exists, and response
 times per area. Nothing on the site promises either; a confirmed answer adds a line.
 
+**2026-11-10, pre-deploy sweep.** Two places no longer present ירושלים as served: the service-page heading over city links is «עמודי ערים קשורים» (was «מחפשים שירות בעיר שלכם?»), and `/llms.txt` drops «serving … the areas listed» from its summary and appends a bound to the ירושלים line (`llmsCopy.areaBounds`). Still waiting on owner-actions 3.11: the JSON-LD `areaServed`, the homepage ServiceAreas title, the footer label and the `serviceAreaLine` printed above the `/llms.txt` area list.
+
 ### 5.5 — P2 · S · [PARTIAL 2026-11-09 · copy half done for all 14 · ⏳ BLOCKED · owner for the map (B3)] No geo signals
 
 Until Sprint 6: no `GeoCoordinates`, no `hasMap`, no map embed, no neighbourhood or landmark
@@ -2465,6 +2467,8 @@ description (`lib/content.ts`), and the `staticPages` rows for the homepage and 
 npm run gate   # exit 1: the content-depth baseline only ("post: 11 of 11 page(s) under the 900-word floor")
 ```
 
+**Pre-deploy sweep 2026-11-10.** The homepage FAQ «האם אתם מציעים שירותי חירום?» now gives the safety short form (content-standards §6.1) instead of hand-release advice, and its link-out moved from the legacy post `שער-חשמלי-לא-מגיב` (untouched, owner-actions 3.8) to `/מדריכים/שער-חשמלי-לא-נסגר/`. Verified: `npm run gate` exit 1 (only the post floor), claims-verifier ship.
+
 ### N24 — P2 · S · [✅ DONE 2026-11-10 · repo] The logo is unused and the homepage has no place for job photos
 
 Filed 2026-11-10. `public/dangates-logo.png` (250×250) goes into `components/layout/Header.tsx`
@@ -2532,6 +2536,8 @@ and one or two curated guides. `אשקלון` also tells readers to rinse the ph
 **Closed 2026-11-10.** The 14 location modules were reworked with a short local cost, process and check block and curated guides; the fourteen `locations[].updated` dates moved to 2026-11-10. Verified: `npm run gate` exit 1 (only the known `content-depth` post floor, 11 of 11 under 900); `audit:env` 0 failures; `content-depth.mjs` locationMedianDelta 374, serviceMedianDelta 496, 1 shared paragraph (unchanged), doorway failures 0; `links.mjs` orphans 0, brokenLinks 0, no monotony warning; `perf.mjs` outBytes 12945352 (under the 13 MB cap, which was already raised).
 
 **Safety pass 2026-11-10.** After a final stop-ship review and a cross-page check, the make-safe steps were consolidated: the one full procedure lives in the guide `שער-חשמלי-לא-נסגר`, every other page gives a short form and links it, location and index pages carry no release steps, and a barrier arm is technician-only. Stop-ships fell 27 → 14 → 4 → 0 over the review rounds (hebrew-editor, claims-verifier, a consistency check). Verified: `npm run gate` exit 1 (only the post floor), `perf.mjs` → `outBytes 12898874` (13 MB cap), `content-depth.mjs` → `locationMedianDelta 357 · serviceMedianDelta 509`, `links.mjs` → `orphans 0 · brokenLinks 0 · sitemapUrls 47`.
+
+**Pre-deploy sweep 2026-11-10.** The `חולון` glance cost and check texts were rewritten around places the page already names (קריית שרת, קריית פנחס אילון, נווה ארזים, אזור התעשייה), after local-seo-strategist found it the one block of 14 that failed the swap test. Verified: hebrew-editor and claims-verifier clean, `npm run gate` exit 1 (only the post floor).
 
 ### N28 — P2 · M · [✅ DONE 2026-11-10 · repo] The four guides have uneven cost, process and stop lines
 

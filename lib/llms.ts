@@ -74,7 +74,11 @@ export function buildLlmsTxt(): string {
   // `name`: a bare region name in a list reads as coverage of the whole region, and the list is a set of
   // published pages, not a coverage promise.
   for (const l of locations) {
-    add(`- [${areaLinkLabel(l.prefixed)}](${url(`locations/${l.slug}`)})`);
+    // An unconfirmed place carries its bound on its own line (llmsCopy.areaBounds, owner-actions 3.11).
+    const bound = llmsCopy.areaBounds[l.slug];
+    add(
+      `- [${areaLinkLabel(l.prefixed)}](${url(`locations/${l.slug}`)})${bound ? ` — ${bound}` : ""}`,
+    );
   }
   add("", llmsCopy.areasNote, "");
 
