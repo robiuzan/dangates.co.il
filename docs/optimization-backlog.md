@@ -2457,13 +2457,22 @@ named first in the answer block, the headings and the meta description, installa
 claim, no keyword stuffing, `heroCopy.lead` stays free of pricing policy. Proof: `titles.mjs`,
 `claims-grep.mjs`, `content-depth.mjs` (answer block 40–60 words).
 
-### N24 — P2 · S · [NOT STARTED] The logo is unused and the homepage has no place for job photos
+### N24 — P2 · S · [✅ DONE 2026-11-10 · repo] The logo is unused and the homepage has no place for job photos
 
 Filed 2026-11-10. `public/dangates-logo.png` (250×250) goes into `components/layout/Header.tsx`
 through `SiteImage` (`site-images`, "First image task"), keeping the visible brand text. The homepage
 gets slots that render nothing until `manifest.images` carries the owner's photos. The owner said
 photos come later with no date and no stock or generated image is used. owner-actions 4.1 gets the
 exact shot list. Proof: `a11y.mjs`, `perf.mjs` (`imagesUnsized 0`), `rtl-lint.mjs`.
+
+**Closed 2026-11-10.** The header renders `public/dangates-logo.png` through `SiteImage` as a decorative 40px mark beside the brand text (the home link keeps its `aria-label`; brand text is `text-xl` below `sm`). `components/marketing/JobPhotos.tsx` renders nothing while `manifest.images.gallery` is empty (up to 6 items, `jobPhotosCopy` in `lib/content.ts`) and sits after `<Diagnosis />`; `Hero` renders `manifest.images.hero` with `priority` below the CTAs when set. owner-actions 4.1 carries the shot list. Verified:
+
+```bash
+npm run audit:env                    # 0 failures
+npm run gate                         # exit 1: the content-depth baseline only ("post: 11 of 11 page(s) under the 900-word floor")
+node scripts/audit/a11y.mjs          # imgCount 47 (was 0), none without alt
+node scripts/audit/perf.mjs --json   # images 47 · imagesUnsized 0 · outBytes 11567820
+```
 
 ### N25 — P1 · M · [✅ DONE 2026-11-10 · repo] The content models cannot carry an in-text link, a table or a local cost block
 

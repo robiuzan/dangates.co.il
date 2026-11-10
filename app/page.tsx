@@ -12,6 +12,7 @@ import { ServicesGrid } from "@/components/marketing/ServicesGrid";
 import { WhyUs } from "@/components/marketing/WhyUs";
 import { Process } from "@/components/marketing/Process";
 import { Diagnosis } from "@/components/marketing/Diagnosis";
+import { JobPhotos } from "@/components/marketing/JobPhotos";
 import { PricingTeaser } from "@/components/marketing/PricingTeaser";
 import { ServiceAreas } from "@/components/marketing/ServiceAreas";
 import { Reviews } from "@/components/marketing/Reviews";
@@ -57,6 +58,7 @@ export default function HomePage() {
       <WhyUs />
       <Process />
       <Diagnosis />
+      <JobPhotos />
       <PricingTeaser withMoreLink />
       <ServiceAreas />
       <Reviews />

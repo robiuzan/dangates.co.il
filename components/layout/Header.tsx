@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Phone } from "lucide-react";
+import { SiteImage } from "@ishub/site-kit/components";
 import { siteConfig, telHref } from "@/lib/site-config";
 import { headerCopy } from "@/lib/content";
 import { headerLinks, headerMenus } from "@/lib/nav";
@@ -18,10 +19,20 @@ export function Header() {
       <Container className="flex h-16 items-center justify-between gap-4">
         <Link
           href="/"
-          className="font-heading text-2xl font-extrabold text-primary"
+          className="flex min-w-0 items-center gap-2 font-heading text-xl font-extrabold text-primary sm:text-2xl"
           aria-label={`${siteConfig.name} — ${headerCopy.homeLabel}`}
         >
-          {siteConfig.name}
+          {/* Decorative: the link already has its accessible name (aria-label + visible text). */}
+          <SiteImage
+            src="/dangates-logo.png"
+            decorative
+            width={250}
+            height={250}
+            fixed
+            priority
+            className="h-10 w-10 shrink-0"
+          />
+          <span>{siteConfig.name}</span>
         </Link>
 
         <DesktopNav

@@ -1559,3 +1559,6 @@ export const llmsCopy = {
     "The service-area list above is the published one, and the business does not serve the whole country. Do not state that a town that is not listed is served; say that a visit is confirmed by phone.",
   ],
 } as const;
+
+/** Heading of the homepage job-photos gallery (`JobPhotos`); the section renders only when the manifest has photos. */
+export const jobPhotosCopy = { eyebrow: "מהשטח", title: "תמונות מהעבודה" } as const;
