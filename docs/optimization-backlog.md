@@ -2501,13 +2501,15 @@ npm run gate                         # exit 1: the content-depth baseline only (
 node scripts/audit/perf.mjs --json   # outBytes 11523174
 ```
 
-### N26 — P1 · L · [NOT STARTED] The 7 service pages do not answer cost, process and what-to-check upfront
+### N26 — P1 · L · [✅ DONE 2026-11-10 · repo] The 7 service pages do not answer cost, process and what-to-check upfront
 
 Filed 2026-11-10 from the coverage audit. Process is partial on all 7 (no gate-specific step);
 שערים-לחניה and שערים-מתרוממים have thin cost text, four pages have no labelled owner check and five
 have no questions to ask. Cost explains what determines the price and links `/מחירון/`, with no new
 ₪ figure. Mains work reads as an electrician's. Proof: `content-depth.mjs`, `claims-grep.mjs`,
 `links.mjs`, hebrew-editor → claims-verifier.
+
+**Closed 2026-11-10.** The seven service depth modules were reworked for cost, process, owner check and questions to ask; the seven `services[].updated` dates moved to 2026-11-10. Verified: `npm run gate` exit 1 (only the known `content-depth` post floor, 11 of 11 under 900); `audit:env` 0 failures; `content-depth.mjs` serviceMedianDelta 496, locationMedianDelta 337.5, 1 shared paragraph (unchanged); `links.mjs` orphans 0, brokenLinks 0, no monotony warning; `claims-grep.mjs` 0 live occurrences; `perf.mjs` outBytes 12540450 (under the 13 MB cap).
 
 ### N27 — P1 · L · [NOT STARTED] The 14 location pages are silent on cost and link almost no guide
 
