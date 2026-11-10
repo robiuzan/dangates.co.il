@@ -232,6 +232,22 @@ function validateServiceDepth(): void {
     if ((ask.list?.length ?? 0) < 3) {
       throw new Error(`${owner}.upfront.ask.list needs at least 3 questions.`);
     }
+    const step = depth.processStep;
+    if (step.title.trim() === "" || step.body.trim() === "") {
+      throw new Error(`${owner}.processStep needs a non-empty title and body.`);
+    }
+    if (processSteps.some((s) => s.title === step.title)) {
+      throw new Error(
+        `${owner}.processStep title "${step.title}" duplicates a shared process step title.`,
+      );
+    }
+    for (const text of [step.title, step.body]) {
+      if (text.includes("₪") || text.includes(visitFeeRange)) {
+        throw new Error(
+          `${owner}.processStep states a figure ("${text}"): process copy never carries a price.`,
+        );
+      }
+    }
     for (const { q } of depth.faqs) {
       const key = normalizeQuestion(q);
       const owner = seen.get(key);

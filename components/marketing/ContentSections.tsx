@@ -82,16 +82,15 @@ export function ContentSections({ sections }: { sections: readonly ContentSectio
 
 /**
  * The short local cost / process / check block of a city page: one H2 and three labelled
- * paragraphs. Renders nothing without a glance.
+ * paragraphs.
  */
 export function CityGlanceBlock({
   glance,
   labels,
 }: {
-  glance: CityGlance | undefined;
+  glance: CityGlance;
   labels: { cost: string; process: string; check: string };
 }) {
-  if (!glance) return null;
   return (
     <>
       <h2
