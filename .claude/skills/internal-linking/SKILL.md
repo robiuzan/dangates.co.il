@@ -6,7 +6,7 @@ allowed-tools: Read, Edit, Grep, Glob, Bash
 
 # Internal linking
 
-Forty-seven content pages (46 in the sitemap, plus the `noindex` `/תודה/`) whose graph was close to a
+Forty-eight content pages, as of 2026-11-10 (47 in the sitemap, plus the `noindex` `/תודה/`) whose graph was close to a
 star until Sprints 5–6: everything hung off the homepage and the chrome, and almost nothing connected
 sideways. Measure before you touch it:
 
@@ -124,11 +124,11 @@ descriptive Hebrew anchors (the content types would need an inline-link field fi
 
 Every page should be reachable along at least two axes; a page on one axis only is a weak node.
 
-| Axis                                  | Pages                         | Links out to                                                                                                                   | Links in from                                                                                |
-| ------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| **City** (`/locations/`)              | 14                            | all 7 services · `nearby` cities · all 14 areas (`FamilyLinks`) · `guidesForLocation(slug)`                                    | header, footer, `/איזורי-שירות/` · `serviceDepth.locations` · guides' `relatedLocations`     |
-| **Gate type** (`/services/`)          | 7                             | `relatedServices` · `locations` · all 7 types and 14 areas (`FamilyLinks`) · `guidesForService(slug)` · `/מחירון/`             | header, footer, `/שירותים/`, every location page · guides' `relatedServices`                 |
-| **Symptom / component** (`/מדריכים/`) | 4 guides (Sprint 7, ADR 0002) | `relatedServices` (validated at module load; capped CTAs down to the transactional page) · `relatedLocations` · sibling guides | the hub `ItemList` · the reverse index on service and location pages · homepage FAQ `moreAt` |
+| Axis                                  | Pages                                                      | Links out to                                                                                                                   | Links in from                                                                                |
+| ------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| **City** (`/locations/`)              | 14                                                         | all 7 services · `nearby` cities · all 14 areas (`FamilyLinks`) · `guidesForLocation(slug)`                                    | header, footer, `/איזורי-שירות/` · `serviceDepth.locations` · guides' `relatedLocations`     |
+| **Gate type** (`/services/`)          | 7                                                          | `relatedServices` · `locations` · all 7 types and 14 areas (`FamilyLinks`) · `guidesForService(slug)` · `/מחירון/`             | header, footer, `/שירותים/`, every location page · guides' `relatedServices`                 |
+| **Symptom / component** (`/מדריכים/`) | 5 guides (4 in Sprint 7, ADR 0002; the fifth in `c457c31`) | `relatedServices` (validated at module load; capped CTAs down to the transactional page) · `relatedLocations` · sibling guides | the hub `ItemList` · the reverse index on service and location pages · homepage FAQ `moreAt` |
 
 The **reverse index** is what makes an orphaned guide structurally impossible: a guide that declares
 `relatedServices: ["שערים-נגררים"]` appears on `/services/שערים-נגררים/` through `guidesForService`
@@ -146,7 +146,7 @@ The curated lists stay and lead ([ADR 0005](../../../docs/decisions/0005-family-
 compact (no card class, no `relatedAttr`; link style once on the `<ul>`) and its headings naming pages,
 never service (`familyLinksCopy`). The hubs reuse it: `/שירותים/` with the areas and guides,
 `/איזורי-שירות/` with the types. Proof: `links.mjs` (no monotony warning, `orphans 0`), a count of
-`/services/` and `/locations/` hrefs in each built page's `<main>`, and `perf.mjs` `outBytes` under 12000000.
+`/services/` and `/locations/` hrefs in each built page's `<main>`, and `perf.mjs` `outBytes` under 13000000 (12898445 as of 2026-11-10).
 
 ## 7. Breadcrumbs — keep the parity
 
@@ -170,8 +170,8 @@ npm run build && node scripts/audit/links.mjs
 ```
 
 Target: `orphans: 0` · `notInChrome: 0` · `chromeLinks: 31` (met since `7ed1acd`; 28 before the
-footer fix) · `brokenLinks: 0` · `linksToStubs: 0` · `breadcrumbPages` = content pages − 2 (45 of
-47: `/` and `/תודה/` carry none) · `relatedServiceTargets: 7` · `relatedPostTargets` = every
+footer fix) · `brokenLinks: 0` · `linksToStubs: 0` · `breadcrumbPages` = content pages − 2 (46 of
+48 as of 2026-11-10: `/` and `/תודה/` carry none) · `relatedServiceTargets: 7` · `relatedPostTargets` = every
 surviving post · no monotony warning · no `notInChrome` warning for the guides (they are reached via
 the hub and the reverse index, not the chrome — `links.mjs` only flags a type whose siblings are in
 the chrome; it holds since `89439b7`) · 21 header hrefs. `stubs` reads 0: the 37 meta-refresh

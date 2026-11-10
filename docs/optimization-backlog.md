@@ -2590,13 +2590,33 @@ node scripts/audit/content-depth.mjs --json  # locationMedianDelta 374 · servic
 node scripts/audit/perf.mjs --json           # outBytes 12969730, under maxOutBytes 13000000
 ```
 
-### N32 — P2 · M · [NOT STARTED] The owner's 2026-11-10 decisions and the GEO plan are not in the docs
+### N32 — P2 · M · [✅ DONE 2026-11-10 · repo] The owner's 2026-11-10 decisions and the GEO plan are not in the docs
 
 Filed 2026-11-10. Record the decisions (allow all crawlers, the profile exists, the blog rewrite is a
 later project, the wikisource links stay) in owner-actions, `cloudflare-runbook.md` step 1, the
 strategy doc §4.1 and `gbp-runbook.md`; add the one-page monthly AI probe sheet with the ten prompts
 copied exactly; log the competitor benchmark in `docs/competitors.md`, rank order marked unverified.
 Proof: `npm run audit:env`.
+
+**Closed 2026-11-10** (documentation and skill text only; no site code, no table Value or Status in
+`business-facts.md`). owner-actions 1.1 (a full user-agent probe replaces the bare token), 1.5, 2.1,
+2.3, 2.4, 3.4, 3.8–3.11 and 5.3–5.6 carry dated answers; `cloudflare-runbook.md` step 1 and strategy
+§4.1 record "allow everything" with no recommendation to block training; strategy §6.1 and the audit
+template §7 say the owner runs the probe and `/audit full` copies the rows in. New
+`docs/ai-probe-sheet.md` (the ten prompts, four engines, the log, the AI Crawl Control check) and
+`docs/geo-plan.md` (done in the repo, the owner's checklist, the forbidden list), both in
+`docs/README.md`. Also: the gbp-runbook intro, a dated benchmark entry in `competitors.md` §7
+(peretztec.co.il, rank order unverified), prose notes beside business-facts §C and §D, the safety
+copy rule as content-standards §6.1, guide #5 built in content-calendar, the size note in
+`new-guide` and content-calendar §5, and the counts in CLAUDE.md and four skills. Verified:
+
+```bash
+npm run build                    # exit 0
+npm run audit -- --json          # failures 1: content-depth "post: 11 of 11 page(s) under the 900-word floor"
+                                 # sitemapUrls 47 · contentPages 48 · faqPages 27 (109 questions) · images 48 · outBytes 12898445
+# the ten prompts: strategy §6.1 vs docs/ai-probe-sheet.md, extracted and diffed → identical
+npm run audit:env                # 0 failures
+```
 
 ### N33 — P2 · S · [⏳ BLOCKED · owner 3.9] The site does not say it installs and repairs קונזולי gates
 

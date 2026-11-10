@@ -118,14 +118,15 @@ node -e "require('fs').rmSync('.next',{recursive:true,force:true})" && npm run b
 ```bash
 curl -sSI https://dangates.co.il/ | head -20
 curl -sS "https://dangates.co.il/services/%D7%A9%D7%A2%D7%A8%D7%99%D7%9D-%D7%A0%D7%92%D7%A8%D7%A8%D7%99%D7%9D/" | grep -o '<title>[^<]*</title>'
-curl -sS https://dangates.co.il/sitemap.xml | grep -c '<url>'                                   # 46 since 7ed1acd (50 after Sprint 7, 45 before)
+curl -sS https://dangates.co.il/sitemap.xml | grep -c '<url>'                                   # 47 as of 2026-11-10, with guide #5 (46 from 7ed1acd, 50 after Sprint 7, 45 before)
 curl -o /dev/null -w '%{http_code}\n' -s https://dangates.co.il/llms.txt                       # 200 since Sprint 7 (404 before)
 curl -o /dev/null -w '%{http_code}\n' -s "https://www.googletagmanager.com/gtm.js?id=GTM-KWGGH438"   # 200
 curl -sSI "https://dangates.co.il/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/" | grep -iE '^HTTP|^location'
 ```
 
-Check: the page is the new build; the title carries the brand exactly once; the sitemap lists 50
-URLs (the hub and the four guides joined the 45 in Sprint 7); `/llms.txt` answers 200; GTM returns 200. After the first deploy carrying the guides, also confirm a guide's `datePublished` in the live
+Check: the page is the new build; the title carries the brand exactly once; the sitemap lists 47
+URLs, as of 2026-11-10 (the hub and the four guides joined the 45 in Sprint 7, `7ed1acd` retired four
+location pages, and guide #5 joined in `c457c31`); `/llms.txt` answers 200; GTM returns 200. After the first deploy carrying the guides, also confirm a guide's `datePublished` in the live
 JSON-LD is the deploy day (step 6 above), and run the AI-crawler full-UA probe before any claim about
 `llms.txt` being read.
 

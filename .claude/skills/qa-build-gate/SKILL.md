@@ -42,14 +42,16 @@ way to clear `.next/`. `next build` rewrites `out/` itself.
 (`main.js`, `fallback/main.js`, `fallback/amp.js`) — a `next dev` run's artifacts surviving into the
 export, uploaded on every deploy. Deleting them from `out/` afterwards is not the fix; clearing
 `.next/` is. `node scripts/audit/perf.mjs` holds the line (`maxJsFileBytes` 1 MB in
-`scripts/audit/thresholds.json`, `devBuildFiles` in `edge.mjs`); as of 2026-11-10 (at `379eb0e`)
-a clean export is 11.51 MB (11512187 B) in 143 files against the 12 MB `maxOutBytes` — 11.69 MB at
+`scripts/audit/thresholds.json`, `devBuildFiles` in `edge.mjs`); as of 2026-11-10 (at `bcbf822`)
+a clean export is 12.90 MB (12898445 B) in 145 files against the 13 MB `maxOutBytes` (raised from
+12 MB on 2026-11-10, the owner's limit, after a compact build did not fit) — 11.51 MB (11512187 B)
+in 143 files at `379eb0e`; 11.69 MB at
 `2b0d802` until `9886dd1` stopped serialising the header menus twice into every RSC payload; 10.61 MB
 after `7ed1acd` retired four location pages, before the header disclosures and the TOC (`fd72698`,
 `98e38f0`) printed their links in every HTML page and RSC payload; 11.51 MB in 151 after Sprint 7 (the live-kit
 surfaces added ≈1.15 MB in 2026-10, the service depth copy ≈0.7 MB, the location and index-page copy
-≈1.3 MB and the hub and four guides ≈1.5 MB) — with 33 JS chunks totalling 783 KB (783396 B), largest 173 KB.
-The headroom under the cap is ≈0.49 MB: a change that adds bytes to every page is the one to watch.
+≈1.3 MB and the hub and four guides ≈1.5 MB) — with 33 JS chunks totalling 783 KB (783464 B), largest 173 KB.
+The headroom under the cap is ≈0.10 MB: a change that adds bytes to every page is the one to watch.
 
 ## Step 2 — `npm run gate`
 
@@ -68,9 +70,15 @@ table against the baseline below. Every inline grep the old gate carried now liv
 weight/preloads → `perf.mjs`, `_redirects`/`_headers`/dead hosts → `edge.mjs`, blog debris →
 `spam-grep.mjs`, unconfirmed claims → `claims-grep.mjs`.
 
-### Known baseline — as of 2026-11-10 (at `379eb0e`), `npm run audit` exits 1
+### Known baseline — as of 2026-11-10 (at `bcbf822`), `npm run audit` exits 1
 
-Re-cut from `npm run audit -- --scope full` on 2026-11-10 against a clean rebuild (source tree at
+Counts re-measured on 2026-11-10 at `bcbf822` (`npm run build`, then `npm run audit -- --json`;
+backlog N32): still 1 failure, the post floor. The content work since `379eb0e` (N23–N31 and the
+safety consolidation `526d19b`) moved the counts below by design — guides 4 → 5, `sitemapUrls`
+46 → 47, `contentPages` 47 → 48, `faqPages` 26 → 27 (103 → 109 questions), `images` 0 → 48 (the
+header logo, one per page), `outBytes` 11512187 → 12898445 under a cap raised to 13 MB; `about`
+1214 → 938 and the areas index 546 → 523 unique fell with `526d19b`, which took the release steps
+off both. One new `titles` warning: guide #5's title is 65 characters. Re-cut from `npm run audit -- --scope full` on 2026-11-10 against a clean rebuild (source tree at
 `379eb0e`, the polish's last pass: the committee guide's quorum row quoted as the bylaws word it,
 the posts' guarantee-for-years lines gone and `durability-promise` widened to the whole class,
 `frame-ancestors` described as staged rather than as protection — no failure added or removed;
@@ -96,14 +104,14 @@ by design — `claimsChecked` 14 → 18, `edge` → `headerProblems 0` (new metr
 
 | Check                 | Fails | What is failing                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Expected until                                       |
 | --------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| `content-depth`       | 1     | the post floor: 11 posts 453–599/900. ✅ since `89439b7`: the 4 guides (median 2514 / 900) and the hub (870 / 250); since `7c3f2db`: the locations (floor and delta — 14 of 14 since `7ed1acd`), the areas index and `/אודות/`; since `225ff45`: the 7 services (floor and delta). Only the shared-paragraph warning prints; the post answer-block warning stopped in `9886dd1` because the date left the first `<p>` — the posts still have no answer block                                                              | posts — Sprint 7.3, ⏳ owner 3.8 (§3.8, §3.10, §6.2) |
+| `content-depth`       | 1     | the post floor: 11 posts 453–599/900. ✅ since `89439b7`: the guides — 5 since `c457c31` (median 2986 / 900, as of 2026-11-10; 4 at 2514 before) — and the hub (917 / 250); since `7c3f2db`: the locations (floor and delta — 14 of 14 since `7ed1acd`), the areas index and `/אודות/`; since `225ff45`: the 7 services (floor and delta). Only the shared-paragraph warning prints; the post answer-block warning stopped in `9886dd1` because the date left the first `<p>` — the posts still have no answer block      | posts — Sprint 7.3, ⏳ owner 3.8 (§3.8, §3.10, §6.2) |
 | `claims-grep`         | 0     | ✅ since `1796ee7` (§7.2, §7.6) — `failingClaims` 5 → 0, every `liveOccurrences` 0 over `claimsChecked 18` (`workmanship-absolute` added in `9195c9b`; `quote-before-work`, `no-obligation`, `durability-promise` and `price-list-pointer` in `8768ce2`; `durability-promise` widened to the class in `379eb0e`); `totalHits 1` is the gated rating row in `Reviews.tsx`; `commentHits 24` are explanatory comments, skipped by design. It reads `<main>` text only — see the bundle note under Step 3                    | keep at 0                                            |
 | `schema`              | 0     | ✅ since `d8edb28` (§4.2, §4.4–§4.9, §4.12, N2) — `danglingIds` 18 → 0, `rawHebrewUrls` 18 → 0, `WebSite` on `/`, `Service` on the 14 locations (18 until `7ed1acd`); 0 warnings                                                                                                                                                                                                                                                                                                                                          | keep at 0                                            |
 | `a11y`                | 0     | ✅ since `68a4a7f` (§11.1–§11.3, N11, §8.1) — every contrast pair ≥ 5.42:1, lists intact, per-field `aria-invalid`; 0 warnings, the header disclosures and the TOC included                                                                                                                                                                                                                                                                                                                                               | keep at 0                                            |
 | `rtl-lint`            | 0     | ✅ since `7cfcf4c` (§11.5) — `bannedUtilities` 3 → 0, `hexLiterals` 7 → 0; `KNOWN_CLIENT` holds the 5 client files, so no unexpected-client warning                                                                                                                                                                                                                                                                                                                                                                       | keep at 0                                            |
-| `titles`              | 0     | ✅ since `13a6bdc` (§1.5) — `ogUrlMissing` 45 → 0; 0 warnings since `74a92d1` (§2.4–§2.6, 24 → 0)                                                                                                                                                                                                                                                                                                                                                                                                                         | keep at 0                                            |
+| `titles`              | 0     | ✅ since `13a6bdc` (§1.5) — `ogUrlMissing` 45 → 0; 0 warnings from `74a92d1` (§2.4–§2.6, 24 → 0) until `c457c31`, 1 since: guide #5's title is 65 characters (§2.5), as of 2026-11-10                                                                                                                                                                                                                                                                                                                                     | keep at 0                                            |
 | `cta-coverage`        | 0     | ✅ since `fee7f69` (§13.2) — `missingDataCta` 24 → 0; the `/מחירון/` warning gone since `68a4a7f` (§8.5); the six off-convention `article-*` values renamed in `9886dd1` (N21: `articleinline-*`, `articlequote-*`, `articleaside-*`), so 0 warnings                                                                                                                                                                                                                                                                      | keep at 0                                            |
-| `perf`                | 0     | ✅ since `13a6bdc` (§10.1, §10.3) — `fontPreloads` 0 → 2, `unusedDeps` → `[]`. The "47 RSC payload files" warning stays by design: since `2b0d802` (§1.3) the files are kept for soft navigation and disallowed in `robots.txt`; since `9886dd1` it reads as the byte cost ("3.43 MB of the out/ byte budget (29.8%)")                                                                                                                                                                                                    | keep at 0                                            |
+| `perf`                | 0     | ✅ since `13a6bdc` (§10.1, §10.3) — `fontPreloads` 0 → 2, `unusedDeps` → `[]`. The "48 RSC payload files" warning (47 until `c457c31`) stays by design: since `2b0d802` (§1.3) the files are kept for soft navigation and disallowed in `robots.txt`; since `9886dd1` it reads as the byte cost ("3.91 MB of the out/ byte budget (30.3%)", as of 2026-11-10)                                                                                                                                                             | keep at 0                                            |
 | `edge`                | 0     | ✅ since `a0e0fe2` (§1.1 ADR 0004, §12.1, §12.4/N5, N4) — 37 stubs → 72 real 301 rules (80 since `7ed1acd`), `_headers` owned, 0 dead-host artifacts; `llmsTxt true` and 0 warnings since `89439b7` (§6.5); `rscPayloadsDisallowed true` since `2b0d802` (§1.3); since `9886dd1` it **fails** if `public/_headers` or `out/_headers` drops a security header or the CSP's staged `frame-ancestors` (`X-Frame-Options` is the protection in force; a Report-Only CSP never blocks — `379eb0e`) (`headerProblems 0`, §12.1) | keep at 0                                            |
 | `export`              | 0     | pass — asserts `out/` is a current build of the source tree (N12)                                                                                                                                                                                                                                                                                                                                                                                                                                                         | keep at 0                                            |
 | `links` · `spam-grep` | 0     | pass — their metrics are the regression watch-list below; `links` prints no warning since `9886dd1` (§9.4)                                                                                                                                                                                                                                                                                                                                                                                                                | keep at 0                                            |
@@ -119,33 +127,33 @@ should be re-cut from it.
 
 **Regression watch-list** (metrics in the `--json` output; any move in the wrong direction fails the
 gate even though the check itself still passes): `links` → `orphans 0`, `brokenLinks 0`,
-`linksToStubs 0`, `pagesNotExactlyOneH1 0`, `headingSkips 0`, `breadcrumbPages 45`,
-`sitemapUrls 46`, `contentPages 47` (46 + the `noindex` `/תודה/`), `staticRoutesRegistered 11` ·
-`titles` → `pages 47`, `uniqueTitles 47`, `uniqueDescriptions 47` ·
-`titles` → 0 warnings (since `74a92d1`) ·
+`linksToStubs 0`, `pagesNotExactlyOneH1 0`, `headingSkips 0`, `breadcrumbPages 46`,
+`sitemapUrls 47`, `contentPages 48` (47 + the `noindex` `/תודה/`), `staticRoutesRegistered 11` ·
+`titles` → `pages 48`, `uniqueTitles 48`, `uniqueDescriptions 48` (all as of 2026-11-10) ·
+`titles` → 0 warnings (since `74a92d1`) — 1 since `c457c31`, guide #5's 65-character title ·
 `spam-grep` → `spamHits 0`, `fusedWords 0`, `relatedTails 0`, `curlyQuotes 0`, `emojiCount 27` ·
 `claims-grep` → `failingClaims 0`, `totalHits 1`, `claimsChecked 18`, every `liveOccurrences`
-value 0 · `content-depth` → home `belowFloor 0` (1786 unique), pricing `belowFloor 0` (1126 unique),
-service `belowFloor 0` (median 1468 unique), location `belowFloor 0` (14 pages, median 890 unique),
-guide `belowFloor 0` (median 2514 unique), guides index `belowFloor 0` (870 unique), services index
-`belowFloor 0` (1018 unique), areas index `belowFloor 0` (546 unique), about `belowFloor 0` (1214
-unique), blog index 553 unique, `locationMedianDelta 343.5`, `serviceMedianDelta 437`,
+value 0 · `content-depth` (as of 2026-11-10) → home `belowFloor 0` (1809 unique), pricing `belowFloor 0` (1156 unique),
+service `belowFloor 0` (median 1978 unique), location `belowFloor 0` (14 pages, median 1196.5 unique),
+guide `belowFloor 0` (5 pages, median 2986 unique), guides index `belowFloor 0` (917 unique), services index
+`belowFloor 0` (1034 unique), areas index `belowFloor 0` (523 unique), about `belowFloor 0` (938
+unique), blog index 561 unique, `locationMedianDelta 357`, `serviceMedianDelta 509`,
 `sharedParagraphs 1`, no answer-block warning (one reappearing on any route is a regression) ·
 `links` → `relatedServiceTargets 7`, `relatedPostTargets 11`, `notInChrome 0`, `chromeLinks 31`, no
 warning · the homepage `<header>` carries 21
 distinct `/services/` + `/locations/` hrefs (§9.1; no script counts it — the grep is in backlog
-§9.1) and 17 pages carry `nav[data-toc]` (N20) ·
-`schema` → `pagesWithJsonLd 46`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 26` · `perf` →
-`largestJsBytes 172834`, `jsTotalBytes` ≤ 783396 unless a change says why, `clientComponents 5`
+§9.1) and 25 pages carry `nav[data-toc]` (N20; 17 before the N26–N29 rework) ·
+`schema` → `pagesWithJsonLd 47`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 27` (109 questions) · `perf` →
+`largestJsBytes 172834`, `jsTotalBytes` ≤ 783464 unless a change says why, `clientComponents 5`
 (`EngagementEvents`, `LeadForm`, `DesktopNav`, `MobileMenu`, `Reveal` — 3 from Sprint 3 until
-`fd72698`), `outBytes` under 12000000 (11512187), `rscBytes` ≤ 3426835, `fontPreloads 2`, `unusedDeps []`,
+`fd72698`), `outBytes` under 13000000 (12898445, as of 2026-11-10), `rscBytes` ≤ 3910161, `images 48` (the header logo, one per page), `imagesUnsized 0`, `fontPreloads 2`, `unusedDeps []`,
 `devBuildFiles 0`, `sourceMaps 0` · `rtl-lint` → `bannedUtilities 0`, `hexLiterals 0` · `a11y` →
-`unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 · `titles` →
-`ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, no warning, `ctaElements 144`,
-`distinctTaggedElements 46` (113 / 24 after Sprint 1; 115 / 26 with the fleet live-kit's card —
+`imgCount 48`, `unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 · `titles` →
+`ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, no warning, `ctaElements 150`,
+`distinctTaggedElements 47` (113 / 24 after Sprint 1; 115 / 26 with the fleet live-kit's card —
 CLAUDE.md §14; 119 / 30 with the pricing and thank-you CTAs of Sprint 3; 125 / 35 with Sprint 4's
 pricing, FAQ link-out and complaints CTAs; 152 / 46 with Sprint 7's guide CTAs; 144 / 46 after
-`7ed1acd` took four location pages' CTAs out) · `edge` → `stubs 0`, `redirectRules 80`,
+`7ed1acd` took four location pages' CTAs out; 150 / 47 as of 2026-11-10, with guide #5) · `edge` → `stubs 0`, `redirectRules 80`,
 `redirectsFile true`, `headersFile true`, `headerProblems 0`, `llmsTxt true`, `rscPayloadsDisallowed true`,
 `deadHostArtifacts 0`, `foreignStubs 0`.
 
@@ -163,8 +171,8 @@ here rather than shipping a 404 preload.
 ## Step 3 — raw sanity greps (for a human, after the scripts)
 
 ```bash
-find out -name index.html | wc -l                                                  # 48 = 46 content + /תודה/ (noindex) + /404/ (52 from Sprint 7 until 7ed1acd; 47 before Sprint 7; 83 while the 37 stubs shipped)
-grep -c '<url>' out/sitemap.xml                                                    # 46
+find out -name index.html | wc -l                                                  # 49 = 47 content + /תודה/ (noindex) + /404/, as of 2026-11-10 (48 from 7ed1acd until c457c31; 52 from Sprint 7 until 7ed1acd; 47 before Sprint 7; 83 while the 37 stubs shipped)
+grep -c '<url>' out/sitemap.xml                                                    # 47 as of 2026-11-10 (46 from 7ed1acd)
 grep -rl 'aggregateRating\|"@type":"Review"' out --include=index.html | wc -l      # 0 — anything else is a stop-ship
 grep -rl '"@type":"Person"' out --include=index.html | wc -l                       # 0 — no person exists; lib/authors.ts is an empty registry
 grep -rl 'דן שערים חשמליים | דן שערים חשמליים' out --include=index.html | wc -l  # 0 — doubled brand suffix

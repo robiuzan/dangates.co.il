@@ -24,8 +24,8 @@
   (owner-actions 3.5); since Sprint 4 (`1796ee7`) the site promises urgent-fault handling only
   within these hours.
 - **Service area:** the copy says `serviceAreaLine` ("מרכז הארץ והאזורים שמופיעים באתר") and names
-  the published areas — 14 location pages (13 cities and אזור השרון), 7 service pages, 4 guides
-  (since Sprint 7), 11 blog posts. **National coverage is ❌:** the owner answered owner-actions 3.6
+  the published areas — 14 location pages (13 cities and אזור השרון), 7 service pages, 5 guides
+  (4 since Sprint 7, the fifth in `c457c31`; as of 2026-11-10), 11 blog posts. **National coverage is ❌:** the owner answered owner-actions 3.6
   on 2026-11-09 — קריות, צפון, דרום and באר שבע are not served (their four pages were retired in
   `7ed1acd` with 301s to `/איזורי-שירות/`); חיפה, אשקלון and שרון are. Never write "פריסה ארצית".
 - **Audience:** private homeowners, ועדי בתים (building committees), property managers, businesses
@@ -140,14 +140,14 @@ transpilePackages: ["@ishub/site-kit"],
 app/
   layout.tsx              # metadata, Rubik, GTM, <html lang="he" dir="rtl">
   page.tsx                # homepage — LocalBusiness + FAQPage JSON-LD
-  sitemap.ts robots.ts    # /sitemap.xml (46 URLs since 7ed1acd; 50 after Sprint 7), /robots.txt —
+  sitemap.ts robots.ts    # /sitemap.xml (47 URLs as of 2026-11-10; 46 from 7ed1acd, 50 after Sprint 7), /robots.txt —
                           #   per-bot Allow + RSC_PAYLOAD_DISALLOW (the index.txt payloads, §1.3, 2b0d802)
   llms.txt/route.ts       # /llms.txt — generated from lib/llms.ts, never hand-written (Sprint 7)
   not-found.tsx           # 404
   services/[service]/     # 7 pages — Service + FAQPage JSON-LD, rendered from serviceDepth
   locations/[city]/       # 14 pages (18 until 7ed1acd retired four, owner-actions 3.6)
   blog/ blog/[slug]/      # index + 11 posts
-  מדריכים/ מדריכים/[slug]/  # the guides hub (ADR 0002) — index + 4 guides, rendered from lib/guides.ts
+  מדריכים/ מדריכים/[slug]/  # the guides hub (ADR 0002) — index + 5 guides, rendered from lib/guides.ts
   שירותים/ איזורי-שירות/ מחירון/ אודות/ צור-קשר/
   מדיניות-פרטיות/ הצהרת-נגישות/
   תודה/                   # thank-you page after a confirmed lead — noindex, outside the sitemap
@@ -193,7 +193,7 @@ scripts/live/      # fleet live-kit gates (prebuild / postbuild) and the weekly 
 content/services/  # ⭐ one depth module per service (<slug>.ts → ServiceDepth): answer, sections, FAQs, links
 content/locations/ # ⭐ one module per location (<slug>.ts → CityContent): answer, local notes, FAQs, services
 content/pages/     # ⭐ services-index · areas-index · about · blog-index · contact · guides-index — each page's own copy
-content/guides/    # ⭐ one module per guide (<slug>.ts → Guide, as const satisfies) — 4 since Sprint 7
+content/guides/    # ⭐ one module per guide (<slug>.ts → Guide, as const satisfies) — 5 as of 2026-11-10 (4 since Sprint 7)
 content/live/      # ⭐ _campaigns.mjs + _updates.mjs (the live registers) + the synced calendar (§14)
 live.config.mjs    # ⭐ calm / no-card pages, this site's ⛔ claim stems, pageOfSource (§14)
 live-kit.lock.json # the kit commit and the sha256 of every locked copy (§14)
@@ -318,14 +318,14 @@ See the `hebrew-rtl` skill for the full rule set.
   `articleJsonLd`, `itemListJsonLd`, `pageNode`, `breadcrumbNode`, `graph`; target graph
   [docs/schema-graph.md](docs/schema-graph.md). Since Sprint 2 (2026-11-08, `02a3144` `d8edb28`) every
   content page emits **one** script holding **one** `@graph`: pages hand `PageHeader` their `nodes`
-  and it appends the one `BreadcrumbList` (45 nested routes since `7ed1acd`, 49 after Sprint 7 —
-  never add a second). The business node
+  and it appends the one `BreadcrumbList` (46 nested routes as of 2026-11-10; 45 from `7ed1acd`, 49
+  after Sprint 7 — never add a second). The business node
   ships on every page that references `#business`, with `logo`, `image`, `areaServed` as the 14
   published locations (`City` ×13 + `AdministrativeArea` ×1, named «אזור השרון» since `9886dd1`) and `hasOfferCatalog` naming the
   7 services (no `Offer`, no price); `WebSite`
-  is on `/` only; `FAQPage` is on `/`, the 7 service pages, the 14 location pages and the 4 guides
-  (`faqPages 26` since `7ed1acd` — 103 questions, each marked up on one page only; 30 and 115 after
-  Sprint 7; a guide that repeats a question throws at module load); the
+  is on `/` only; `FAQPage` is on `/`, the 7 service pages, the 14 location pages and the 5 guides
+  (`faqPages 27` as of 2026-11-10 — 109 questions, each marked up on one page only; 26 and 103 from
+  `7ed1acd`, 30 and 115 after Sprint 7; a guide that repeats a question throws at module load); the
   14 locations emit a `Service` with `areaServed` typed from `kind`,
   the indexes `CollectionPage` + `ItemList`,
   `/אודות/` an `AboutPage` with `knowsAbout` (naming ת״י 900 חלק 21.03 as a subject since the safety
@@ -338,7 +338,9 @@ See the `hebrew-rtl` skill for the full rule set.
   `Offer` and a `Person` author ship **only** when sourced, which today they are not.
 - **Images:** there is **no `assets/` directory and no `image:optimize` script** on this site. Images
   ship pre-optimized in `public/`; the OG card comes from the `imgquarry.com` media host in the
-  manifest. Every meaningful image needs a Hebrew `alt`; decorative gets `alt=""`.
+  manifest. The header logo (`public/dangates-logo.png`, `6407f83`) is one decorative `<img>` per
+  page — `perf.mjs` → `images 48`, as of 2026-11-10. Every meaningful image needs a Hebrew `alt`;
+  decorative gets `alt=""`.
 
 ---
 
@@ -525,7 +527,8 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   registers say). `scripts/audit/links.mjs` strips the bar and the card as chrome (they are on every
   page). The known baseline holds with them: 26 audit failures before and after (2026-10-12). The
   export grows by about 1.15 MB — ≈16.6 KB per HTML page and ≈7.8 KB per RSC payload, every line
-  printed in both — inside `thresholds.json` → `maxOutBytes` (12 MB).
+  printed in both — inside `thresholds.json` → `maxOutBytes` (13 MB since 2026-11-10, the owner's
+  limit; `perf.mjs` → `outBytes` 12898445, as of 2026-11-10).
 - **Reminder:** `.github/workflows/remind.yml` runs `scripts/live/check-reminders.mjs` every Sunday
   and pushes to the owner's phone only when THIS site needs something; red without the
   `NTFY_TOPIC` secret; a schedule runs only from the default branch on GitHub.

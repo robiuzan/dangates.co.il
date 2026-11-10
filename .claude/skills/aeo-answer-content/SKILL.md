@@ -54,7 +54,7 @@ An advisory `Disallow` became an **enforced refusal**: a crawler refused at the 
 answer blocks, the schema or `llms.txt` — and `robots.txt` still returns 200 to a blocked UA,
 so reading it alone proves nothing. **No repo change overrides this.** Owner's zone setting:
 `docs/owner-actions.md` §1.1 (the toggle; "if still 403, check WAF / Super Bot Fight Mode") and
-`docs/cloudflare-runbook.md` step 1 (decision table — recommended: allow retrieval, block training). Backlog §6.1.
+`docs/cloudflare-runbook.md` step 1 (decision table — the owner chose "allow everything", training crawlers included, on 2026-11-10; owner-actions 1.5). Backlog §6.1.
 
 **Verify with the full published UA string, not the bare token** — the edge matches the crawler's
 signature: a bare `CCBot` passes while `CCBot/2.0 (https://commoncrawl.org/faq/)` is refused, so a

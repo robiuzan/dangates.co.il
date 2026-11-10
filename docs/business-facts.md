@@ -129,6 +129,10 @@ absence of a stated licence is conspicuous to a careful customer.
 | Trade association membership                                   | Authority signal                                                                    | content.ts `credentials`                    |       | 🔶     |
 | Does the business install / repair cantilever (קונזולי) gates? | Shapes the guide שער-נגרר-כנף-או-קונזולי CTA and whether llms.txt may list the type | `content/guides/שער-נגרר-כנף-או-קונזולי.ts` |       | 🔶     |
 
+The owner said in chat on 2026-11-10 that the business installs and repairs קונזולי gates
+(owner-actions 3.9). The Value cell of the row above awaits the owner's own entry; until it is ✅,
+the guide's CTA and `llms.txt` do not say so (backlog N33, blocked on it).
+
 ## D. Commercial terms — the price list is authored, not sourced
 
 Only the **150–350 ₪ technician visit fee** came from the live FAQ. Until the N14 pivot (`af8ba4c`,
@@ -156,6 +160,11 @@ and no exclusions**, which is all the site may say until the rows below are answ
 | Warranty scope + exclusions              | Trust; reduces post-sale disputes                       | content.ts                |       | 🔶     |
 | What the price includes / excludes       | AEO answer-block material                               | content.ts `serviceDepth` |       | 🔶     |
 | Payment methods / terms                  | Conversion friction                                     | content.ts                |       | 🔶     |
+
+The owner said on 2026-11-10 that the 150–350 ₪ visit fee is unconfirmed: it stays only where it
+appears today (`priceRows` → `visitFeeRange`) and is added nowhere else, and nothing says whether it
+is credited against a repair (owner-actions 3.4). The Value cells of the two visit-fee rows above
+await the owner's own entry.
 
 ## E. Coverage & availability — two unbounded promises
 

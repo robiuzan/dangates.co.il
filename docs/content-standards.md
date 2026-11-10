@@ -264,6 +264,22 @@ certification the business doesn't hold; a photo presented as our work that isn'
 > `REVIEW_SOURCE_URL` (`reviews` and `REVIEW_SOURCE_URL` in `lib/content.ts`; `components/marketing/Reviews.tsx:41`). Do not
 > cite it as precedent, and restore only verbatim text from the GBP when it lands (business-facts §A).
 
+### 6.1 Safety copy — one full procedure, short forms everywhere else
+
+Adopted 2026-11-10 (`526d19b`, after the review rounds that took the stop-ships from 27 to 0).
+Every writer follows it:
+
+- **One full make-safe procedure, in one place:** the ordered checks in the guide
+  `/מדריכים/שער-חשמלי-לא-נסגר/` (step 2 is the switch-off text). Change it there and nowhere else.
+- **Every other page uses the short form and links that guide.** The short form is one sentence:
+  the gate is switched off so no remote or automatic closing can move it before anyone enters its
+  path; if that cannot be confirmed, look from outside the path and call. Never a longer variant in
+  new words.
+- **Location and index pages carry no release steps** — no release, clearing or remote-test
+  procedure; the short form and the link only.
+- **A barrier arm (מחסום, שער זרוע) is technician-only:** no reader releases the arm or touches its
+  balance spring, not even in a power cut.
+
 ---
 
 ## 7. Hebrew mechanics

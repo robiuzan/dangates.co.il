@@ -178,8 +178,12 @@ failing gate 1 made gates 2–4 irrelevant until 2026-09-06.
 **Open as of 2026-09-06**: ClaudeBot, GPTBot, OAI-SearchBot, ChatGPT-User, PerplexityBot,
 Perplexity-User and `CCBot/2.0` return **200** on the full-UA probe (backlog §6.1 ✅; owner-actions
 §1.1 ✅). Until then the edge answered **403** to every AI-crawler signature while Googlebot, bingbot
-and curl got 200. The toggle is the zone's AI Crawl Control — [cloudflare-runbook.md](cloudflare-runbook.md)
-step 1 (recommended: allow retrieval, block training) — and it can revert with no repo change. So
+and curl got 200. **Policy since 2026-11-10: allow everything** — the owner chose to allow every AI
+crawler, the training crawlers (GPTBot, ClaudeBot, CCBot, Bytespider, Amazonbot, meta-externalagent)
+included (owner-actions 1.5 ✅); re-probed after the 2026-11-10 deploy, 14 of 14 full-UA probes
+return 200. `app/robots.ts` needs no change for it. The toggle is the zone's AI Crawl Control —
+[cloudflare-runbook.md](cloudflare-runbook.md) step 1, which the owner checks monthly
+([ai-probe-sheet.md](ai-probe-sheet.md)) — and it can revert with no repo change. So
 the probe is the first row of every AEO finding, with the **full published UA string**, never the
 bare token; if an allowed crawler is refused, gates 2–4 are capped again and every finding says so.
 No repo change overrides the zone (`guard-destructive-ops.ps1` blocks Cloudflare calls by agents).
@@ -272,13 +276,13 @@ nothing off-site corroborates the name. Target graph — [schema-graph.md](schem
 
 ## 6. What we measure
 
-| Question                        | Instrument                                                                          | Status                                                             |
-| ------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Are we indexed, and for what?   | Search Console → `gsc-ingest.mjs` → [rank-tracking.md](rank-tracking.md), by family | ⏳ blocked on the token (owner-actions §2.3; backlog §15.3)        |
-| Which queries convert?          | GA4 landing-page report + `lead_submit` dimensions                                  | ⏳ blocked on the property (owner-actions §2.4)                    |
-| Are we cited by AI engines?     | the AI-citation panel below, monthly                                                | ⬜ not yet run; unblocked since gate 1 opened 2026-09-06           |
-| Who ranks, with what page type? | browser SERP captures, `hl=he&gl=il` ([competitors.md](competitors.md) §4)          | ⬜ no capture yet; rank order unverified until one exists          |
-| Is gate 1 still open?           | the full-UA curl in §4.1                                                            | ✅ 200 on 2026-09-06; re-run as the first row of every AEO finding |
+| Question                        | Instrument                                                                                     | Status                                                                            |
+| ------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Are we indexed, and for what?   | Search Console → `gsc-ingest.mjs` → [rank-tracking.md](rank-tracking.md), by family            | ⏳ blocked on the token (owner-actions §2.3; backlog §15.3)                       |
+| Which queries convert?          | GA4 landing-page report + `lead_submit` dimensions                                             | ⏳ blocked on the property (owner-actions §2.4)                                   |
+| Are we cited by AI engines?     | the AI-citation panel below, run monthly by the owner ([ai-probe-sheet.md](ai-probe-sheet.md)) | ⬜ not yet run; first run due after the 2026-11-10 deploy                         |
+| Who ranks, with what page type? | browser SERP captures, `hl=he&gl=il` ([competitors.md](competitors.md) §4)                     | ⬜ no capture yet; rank order unverified until one exists                         |
+| Is gate 1 still open?           | the full-UA curl in §4.1                                                                       | ✅ 200 on 2026-09-06 and 2026-11-10; re-run as the first row of every AEO finding |
 
 **Monthly GSC ingest.** `gsc-ingest.mjs <queries.csv> --month YYYY-MM --write` buckets queries into
 generic · service · location · symptom · component · brand; movement is read per family, never per
@@ -286,8 +290,11 @@ page. A number typed by hand there is a fabrication.
 
 ### 6.1 The AI-citation panel
 
-Ten fixed Hebrew prompts derived from the keyword-map families, run monthly against ChatGPT,
-Perplexity, Claude and AI Overviews. Fixed wording — a changed prompt is a new series.
+Ten fixed Hebrew prompts derived from the keyword-map families. **The owner runs them monthly**
+(decision 2026-11-10) from [ai-probe-sheet.md](ai-probe-sheet.md), which copies the ten prompts below
+exactly, against ChatGPT, Perplexity, Gemini and Google (its AI Overview). Until 2026-11-10 this
+list named Claude and AI Overviews; the panel had never run, so no series breaks. Fixed wording — a
+changed prompt is a new series, and the sheet must stay a byte-for-byte copy of this table.
 
 | #   | Family          | Prompt                                     |
 | --- | --------------- | ------------------------------------------ |
@@ -303,9 +310,11 @@ Perplexity, Claude and AI Overviews. Fixed wording — a changed prompt is a new
 | 10  | safety standard | מה דורש תקן ת״י 900 חלק 21.03 משער חשמלי?  |
 
 One row per prompt per engine: **date · engine · prompt # · cited yes/no · URL cited** (ours or a
-competitor's — its page type is the useful datum). Logged in the month's `docs/audits/<date>-full.md`
-by `aeo-geo-strategist` during `/audit full` — section 7 of `docs/audits/_template.md`, added 2026-09-06.
-Prompts 4–5 will return the map pack or directories until the GBP exists; that is the point.
+competitor's — its page type is the useful datum). The owner logs the rows on the sheet; `/audit full`
+copies that month's rows into `docs/audits/<date>-full.md` — section 7 of `docs/audits/_template.md`,
+added 2026-09-06 — and `aeo-geo-strategist` reads them. No agent runs the prompts or types a row.
+Prompts 4–5 will likely return the map pack or directories. The Business Profile's existence is on
+record since 2026-11-10 (owner-actions 2.1), so log whether the answer names this business.
 **Quarterly competitor captures** (competitors §4) may reorder the calendar; the **monthly `/audit
 full`** report carries the Δ on every script above (baseline 2026-08-24).
 

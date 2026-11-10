@@ -134,3 +134,23 @@ One row per query per capture; newest first.
 | Date | Query | Location context | Positions 1–10 (site · page type) | SERP features | dangates.co.il position |
 | ---- | ----- | ---------------- | --------------------------------- | ------------- | ----------------------- |
 |      |       |                  |                                   |               |                         |
+
+---
+
+## 7. Structure benchmarks — dated log
+
+Page-structure comparisons, not SERP captures: they say what a competitor's pages contain, never
+where anyone ranks. Newest first.
+
+**2026-11-10 — content-coverage benchmark**
+([audits/2026-11-10-content-coverage.md](audits/2026-11-10-content-coverage.md), "Benchmark").
+Up to three pages per site, loaded once with curl on 2026-11-10 and scored on eight criteria, one
+point per criterion per page. **Structural role model: peretztec.co.il** (18 of 24), the only site
+with a cost explanation, an owner check and a safety stop on every page measured. Take its section
+order only: causes, warning signs, owner checks, when to call, FAQ, one triage table per guide.
+Never its prices, wording or guarantees; and where this site is already ahead (answer-first
+openings, contents lists, family links, one gate type per URL) do not copy it. Runners-up:
+masgernet.co.il 15, midrag.co.il 14, pro.co.il 11, elrongates.co.il 7, shearim.co.il 5,
+hisherik.co.il 3. **Rank order unverified:** §4 has still never been run, so nothing in this entry
+says who ranks where for any Hebrew query, or that peretztec.co.il outranks anyone. No search volume
+exists for any of these queries.

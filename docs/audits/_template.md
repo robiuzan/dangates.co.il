@@ -60,10 +60,12 @@ The three items to run `/improve` on next, in order, with the one-line reason.
 
 ## 7. AI-citation panel (`full` scope only, monthly)
 
-The ten fixed Hebrew prompts in `docs/seo-geo-aeo-strategy.md` §6.1, run by `aeo-geo-strategist`
-against ChatGPT, Perplexity, Claude and AI Overviews. First row of the section: the gate-1 probe
-result (`docs/cloudflare-runbook.md` step 1) — if any allowed crawler is refused, say so and stop.
-Leave the table empty and say why when the panel was not run.
+The ten fixed Hebrew prompts in `docs/seo-geo-aeo-strategy.md` §6.1, run monthly **by the owner**
+from `docs/ai-probe-sheet.md` against ChatGPT, Perplexity, Gemini and Google (since 2026-11-10);
+`/audit full` copies the month's rows in as the owner logged them and never runs or types a row.
+First row of the section: the gate-1 probe result (`docs/cloudflare-runbook.md` step 1) and the
+owner's AI Crawl Control check — if any crawler is refused, say so and stop. Leave the table empty
+and say why when the owner has not run the probe that month.
 
 | Date | Engine | Prompt # | Cited? | URL cited (ours or a competitor's — note its page type) |
 | ---- | ------ | -------- | ------ | ------------------------------------------------------- |

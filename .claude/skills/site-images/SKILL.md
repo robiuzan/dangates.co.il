@@ -6,9 +6,11 @@ allowed-tools: Read, Grep, Glob, Bash, PowerShell
 
 # Site images
 
-The site ships **zero `<img>` tags** (`perf.mjs` → `images: 0`, `a11y.mjs` → `imgCount: 0`, 45
-pages). The header renders the brand as text (the home `<Link>` in `components/layout/Header.tsx`) while
-`public/dangates-logo.png` (250×250) sits unreferenced. The only image in production is the OG card,
+The site ships **one `<img>` per page — the header logo** (`perf.mjs` → `images: 48`, `a11y.mjs` →
+`imgCount: 48`, 48 pages, as of 2026-11-10; zero until N24, `6407f83`, which is not deployed yet).
+The header renders `public/dangates-logo.png` (250×250) as a decorative mark beside the brand text
+(the home `<Link>` in `components/layout/Header.tsx`). Until the next deploy, the only image in
+production is the OG card,
 served from the manifest's media host (`app/layout.tsx:32` → `ogImageMeta(manifest.images)`). Real
 photos are **coming** (business-facts §F, owner-actions §4.1); this skill is the pipeline they go
 through, written so nothing is improvised when the batch lands.
@@ -113,7 +115,7 @@ category and no evidence claim. Month only, never a date that implies a record w
 - **Location `Service` node:** `image` only when the photo is from that city. A generic gate photo
   on 14 location nodes is the schema version of a doorway page.
 
-## First image task — the header logo
+## First image task — the header logo (done in N24, `6407f83`; the text below is the record)
 
 `public/dangates-logo.png` is 250×250 and unused; `Header`'s home `<Link>` prints `{siteConfig.name}`.
 `Header` is `"use client"`; `SiteImage` carries no directive and is explicitly safe inside a client
@@ -134,7 +136,8 @@ mode, and a 40 px above-the-fold logo must not be lazy. When a hero image lands 
 extend the kit in its own repo — never in `vendor/`). The better end state is the catalog `logo`
 slot (`studio-api.ps1 -Slot logo`, SVG allowed there) → `manifest.images.logo` →
 `<SiteImage image={manifest.images.logo} fixed />`; the local PNG is the `legacySrc`-style
-transition. After: `a11y.mjs` imgCount 45, 0 without alt; `perf.mjs` imagesUnsized 0.
+transition. Done in N24 (`6407f83`, 2026-11-10): `a11y.mjs` imgCount 48 as of 2026-11-10 (one per
+page), 0 without alt; `perf.mjs` imagesUnsized 0.
 
 ## Checklist
 

@@ -1,9 +1,14 @@
 # Google Business Profile runbook — דן שערים חשמליים
 
-For the day the profile (**פרופיל העסק ב-Google**, formerly "Google עסק שלי") arrives — status ⏳ in
-`docs/business-facts.md` §A and `docs/owner-actions.md` §2.1. It is the top local-SEO lever on this
-site (`/local-seo-il` §2): the map pack, the only legitimate source of reviews, and the `sameAs` anchor
-that lets a crawler or an assistant confirm the business is real.
+**The profile exists** (**פרופיל העסק ב-Google**, formerly "Google עסק שלי"; confirmed 2026-11-10,
+`docs/owner-actions.md` §2.1): `https://www.google.com/maps?cid=14267763263292409079` — the long form
+§1 step 6 prefers, in the roster `schema.sameAs` since `1f1b1ec` (synced to `site.config.json`; live
+with the next deploy). **One fix is the owner's:** Google lists the business as «דן תיקון שערים
+חשמליים», and the owner confirmed on 2026-11-10 that the real name is «דן שערים חשמליים» (§0), so
+the profile name must change to match. A rename may trigger re-verification. Then compare the rest
+of the profile with §0 and §2. It is the top local-SEO lever on this site (`/local-seo-il` §2): the
+map pack, the only legitimate source of reviews, and the `sameAs` anchor that lets a crawler or an
+assistant confirm the business is real.
 
 **Owner-facing.** Agents document; they never create, edit or verify a profile, and they never type a
 review, a rating, a price or an address into anything. Hebrew terms in parentheses are what the

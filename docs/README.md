@@ -1,6 +1,6 @@
 # docs/ — the map
 
-Twenty-two documents, four ADRs and the audit reports, in four layers. **Read the layer, not just
+Twenty-four documents, four ADRs and the audit reports, in four layers. **Read the layer, not just
 the filename** — most contradictions between docs are a strategy doc and a defect list describing
 the same thing at different altitudes, and the resolution rule differs per layer.
 
@@ -18,8 +18,8 @@ STATE         what is true right now, and what is unresolved
    │          business-facts · optimization-backlog · audits/ · rank-tracking · competitors
    ▼
 OPERATIONS    how to change production safely
-              implementation-sprints · agent-roster · owner-actions
-              cloudflare-runbook · gbp-runbook · content-calendar · decisions/
+              implementation-sprints · geo-plan · agent-roster · owner-actions
+              cloudflare-runbook · gbp-runbook · ai-probe-sheet · content-calendar · decisions/
 ```
 
 **Starting work?** → `implementation-sprints.md`. It sequences everything
@@ -71,10 +71,12 @@ None of the three deploys; `deploy-dangates` does, on the owner's word, dry run 
 | Doc                                                         | Answers                                                                                                                                                                                                                              |
 | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [implementation-sprints.md](implementation-sprints.md)      | **What do we do next, in what order, and why that order?** Sprint 0–9 plus Track B; §0 is the live verification of 2026-09-06.                                                                                                       |
+| [geo-plan.md](geo-plan.md)                                  | The GEO plan of 2026-11-10: what is done in the repo (with commits), the owner's numbered checklist, and what the rules forbid.                                                                                                      |
 | [agent-roster.md](agent-roster.md)                          | **The routing table.** Backlog section → skill → writer → reviewer → proof script; the scripts, hooks and rules; §7 maps each standards doc to the skill that implements it, the agent that audits it and the script that proves it. |
 | [owner-actions.md](owner-actions.md)                        | The list nothing in this repo can move — each row an exact toggle or deliverable, what it unblocks, and where the value lands once supplied.                                                                                         |
 | [cloudflare-runbook.md](cloudflare-runbook.md)              | Which zone toggles matter, what they do, and how to **prove** one was flipped. Step 1 is the AI-crawler probe. Owner-only changes.                                                                                                   |
 | [gbp-runbook.md](gbp-runbook.md)                            | How the Google Business Profile gets created as a service-area business from the §0 NAP strings, and the verbatim-only path by which reviews may return to the site.                                                                 |
+| [ai-probe-sheet.md](ai-probe-sheet.md)                      | The owner's one-page monthly AI probe: the ten fixed questions, the four engines, the log table, and the Cloudflare AI Crawl Control check. `/audit full` copies the rows in.                                                        |
 | [content-calendar.md](content-calendar.md)                  | What guide gets written next for `/מדריכים/` and in what order — the five pillars, the first eight, and the keep / fold / redirect decision for each of the 11 legacy posts.                                                         |
 | [decisions/0001](decisions/0001-environment-hardening.md)   | Why the `.claude/` environment enforces its own rules with hooks, a deny list and `env-doctor.mjs` instead of prose.                                                                                                                 |
 | [decisions/0002](decisions/0002-guides-hub-route.md)        | Why new editorial pages live in a `/מדריכים/` hub, not in `/blog/` and not as top-level slugs.                                                                                                                                       |

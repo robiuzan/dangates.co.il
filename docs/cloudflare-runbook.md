@@ -25,6 +25,12 @@ Bots**). Sidebar of the zone, or search "AI Crawl".
 > ClaudeBot, OAI-SearchBot, GPTBot, ChatGPT-User, PerplexityBot, Perplexity-User and `CCBot/2.0`
 > (Googlebot and bingbot 200). Backlog §6.1 is closed and owner-actions 1.1 is ✅. The setting can
 > revert without a repo change, so this step stays: re-run the probe before every AEO claim. The per-bot list in `app/robots.ts` went live with the Sprint 0 deploy on 2026-09-06 (11:06 UTC). The history below is kept so nobody re-diagnoses it.
+>
+> **Decision 2026-11-10 — allow everything.** The owner chose to allow every AI crawler, the
+> training crawlers included (owner-actions 1.5 ✅). Re-probed after the 2026-11-10 deploy: 14 of 14
+> full-UA probes return 200 — the retrieval bots, GPTBot, ClaudeBot, `CCBot/2.0`, Bytespider,
+> Amazonbot, meta-externalagent, Googlebot and bingbot. Nothing is to be blocked; the owner checks
+> AI Crawl Control once a month ([ai-probe-sheet.md](ai-probe-sheet.md)).
 
 Earlier audits (2026-08-16) saw Cloudflare **prepend a managed block** to `/robots.txt` —
 `Disallow: /` for ClaudeBot, GPTBot, Google-Extended, CCBot, Bytespider, Amazonbot, Applebot-Extended,
@@ -65,12 +71,13 @@ that fixes both states is the same one; whoever closes §6.1 re-words them.
 
 ### The decision
 
-Three coherent positions. Pick one deliberately:
+Three coherent positions. **The owner chose "Allow everything" on 2026-11-10** (owner-actions 1.5);
+the table stays as the record of what each option means:
 
 | Option                              | Effect                                                                                                                                              | Who it suits                                                                                                 |
 | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| **Allow retrieval, block training** | ChatGPT, Claude and Perplexity can fetch a page to answer a live question and cite you. Your content is still excluded from model training corpora. | **Recommended.** You get the citations without feeding training sets.                                        |
-| **Allow everything**                | Also permits training use. Simplest, maximum reach.                                                                                                 | If you don't care about training use.                                                                        |
+| **Allow retrieval, block training** | ChatGPT, Claude and Perplexity can fetch a page to answer a live question and cite you. Your content is still excluded from model training corpora. | Not chosen. It suits an owner who objects to training use but still wants the citations.                     |
+| **Allow everything**                | Also permits training use. Simplest, maximum reach.                                                                                                 | **Chosen 2026-11-10.** Nothing here is proprietary, and every crawler can read and cite the site.            |
 | **Keep blocked**                    | Status quo. No AI assistant can read or cite the site.                                                                                              | Only if you actively object to AI usage — accept that a competitor who allows it will be the answer instead. |
 
 These are genuinely different permissions. A crawler blocked from _retrieval_ cannot cite you even if
@@ -79,20 +86,22 @@ it wanted to; `ai-train=no` alone does not block citation.
 ### What to do
 
 1. Zone → **AI Crawl Control** (or **Security → Bots**). Open the per-crawler table.
-2. Set the crawlers below to **Allow**. For the recommended middle option, allow at minimum:
-   **OAI-SearchBot**, **ChatGPT-User**, **GPTBot**, **ClaudeBot**, **Claude-User**,
-   **Claude-SearchBot**, **PerplexityBot**, **Perplexity-User**. Leave **Bytespider**, **CCBot**,
-   **Amazonbot** and **meta-externalagent** blocked if you want "no training" — those are bulk-corpus
-   crawlers, not answer engines. **Google-Extended** and **Applebot-Extended** have no wire UA; if the
-   page lists them it is editing `robots.txt` directives, and the repo's file already allows them.
+2. Set **every** crawler on the page to **Allow** (the 2026-11-10 decision): the retrieval bots
+   **OAI-SearchBot**, **ChatGPT-User**, **Claude-User**, **Claude-SearchBot**, **PerplexityBot**,
+   **Perplexity-User**, and the training crawlers **GPTBot**, **ClaudeBot**, **CCBot**,
+   **Bytespider**, **Amazonbot** and **meta-externalagent**. **Google-Extended** and
+   **Applebot-Extended** have no wire UA; if the page lists them it is editing `robots.txt`
+   directives, and the repo's file already allows them.
 3. If the page still offers a **managed `robots.txt`** toggle, keep it **off**. The repo's
    `app/robots.ts` serves alone then, and Phase 6 (roster §3 row §6: rtl-frontend-engineer, reviewed by
    aeo-geo-strategist) replaces its blanket allow with an explicit per-bot `Allow` list. The target
    shape is `galbath.co.il/app/robots.ts:21-43`: one `userAgent: "*"` group plus one named group
-   listing the retrieval bots from step 2 (plus Bingbot, and CCBot only if you chose "allow
-   everything"), which Next serializes as one `User-Agent:` line per bot followed by a single
-   `Allow: /`. That list documents intent and gives a place for a training-only `Disallow`; it does
-   **not** change enforcement — only this zone setting does.
+   listing the retrieval bots from step 2 (plus Bingbot, and CCBot, which the "allow everything"
+   choice keeps), which Next serializes as one `User-Agent:` line per bot followed by a single
+   `Allow: /`. That list documents intent; it carries no training-only `Disallow`, and since
+   2026-11-10 none is wanted — its `*` group already allows Bytespider, Amazonbot and
+   meta-externalagent, the three it does not name. It does **not** change enforcement — only this
+   zone setting does.
 4. If crawlers still get 403 after the change, look for a second layer: **Security → WAF → Custom
    rules** and **Security → Bots → Super Bot Fight Mode** ("Definitely automated" / "AI bots" set to
    Block). `robots.txt` is advisory; a WAF or bot rule is enforced.
