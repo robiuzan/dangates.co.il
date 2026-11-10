@@ -72,8 +72,8 @@ export const guide = {
     "מחסום חניה בבית משותף: מה התקנון המצוי בחוק המקרקעין קובע על החלטות האסיפה, על אילו הוצאות מצביעים, ומה ועד הבית צריך לדרוש בהצעת המחיר.",
   family: "committee",
   targetQuery: "מחסום חניה ועד בית",
-  datePublished: "2026-11-08",
-  dateModified: "2026-11-09",
+  datePublished: "2026-11-10",
+  dateModified: "2026-11-10",
   relatedServices: ["שער-זרוע", "שערים-לחניה", "שערים-לדירה"],
   sources: [
     {

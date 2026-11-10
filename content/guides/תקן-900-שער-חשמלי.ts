@@ -38,8 +38,8 @@ export const guide = {
   family: "safety",
   targetQuery: "תקן שערים חשמליים",
   // Set both to the real publish day when the guide is registered and deployed (never backdated).
-  datePublished: "2026-11-08",
-  dateModified: "2026-11-09",
+  datePublished: "2026-11-10",
+  dateModified: "2026-11-10",
   // Every service: a gate's safety devices and the standard's scope touch all seven page types.
   relatedServices: [
     "שערים-נגררים",
