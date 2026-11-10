@@ -15,9 +15,9 @@
  * claim about block order or a FAQ block, which the registry does not require. The layout question
  * itself belongs to the /מדריכים/ answer block — do not repeat it here.
  *
- * The do-it-yourself boundary matches the service depth modules: the track is cleared only with the
- * motor released, never by opening the control board, touching 230V wiring or a lifting gate's
- * springs.
+ * Safety canon (2026-11-10): no release or clearing procedure here. The do-it-yourself boundary is
+ * the one-sentence short form plus a link to /מדריכים/שער-חשמלי-לא-נסגר/, which holds the steps;
+ * the motor cover, the control board (230 וולט) and a lifting gate's springs stay a technician's.
  *
  * The answer's pointer to the guides page stays plain text: `answer` has no link field and
  * AnswerBlock renders a bare string. The working link is the same imperative in the first section
@@ -40,9 +40,12 @@ export const page: PageContent = {
       paragraphs: [
         "פוסט בבלוג הוא סקירה רחבה: רשימת טיפים לתחזוקה, או שיקולים בעד ונגד שדרוג לשער חכם. מדריך עוסק בשאלה אחת, ועונה עליה עד הסוף. יש לכם שאלה ממוקדת? עברו לעמוד המדריכים.",
         "בכל מדריך יש גם טבלה שמרכזת את העיקר. מדריך על תקן מפנה למקור הרשמי, כדי שתוכלו לבדוק בעצמכם.",
-        "גם כשפוסט מציע לבדוק משהו לבד, שמרו על גבול ברור. אפשר לנגב בעצמכם את העדשה של העינית, להחליף סוללה בשלט ולהוציא אבן מהמסילה. את האבן מוציאים ביד רק כשהשער לא יכול לזוז. כבו אותו במפסק שלו, אם הוא מסומן, והחזיקו אצלכם את כל השלטים. לחצו על שלט מחוץ למסלול הכנף: השער לא אמור להגיב. אם אין מפסק מסומן או שהשער הגיב, הוא לא כבוי, ושלט של מישהו אחר או סגירה אוטומטית יכולים להזיז את הכנף בלי אזהרה. במצב כזה עבדו רק מחוץ למסלול הכנף, עם מטאטא ארוך. פתיחה של לוח הפיקוד, חיבורים של 230 וולט וקפיצים של שער מתרומם הם עבודה לטכנאי.",
+        "גם כשפוסט מציע לבדוק משהו לבד, שמרו על גבול ברור. אפשר להחליף סוללה בשלט. לפני שמנגבים את עדשת העינית במטלית יבשה, או נכנסים לנתיב, השער צריך להיות כבוי כך ששלט או סגירה אוטומטית לא יזיזו אותו. אם אי אפשר לוודא, מסתכלים מחוץ לנתיב ומתקשרים. המדריך לשער שנעצר לפני הסוף מפרט את הבדיקות לפי הסדר. מכסה המנוע, לוח הפיקוד (230 וולט) והקפיצים של שער מתרומם הם עבודה לטכנאי.",
       ],
-      links: [{ anchor: "עברו לעמוד המדריכים", href: "/מדריכים/" }],
+      links: [
+        { anchor: "עברו לעמוד המדריכים", href: "/מדריכים/" },
+        { anchor: "המדריך לשער שנעצר לפני הסוף", href: "/מדריכים/שער-חשמלי-לא-נסגר/" },
+      ],
     },
   ],
 };

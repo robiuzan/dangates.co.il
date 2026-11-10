@@ -2519,6 +2519,8 @@ have no questions to ask. Cost explains what determines the price and links `/מ
 
 **Closed 2026-11-10.** The seven service depth modules were reworked for cost, process, owner check and questions to ask; the seven `services[].updated` dates moved to 2026-11-10. Verified: `npm run gate` exit 1 (only the known `content-depth` post floor, 11 of 11 under 900); `audit:env` 0 failures; `content-depth.mjs` serviceMedianDelta 496, locationMedianDelta 337.5, 1 shared paragraph (unchanged); `links.mjs` orphans 0, brokenLinks 0, no monotony warning; `claims-grep.mjs` 0 live occurrences; `perf.mjs` outBytes 12540450 (under the 13 MB cap).
 
+**Safety pass 2026-11-10.** After a final stop-ship review and a cross-page check, the make-safe steps were consolidated: the one full procedure lives in the guide `שער-חשמלי-לא-נסגר`, every other page gives a short form and links it, location and index pages carry no release steps, and a barrier arm is technician-only. Stop-ships fell 27 → 14 → 4 → 0 over the review rounds (hebrew-editor, claims-verifier, a consistency check). Verified: `npm run gate` exit 1 (only the post floor), `perf.mjs` → `outBytes 12898874` (13 MB cap), `content-depth.mjs` → `locationMedianDelta 357 · serviceMedianDelta 509`, `links.mjs` → `orphans 0 · brokenLinks 0 · sitemapUrls 47`.
+
 ### N27 — P1 · L · [✅ DONE 2026-11-10 · repo] The 14 location pages are silent on cost and link almost no guide
 
 Filed 2026-11-10 from the coverage audit. 12 of 14 say nothing on cost, none links `/מחירון/`, 13 of
@@ -2529,6 +2531,8 @@ and one or two curated guides. `אשקלון` also tells readers to rinse the ph
 
 **Closed 2026-11-10.** The 14 location modules were reworked with a short local cost, process and check block and curated guides; the fourteen `locations[].updated` dates moved to 2026-11-10. Verified: `npm run gate` exit 1 (only the known `content-depth` post floor, 11 of 11 under 900); `audit:env` 0 failures; `content-depth.mjs` locationMedianDelta 374, serviceMedianDelta 496, 1 shared paragraph (unchanged), doorway failures 0; `links.mjs` orphans 0, brokenLinks 0, no monotony warning; `perf.mjs` outBytes 12945352 (under the 13 MB cap, which was already raised).
 
+**Safety pass 2026-11-10.** After a final stop-ship review and a cross-page check, the make-safe steps were consolidated: the one full procedure lives in the guide `שער-חשמלי-לא-נסגר`, every other page gives a short form and links it, location and index pages carry no release steps, and a barrier arm is technician-only. Stop-ships fell 27 → 14 → 4 → 0 over the review rounds (hebrew-editor, claims-verifier, a consistency check). Verified: `npm run gate` exit 1 (only the post floor), `perf.mjs` → `outBytes 12898874` (13 MB cap), `content-depth.mjs` → `locationMedianDelta 357 · serviceMedianDelta 509`, `links.mjs` → `orphans 0 · brokenLinks 0 · sitemapUrls 47`.
+
 ### N28 — P2 · M · [✅ DONE 2026-11-10 · repo] The four guides have uneven cost, process and stop lines
 
 Filed 2026-11-10 from the coverage audit. Noise guide: cost has no heading, the visit stops before
@@ -2538,6 +2542,8 @@ reads as coverage. Safety guide: the section on electrical work can imply a lice
 `npm run gate`, article-auditor → hebrew-editor → claims-verifier.
 
 **Closed 2026-11-10.** The four guides were reworked in the guides batch. Verified: `npm run gate` exit 2 (the known `content-depth` post floor, 11 of 11 under 900, plus the perf size cap, now raised); `audit:env` 0 failures; `content-depth.mjs` guide median 3038 words, 0 guides below floor.
+
+**Safety pass 2026-11-10.** After a final stop-ship review and a cross-page check, the make-safe steps were consolidated: the one full procedure lives in the guide `שער-חשמלי-לא-נסגר`, every other page gives a short form and links it, location and index pages carry no release steps, and a barrier arm is technician-only. Stop-ships fell 27 → 14 → 4 → 0 over the review rounds (hebrew-editor, claims-verifier, a consistency check). Verified: `npm run gate` exit 1 (only the post floor), `perf.mjs` → `outBytes 12898874` (13 MB cap), `content-depth.mjs` → `locationMedianDelta 357 · serviceMedianDelta 509`, `links.mjs` → `orphans 0 · brokenLinks 0 · sitemapUrls 47`.
 
 ### N29 — P1 · M · [✅ DONE 2026-11-10 · repo] No guide answers "שער חשמלי לא נסגר" (content-calendar #5)
 
