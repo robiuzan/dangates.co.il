@@ -118,7 +118,8 @@ by design — `claimsChecked` 14 → 18, `edge` → `headerProblems 0` (new metr
 
 The ✅ rows are green **in the repo**. Sprint 1 is live (the 2026-10-12/13 deploys, probed
 2026-11-08); Sprints 2, 3, 4, 5, 6 (content and header), 7, Sprint 8's repo rows and the 3.6 change
-set (`8e8843d` `7ed1acd`) and the pre-deploy polish (`8768ce2` `9886dd1` `379eb0e`) are not deployed yet. `edge` in particular measures files, not
+set (`8e8843d` `7ed1acd`) and the pre-deploy polish (`8768ce2` `9886dd1` `379eb0e`) went live on 2026-11-10 at
+`669582e`; the content brief N23–N32 that followed (`1f1b1ec` onward) is not deployed yet. `edge` in particular measures files, not
 responses — the live probe is `deploy-dangates`'s job.
 
 Phases are the "Suggested order of work" at the end of `docs/optimization-backlog.md`. When a

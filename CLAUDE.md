@@ -389,7 +389,8 @@ blocks `deploy-site.ps1` / `wrangler pages deploy` unless the call carries `-Dry
 blocks force-push, `reset --hard`, recursive deletes and Cloudflare/DNS mutations. See `deploy-dangates`.
 
 **New guides get their real dates at deploy.** A guide's `datePublished` / `dateModified` are
-drafting placeholders (the four Sprint 7 guides say 2026-11-08 / 2026-11-09). Before the first deploy
+drafting placeholders (the four Sprint 7 guides went live 2026-11-10 with both set to that day; guide 5,
+`שער-חשמלי-לא-נסגר`, carries 2026-11-10 as a placeholder, not yet deployed). Before the first deploy
 that carries a guide, set both to the real deploy day in the deploy commit — never backdated — and
 only then run the dry run (`deploy-dangates`, "Before you deploy").
 

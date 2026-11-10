@@ -463,7 +463,7 @@ cleared; source tree at `379eb0e`, the `export` check: unchanged since the build
 | The post rewrite (audit H1)              | 11 posts under the floor, generic openings, 0 in-copy links                                                                                                                                                                                           | ⏳ BLOCKED · owner (B5 — 3.8) |
 | Reviewer records                         | the review chain ran inside each change set; no separate sign-off record for P1, P2 or P3.1 is in the repo                                                                                                                                            | OPEN — no record              |
 
-**Next content step — not started:** guide #5 «שער חשמלי לא נסגר עד הסוף — מה לבדוק, לפי הסדר»
+**Next content step — built 2026-11-10 (N29, `c457c31`), not yet deployed:** guide #5 «שער חשמלי לא נסגר עד הסוף — מה לבדוק»
 (audit H3, backlog §6.3, content-calendar §2 row 5): `content-hub` → `new-guide symptom`, no owner
 fact needed.
 

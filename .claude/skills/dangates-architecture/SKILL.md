@@ -131,7 +131,7 @@ deploys; the 8 for the retired location pages go live with the next deploy.
 | `./seo`        | `localBusinessJsonLd`, `serviceJsonLd`, `faqJsonLd`, `breadcrumbJsonLd`, `jsonLdScript` | yes — wrapped by `lib/jsonld.ts`; `PageHeader` emits each page's one `@graph` with its `BreadcrumbList` (45 pages); never add a second |
 | `./analytics`  | `gtmHeadSnippet`, `gtmNoScriptSrc`, `trackEvent`                                        | yes — the init script in `<head>`, the `<noscript>` iframe in `<body>` (`app/layout.tsx`, §13.1 ✅)                                    |
 | `./media`      | `mediaUrl`, `srcsetFor`, `ogImageMeta`, `preloadPropsFor`                               | only `ogImageMeta`                                                                                                                     |
-| `./components` | `SiteImage` (Cloudflare `/cdn-cgi/image` srcset, compile-time `alt`)                    | **unused** — zero `<img>` sitewide; `/site-images` when photos land                                                                    |
+| `./components` | `SiteImage` (Cloudflare `/cdn-cgi/image` srcset, compile-time `alt`)                    | the header logo only (`6407f83`); `/site-images` when photos land                                                                      |
 
 Schema reality (`node scripts/audit/schema.mjs`, 2026-11-08): 0 failures, 0 warnings. Every content
 page emits one `@graph` built by `lib/jsonld.ts`; the business node is on every page that references

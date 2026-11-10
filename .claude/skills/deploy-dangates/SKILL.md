@@ -101,7 +101,8 @@ node -e "require('fs').rmSync('.next',{recursive:true,force:true})" && npm run b
    2026-11-09 (`225ff45`) bumped them again for the Sprint 5 depth copy.
 6. **First deploy carrying a guide? Set its dates to the deploy day — in the deploy commit, never
    backdated.** Each `content/guides/<slug>.ts` carries `datePublished` and `dateModified` from
-   drafting (the four Sprint 7 guides, `89439b7`, say 2026-11-08 / 2026-11-09), and they feed
+   drafting (the four Sprint 7 guides went live 2026-11-10 with that date; guide 5, `שער-חשמלי-לא-נסגר`,
+   carries 2026-11-10 as a placeholder until its own deploy), and they feed
    the `TechArticle` / `Article` node and the sitemap `<lastmod>`. A guide is published the day it
    goes live: before the first deploy that carries it, set **both** fields to that real deploy day
    (`dateModified` may never precede `datePublished` — `lib/guides.ts` throws), rebuild, and commit

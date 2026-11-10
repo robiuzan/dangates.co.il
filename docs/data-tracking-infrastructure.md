@@ -350,5 +350,5 @@ number is the count of Web3Forms emails in the inbox — say so rather than repo
 - [ ] `/מדיניות-פרטיות/` names Google Tag Manager, Google Analytics and Web3Forms; the form links it — `cro-engagement-auditor` confirms
 - [ ] GTM Preview on `dangates.co.il`: one call click, one WhatsApp click, one submit — each fires once with `cta`, `page`, `placement`; the resolved Measurement ID is this site's; container edits hostname- or `site`-scoped
 - [ ] Search Console: Domain property verified by DNS (or the roster token once `app/layout.tsx` emits it), sitemap submitted, first `gsc-ingest.mjs --write` section in `docs/rank-tracking.md`
-- [ ] `curl -sS -A "ClaudeBot" -o /dev/null -w "%{http_code}" https://dangates.co.il/` → `200` before any AI-citation number is recorded
+- [ ] `curl -sS -A "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)" -o /dev/null -w "%{http_code}" https://dangates.co.il/` → `200` (a full user-agent string; a bare token proves nothing) before any AI-citation number is recorded
 - [ ] No consent, compliance or Web-Analytics claim anywhere that owner-actions or business-facts does not back — `claims-verifier`; `npm run audit:env` → 0 dead citations

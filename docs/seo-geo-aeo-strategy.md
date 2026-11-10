@@ -256,8 +256,8 @@ since `d8edb28`, 2026-11-08) stays empty and `schema.mjs` forbids a `Person` aut
 
 The business must resolve as an **entity**, not a domain. In the graph it now does — Sprint 2
 (2026-11-08, `02a3144` `d8edb28`, not deployed yet) defined `#business` on every page that
-references it and added the `WebSite` node; what is still missing is off-site: `sameAs` is `[]` and
-nothing off-site corroborates the name. Target graph — [schema-graph.md](schema-graph.md) §1–§3, in this order:
+references it and added the `WebSite` node; what is still missing is off-site: `sameAs` names only the Google Business Profile (added
+2026-11-10 in `1f1b1ec`, not yet deployed), and the profile's own name still differs from the site's. Target graph — [schema-graph.md](schema-graph.md) §1–§3, in this order:
 
 1. **One `GeneralContractor` `#business` node defined on every page** that references it — ✅ since
    `02a3144`, `danglingIds 0` (backlog §4.4). Never a `Product`, never a per-city `LocalBusiness`.

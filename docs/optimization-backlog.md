@@ -853,7 +853,7 @@ location pages, so on the current `out/` (2026-11-09) `schema.mjs` → 0 failure
 
 Doctrine: `local-seo-il` skill. Script: `content-depth.mjs` (doorway delta).
 
-### 5.1 — P1 · S · [⏳ BLOCKED · owner] No Google Business Profile link anywhere
+### 5.1 — P1 · S · [PARTIAL · repo 2026-11-10 — the profile URL is in `sameAs` (`1f1b1ec`, not yet deployed); its name still differs from the site's] No Google Business Profile link anywhere
 
 `schema.sameAs` is `[]`; `siteConfig.social` is three empty strings. The top local lever. The profile
 is **coming** (business-facts §A ⏳); the restore path is [gbp-runbook.md](gbp-runbook.md).
@@ -1116,7 +1116,7 @@ assembly's own decision to install a barrier, and §59ג is named only as the se
 accessibility route (`grep -rl 'אף סעיף לא קובע רוב להחלטה על מחסום או על שער חניה' out
 --include=index.html | wc -l` → 0).
 
-**Next content step — not started:** guide #5 «שער חשמלי לא נסגר עד הסוף — מה לבדוק, לפי הסדר»
+**Next content step — built 2026-11-10 (N29, `c457c31`), not yet deployed:** guide #5 «שער חשמלי לא נסגר עד הסוף — מה לבדוק»
 (content-calendar §2 row 5, audit H3). The tier-3 head symptom «שער חשמלי לא נסגר» has 0 question
 headings on any page; the guide needs no owner fact, and content-standards §5 already drafts its
 answer block. Route: `content-hub` → `new-guide symptom`.
@@ -2448,7 +2448,7 @@ node scripts/audit/a11y.mjs          # pages 47 · imgCount 0 — the numbers §
 npm run audit:env                    # 0 failures — every citation resolves
 ```
 
-### N23 — P1 · S · [NOT STARTED] The homepage is not sharpened on its Tier-1 term
+### N23 — P1 · S · [✅ DONE 2026-11-10 · repo] The homepage is not sharpened on its Tier-1 term
 
 Filed 2026-11-10 from the owner's content brief. `docs/keyword-map.md` §7 maps `/` to
 `תיקון שערים חשמליים`, and §4 sets the H1 to `תיקון והתקנת שערים חשמליים`; the code still says

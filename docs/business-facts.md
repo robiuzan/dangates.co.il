@@ -199,9 +199,9 @@ own entry. ירושלים is asked separately in owner-actions 3.11.
 
 ## F. Media — the site has no photographs at all
 
-The built output contains **zero `<img>` tags across all 47 pages** (`a11y.mjs` → `imgCount 0`,
-`pages 47`, as of 2026-11-09). The header logo renders as text; `public/dangates-logo.png` reaches
-only the JSON-LD `logo` (since `02a3144`), never the page. There is no photograph of a gate, a job,
+The built output contains **no photograph**: its only `<img>` is the header logo, one per page
+(`a11y.mjs` → `imgCount 48`, `pages 48`, as of 2026-11-10, since `6407f83`, not yet deployed; zero
+before it). `public/dangates-logo.png` also feeds the JSON-LD `logo` (since `02a3144`). There is no photograph of a gate, a job,
 a vehicle or a person anywhere on the site.
 
 For a physical trade this is a first-order trust and conversion gap, and it is also the reason there is

@@ -44,7 +44,7 @@ any tense, or a modal + להבטיח / ליהנות, followed by operation over 
 | Real prices                               | §D                | ❌ / 🔶 | `/מחירון/` explains "what determines the price" since `af8ba4c` (N14). `Offer` stays forbidden                                     |
 | 24/7 emergency, response times            | §E                | 🔶      | Off the site since `1796ee7`; urgent faults handled within the hours (step 3)                                                      |
 | "פריסה ארצית"                             | §E                | ❌      | Refuted (owner-actions 3.6, 2026-11-09); copy says `serviceAreaLine` and names the 14 areas; the manifest phrase left in `8e8843d` |
-| GBP + reviews · job photos                | §A · §F           | ⏳      | Gated on `REVIEW_SOURCE_URL` (`docs/gbp-runbook.md` §11) · `/site-images`; zero `<img>` today                                      |
+| GBP + reviews · job photos                | §A · §F           | ⏳      | Gated on `REVIEW_SOURCE_URL` (`docs/gbp-runbook.md` §11) · `/site-images`; no job photo today (the logo only)                      |
 
 **Available now, and enough to build on:** the SII safety standard **ת״י 900 חלק 21.03** — guide #1
 since Sprint 7 (`89439b7`), its facts read on primary sources 2026-11-08/09
