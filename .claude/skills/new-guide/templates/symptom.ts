@@ -1,5 +1,4 @@
 import type { Guide } from "@/lib/guide-types";
-import { priceRows } from "@/lib/content";
 
 /**
  * SYMPTOM family skeleton — copy to content/guides/<slug>.ts and replace every ⟨TODO⟩.
@@ -7,14 +6,16 @@ import { priceRows } from "@/lib/content";
  *
  * Block order is the family contract (content-standards §3 "Blog post / guide"; /new-guide):
  *   answer → context → DIY order → the cause table → safety gate → when it is no longer yours →
- *   quote CTA → what the visit involves → FAQ.
+ *   quote CTA → the visit (diagnosis, coordinating the work) → the repair and the re-test → what
+ *   moves the cost → what to ask → FAQ.
  * The DIY diagnosis comes FIRST and is given away (keyword-map §11.3) — the residual cases are the
  * paying ones. The skeleton is ~300 words; lib/guides.ts throws below 900. That is the point.
  *
  * 🔶 = a business fact that is not confirmed (business-facts §D/§E). Write around it, never fill it.
+ *
+ * No price on a guide: no ₪ figure and no visitFeeRange (owner decision 2026-11-10). The cost H2 names
+ * what moves the price, and says nothing about when a price is given or whether the fee is credited.
  */
-const VISIT_FEE = priceRows[0].from; // 150–350 ₪ — the only sourced price; 🔶 still current (§D)
-
 export const guide = {
   slug: "שער-חשמלי-לא-נסגר",
   title: "שער חשמלי לא נסגר עד הסוף — מה לבדוק, לפי הסדר",
@@ -76,11 +77,10 @@ export const guide = {
     { kind: "heading", level: 2, text: "מתי התקלה כבר לא בידיים שלכם?" },
     {
       kind: "paragraph",
-      text: "⟨TODO: הפסקה שמסבירה מה קורה כשהבדיקות הביתיות לא פתרו — לוח פיקוד, מנוע, קבל. ⟩ בשער נגרר הבעיה מתחילה לרוב בגלגלים ובמסילה, ובשער כנף בצירים ובבוכנות. על תפקיד העינית ומתי מחליפים אותה כתבנו במדריך על עינית לשער חשמלי.",
+      text: "⟨TODO: הפסקה שמסבירה מה קורה כשהבדיקות הביתיות לא פתרו — לוח פיקוד, מנוע, קבל. ⟩ בשער נגרר הבעיה מתחילה לרוב בגלגלים ובמסילה, ובשער כנף בצירים ובבוכנות.",
       links: [
         { anchor: "שער נגרר", href: "/services/שערים-נגררים/" },
         { anchor: "שער כנף", href: "/services/שערי-כנף/" },
-        { anchor: "במדריך על עינית לשער חשמלי", href: "/מדריכים/עינית-לשער-חשמלי/" },
       ],
     },
     // The quote CTA sits after the unresolved variable ("which of these is mine?") — never mid-answer.
@@ -92,10 +92,50 @@ export const guide = {
     },
 
     { kind: "heading", level: 2, text: "מה קורה בביקור הטכנאי?" },
+    // Follows processSteps in lib/content.ts: diagnosis, coordinating the work, repair, re-test. No
+    // line may imply a repair on the same visit, or say when the repair happens.
     {
       kind: "paragraph",
-      text: `⟨TODO: סדר האבחון בשטח, מה נבדק, מה מוחלף במקום ומה דורש חלק.⟩ ביקור אבחון עולה ${VISIT_FEE}, ומה שקובע את מחיר התיקון עצמו מפורט במחירון.`,
-      links: [{ anchor: "במחירון", href: "/מחירון/" }],
+      text: "⟨TODO: האבחון — סדר הבדיקה בשטח ומה נבדק, עד שהטכנאי מסביר מה נכשל ומה צריך לתקן. אחריו, בניסוח של המדריך: את העבודה מתאמים למועד נוח בשעות הפעילות, בלי לומר מתי.⟩",
+    },
+    {
+      kind: "paragraph",
+      text: "⟨TODO: התיקון — מה מתקנים בלי חלקים ומה דורש חלק שמתאים לשער. זה קורה במועד שתואם: לא לרמוז שזה אותו ביקור.⟩ הנחת קו חשמל חדש, החלפת כבל בקרקע או עבודה בלוח החשמל של הבית או הבניין הן עבודה של חשמלאי, לא של טכנאי שערים.",
+    },
+    {
+      kind: "paragraph",
+      text: "⟨TODO: הבדיקה החוזרת — מה מפעילים בסיום התיקון, לא בסיום הביקור: סגירה עד הסוף, תגובה לשלט, עצירה בקרן העינית (רק מה ש־lib/content.ts כבר אומר).⟩",
+    },
+
+    // lib/guides.ts throws on a repeated H2: name this guide's symptom so the heading is unique.
+    {
+      kind: "heading",
+      level: 2,
+      text: "מה קובע את מחיר התיקון כש⟨TODO: הסימפטום של המדריך⟩?",
+    },
+    // content-standards §6: the pointer is tied to this guide's own cost list, never one fixed
+    // sentence. The anchor is absent from the text on purpose: lib/guides.ts throws until both are written.
+    {
+      kind: "paragraph",
+      text: "⟨TODO: מה משנה את המחיר בתקלה הזו — איזה רכיב נכשל, משקל הכנף, אם העומס כבר הגיע למנוע. בלי מספר.⟩ ⟨TODO: משפט שקושר את התקלה של המדריך הזה לעמוד המחירון, בניסוח של המדריך. לא משפט קבוע.⟩",
+      links: [{ anchor: "⟨TODO: עוגן תיאורי, מילה במילה מתוך המשפט⟩", href: "/מחירון/" }],
+    },
+
+    // Questions about the mechanism only: never a licence, insurance, warranty length or arrival
+    // time, which the site cannot answer about itself.
+    {
+      kind: "heading",
+      level: 2,
+      text: "מה כדאי לשאול את הטכנאי על ⟨TODO: הסימפטום של המדריך⟩?",
+    },
+    {
+      kind: "list",
+      items: [
+        "⟨TODO: איזה חלק נכשל, ואיך זה קשור לסימפטום?⟩",
+        "⟨TODO: מה גרם לשחיקה, והאם הטיפול נעשה גם שם?⟩",
+        "⟨TODO: האם המנוע מתאים למשקל הכנף ולמספר ההפעלות?⟩",
+        "⟨TODO: מה נבדק אחרי התיקון?⟩",
+      ],
     },
 
     {

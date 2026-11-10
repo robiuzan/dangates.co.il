@@ -4,7 +4,8 @@ import type { Guide } from "@/lib/guide-types";
  * Guide #4 — the gate-type comparison (content-calendar §2 row 4, family `comparison`).
  * Built from .claude/skills/new-guide/templates/comparison.ts; block order per /new-guide:
  * answer → context → the criterion matrix → per option (h3 each) → space → slope/wind/ground →
- * motors → wear → safety → which fits which entrance → quote CTA → cost drivers → FAQ.
+ * motors → wear + warn stop → safety → which fits which entrance → quote CTA → job steps per type →
+ * electrical work → cost drivers → what to ask → FAQ.
  *
  * What this page may say: how each type moves, what carries its weight, the space, slope, wind and
  * ground conditions it needs, which motor family it takes and what wears first — general technical
@@ -33,8 +34,23 @@ import type { Guide } from "@/lib/guide-types";
  *
  * Nothing here repeats a sentence of content/services/שערים-נגררים.ts, שערי-כנף.ts,
  * שערים-לחניה.ts or שערים-מתרוממים.ts, the homepage `faqs`, or the slope section of
- * content/locations/ירושלים.ts — it links to them. The one location link goes to ירושלים (a
- * published city whose page carries the slope section), not to the שרון region page.
+ * content/locations/ירושלים.ts.
+ *
+ * No location link and no `relatedLocations` (N28, 2026-11-10). The registry makes the two travel
+ * together, and a declared city renders under `guidesCopy.relatedLocationsHeading` ("אזורי שירות
+ * קשורים") as "שערים חשמליים בירושלים". That reads as coverage however the sentence in the body is
+ * bounded, and ירושלים is 🔶 confirm (business-facts §E, owner-actions 3.11). Do not put either back
+ * until the owner answers or that heading stops saying "service areas".
+ *
+ * The job steps (N28) say what each installation involves, in the impersonal plural and never as
+ * this business's own offer. They sit under one comparative H2 with an H3 per type, so they do not
+ * answer the "מה כולל…" lead question of /services/שערים-נגררים/ and /services/שערי-כנף/; the
+ * sliding and swing H3s close with a link down to those pages, the cantilever H3 has no service link
+ * and no first-enquiry step. A new supply line, a buried cable and work on the electrical board stay
+ * separate, as an electrician's. The cable to the עיניות names no trade (no business-facts row says
+ * who lays it). A motor cable across the opening is left out: on a 230 V motor it is mains, and
+ * 🔶 confirm — no business-facts §C row says who lays it.
+ * The what-to-ask list is about the mechanism only.
  */
 export const guide = {
   slug: "שער-נגרר-כנף-או-קונזולי",
@@ -48,7 +64,6 @@ export const guide = {
   datePublished: "2026-11-10",
   dateModified: "2026-11-10",
   relatedServices: ["שערים-נגררים", "שערי-כנף", "שערים-לחניה"],
-  relatedLocations: ["ירושלים"],
   sources: [
     {
       label: "מכון התקנים — דף התקן ת״י 900 חלק 21.03",
@@ -231,13 +246,6 @@ export const guide = {
     },
     {
       kind: "paragraph",
-      text: "איך זה נראה בעיר שהרחובות שלה עולים ויורדים לאורך חזית המגרש, פירטנו בעמוד על תיקון שערים חשמליים בירושלים.",
-      links: [
-        { anchor: "בעמוד על תיקון שערים חשמליים בירושלים", href: "/locations/ירושלים/" },
-      ],
-    },
-    {
-      kind: "paragraph",
       text: "ברוח, ההבדל הוא בכיוון שבו הכנף זזה. כנף נגררת וכנף קונזולית נעות במקביל לגדר, וגלגלי ההובלה העליונים מחזיקים אותן. כנף של שער כנף מסתובבת נגד הרוח. באמצע התנועה אין מעצור או מנעול שמחזיקים אותה, וכל העומס עובר למנוע ולצירים. כנף אטומה מעמיסה יותר מכנף מסורגת בכל הסוגים, אבל ההבדל מורגש בעיקר בשער כנף.",
     },
     {
@@ -274,7 +282,13 @@ export const guide = {
     },
     {
       kind: "paragraph",
-      text: "בשער קונזולי, כנף שהתחילה לשקוע בחזית מסמנת בדרך כלל גלגלי עגלה שנשחקו, או עגלה שזזה על היסוד. כוונון מוקדם של העגלות עוצר את השקיעה לפני שהקורה עצמה נפגעת. אל תפרקו עגלה ואל תשחררו את הברגים שלה בעצמכם, כי היא נושאת את כל הכנף.",
+      text: "בשער קונזולי, כנף שהתחילה לשקוע בחזית מסמנת בדרך כלל גלגלי עגלה שנשחקו, או עגלה שזזה על היסוד. כוונון מוקדם של העגלות עוצר את השקיעה לפני שהקורה עצמה נפגעת.",
+    },
+    // The stop for all three types (N28): the reader has just been told what to look for.
+    {
+      kind: "callout",
+      tone: "warn",
+      text: "עצרו כאן: אם הכנף שוקעת או רועדת, או אם היא ירדה מהמסילה או מהעגלות, הפסיקו להפעיל את השער והזמינו טכנאי שערים. את הסימנים האלה בודקים מבחוץ בלבד, ובעצמכם עושים רק את התחזוקה השוטפת שברשימה. מתח הרשת נמצא בלוח הפיקוד, ובחלק מהמנועים גם בתוך המנוע. אל תפתחו את מכסה המנוע או את קופסת לוח הפיקוד, באף אחד משלושת הסוגים. הדבר היחיד שמפעילים בעצמכם במנוע הוא מנגנון השחרור הידני, לפי הוראות היצרן. גם אותו אל תפעילו בשער נגרר על שיפוע, בשער כנף ברוח, ובכל סוג כשהכנף שוקעת או ירדה מהמסילה או מהעגלות. כנף ששוחררה במצב כזה עלולה לזוז בבת אחת או ליפול. אל תפרקו עגלה, ציר או גלגל, ואל תשחררו את הברגים שלהם, כי הם נושאים את משקל הכנף.",
     },
 
     { kind: "heading", level: 2, text: "האם סוג השער משנה משהו בבטיחות?" },
@@ -283,7 +297,7 @@ export const guide = {
       // The scope sentence on the SII page carries two voltage ceilings, by supply type. No figure
       // is named here: the fact sheet cut the clause after the first one (claims-verifier,
       // 2026-11-09), so the copy sends the reader to the page, as the safety guide does.
-      text: "כן, בעיקר במקום שבו נמצאים אזורי הסכנה. לפי מכון התקנים, ת״י 900 חלק 21.03 חל על מערכות הינע חשמליות לשערים, לדלתות ולחלונות הנעים אופקית או אנכית. את תקרות המתח שהוא חל עליהן, לפי סוג ההזנה, אפשר לקרוא בדף התקן באתר מכון התקנים. מה התקן אומר על שער קיים, ואיך בודקים אותו בבטחה, מוסבר במדריך על ת״י 900 לשערים חשמליים.",
+      text: "כן, בעיקר במקום שבו נמצאים אזורי הסכנה. לפי מכון התקנים, ת״י 900 חלק 21.03 חל על מערכות הינע חשמליות לשערים, לדלתות ולחלונות הנעים אופקית או אנכית. את תקרות המתח שבתקן, לפי סוג ההזנה, אפשר לקרוא בדף התקן באתר מכון התקנים. מה התקן אומר על שער קיים, ואיך בודקים אותו בבטחה, מוסבר במדריך על ת״י 900 לשערים חשמליים.",
       links: [
         {
           anchor: "בדף התקן באתר מכון התקנים",
@@ -351,15 +365,130 @@ export const guide = {
       text: "לא בטוחים איזה סוג מתאים לכניסה שלכם? צלמו אותה מבחוץ ומבפנים, כולל הרצפה ושני צדי הפתח, ושלחו בוואטסאפ. אפשר גם להתקשר בשעות הפעילות ולתאר את הכניסה במילים.",
     },
 
+    // 🔶 confirm — the steps describe the work, in the impersonal plural. They never say this
+    // business does it on a cantilever gate (business-facts §C row, see the header comment).
+    { kind: "heading", level: 2, text: "במה שונה ההתקנה בכל אחד משלושת הסוגים?" },
+    {
+      kind: "paragraph",
+      text: "ההבדל הוא במקום שבו נעשית רוב העבודה: בשער נגרר בקו המסילה, בשער כנף בעמודים ובקשת הפתיחה, ובשער קונזולי ביסוד ובעגלות. השלבים בכל סוג מתארים התקנה טיפוסית, ולא את סדר העבודה של מתקין מסוים.",
+    },
+    { kind: "heading", level: 3, text: "שער נגרר: רוב העבודה בקו המסילה" },
+    {
+      kind: "paragraph",
+      text: "הפילוס של קו המסילה נבדק עוד לפני היציקה. מה נכלל בתיקון ובהתקנה של שער נגרר מפורט בעמוד השירות לשערים נגררים.",
+      links: [{ anchor: "בעמוד השירות לשערים נגררים", href: "/services/שערים-נגררים/" }],
+    },
+    {
+      kind: "list",
+      ordered: true,
+      items: [
+        "בפנייה הראשונה מתארים את האורך הפנוי לאורך הגדר ואת מה שיש ברצפת הפתח.",
+        "בכניסה עצמה מודדים את רוחב הפתח ובודקים את הפילוס של קו התנועה.",
+        "יוצקים רצועת בטון מפולסת לכל אורך המהלך, ומעגנים עליה את המסילה.",
+        "מעמידים את הכנף על הגלגלים, ומרכיבים גלגלי הובלה עליונים ומעצורים בקצות המהלך.",
+        "מציבים את המנוע על בסיס בצד הפתח, ומכוונים את המרווח בין גלגל השיניים לפס השיניים.",
+        "בלוח הפיקוד מגדירים את נקודות העצירה ואת הכוח, ומחברים את העיניות.",
+        "במסירה מפעילים את השער עד הסוף בשני הכיוונים, וקוטעים את קרן העינית בזמן הסגירה כדי לראות שהוא עוצר. מדגימים את השחרור הידני, ומסבירים שאת החול והעלים מנקים מהמסילה, ואת העיניות רק מנגבים במטלית.",
+      ],
+    },
+    { kind: "heading", level: 3, text: "שער כנף: העבודה מתחילה בעמודים ובקשת" },
+    {
+      kind: "paragraph",
+      text: "העמודים נושאים את הכנף, והקרקע שבקשת קובעת אם הכנף תיפתח עד הסוף. את מה שנכלל בתיקון ובהתקנה של שער כנף תמצאו בעמוד השירות לשערי כנף.",
+      links: [{ anchor: "בעמוד השירות לשערי כנף", href: "/services/שערי-כנף/" }],
+    },
+    {
+      kind: "list",
+      ordered: true,
+      items: [
+        "בפנייה הראשונה מתארים את העומק הפנוי בתוך החצר ואת הקרקע בקשת הפתיחה.",
+        "בכניסה עצמה בודקים אם העמודים יחזיקו את משקל הכנף, ומודדים את הפרש הגובה לאורך הקשת.",
+        "כשצריך מחזקים עמודים, ולמנוע תת־קרקעי חופרים בור ומכינים לו ניקוז.",
+        "תולים את הכנף על הצירים וקובעים מעצורים לסגירה ולפתיחה.",
+        "מחברים לכל כנף בוכנה, זרוע מפרקית או מנוע תת־קרקעי.",
+        "בלוח הפיקוד מגדירים את הכוח, ובשער כפול גם את ההשהיה בין הכנפיים, כדי שייסגרו בסדר הנכון.",
+        "במסירה בודקים שהכנפיים נפגשות באמצע ונעצרות על המעצורים, ושהשער עוצר כשקרן העינית נקטעת בזמן הסגירה. מדגימים את השחרור הידני, ומסבירים שלא משחררים כנף ברוח.",
+      ],
+    },
+    { kind: "heading", level: 3, text: "שער קונזולי: רוב העבודה ביסוד ובעגלות" },
+    {
+      kind: "paragraph",
+      text: "הכנף נשענת על שתי עגלות שמוברגות ליסוד בצד הפתח, ולכן רוב העבודה נעשית שם, ולא בפתח עצמו.",
+    },
+    {
+      kind: "list",
+      ordered: true,
+      items: [
+        "מודדים את רוחב הפתח, את האורך הפנוי מאחורי העמוד ואת הגובה הפנוי מתחת לכנף ולזנב. בודקים גם מה עומד בדרך של הזנב. את אורך הזנב קובעים לפי הנחיות יצרן העגלות.",
+        "יוצקים יסוד בטון כבד בצד הפתח, ומחכים שיתקשה לפני שמבריגים אליו את העגלות.",
+        "מבריגים את שתי העגלות במפלס, ומשחילים עליהן את קורת הפלדה שבתחתית הכנף.",
+        "מכוונים את העגלות עד שהכנף נעה ישר, ומרכיבים גלגלי הובלה עליונים ותופס בעמוד הנגדי.",
+        "מציבים מנוע שנבחר לפי המשקל המלא של הכנף והזנב, ומגדירים בלוח הפיקוד את נקודות העצירה ואת הכוח.",
+        "במסירה בודקים שחזית הכנף נכנסת לתופס בלי לרדת, ושהשער עוצר כשקרן העינית נקטעת בזמן הסגירה. בודקים גם שהזנב עובר חופשי לכל אורך המהלך, ומסבירים מה חייב להישאר פנוי מאחורי העמוד.",
+      ],
+    },
+
+    // A new supply line, a buried cable and work on the electrical board are separate work, an
+    // electrician's — never part of this business's job, and never a licence claim
+    // (content-standards §4). The cable to the עיניות is routed at the measurement, with no trade
+    // named. 🔶 confirm — a motor cable across a double swing gate is left out: 230 V on some
+    // motors, and no business-facts §C row says who lays it.
+    {
+      kind: "heading",
+      level: 2,
+      text: "איפה עוברים הכבלים בכל סוג שער, ומתי צריך חשמלאי?",
+    },
+    {
+      kind: "paragraph",
+      text: "כשליד השער כבר יש נקודת חשמל, המנוע ולוח הפיקוד מתחברים אליה, ולרוב אין צורך בקו חדש. כשאין נקודת חשמל ליד השער, קו הזנה חדש מלוח החשמל, בכל אורך, מעל הקרקע או טמון בה, הוא עבודה של חשמלאי, לא של טכנאי שערים. כך גם כבל שטומנים בקרקע, ועבודה בלוח החשמל של הבית או הבניין. את העבודות האלה מתכננים בנפרד, כך שיסתיימו לפני חיבור המנוע. הכלל הזה, ומה לבדוק לפני ההתקנה, מפורט במדריך הבטיחות לשערים חשמליים.",
+      links: [
+        {
+          anchor: "במדריך הבטיחות לשערים חשמליים",
+          href: "/מדריכים/תקן-900-שער-חשמלי/",
+        },
+      ],
+    },
+    {
+      kind: "paragraph",
+      text: "בכל שלושת הסוגים צריך חשמל אל המנוע, ובדרך כלל גם כבל אל העיניות שבצד השני של הפתח. כדאי לברר את מסלול הכבל הזה כבר במדידה. ההבדל בין הסוגים הוא במקום שבו עומד המנוע, ובמה שנמצא בדרך:",
+    },
+    {
+      kind: "list",
+      items: [
+        "שער נגרר: המנוע עומד בצד אחד של הפתח, ולכן כדאי שנקודת החשמל תהיה בצד הזה. רצועת הבטון נוצקת לכל אורך המהלך, ולכן קובעים את מסלול הכבל אל העיניות לפני היציקה.",
+        "שער כנף: המנוע נמצא בצד הצירים. בשער כפול יש לרוב מנוע לכל כנף ולוח פיקוד אחד, ולכן כדאי להחליט מראש באיזה צד יעמוד הלוח.",
+        "שער קונזולי: גם כאן המנוע בצד אחד, אבל הזנב מאריך את המהלך מאחורי העמוד. נקודת חשמל או צינור שבולטים מהקרקע במהלך הזה עלולים לעצור את הכנף.",
+      ],
+    },
+
     { kind: "heading", level: 2, text: "מה מייקר כל אחד משלושת הסוגים?" },
     {
       kind: "paragraph",
-      text: "בלי מדידה אי אפשר לתת מחיר לסוג שער, אבל אפשר לדעת מה מזיז אותו. בשער נגרר אלה בעיקר אורך המסילה, יציקת הבטון והפילוס של קו התנועה. בשער כנף אלה מספר המנועים, סוג המנוע ומצב העמודים והצירים, ומנוע תת־קרקעי מוסיף חפירה וניקוז. בשער קונזולי אלה הכנף הארוכה מהפתח, הקורה והעגלות, והיסוד שנושא את כולם.",
+      text: "המחיר של שער תלוי בכניסה עצמה, והגורמים שמזיזים אותו שונים בכל סוג. בשער נגרר אלה בעיקר אורך המסילה, יציקת הבטון והפילוס של קו התנועה. בשער כנף אלה מספר המנועים, סוג המנוע ומצב העמודים והצירים, ומנוע תת־קרקעי מוסיף חפירה וניקוז. בשער קונזולי אלה הכנף הארוכה מהפתח, הקורה והעגלות, והיסוד שנושא את כולם.",
     },
     {
       kind: "paragraph",
       text: "בכל הסוגים, משקל הכנף קובע את דרגת המנוע ואת החלקים שנושאים אותה. גם תיקון של שער קיים תלוי באותם גורמים. הפירוט המלא נמצא בעמוד מה קובע את המחיר של תיקון שער חשמלי.",
       links: [{ anchor: "מה קובע את המחיר של תיקון שער חשמלי", href: "/מחירון/" }],
+    },
+
+    // Mechanism questions only: never a licence, insurance, warranty length or arrival time, which
+    // the site cannot answer about itself.
+    { kind: "heading", level: 2, text: "מה לשאול את מי שמציע לכם סוג שער מסוים?" },
+    {
+      kind: "paragraph",
+      text: "תשובה טובה מדברת על הכניסה שלכם ועל הכנף שלכם, ולא על סוג השער באופן כללי.",
+    },
+    {
+      kind: "list",
+      items: [
+        "לפי איזה משקל נבחר המנוע, ובשער קונזולי, האם המשקל כולל את הזנב?",
+        "בשער נגרר: איפה נמדד הפילוס של קו התנועה, ומה עושים אם יש הפרש?",
+        "בשער כנף: האם נבדק שהעמודים והצירים נושאים את הכנף, ושהקרקע פנויה לכל אורך הקשת?",
+        "בשער קונזולי: לפי מה נקבעו אורך הזנב ומידות היסוד?",
+        "בתיקון של שער קיים: איזה חלק התקלקל, ומה גרם לזה?",
+        "מה נבדק בסוף: תנועה מלאה בשני הכיוונים, ועצירה כשקרן העינית נקטעת בזמן הסגירה?",
+      ],
     },
 
     {

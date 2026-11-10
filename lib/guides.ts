@@ -46,9 +46,16 @@ import { guide as standard900 } from "@/content/guides/תקן-900-שער-חשמ�
 import { guide as noisyGate } from "@/content/guides/שער-חשמלי-רועש";
 import { guide as parkingBarrier } from "@/content/guides/מחסום-חניה-ועד-בית";
 import { guide as gateTypes } from "@/content/guides/שער-נגרר-כנף-או-קונזולי";
+import { guide as notClosing } from "@/content/guides/שער-חשמלי-לא-נסגר";
 
 /** The registry, in authoring order. Tuple of `as const` literals. */
-export const guides = [standard900, noisyGate, parkingBarrier, gateTypes] as const;
+export const guides = [
+  standard900,
+  noisyGate,
+  parkingBarrier,
+  gateTypes,
+  notClosing,
+] as const;
 
 export type GuideSlug = (typeof guides)[number]["slug"];
 
@@ -95,16 +102,19 @@ export function findGuide(param: string): Guide | undefined {
 export const relatedGuides: Record<GuideSlug, readonly GuideSlug[]> = {
   "תקן-900-שער-חשמלי": [
     "שער-חשמלי-רועש",
+    "שער-חשמלי-לא-נסגר",
     "מחסום-חניה-ועד-בית",
     "שער-נגרר-כנף-או-קונזולי",
   ],
-  "שער-חשמלי-רועש": ["תקן-900-שער-חשמלי", "שער-נגרר-כנף-או-קונזולי"],
+  "שער-חשמלי-רועש": ["שער-חשמלי-לא-נסגר", "תקן-900-שער-חשמלי", "שער-נגרר-כנף-או-קונזולי"],
   "מחסום-חניה-ועד-בית": ["תקן-900-שער-חשמלי", "שער-נגרר-כנף-או-קונזולי"],
   "שער-נגרר-כנף-או-קונזולי": [
     "שער-חשמלי-רועש",
+    "שער-חשמלי-לא-נסגר",
     "מחסום-חניה-ועד-בית",
     "תקן-900-שער-חשמלי",
   ],
+  "שער-חשמלי-לא-נסגר": ["שער-חשמלי-רועש", "תקן-900-שער-חשמלי", "שער-נגרר-כנף-או-קונזולי"],
 };
 
 /** The guides `relatedGuides` places beside `guide`, resolved and in declared order. */

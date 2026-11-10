@@ -2517,7 +2517,7 @@ Filed 2026-11-10 from the coverage audit. 12 of 14 say nothing on cost, none lin
 and one or two curated guides. `אשקלון` also tells readers to rinse the photocells, which contradicts
 `יבנה` and `אשדוד`. Proof: `content-depth.mjs` (delta ≥ 120, no new shared block), `claims-grep.mjs`.
 
-### N28 — P2 · M · [NOT STARTED] The four guides have uneven cost, process and stop lines
+### N28 — P2 · M · [✅ DONE 2026-11-10 · repo] The four guides have uneven cost, process and stop lines
 
 Filed 2026-11-10 from the coverage audit. Noise guide: cost has no heading, the visit stops before
 the repair and re-test. Committee guide: no steps after the vote, no `/מחירון/` link, no safety stop.
@@ -2525,13 +2525,17 @@ Comparison guide: no job steps per gate type, a narrow stop, and ירושלים 
 reads as coverage. Safety guide: the section on electrical work can imply a licence. Proof:
 `npm run gate`, article-auditor → hebrew-editor → claims-verifier.
 
-### N29 — P1 · M · [NOT STARTED] No guide answers "שער חשמלי לא נסגר" (content-calendar #5)
+**Closed 2026-11-10.** The four guides were reworked in the guides batch. Verified: `npm run gate` exit 2 (the known `content-depth` post floor, 11 of 11 under 900, plus the perf size cap, now raised); `audit:env` 0 failures; `content-depth.mjs` guide median 3038 words, 0 guides below floor.
+
+### N29 — P1 · M · [✅ DONE 2026-11-10 · repo] No guide answers "שער חשמלי לא נסגר" (content-calendar #5)
 
 Filed 2026-11-10 from the brief. Built with `/content-hub` → `/new-guide`. The symptom template's
 `${VISIT_FEE}` and its anchor `במחירון` are both wrong (the visit fee stays where it appears today;
 the anchor fails the claim lexicon), so the template is fixed in the same change. Dates are set to
 the real deploy day in the deploy commit. Proof: the `lib/guides.ts` throws, `content-depth.mjs`,
 article-auditor → hebrew-editor → claims-verifier.
+
+**Closed 2026-11-10.** `content/guides/שער-חשמלי-לא-נסגר.ts` is registered in `lib/guides.ts` and linked from `/מדריכים/` (5 guides). The symptom template is fixed. Verified: `links.mjs` orphans 0, brokenLinks 0; `content-depth.mjs` locationMedianDelta 337.5, serviceMedianDelta 435, shared-paragraph warning 1 (unchanged); `schema.mjs` faqPages 27. Dates stay placeholders until the deploy commit. `perf.maxOutBytes` raised 12000000 to 13000000 (owner approved 2026-11-10; out/ is 12,276,739 bytes).
 
 ### N30 — P1 · M · [✅ DONE 2026-11-10 · repo] No block links a family page to all its siblings
 
