@@ -2511,13 +2511,15 @@ have no questions to ask. Cost explains what determines the price and links `/מ
 
 **Closed 2026-11-10.** The seven service depth modules were reworked for cost, process, owner check and questions to ask; the seven `services[].updated` dates moved to 2026-11-10. Verified: `npm run gate` exit 1 (only the known `content-depth` post floor, 11 of 11 under 900); `audit:env` 0 failures; `content-depth.mjs` serviceMedianDelta 496, locationMedianDelta 337.5, 1 shared paragraph (unchanged); `links.mjs` orphans 0, brokenLinks 0, no monotony warning; `claims-grep.mjs` 0 live occurrences; `perf.mjs` outBytes 12540450 (under the 13 MB cap).
 
-### N27 — P1 · L · [NOT STARTED] The 14 location pages are silent on cost and link almost no guide
+### N27 — P1 · L · [✅ DONE 2026-11-10 · repo] The 14 location pages are silent on cost and link almost no guide
 
 Filed 2026-11-10 from the coverage audit. 12 of 14 say nothing on cost, none links `/מחירון/`, 13 of
 14 link no guide, four have no safety stop. Each gets a short local block written from its own page
 (the owner chose a short local version on 2026-11-10; the doorway rule forbids a repeated section),
 and one or two curated guides. `אשקלון` also tells readers to rinse the photocells, which contradicts
 `יבנה` and `אשדוד`. Proof: `content-depth.mjs` (delta ≥ 120, no new shared block), `claims-grep.mjs`.
+
+**Closed 2026-11-10.** The 14 location modules were reworked with a short local cost, process and check block and curated guides; the fourteen `locations[].updated` dates moved to 2026-11-10. Verified: `npm run gate` exit 1 (only the known `content-depth` post floor, 11 of 11 under 900); `audit:env` 0 failures; `content-depth.mjs` locationMedianDelta 374, serviceMedianDelta 496, 1 shared paragraph (unchanged), doorway failures 0; `links.mjs` orphans 0, brokenLinks 0, no monotony warning; `perf.mjs` outBytes 12945352 (under the 13 MB cap, which was already raised).
 
 ### N28 — P2 · M · [✅ DONE 2026-11-10 · repo] The four guides have uneven cost, process and stop lines
 
