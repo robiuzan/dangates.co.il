@@ -2448,6 +2448,95 @@ node scripts/audit/a11y.mjs          # pages 47 · imgCount 0 — the numbers §
 npm run audit:env                    # 0 failures — every citation resolves
 ```
 
+### N23 — P1 · S · [NOT STARTED] The homepage is not sharpened on its Tier-1 term
+
+Filed 2026-11-10 from the owner's content brief. `docs/keyword-map.md` §7 maps `/` to
+`תיקון שערים חשמליים`, and §4 sets the H1 to `תיקון והתקנת שערים חשמליים`; the code still says
+`דן שערים חשמליים – תיקון והתקנה מקצועית`. The owner chose "repair leads" on 2026-11-10: repair is
+named first in the answer block, the headings and the meta description, installation second. No new
+claim, no keyword stuffing, `heroCopy.lead` stays free of pricing policy. Proof: `titles.mjs`,
+`claims-grep.mjs`, `content-depth.mjs` (answer block 40–60 words).
+
+### N24 — P2 · S · [NOT STARTED] The logo is unused and the homepage has no place for job photos
+
+Filed 2026-11-10. `public/dangates-logo.png` (250×250) goes into `components/layout/Header.tsx`
+through `SiteImage` (`site-images`, "First image task"), keeping the visible brand text. The homepage
+gets slots that render nothing until `manifest.images` carries the owner's photos. The owner said
+photos come later with no date and no stock or generated image is used. owner-actions 4.1 gets the
+exact shot list. Proof: `a11y.mjs`, `perf.mjs` (`imagesUnsized 0`), `rtl-lint.mjs`.
+
+### N25 — P1 · M · [NOT STARTED] The content models cannot carry an in-text link, a table or a local cost block
+
+Filed 2026-11-10 from the coverage audit ([docs/audits/2026-11-10-content-coverage.md](audits/2026-11-10-content-coverage.md)).
+`ServiceDepthSection`, `CityLocalNote` and `PageContentSection` hold plain strings, so the cost text
+cannot link `/מחירון/` from inside a sentence. Add the guide's `InlineLink` contract to all three
+(the anchor must appear in the text or the build throws), an optional table on a service section,
+`ServiceDepth.upfront` (cost, what to check, what to ask) with a gate-specific process step, and
+`CityContent.glance` (a short local cost / process / check block) with a curated `guides` list.
+Proof: `npm run typecheck`, the module-load throws, `rtl-lint.mjs`.
+
+### N26 — P1 · L · [NOT STARTED] The 7 service pages do not answer cost, process and what-to-check upfront
+
+Filed 2026-11-10 from the coverage audit. Process is partial on all 7 (no gate-specific step);
+שערים-לחניה and שערים-מתרוממים have thin cost text, four pages have no labelled owner check and five
+have no questions to ask. Cost explains what determines the price and links `/מחירון/`, with no new
+₪ figure. Mains work reads as an electrician's. Proof: `content-depth.mjs`, `claims-grep.mjs`,
+`links.mjs`, hebrew-editor → claims-verifier.
+
+### N27 — P1 · L · [NOT STARTED] The 14 location pages are silent on cost and link almost no guide
+
+Filed 2026-11-10 from the coverage audit. 12 of 14 say nothing on cost, none links `/מחירון/`, 13 of
+14 link no guide, four have no safety stop. Each gets a short local block written from its own page
+(the owner chose a short local version on 2026-11-10; the doorway rule forbids a repeated section),
+and one or two curated guides. `אשקלון` also tells readers to rinse the photocells, which contradicts
+`יבנה` and `אשדוד`. Proof: `content-depth.mjs` (delta ≥ 120, no new shared block), `claims-grep.mjs`.
+
+### N28 — P2 · M · [NOT STARTED] The four guides have uneven cost, process and stop lines
+
+Filed 2026-11-10 from the coverage audit. Noise guide: cost has no heading, the visit stops before
+the repair and re-test. Committee guide: no steps after the vote, no `/מחירון/` link, no safety stop.
+Comparison guide: no job steps per gate type, a narrow stop, and ירושלים listed under a heading that
+reads as coverage. Safety guide: the section on electrical work can imply a licence. Proof:
+`npm run gate`, article-auditor → hebrew-editor → claims-verifier.
+
+### N29 — P1 · M · [NOT STARTED] No guide answers "שער חשמלי לא נסגר" (content-calendar #5)
+
+Filed 2026-11-10 from the brief. Built with `/content-hub` → `/new-guide`. The symptom template's
+`${VISIT_FEE}` and its anchor `במחירון` are both wrong (the visit fee stays where it appears today;
+the anchor fails the claim lexicon), so the template is fixed in the same change. Dates are set to
+the real deploy day in the deploy commit. Proof: the `lib/guides.ts` throws, `content-depth.mjs`,
+article-auditor → hebrew-editor → claims-verifier.
+
+### N30 — P1 · M · [NOT STARTED] No block links a family page to all its siblings
+
+Filed 2026-11-10 from the brief. One compact server component lists all 7 gate types and all 14
+areas on the 21 family pages, after the curated lists, which stay. This changes a written rule
+(`docs/content-standards.md` §3, links by relevance): [ADR 0005](decisions/0005-family-link-block.md)
+records why, and that doc and the `internal-linking` skill change in the same commit. Never a service
+× city page. Proof: `links.mjs` (no monotony warning), `perf.mjs` (`maxOutBytes`).
+
+### N31 — P2 · S · [NOT STARTED] The hubs do not cross-link, and the homepage FAQ barely reaches the guides
+
+Filed 2026-11-10 from the brief. `/שירותים/` should reach the 14 areas and the guides,
+`/איזורי-שירות/` the 7 gate types; the hub's own prose names guides as plain text; `/מחירון/` and
+`/blog/` never link a guide or the hub. Only 1 of 10 homepage FAQs links a guide. Proof: `links.mjs`,
+a count of the built hrefs on each hub.
+
+### N32 — P2 · M · [NOT STARTED] The owner's 2026-11-10 decisions and the GEO plan are not in the docs
+
+Filed 2026-11-10. Record the decisions (allow all crawlers, the profile exists, the blog rewrite is a
+later project, the wikisource links stay) in owner-actions, `cloudflare-runbook.md` step 1, the
+strategy doc §4.1 and `gbp-runbook.md`; add the one-page monthly AI probe sheet with the ten prompts
+copied exactly; log the competitor benchmark in `docs/competitors.md`, rank order marked unverified.
+Proof: `npm run audit:env`.
+
+### N33 — P2 · S · [⏳ BLOCKED · owner 3.9] The site does not say it installs and repairs קונזולי gates
+
+Filed 2026-11-10. The owner said in chat that the business does (2026-11-10), but `docs/business-facts.md`
+§C has no confirmed row and that file's Value column is the owner's. Once it does: the comparison
+guide's CTA and header comment, `lib/llms.ts`, and one short passage on `/services/שערים-נגררים/`.
+Still no 8th service page.
+
 ---
 
 ## §15. Environment
