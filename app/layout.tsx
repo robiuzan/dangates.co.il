@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   // in public/ carry their own hand-written canonicals and are unaffected.)
   alternates: { canonical: "/" },
   title: {
-    default: `${siteConfig.name} – תיקון והתקנת שערים חשמליים`,
+    default: `תיקון שערים חשמליים והתקנה | ${siteConfig.name}`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.tagline,

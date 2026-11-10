@@ -19,8 +19,10 @@
  * motor released, never by opening the control board, touching 230V wiring or a lifting gate's
  * springs.
  *
- * The answer's pointer to the guides page is plain text (PageContent has no link field). Ship this
- * module only in a build where `hasGuides` is true, so the header nav links to /מדריכים/.
+ * The answer's pointer to the guides page stays plain text: `answer` has no link field and
+ * AnswerBlock renders a bare string. The working link is the same imperative in the first section
+ * (N31). Ship this module only in a build where `hasGuides` is true, so the header nav links to
+ * /מדריכים/.
  *
  * Copy states how things work in general and carries no unconfirmed business fact
  * (docs/business-facts.md); contact details and hours are interpolated from `siteConfig`, never
@@ -36,10 +38,11 @@ export const page: PageContent = {
     {
       heading: "מה ההבדל בין פוסט בבלוג לבין מדריך?",
       paragraphs: [
-        "פוסט בבלוג הוא סקירה רחבה: רשימת טיפים לתחזוקה, או שיקולים בעד ונגד שדרוג לשער חכם. מדריך עוסק בשאלה אחת, ועונה עליה עד הסוף.",
+        "פוסט בבלוג הוא סקירה רחבה: רשימת טיפים לתחזוקה, או שיקולים בעד ונגד שדרוג לשער חכם. מדריך עוסק בשאלה אחת, ועונה עליה עד הסוף. יש לכם שאלה ממוקדת? עברו לעמוד המדריכים.",
         "בכל מדריך יש גם טבלה שמרכזת את העיקר. מדריך על תקן מפנה למקור הרשמי, כדי שתוכלו לבדוק בעצמכם.",
-        "גם כשפוסט מציע לבדוק משהו לבד, שמרו על גבול ברור. אפשר לנגב בעצמכם את העדשה של העינית, להחליף סוללה בשלט ולהוציא אבן מהמסילה. את האבן מוציאים רק אחרי ששחררתם את המנוע במנגנון השחרור הידני, כדי ששלט או סגירה אוטומטית לא יזיזו את הכנף. בשער שעומד בשיפוע, החזיקו את הכנף בזמן השחרור. פתיחה של לוח הפיקוד, חיבורים של 230 וולט וקפיצים של שער מתרומם הם עבודה לטכנאי.",
+        "גם כשפוסט מציע לבדוק משהו לבד, שמרו על גבול ברור. אפשר לנגב בעצמכם את העדשה של העינית, להחליף סוללה בשלט ולהוציא אבן מהמסילה. את האבן מוציאים ביד רק כשהשער לא יכול לזוז. כבו אותו במפסק שלו, אם הוא מסומן, והחזיקו אצלכם את כל השלטים. לחצו על שלט מחוץ למסלול הכנף: השער לא אמור להגיב. אם אין מפסק מסומן או שהשער הגיב, הוא לא כבוי, ושלט של מישהו אחר או סגירה אוטומטית יכולים להזיז את הכנף בלי אזהרה. במצב כזה עבדו רק מחוץ למסלול הכנף, עם מטאטא ארוך. פתיחה של לוח הפיקוד, חיבורים של 230 וולט וקפיצים של שער מתרומם הם עבודה לטכנאי.",
       ],
+      links: [{ anchor: "עברו לעמוד המדריכים", href: "/מדריכים/" }],
     },
   ],
 };

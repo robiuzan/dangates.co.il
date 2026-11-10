@@ -4,6 +4,7 @@
  * holds the Hebrew marketing copy and per-section content. Faithful to the live site; no
  * invented facts — the only published price is the technician visit band (`priceRows`).
  */
+import type { InlineLink } from "@/lib/guide-types";
 import { locations, services, siteConfig, type ServiceSlug } from "@/lib/site-config";
 
 /** Lucide icon names used by the service cards. */
@@ -292,8 +293,8 @@ export const faqs: readonly HomeFaq[] = [
     q: "כמה זמן לוקח לתקן שער חשמלי?",
     a: "משך התיקון תלוי בתקלה. ניקוי ויישור של עינית, החלפת סוללה בשלט או קידוד שלט מחדש הם בדרך כלל עבודה קצרה. החלפת לוח פיקוד, קבל הנעה או מנוע לוקחת יותר זמן, ותלויה גם בזמינות החלק המתאים לדגם. תיקון מכני, כמו מסילה עקומה, גלגל שחוק או ציר שבור, תלוי בהיקף הנזק. האבחון מברר איזה מהמקרים האלה הוא שלכם.",
     moreAt: {
-      href: "/blog/תקלות-נפוצות-בשערים-חשמליים/",
-      label: "על התקלות הנפוצות בשערים חשמליים",
+      href: "/מדריכים/שער-חשמלי-לא-נסגר/",
+      label: "מה בודקים כששער חשמלי לא נסגר עד הסוף",
     },
   },
   {
@@ -331,8 +332,8 @@ export const faqs: readonly HomeFaq[] = [
     q: "האם אתם עובדים עם לקוחות פרטיים ועסקיים?",
     a: "כן. אנחנו עובדים עם בעלי בתים פרטיים, ועדי בתים, חברות ניהול ועסקים. כל אחד מהם מגיע עם שער אחר. בבית פרטי זה לרוב שער נגרר או שער כנף בכניסה לחניה. בבניין מגורים זה שער חניה משותף או מחסום, עם שלטים רבים ולעתים אינטרקום. בעסק זה שער שנפתח פעמים רבות ביום, ולכן נשחק מהר יותר.",
     moreAt: {
-      href: "/services/שערים-לדירה/",
-      label: "שערים חשמליים לבנייני מגורים",
+      href: "/מדריכים/מחסום-חניה-ועד-בית/",
+      label: "מה ועד הבית בודק לפני התקנת מחסום בחניה",
     },
   },
   {
@@ -340,6 +341,10 @@ export const faqs: readonly HomeFaq[] = [
     // (business-facts §D "What the price includes / excludes").
     q: "מה כוללת התקנה של שער חדש?",
     a: "התקנה מתחילה במדידה: רוחב הפתח, משקל השער, סוג הקרקע ונקודת החשמל הקרובה. לפי המדידה בוחרים את סוג השער ואת המנוע שמתאים לו. העבודה עצמה כוללת את המסילה או הצירים, את המנוע ואת לוח הפיקוד, את העיניות והשלטים, ואת החיווט שמחבר ביניהם. בסוף מכוונים את נקודות העצירה ובודקים את השער מקצה לקצה.",
+    moreAt: {
+      href: "/מדריכים/תקן-900-שער-חשמלי/",
+      label: "על אילו שערים חל ת״י 900, ואיך בודקים בבטחה את אמצעי הבטיחות",
+    },
   },
   {
     q: "איך ניתן ליצור קשר?",
@@ -629,7 +634,7 @@ export const heroCopy = {
   // and aboutValues earlier in Sprint 6. It now says what processSteps step 2 says the visit does
   // (claims-verifier, Sprint 6 page review). Restore the clause only once §D confirms it.
   eyebrow: "תיקון · תחזוקה · התקנה · מרכז הארץ",
-  h1: "דן שערים חשמליים – תיקון והתקנה מקצועית",
+  h1: "תיקון והתקנת שערים חשמליים",
   lead: "השער נתקע או לא נסגר עד הסוף? טכנאי מגיע לאבחון, בודק את המנוע, את לוח הפיקוד ואת העיניות, ומסביר מה התקלה ומה צריך לתקן — עם אחריות על העבודה.",
   points: ["אבחון לפני תיקון", "אחריות על העבודה", "תיאום מועד בשעות הפעילות"],
   callLabel: "חייגו עכשיו:",
@@ -668,12 +673,12 @@ export const serviceAreasCopy = {
 } as const;
 
 /** app/page.tsx — homepage <meta name="description">. */
-export const homeMetaDescription = `תיקון והתקנת שערים חשמליים לבתים, ועדי בתים ועסקים — שערים נגררים, כנף, מתרוממים ותריסי גלילה. אבחון במקום לפני כל תיקון ואחריות על העבודה. חייגו ${siteConfig.phone}.`;
+export const homeMetaDescription = `תיקון שערים חשמליים והתקנה לבתים, ועדי בתים ועסקים — שערים נגררים, כנף, מתרוממים ותריסי גלילה. אבחון במקום לפני כל תיקון ואחריות על העבודה. חייגו ${siteConfig.phone}.`;
 
 /** app/page.tsx — the homepage FAQ section heading. */
 export const homeFaqHeading = {
   eyebrow: "שאלות נפוצות",
-  title: "מידע חשוב לפני תיקון שער חשמלי",
+  title: "מה חשוב לדעת לפני תיקון שערים חשמליים?",
 } as const;
 
 /** app/services/[service]/page.tsx — static section copy shared by all 7 service pages. */
@@ -933,7 +938,8 @@ export const areasPageCopy = {
 /** components/marketing/ServicesGrid.tsx — homepage services section heading. */
 export const servicesGridCopy = {
   eyebrow: "השירותים שלנו",
-  title: "תיקון והתקנת שערים חשמליים",
+  // Was the same string as the homepage H1 (N23). The cards include the shutters page, so it names both.
+  title: "איזה שער או תריס צריך תיקון או התקנה?",
   // "אחריות על העבודה" is already in the TrustBar, WhyUs and the /שירותים/ hero — not repeated here.
   // No list of the services either: the cards right below name all of them, and on /שירותים/ the
   // hero subtitle already lists them. The count's noun ("סוגי שירות") matches trustStats.
@@ -1208,6 +1214,12 @@ export interface PriceDriver {
   after?: string;
 }
 
+/** /מחירון/ — the pointer to the guides after the quote tips. Each `anchor` appears verbatim in `text`. */
+export interface GuidesPointer {
+  text: string;
+  links: readonly InlineLink[];
+}
+
 /**
  * app/מחירון/page.tsx — the page becomes "what determines the price" (backlog N14, §3.13;
  * keyword-map §10; eeat-and-trust §5.1). Render order: `h1` → `answer` (heading + text, directly
@@ -1341,15 +1353,26 @@ export const pricingPageCopy = {
     whatsappMessage:
       "היי, אני רוצה לברר מחיר לתיקון שער חשמלי. מצרף/ת תמונה של השער ותיאור של התקלה:",
   },
+  guidesPointer: {
+    text: "לפני שמזמינים תיקון, המדריכים על שערים חשמליים מסבירים מה אפשר לבדוק בעצמכם ואיפה עוצרים. למשל, המדריך על שער חשמלי שלא נסגר עד הסוף עובר על הסיבות ועל הבדיקות לפי הסדר.",
+    links: [
+      { anchor: "המדריכים על שערים חשמליים", href: "/מדריכים/" },
+      {
+        anchor: "המדריך על שער חשמלי שלא נסגר עד הסוף",
+        href: "/מדריכים/שער-חשמלי-לא-נסגר/",
+      },
+    ],
+  } satisfies GuidesPointer,
   footnote: "מחיר כל תיקון או התקנה תלוי בגורמים שתוארו בעמוד.",
 } as const;
 
 /**
  * app/page.tsx — the homepage answer block (backlog §6.2, content-standards §5), rendered as the
  * first paragraph directly under the H1. What the business does, for whom, where (מרכז הארץ and
- * the published areas — no wider region promised, business-facts §E) and how to reach it.
+ * the published areas — no wider region promised, business-facts §E) and how to reach it. Repair
+ * is named first and installation second (owner's choice, 2026-11-10, backlog N23).
  */
-export const homeAnswerBlock = `ב${siteConfig.name} מתקנים, מתחזקים ומתקינים שערים חשמליים ותריסי גלילה חשמליים: שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה, שערי זרוע ומחסומים. אנחנו עובדים עם בעלי בתים, ועדי בתים, חברות ניהול ועסקים, במרכז הארץ ובאזורים שברשימת אזורי השירות באתר. אפשר להתקשר בטלפון ${siteConfig.phone}, לשלוח הודעה דרך כפתור הוואטסאפ באתר או להשאיר פרטים בטופס.`;
+export const homeAnswerBlock = `ב${siteConfig.name} מבצעים תיקון שערים חשמליים ותריסי גלילה חשמליים, התקנה ותחזוקה שלהם: שערים נגררים, שערי כנף, שערים מתרוממים, שערים לחניה, שערי זרוע ומחסומים. אנחנו עובדים עם בעלי בתים, ועדי בתים, חברות ניהול ועסקים, במרכז הארץ ובאזורים שברשימת אזורי השירות באתר. אפשר להתקשר בטלפון ${siteConfig.phone}, לשלוח הודעה דרך כפתור הוואטסאפ באתר או להשאיר פרטים בטופס.`;
 
 /** A titled short paragraph — one diagnosis step on the homepage, one topic on /צור-קשר/. */
 export interface TitledText {
@@ -1481,7 +1504,8 @@ export const guidesCopy = {
   /** Stable name for the guide FAQ's exclusive <details> group. */
   faqGroupName: "guide-faq",
   relatedServicesHeading: "שירותים קשורים",
-  relatedLocationsHeading: "אזורי שירות קשורים",
+  // Names pages, not coverage: a guide may declare a location only when its copy links that page.
+  relatedLocationsHeading: "עמודי אזורים שהמדריך מזכיר",
   moreGuidesHeading: "מדריכים נוספים",
   asideTitle: "שאלה על השער שלכם?",
   asideSubtitle: "אפשר להתקשר או לשלוח הודעה בוואטסאפ.",

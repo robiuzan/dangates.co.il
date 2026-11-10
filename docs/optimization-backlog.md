@@ -2457,6 +2457,14 @@ named first in the answer block, the headings and the meta description, installa
 claim, no keyword stuffing, `heroCopy.lead` stays free of pricing policy. Proof: `titles.mjs`,
 `claims-grep.mjs`, `content-depth.mjs` (answer block 40–60 words).
 
+**Closed 2026-11-10.** The homepage copy now leads with repair in the answer block, headings and meta
+description (`lib/content.ts`), and the `staticPages` rows for the homepage and the five hubs carry
+`updated: "2026-11-10"`. Verified:
+
+```bash
+npm run gate   # exit 1: the content-depth baseline only ("post: 11 of 11 page(s) under the 900-word floor")
+```
+
 ### N24 — P2 · S · [✅ DONE 2026-11-10 · repo] The logo is unused and the homepage has no place for job photos
 
 Filed 2026-11-10. `public/dangates-logo.png` (250×250) goes into `components/layout/Header.tsx`
@@ -2559,12 +2567,22 @@ node scripts/audit/links.mjs   # ✅ orphans 0 · notInChrome 0 · brokenLinks 0
 node scripts/audit/perf.mjs --json   # outBytes 11567820 -> 11804703 (+236883), under maxOutBytes 12000000
 ```
 
-### N31 — P2 · S · [PARTIAL · hub lists wired; prose links and FAQ pending] The hubs do not cross-link, and the homepage FAQ barely reaches the guides
+### N31 — P2 · S · [✅ DONE 2026-11-10 · repo] The hubs do not cross-link, and the homepage FAQ barely reaches the guides
 
 Filed 2026-11-10 from the brief. `/שירותים/` should reach the 14 areas and the guides,
 `/איזורי-שירות/` the 7 gate types; the hub's own prose names guides as plain text; `/מחירון/` and
 `/blog/` never link a guide or the hub. Only 1 of 10 homepage FAQs links a guide. Proof: `links.mjs`,
 a count of the built hrefs on each hub.
+
+**Closed 2026-11-10.** The hub lists were wired with N30, and the hub prose, `/מחירון/` (via
+`pricingPageCopy.guidesPointer`, now read without a cast) and `/blog/` link guides and the hub.
+Verified:
+
+```bash
+node scripts/audit/links.mjs --json          # orphans 0 · brokenLinks 0 · no monotony warning
+node scripts/audit/content-depth.mjs --json  # locationMedianDelta 374 · serviceMedianDelta 496
+node scripts/audit/perf.mjs --json           # outBytes 12969730, under maxOutBytes 13000000
+```
 
 ### N32 — P2 · M · [NOT STARTED] The owner's 2026-11-10 decisions and the GEO plan are not in the docs
 

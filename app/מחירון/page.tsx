@@ -9,7 +9,6 @@ import {
   pricingPageCopy,
   type PriceDriver,
 } from "@/lib/content";
-import type { InlineLink } from "@/lib/inline-links";
 import { withLinks } from "@/components/ui/LinkedText";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
@@ -67,11 +66,7 @@ const toc = buildToc(
 );
 
 // Optional: a pointer from the quote tips to the guides, rendered only once the copy carries it.
-const guidesPointer = (
-  pricingPageCopy as typeof pricingPageCopy & {
-    guidesPointer?: { text: string; links: readonly InlineLink[] };
-  }
-).guidesPointer;
+const guidesPointer = pricingPageCopy.guidesPointer;
 
 const listClass = "mt-4 list-disc space-y-2 ps-6 leading-relaxed text-gray-700";
 const h2Class = "font-heading text-2xl font-bold text-primary";

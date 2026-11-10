@@ -86,7 +86,7 @@ must never append the brand again.** (Fixed 2026-08-17 on all 26 offending pages
 
 | Route type | `title` you write                | Renders as                                         |
 | ---------- | -------------------------------- | -------------------------------------------------- |
-| Home       | _(uses `title.default`)_         | `דן שערים חשמליים – תיקון והתקנת שערים חשמליים`    |
+| Home       | _(uses `title.default`)_         | `תיקון שערים חשמליים והתקנה \| דן שערים חשמליים`   |
 | Service    | `{gate type}` + a differentiator | `שערים נגררים – תיקון והתקנה \| דן שערים חשמליים`  |
 | Location   | `תיקון שערים חשמליים {prefixed}` | `תיקון שערים חשמליים בתל אביב \| דן שערים חשמליים` |
 | Symptom    | the symptom verbatim             | `שער חשמלי לא נסגר – מה לבדוק \| דן שערים חשמליים` |
