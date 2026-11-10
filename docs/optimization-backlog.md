@@ -2465,7 +2465,7 @@ gets slots that render nothing until `manifest.images` carries the owner's photo
 photos come later with no date and no stock or generated image is used. owner-actions 4.1 gets the
 exact shot list. Proof: `a11y.mjs`, `perf.mjs` (`imagesUnsized 0`), `rtl-lint.mjs`.
 
-### N25 — P1 · M · [NOT STARTED] The content models cannot carry an in-text link, a table or a local cost block
+### N25 — P1 · M · [✅ DONE 2026-11-10 · repo] The content models cannot carry an in-text link, a table or a local cost block
 
 Filed 2026-11-10 from the coverage audit ([docs/audits/2026-11-10-content-coverage.md](audits/2026-11-10-content-coverage.md)).
 `ServiceDepthSection`, `CityLocalNote` and `PageContentSection` hold plain strings, so the cost text
@@ -2474,6 +2474,23 @@ cannot link `/מחירון/` from inside a sentence. Add the guide's `InlineLink
 `ServiceDepth.upfront` (cost, what to check, what to ask) with a gate-specific process step, and
 `CityContent.glance` (a short local cost / process / check block) with a curated `guides` list.
 Proof: `npm run typecheck`, the module-load throws, `rtl-lint.mjs`.
+
+**Closed 2026-11-10** (structure only; every new field is optional until the copy lands, and no
+file under `content/` changed). `withLinks` moved to `components/ui/LinkedText.tsx`;
+`lib/inline-links.ts` holds `assertInlineLinks` and `NON_DESCRIPTIVE_ANCHORS`;
+`ServiceDepth.upfront` / `processStep` / `processStepBodies` / `serviceProcessSteps()`,
+`CityContent.glance` / `guides` with `guidesForLocationPage()`, `links` on all three section types,
+a table on service sections and `CityGlanceBlock` are in. The service page renders answer, TOC,
+upfront, process, sections, triggers, caveats, FAQ. Verified:
+
+```bash
+npm run typecheck && npm run lint    # clean
+npm run audit:env                    # 0 failures
+npm run gate                         # exit 1: the content-depth baseline only ("post: 11 of 11 page(s) under the 900-word floor")
+# built <main> text of /services/שערים-נגררים/ and /locations/אשקלון/ before vs after:
+#   the location page is identical; the service page differs only in the process list's position
+node scripts/audit/perf.mjs --json   # outBytes 11523174
+```
 
 ### N26 — P1 · L · [NOT STARTED] The 7 service pages do not answer cost, process and what-to-check upfront
 

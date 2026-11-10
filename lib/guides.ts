@@ -30,6 +30,8 @@ import {
 import { posts } from "@/lib/posts";
 import { serviceDepth } from "@/lib/service-depth";
 import { cityContent } from "@/lib/city-content";
+import { pageContent } from "@/lib/page-content";
+import { NON_DESCRIPTIVE_ANCHORS, type InlineLink } from "@/lib/inline-links";
 import {
   familyCtaCap,
   familyPillar,
@@ -125,6 +127,21 @@ export function guidesForLocation(slug: LocationSlug): Guide[] {
   return guideList.filter((g) => g.relatedLocations?.includes(slug) ?? false);
 }
 
+/**
+ * The guides a location page lists: the ones its own `cityContent[slug].guides` picks, resolved and
+ * in declared order, then the reverse index (`guidesForLocation`), de-duplicated by slug.
+ */
+export function guidesForLocationPage(slug: LocationSlug): Guide[] {
+  const picked: readonly string[] = cityContent[slug].guides ?? [];
+  const chosen = picked.flatMap((s) => guideBySlug.get(s.normalize("NFC")) ?? []);
+  const seen = new Set<string>();
+  return [...chosen, ...guidesForLocation(slug)].filter((g) => {
+    if (seen.has(g.slug)) return false;
+    seen.add(g.slug);
+    return true;
+  });
+}
+
 /** The hub grid: guides grouped by pillar in the `/content-hub` order; empty pillars are omitted. */
 export function guidesByPillar(): { pillar: Pillar; guides: Guide[] }[] {
   return pillarOrder.flatMap((pillar) => {
@@ -187,8 +204,6 @@ const ANSWER_MAX = 80;
 const MIN_FAQ_ITEMS = 3;
 const MIN_IN_COPY_LINKS = 2;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-/** Anchors that say nothing about the target (content-standards §3 item 6). */
-const NON_DESCRIPTIVE_ANCHORS = new Set(["כאן", "לחצו כאן", "למידע נוסף", "קראו עוד"]);
 
 function fail(slug: string, msg: string): never {
   throw new Error(`[guides] ${slug}: ${msg}`);
@@ -574,6 +589,43 @@ for (const g of allGuides) {
       }
     }
   }
+}
+
+// The prose models of the silos and indexes may link to a guide; lib/inline-links.ts left those
+// hrefs to this registry, so every one must resolve to a registered guide.
+function assertGuideLinks(owner: string, links: readonly InlineLink[] | undefined): void {
+  for (const { href } of links ?? []) {
+    const path = bare(href);
+    if (!path.startsWith("/מדריכים/")) continue;
+    const target = path.slice("/מדריכים/".length);
+    if (target === "" || !seenSlugs.has(target)) {
+      throw new Error(`[guides] ${owner} links to an unregistered guide "${href}"`);
+    }
+  }
+}
+for (const s of services) {
+  const depth = serviceDepth[s.slug];
+  const owner = `serviceDepth["${s.slug}"]`;
+  for (const section of depth.sections) assertGuideLinks(owner, section.links);
+  if (depth.upfront) {
+    for (const section of [depth.upfront.cost, depth.upfront.check, depth.upfront.ask]) {
+      assertGuideLinks(`${owner}.upfront`, section.links);
+    }
+  }
+}
+for (const l of locations) {
+  const city = cityContent[l.slug];
+  const owner = `cityContent["${l.slug}"]`;
+  for (const note of city.localNotes) assertGuideLinks(owner, note.links);
+  if (city.glance) {
+    for (const part of [city.glance.cost, city.glance.process, city.glance.check]) {
+      assertGuideLinks(`${owner}.glance`, part.links);
+    }
+  }
+}
+for (const [name, content] of Object.entries(pageContent)) {
+  for (const section of content.sections)
+    assertGuideLinks(`pageContent.${name}`, section.links);
 }
 
 // The homepage FAQ's link-outs must point at guides that actually exist. `lib/content.ts` cannot

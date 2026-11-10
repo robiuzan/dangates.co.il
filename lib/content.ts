@@ -803,6 +803,12 @@ export function locationServicesHeading(prefixed: string): string {
  * in it, least of all in a region (business-facts §E). Each takes the entry's `prefixed` value.
  */
 export const locationPageCopy = {
+  /** The bold lead-ins of the three short glance paragraphs on a written city page. */
+  glanceLabels: {
+    cost: "מה קובע את העלות",
+    process: "איך זה מתנהל",
+    check: "מה בודקים ומה שואלים",
+  },
   /** The service block of a written entry: the gate types its housing makes relevant. */
   relevantServicesHeading: (prefixed: string): string =>
     `אילו סוגי שערים רלוונטיים ${prefixed}?`,

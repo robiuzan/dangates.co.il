@@ -20,8 +20,10 @@
  * (headings, link frames) live in lib/content.ts (`locationPageCopy`), never here. Name a place with
  * the location's `prefixed` value (`בתל אביב`, `באזור השרון`), never a bare `ב` + name.
  */
-import { faqs } from "@/lib/content";
+import { faqs, visitFeeRange } from "@/lib/content";
 import { serviceDepth } from "@/lib/service-depth";
+import { assertInlineLinks, type InlineLink } from "@/lib/inline-links";
+import type { GuideSlug } from "@/lib/guides";
 import {
   locations,
   services,
@@ -49,6 +51,31 @@ export interface CityLocalNote {
   /** Question-form H2 (content-standards §4). */
   heading: string;
   paragraphs: readonly string[];
+  /**
+   * In-copy links. Each `anchor` must appear verbatim in one of `paragraphs` and be descriptive
+   * Hebrew; each `href` is an internal site-relative path with a leading and trailing slash.
+   */
+  links?: readonly InlineLink[];
+}
+
+/** A short text with its own in-copy links; each anchor appears verbatim in `text`. */
+export interface LinkedText {
+  text: string;
+  links: readonly InlineLink[];
+}
+
+/**
+ * The SHORT local version of cost, process and check, shown right after the table of contents.
+ * Each of the three is 15–75 words and must use THIS page's own local facts: a paragraph shared
+ * between cities is the doorway pattern. Never a price ("₪" or the visit band), a timing promise
+ * or a coverage claim. `cost` links to `/מחירון/`, `process` to a `/services/` page, `check` to a
+ * `/services/` page or a guide.
+ */
+export interface CityGlance {
+  heading: string;
+  cost: LinkedText;
+  process: LinkedText;
+  check: LinkedText;
 }
 
 /** One city-specific FAQ. `q` and `a` render as the visible answer AND feed the FAQPage. */
@@ -118,6 +145,13 @@ export interface CityContent {
    * `nearbyHeading` that asks which listed place is farther. Absent → the links follow the H2 directly.
    */
   nearbyNote?: string;
+  /** Optional (for now): the short local cost / process / check block. See `CityGlance`. */
+  glance?: CityGlance;
+  /**
+   * Optional: guides to list on this page ahead of the reverse index, in this order
+   * (`guidesForLocationPage` in lib/guides.ts). The import above is type-only: no runtime cycle.
+   */
+  guides?: readonly GuideSlug[];
 }
 
 export const cityContent: Record<LocationSlug, CityContent> = {
@@ -176,6 +210,40 @@ function validateCityContent(): void {
         throw new Error(`cityContent["${loc.slug}"].services lists "${slug}" twice.`);
       }
       listed.add(slug);
+    }
+    const owner = `cityContent["${loc.slug}"]`;
+    for (const note of content.localNotes) {
+      assertInlineLinks(`${owner} note "${note.heading}"`, note.paragraphs, note.links);
+    }
+    const glance = content.glance;
+    if (glance) {
+      if (glance.heading.trim() === "")
+        throw new Error(`${owner}.glance.heading is empty.`);
+      for (const part of ["cost", "process", "check"] as const) {
+        const { text, links } = glance[part];
+        const where = `${owner}.glance.${part}`;
+        const words = text.split(/\s+/).filter(Boolean).length;
+        if (words < 15 || words > 75) {
+          throw new Error(`${where} is ${words} words; must be 15–75.`);
+        }
+        if (text.includes("₪") || text.includes(visitFeeRange)) {
+          throw new Error(`${where} states a figure: glance copy never carries a price.`);
+        }
+        assertInlineLinks(where, [text], links);
+      }
+      if (!glance.cost.links.some((l) => l.href === "/מחירון/")) {
+        throw new Error(`${owner}.glance.cost must link to "/מחירון/".`);
+      }
+      if (!glance.process.links.some((l) => l.href.startsWith("/services/"))) {
+        throw new Error(`${owner}.glance.process must link to a "/services/" page.`);
+      }
+      if (
+        !glance.check.links.some(
+          (l) => l.href.startsWith("/services/") || l.href.startsWith("/מדריכים/"),
+        )
+      ) {
+        throw new Error(`${owner}.glance.check must link to a service or a guide.`);
+      }
     }
     for (const { q } of content.faqs) {
       const key = normalizeQuestion(q);

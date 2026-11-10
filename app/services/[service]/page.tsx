@@ -14,7 +14,6 @@ import {
 } from "@/lib/site-config";
 import {
   serviceCards,
-  processSteps,
   serviceTriggers,
   servicePageCopy,
   serviceDepthCopy,
@@ -26,7 +25,7 @@ import {
   serviceWhatsappMessage,
   crumbLabels,
 } from "@/lib/content";
-import { serviceDepth } from "@/lib/service-depth";
+import { serviceDepth, serviceProcessSteps } from "@/lib/service-depth";
 import { getPost } from "@/lib/posts";
 import { guidesForService } from "@/lib/guides";
 import { buildToc, headingId } from "@/lib/toc";
@@ -39,6 +38,7 @@ import { Button } from "@/components/ui/Button";
 import { Toc } from "@/components/ui/Toc";
 import { RelatedGuides } from "@/components/article/chrome";
 import { Faq } from "@/components/marketing/Faq";
+import { ContentSections } from "@/components/marketing/ContentSections";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 export function generateStaticParams(): { service: ServiceSlug }[] {
@@ -94,26 +94,31 @@ export default function ServicePage({ params }: { params: { service: string } })
   // The table of contents: every H2 of the article column after the answer block, in page order,
   // gated on the prose length the column renders (lib/toc.ts).
   const faqHeading = serviceDepthCopy.faqHeading(card.name);
+  const upfront = depth.upfront
+    ? [depth.upfront.cost, depth.upfront.check, depth.upfront.ask]
+    : [];
+  const steps = serviceProcessSteps(depth);
   const tocHeadings = [
+    ...upfront.map((section) => section.heading),
+    servicePageCopy.processHeading,
     ...depth.sections.map((section) => section.heading),
     servicePageCopy.triggersHeading,
     ...(depth.caveats.length > 0 ? [serviceDepthCopy.caveatsHeading] : []),
-    servicePageCopy.processHeading,
     ...(depth.faqs.length > 0 ? [{ id: "faq", text: faqHeading }] : []),
   ];
   const toc = buildToc(tocHeadings, [
     hasAnswer ? depth.answerHeading : "",
     hasAnswer ? depth.answer : card.description,
-    ...depth.sections.flatMap((section) => [
+    ...[...upfront, ...depth.sections].flatMap((section) => [
       section.heading,
       ...section.paragraphs,
       ...(section.list ?? []),
     ]),
+    servicePageCopy.processHeading,
+    ...steps.flatMap((step) => [step.title, step.body]),
     servicePageCopy.triggersHeading,
     ...triggers,
     ...depth.caveats,
-    servicePageCopy.processHeading,
-    ...processSteps.flatMap((step) => [step.title, step.body]),
     ...depth.faqs.flatMap(({ q, a }) => [q, a]),
   ]);
 
@@ -165,28 +170,48 @@ export default function ServicePage({ params }: { params: { service: string } })
 
             <Toc items={toc} />
 
-            {depth.sections.map((section) => (
-              <div key={section.heading}>
-                <h2
-                  id={headingId(section.heading)}
-                  className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
-                >
-                  {section.heading}
-                </h2>
-                {section.paragraphs.map((para) => (
-                  <p key={para} className="mt-4 leading-relaxed text-gray-700">
-                    {para}
-                  </p>
-                ))}
-                {section.list && section.list.length > 0 && (
-                  <ul className="mt-4 list-disc space-y-2 ps-6 text-gray-700">
-                    {section.list.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
+            {depth.upfront && <ContentSections sections={upfront} />}
+
+            <h2
+              id={headingId(servicePageCopy.processHeading)}
+              className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
+            >
+              {servicePageCopy.processHeading}
+            </h2>
+            <ol className="mt-4 space-y-3">
+              {steps.map((step, i) => (
+                <li key={step.title} className="flex gap-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <span className="text-gray-700">
+                    <strong className="text-primary">{step.title}.</strong> {step.body}
+                  </span>
+                </li>
+              ))}
+            </ol>
+
+            {hasAnswer && (
+              <p className="mt-6 text-gray-700">
+                {serviceVisitBandApplies[card.slug] ? (
+                  <>
+                    {serviceVisitBandCopy.before(card.name)}
+                    <span className="ltr">{visitFeeRange}</span>
+                    {serviceVisitBandCopy.after}
+                  </>
+                ) : (
+                  serviceVisitBandCopy.withoutBand
                 )}
-              </div>
-            ))}
+                <Link
+                  href={serviceVisitBandCopy.href}
+                  className="font-semibold text-secondary underline underline-offset-4 hover:text-primary focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+                >
+                  {serviceVisitBandCopy.linkLabel}
+                </Link>
+              </p>
+            )}
+
+            <ContentSections sections={depth.sections} />
 
             <h2
               id={headingId(servicePageCopy.triggersHeading)}
@@ -217,45 +242,6 @@ export default function ServicePage({ params }: { params: { service: string } })
                   ))}
                 </ul>
               </>
-            )}
-
-            <h2
-              id={headingId(servicePageCopy.processHeading)}
-              className="mt-10 scroll-mt-24 font-heading text-xl font-bold text-primary"
-            >
-              {servicePageCopy.processHeading}
-            </h2>
-            <ol className="mt-4 space-y-3">
-              {processSteps.map((step, i) => (
-                <li key={step.title} className="flex gap-3">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <span className="text-gray-700">
-                    <strong className="text-primary">{step.title}.</strong> {step.body}
-                  </span>
-                </li>
-              ))}
-            </ol>
-
-            {hasAnswer && (
-              <p className="mt-6 text-gray-700">
-                {serviceVisitBandApplies[card.slug] ? (
-                  <>
-                    {serviceVisitBandCopy.before(card.name)}
-                    <span className="ltr">{visitFeeRange}</span>
-                    {serviceVisitBandCopy.after}
-                  </>
-                ) : (
-                  serviceVisitBandCopy.withoutBand
-                )}
-                <Link
-                  href={serviceVisitBandCopy.href}
-                  className="font-semibold text-secondary underline underline-offset-4 hover:text-primary focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
-                >
-                  {serviceVisitBandCopy.linkLabel}
-                </Link>
-              </p>
             )}
 
             {depth.faqs.length > 0 && (

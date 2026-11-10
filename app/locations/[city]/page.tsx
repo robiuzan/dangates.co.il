@@ -21,7 +21,7 @@ import {
 } from "@/lib/content";
 import { cityContent, isCityWritten } from "@/lib/city-content";
 import { nearby } from "@/lib/nearby";
-import { guidesForLocation } from "@/lib/guides";
+import { guidesForLocationPage } from "@/lib/guides";
 import { buildToc, headingId, type TocHeading } from "@/lib/toc";
 import { relatedAttr } from "@/lib/engagement";
 import { serviceDepth } from "@/lib/service-depth";
@@ -34,6 +34,7 @@ import { Faq } from "@/components/marketing/Faq";
 import {
   AnswerBlock,
   BulletedBlock,
+  CityGlanceBlock,
   ContentSections,
 } from "@/components/marketing/ContentSections";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -112,7 +113,7 @@ export default function LocationPage({ params }: { params: { city: string } }) {
   const nearbyHeading = content.nearbyHeading ?? locationPageCopy.nearbyHeading;
 
   // The reverse index: guides that name this city (and declare it) appear here by themselves.
-  const guides = guidesForLocation(loc.slug);
+  const guides = guidesForLocationPage(loc.slug);
 
   // The table of contents: every H2 of the article column after the answer block, in page order,
   // for the city pages whose prose passes the bar (lib/toc.ts) — some do, some do not.
@@ -125,7 +126,9 @@ export default function LocationPage({ params }: { params: { city: string } }) {
     : locationServicesHeading(loc.prefixed);
   const faqHeading = locationPageCopy.faqHeading(loc.prefixed);
   const neighbourhoods = content.neighborhoods ?? [];
+  const glance = content.glance;
   const tocHeadings: TocHeading[] = [
+    ...(glance ? [glance.heading] : []),
     ...content.localNotes.map((section) => section.heading),
     ...(neighbourhoods.length > 0 ? [neighbourhoodsHeading] : []),
     servicesHeading,
@@ -136,6 +139,9 @@ export default function LocationPage({ params }: { params: { city: string } }) {
     ...(written
       ? [content.answerHeading, content.answer]
       : [locationIntroParagraph1(loc.prefixed), locationIntroParagraph2(loc.prefixed)]),
+    ...(glance
+      ? [glance.heading, glance.cost.text, glance.process.text, glance.check.text]
+      : []),
     ...content.localNotes.flatMap((section) => [section.heading, ...section.paragraphs]),
     neighbourhoodsHeading,
     ...neighbourhoods,
@@ -191,6 +197,8 @@ export default function LocationPage({ params }: { params: { city: string } }) {
           )}
 
           <Toc items={toc} />
+
+          <CityGlanceBlock glance={glance} labels={locationPageCopy.glanceLabels} />
 
           <ContentSections sections={content.localNotes} />
 

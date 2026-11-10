@@ -13,6 +13,7 @@
  * unconfirmed business fact (docs/business-facts.md); it must not repeat a paragraph the page
  * already shows or one the homepage shows. UI frames need no labels: every heading is in the module.
  */
+import { assertInlineLinks, type InlineLink } from "@/lib/inline-links";
 import { page as areasIndex } from "@/content/pages/areas-index";
 import { page as servicesIndex } from "@/content/pages/services-index";
 import { page as about } from "@/content/pages/about";
@@ -27,6 +28,8 @@ export interface PageContentSection {
   paragraphs: readonly string[];
   /** Rendered as a bulleted list after the paragraphs. */
   list?: readonly string[];
+  /** In-copy links: anchors verbatim in `paragraphs` or `list`, internal paths with both slashes. */
+  links?: readonly InlineLink[];
 }
 
 export interface PageContent {
@@ -60,4 +63,14 @@ export const pageContent: {
 /** Whether a page's drafter has written it (the answer block is the gate). */
 export function isPageWritten(content: PageContent): boolean {
   return content.answer !== "";
+}
+
+for (const [name, content] of Object.entries(pageContent)) {
+  for (const section of content.sections) {
+    assertInlineLinks(
+      `pageContent.${name} section "${section.heading}"`,
+      [...section.paragraphs, ...(section.list ?? [])],
+      section.links,
+    );
+  }
 }
