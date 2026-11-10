@@ -58,7 +58,12 @@ export function ContentSections({ sections }: { sections: readonly ContentSectio
           {section.list && section.list.length > 0 && (
             <ul className="mt-4 list-disc space-y-2 ps-6 text-gray-700">
               {section.list.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item}>
+                  {withLinks(
+                    item,
+                    section.links?.filter((l) => item.includes(l.anchor)),
+                  )}
+                </li>
               ))}
             </ul>
           )}

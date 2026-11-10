@@ -216,7 +216,10 @@ function validateServiceDepth(): void {
         const where = `${owner}.upfront.${name}`;
         assertInlineLinks(where, prose(sec), sec.links);
         checkTable(where, sec.table);
-        for (const text of [sec.heading, ...prose(sec)]) {
+        const tableText = sec.table
+          ? [sec.table.caption, ...sec.table.head, ...sec.table.rows.flat()]
+          : [];
+        for (const text of [sec.heading, ...prose(sec), ...tableText]) {
           if (text.includes("₪") || text.includes(visitFeeRange)) {
             throw new Error(
               `${where} states a figure ("${text}"): upfront copy never carries a price.`,
