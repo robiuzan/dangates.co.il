@@ -2533,7 +2533,7 @@ the anchor fails the claim lexicon), so the template is fixed in the same change
 the real deploy day in the deploy commit. Proof: the `lib/guides.ts` throws, `content-depth.mjs`,
 article-auditor → hebrew-editor → claims-verifier.
 
-### N30 — P1 · M · [NOT STARTED] No block links a family page to all its siblings
+### N30 — P1 · M · [✅ DONE 2026-11-10 · repo] No block links a family page to all its siblings
 
 Filed 2026-11-10 from the brief. One compact server component lists all 7 gate types and all 14
 areas on the 21 family pages, after the curated lists, which stay. This changes a written rule
@@ -2541,7 +2541,17 @@ areas on the 21 family pages, after the curated lists, which stay. This changes 
 records why, and that doc and the `internal-linking` skill change in the same commit. Never a service
 × city page. Proof: `links.mjs` (no monotony warning), `perf.mjs` (`maxOutBytes`).
 
-### N31 — P2 · S · [NOT STARTED] The hubs do not cross-link, and the homepage FAQ barely reaches the guides
+**Closed 2026-11-10.** `components/marketing/FamilyLinks.tsx` renders after the curated lists and
+`RelatedGuides` on the 7 service and 14 location pages; the hub wiring of N31 rides with it. Verified:
+
+```bash
+node scripts/audit/links.mjs   # ✅ orphans 0 · notInChrome 0 · brokenLinks 0 · no monotony warning
+# built HTML, <main> hrefs: each of the 21 family pages links all 7 types and all 14 areas minus itself;
+# /שירותים/ links 14 areas and 4 guides; /איזורי-שירות/ links 7 types
+node scripts/audit/perf.mjs --json   # outBytes 11567820 -> 11804703 (+236883), under maxOutBytes 12000000
+```
+
+### N31 — P2 · S · [PARTIAL · hub lists wired; prose links and FAQ pending] The hubs do not cross-link, and the homepage FAQ barely reaches the guides
 
 Filed 2026-11-10 from the brief. `/שירותים/` should reach the 14 areas and the guides,
 `/איזורי-שירות/` the 7 gate types; the hub's own prose names guides as plain text; `/מחירון/` and

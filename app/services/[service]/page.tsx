@@ -39,6 +39,7 @@ import { Toc } from "@/components/ui/Toc";
 import { RelatedGuides } from "@/components/article/chrome";
 import { Faq } from "@/components/marketing/Faq";
 import { ContentSections } from "@/components/marketing/ContentSections";
+import { FamilyLinks } from "@/components/marketing/FamilyLinks";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 export function generateStaticParams(): { service: ServiceSlug }[] {
@@ -348,6 +349,8 @@ export default function ServicePage({ params }: { params: { service: string } })
           )}
 
           <RelatedGuides guides={guides} className="mt-10" />
+
+          <FamilyLinks current={{ kind: "service", slug: card.slug }} className="mt-10" />
         </div>
       </Section>
 

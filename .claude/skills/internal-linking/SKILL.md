@@ -126,8 +126,8 @@ Every page should be reachable along at least two axes; a page on one axis only 
 
 | Axis                                  | Pages                         | Links out to                                                                                                                   | Links in from                                                                                |
 | ------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| **City** (`/locations/`)              | 14                            | all 7 services · `nearby` cities · `guidesForLocation(slug)`                                                                   | header, footer, `/איזורי-שירות/` · `serviceDepth.locations` · guides' `relatedLocations`     |
-| **Gate type** (`/services/`)          | 7                             | `relatedServices` · `locations` · `guidesForService(slug)` · `/מחירון/`                                                        | header, footer, `/שירותים/`, every location page · guides' `relatedServices`                 |
+| **City** (`/locations/`)              | 14                            | all 7 services · `nearby` cities · all 14 areas (`FamilyLinks`) · `guidesForLocation(slug)`                                    | header, footer, `/איזורי-שירות/` · `serviceDepth.locations` · guides' `relatedLocations`     |
+| **Gate type** (`/services/`)          | 7                             | `relatedServices` · `locations` · all 7 types and 14 areas (`FamilyLinks`) · `guidesForService(slug)` · `/מחירון/`             | header, footer, `/שירותים/`, every location page · guides' `relatedServices`                 |
 | **Symptom / component** (`/מדריכים/`) | 4 guides (Sprint 7, ADR 0002) | `relatedServices` (validated at module load; capped CTAs down to the transactional page) · `relatedLocations` · sibling guides | the hub `ItemList` · the reverse index on service and location pages · homepage FAQ `moreAt` |
 
 The **reverse index** is what makes an orphaned guide structurally impossible: a guide that declares
@@ -137,6 +137,16 @@ Symptom pages stay informational — they link **down** to the service with at m
 duplicate a service title (`/content-hub` throws on that). The homepage FAQ's `moreAt` contract links
 each long answer out to its guide, which is the third axis' entry from the most-linked page on the
 site.
+
+## 6b. FamilyLinks — the all-types, all-areas block (ADR 0005)
+
+`components/marketing/FamilyLinks.tsx` follows the curated lists and `RelatedGuides` on the 7 service
+and 14 location pages: all 7 types and all 14 areas, the current page as `<span aria-current="page">`.
+The curated lists stay and lead ([ADR 0005](../../../docs/decisions/0005-family-link-block.md)). Keep it
+compact (no card class, no `relatedAttr`; link style once on the `<ul>`) and its headings naming pages,
+never service (`familyLinksCopy`). The hubs reuse it: `/שירותים/` with the areas and guides,
+`/איזורי-שירות/` with the types. Proof: `links.mjs` (no monotony warning, `orphans 0`), a count of
+`/services/` and `/locations/` hrefs in each built page's `<main>`, and `perf.mjs` `outBytes` under 12000000.
 
 ## 7. Breadcrumbs — keep the parity
 

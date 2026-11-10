@@ -8,10 +8,14 @@ import {
   servicesIndexMetaDescription,
   servicesIndexHeroTitle,
   servicesIndexHeroSubtitle,
+  familyLinksCopy,
 } from "@/lib/content";
+import { guideList } from "@/lib/guides";
 import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageContentBlock } from "@/components/marketing/ContentSections";
+import { Section } from "@/components/ui/Section";
+import { FamilyLinks } from "@/components/marketing/FamilyLinks";
 import { ServicesGrid } from "@/components/marketing/ServicesGrid";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
@@ -54,6 +58,13 @@ export default function ServicesPage() {
       />
       <PageContentBlock content={content} />
       <ServicesGrid />
+      <Section tone="white">
+        <FamilyLinks
+          showServices={false}
+          guides={guideList}
+          heading={familyLinksCopy.servicesHubHeading}
+        />
+      </Section>
       <FinalCta />
     </>
   );

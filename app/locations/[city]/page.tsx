@@ -37,6 +37,7 @@ import {
   CityGlanceBlock,
   ContentSections,
 } from "@/components/marketing/ContentSections";
+import { FamilyLinks } from "@/components/marketing/FamilyLinks";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 export function generateStaticParams(): { city: LocationSlug }[] {
@@ -276,6 +277,8 @@ export default function LocationPage({ params }: { params: { city: string } }) {
           )}
 
           <RelatedGuides guides={guides} className="mt-10" />
+
+          <FamilyLinks current={{ kind: "location", slug: loc.slug }} className="mt-10" />
         </div>
       </Section>
 

@@ -3,11 +3,17 @@ import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { locations, manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { areaLinkLabel, areasPageCopy, crumbLabels } from "@/lib/content";
+import {
+  areaLinkLabel,
+  areasPageCopy,
+  crumbLabels,
+  familyLinksCopy,
+} from "@/lib/content";
 import { itemListJsonLd } from "@/lib/jsonld";
 import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageContentBlock } from "@/components/marketing/ContentSections";
+import { FamilyLinks } from "@/components/marketing/FamilyLinks";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
@@ -69,6 +75,10 @@ export default function AreasPage() {
             </li>
           ))}
         </ul>
+      </Section>
+
+      <Section tone="white">
+        <FamilyLinks showLocations={false} heading={familyLinksCopy.areasHubHeading} />
       </Section>
 
       <FinalCta />

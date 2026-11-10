@@ -112,7 +112,9 @@ above the floor, as of 2026-11-09 at `2b0d802` (343.5 over 18 at `7c3f2db`).
    moves the price is explained, as `/מחירון/` does since N14.
 7. **Per-service FAQ**, 3–5 questions, feeding `FAQPage` — each Q/A on exactly one page sitewide.
 8. Related services chosen by relevance, plus links to 2–3 locations (the seven pages declare 5–6
-   each in `ServiceDepth.locations` since Sprint 5).
+   each in `ServiceDepth.locations` since Sprint 5). A compact family block listing all types and
+   all areas follows the curated lists ([ADR 0005](decisions/0005-family-link-block.md)); the
+   curated lists stay chosen by relevance and stay first.
 9. CTA.
 
 **Location page**
@@ -120,7 +122,9 @@ above the floor, as of 2026-11-09 at `2b0d802` (343.5 over 18 at `7c3f2db`).
 1. H1 = `תיקון שערים חשמליים {prefixed}`.
 2. Answer block — do we serve this city, how fast, at what cost.
 3. Local substance — at least three items from §2.
-4. Full service list with links.
+4. Full service list with links. A compact family block listing all types and all areas follows the
+   curated lists ([ADR 0005](decisions/0005-family-link-block.md)); they stay chosen by relevance
+   and stay first.
 5. Nearby locations (2–4 links) — or the one nearest published page when no other published place
    is near (חיפה, since the 2026-11-09 retirement of קריות and צפון). Never add a distant place to
    reach a count; a region pairs only with its own towns.

@@ -1562,3 +1562,16 @@ export const llmsCopy = {
 
 /** Heading of the homepage job-photos gallery (`JobPhotos`); the section renders only when the manifest has photos. */
 export const jobPhotosCopy = { eyebrow: "מהשטח", title: "תמונות מהעבודה" } as const;
+
+/**
+ * components/marketing/FamilyLinks.tsx (ADR 0005). The headings name pages, never service, on
+ * purpose: ירושלים is unconfirmed, and a heading that reads as coverage would claim it.
+ */
+export const familyLinksCopy = {
+  heading: "כל העמודים לפי סוג שער ולפי אזור",
+  servicesLabel: "סוגי שערים ותריסים",
+  locationsLabel: "עמודי אזורים",
+  guidesLabel: "מדריכים",
+  servicesHubHeading: "עמודי האזורים והמדריכים",
+  areasHubHeading: "עמודי סוגי השערים",
+} as const;
