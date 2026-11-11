@@ -121,13 +121,13 @@ anywhere (`claims-grep.mjs` → `licence 0`, `certification 0`, `insurance 0` li
 and `/מחירון/` too — never as a credential of this business. For this trade specifically, the
 absence of a stated licence is conspicuous to a careful customer.
 
-| Field                                                          | Why it's needed                                                                     | Lands in                                    | Value | Status |
-| -------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------- | ----- | ------ |
-| Electrician licence / grade                                    | Expertise signal; legally relevant for 230V work                                    | content.ts `credentials`                    |       | 🔶     |
-| Insurance (ביטוח צד ג׳)                                        | Standard trade trust signal                                                         | content.ts `credentials`                    |       | 🔶     |
-| Manufacturer training / brands                                 | Differentiator; names the motor systems actually fitted                             | content.ts `credentials`                    |       | 🔶     |
-| Trade association membership                                   | Authority signal                                                                    | content.ts `credentials`                    |       | 🔶     |
-| Does the business install / repair cantilever (קונזולי) gates? | Shapes the guide שער-נגרר-כנף-או-קונזולי CTA and whether llms.txt may list the type | `content/guides/שער-נגרר-כנף-או-קונזולי.ts` |       | 🔶     |
+| Field                                                          | Why it's needed                                                                     | Lands in                                    | Value                                                                                                            | Status |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ |
+| Electrician licence / grade                                    | Expertise signal; legally relevant for 230V work                                    | content.ts `credentials`                    |                                                                                                                  | 🔶     |
+| Insurance (ביטוח צד ג׳)                                        | Standard trade trust signal                                                         | content.ts `credentials`                    |                                                                                                                  | 🔶     |
+| Manufacturer training / brands                                 | Differentiator; names the motor systems actually fitted                             | content.ts `credentials`                    |                                                                                                                  | 🔶     |
+| Trade association membership                                   | Authority signal                                                                    | content.ts `credentials`                    |                                                                                                                  | 🔶     |
+| Does the business install / repair cantilever (קונזולי) gates? | Shapes the guide שער-נגרר-כנף-או-קונזולי CTA and whether llms.txt may list the type | `content/guides/שער-נגרר-כנף-או-קונזולי.ts` | Yes — installs and repairs them (owner, in chat 2026-11-10; recorded 2026-11-11 at the owner's word «record it») | ✅     |
 
 The owner said in chat on 2026-11-10 that the business installs and repairs קונזולי gates
 (owner-actions 3.9). The Value cell of the row above awaits the owner's own entry; until it is ✅,
@@ -195,7 +195,8 @@ display name is «אזור השרון» since `9886dd1`. ירושלים is the o
 
 The owner answered owner-actions 3.6 in chat on 2026-11-09 (not served: קריות, צפון, דרום, באר
 שבע; served: חיפה, אשקלון, שרון; no national coverage) — the Value cells above await the owner's
-own entry. ירושלים is asked separately in owner-actions 3.11.
+own entry. ירושלים is asked separately in owner-actions 3.11, which the owner answered «yes» in chat on
+2026-11-11; the row's Value cell awaits the owner's own entry, as the 3.6 answers do.
 
 ## F. Media — the site has no photographs at all
 

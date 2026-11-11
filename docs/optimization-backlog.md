@@ -2624,12 +2624,35 @@ npm run audit -- --json          # failures 1: content-depth "post: 11 of 11 pag
 npm run audit:env                # 0 failures
 ```
 
-### N33 — P2 · S · [⏳ BLOCKED · owner 3.9] The site does not say it installs and repairs קונזולי gates
+### N33 — P2 · S · [NOT STARTED · unblocked 2026-11-11, business-facts §C ✅] The site does not say it installs and repairs קונזולי gates
 
 Filed 2026-11-10. The owner said in chat that the business does (2026-11-10), but `docs/business-facts.md`
 §C has no confirmed row and that file's Value column is the owner's. Once it does: the comparison
 guide's CTA and header comment, `lib/llms.ts`, and one short passage on `/services/שערים-נגררים/`.
 Still no 8th service page.
+
+### N34 — P1 · M · [NOT STARTED] Repeated class strings fill a fifth of the export
+
+Filed 2026-11-11 after the export reached 12.90 MB of the owner's 13 MB cap. Measured on :
+class attributes are 2.26 MB of the 11.8 MB of and files, because each long
+utility string prints on every link, in the HTML and again in the RSC payload. The top strings: the
+footer link (3,066 uses), the header menu link (1,029), a secondary link style (813), the link card
+(726), the in-copy link (489), the button base. Define each once (a class in or a
+parent child-selector) with identical computed styles. The owner chose "cut size first" on 2026-11-11
+over raising the cap. Proof: , contrast pairs unchanged, .
+
+### N35 — P2 · S · [NOT STARTED] ירושלים is still bounded though the owner says it is served
+
+Filed 2026-11-11. The owner answered owner-actions 3.11 «yes» in chat on 2026-11-11. The page's
+meta, answer, glance and FAQs, the sentence, the comparison guide and () still say a visit there is unconfirmed. Make it read like the other served
+cities, still with no booking or timing promise. Proof: , claims-verifier.
+
+### N36 — P1 · S · [NOT STARTED] A legacy post gives hand-release advice outside the safety rule
+
+Filed 2026-11-11 from the pre-deploy sweep (aeo-geo-strategist). The post says
+any gate can be released and to oil the rails, against content-standards §6.1. The owner approved a
+safety-only edit on 2026-11-11 (the full post rewrite still waits on owner-actions 3.8). Live-kit
+quotes from the post must stay intact. Proof: , , claims-verifier.
 
 ---
 
