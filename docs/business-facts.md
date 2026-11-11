@@ -183,20 +183,20 @@ and `prefixed`; `7ed1acd` retired קריות, צפון, דרום and באר שב
 display name is «אזור השרון» since `9886dd1`. ירושלים is the one published place still bounded
 (call to check whether and when a visit is possible): the owner has not named it.
 
-| Field                                                | Why it's needed                                                                   | Lands in                   | Value | Status |
-| ---------------------------------------------------- | --------------------------------------------------------------------------------- | -------------------------- | ----- | ------ |
-| Is 24/7 emergency service real, and where?           | Claimed sitewide until `1796ee7`; sets a response expectation                     | content.ts + Roster        |       | 🔶     |
-| Real response-time capability per area               | Same-day was implied for all 18 location pages until Sprint 4                     | content.ts                 |       | 🔶     |
-| Is "פריסה ארצית" true?                               | It was in the manifest `areaServed` until `8e8843d`                               | Roster `schema.areaServed` |       | 🔶     |
-| Are קריות/שרון/צפון/דרום/באר שבע genuinely served?   | Whether those pages should exist at all                                           | `lib/site-config.ts`       |       | 🔶     |
-| If yes — as regions, or specific cities within them? | Drives the `kind: "city" \| "region"` flag and the Hebrew prefix                  | `lib/site-config.ts`       |       | 🔶     |
-| Travel / call-out fee by distance                    | The far published places (חיפה, אשקלון) are not local calls                       | content.ts                 |       | 🔶     |
-| Is ירושלים served?                                   | 3.6 did not name it; the page stays bounded and the JSON-LD `areaServed` lists it | `lib/site-config.ts`       |       | 🔶     |
+| Field                                                | Why it's needed                                                                                        | Lands in                   | Value                   | Status |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------- | ----------------------- | ------ |
+| Is 24/7 emergency service real, and where?           | Claimed sitewide until `1796ee7`; sets a response expectation                                          | content.ts + Roster        |                         | 🔶     |
+| Real response-time capability per area               | Same-day was implied for all 18 location pages until Sprint 4                                          | content.ts                 |                         | 🔶     |
+| Is "פריסה ארצית" true?                               | It was in the manifest `areaServed` until `8e8843d`                                                    | Roster `schema.areaServed` |                         | 🔶     |
+| Are קריות/שרון/צפון/דרום/באר שבע genuinely served?   | Whether those pages should exist at all                                                                | `lib/site-config.ts`       |                         | 🔶     |
+| If yes — as regions, or specific cities within them? | Drives the `kind: "city" \| "region"` flag and the Hebrew prefix                                       | `lib/site-config.ts`       |                         | 🔶     |
+| Travel / call-out fee by distance                    | The far published places (חיפה, אשקלון) are not local calls                                            | content.ts                 |                         | 🔶     |
+| Is ירושלים served?                                   | 3.6 did not name it; the page was bounded until N35 (2026-11-11) and the JSON-LD `areaServed` lists it | `lib/site-config.ts`       | Yes (owner, 2026-11-11) | ✅     |
 
 The owner answered owner-actions 3.6 in chat on 2026-11-09 (not served: קריות, צפון, דרום, באר
 שבע; served: חיפה, אשקלון, שרון; no national coverage) — the Value cells above await the owner's
 own entry. ירושלים is asked separately in owner-actions 3.11, which the owner answered «yes» in chat on
-2026-11-11; the row's Value cell awaits the owner's own entry, as the 3.6 answers do.
+2026-11-11 and entered in the row above the same day, at the owner's request.
 
 ## F. Media — the site has no photographs at all
 
