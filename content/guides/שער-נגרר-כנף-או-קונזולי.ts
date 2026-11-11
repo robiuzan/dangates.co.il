@@ -9,16 +9,15 @@ import type { Guide } from "@/lib/guide-types";
  *
  * What this page may say: how each type moves, what carries its weight, the space, slope, wind and
  * ground conditions it needs, which motor family it takes and what wears first — general technical
- * knowledge, stated as how gates work. What it may not say: anything about what this business has
- * installed or guarantees. 🔶 confirm — whether the business installs or repairs cantilever
- * (קונזולי) gates is unconfirmed: docs/business-facts.md §C carries the row ("Does the business
- * install / repair cantilever (קונזולי) gates?", Value blank, Status 🔶) since 2026-11-09, and
- * llms.txt does not list the type as a service. Until the owner answers it the guide
- * compares the cantilever type and never offers to install one; the CTA asks only for a photo
- * or a call in the published hours, and the
- * in-copy service links go only to the gate types the service pages cover. No price at all (not
- * even the visit band), no duration, no warranty term, no speed, availability, coverage, brand,
- * licence or person.
+ * knowledge, stated as how gates work. The business installs and repairs all three types, the
+ * cantilever (קונזולי) gate included: docs/business-facts.md §C, the row "Does the business install /
+ * repair cantilever (קונזולי) gates?", ✅ since 2026-11-11 (backlog N33). The CTA says so in one
+ * sentence; there is no cantilever service page (no 8th service, CLAUDE.md §12) — the sliding-gate
+ * page covers the type and links back here, and llms.txt glosses that service as including it. What
+ * the page may not say: what this business has installed, or anything it guarantees. No price at all
+ * (not even the visit band), no duration, no warranty term, no speed, availability, coverage, brand,
+ * licence or person, and no booking certainty: the CTA asks for a photo or a call in the published
+ * hours.
  *
  * Cantilever geometry, stated consistently in every block: the carriages are bolted level onto
  * their own footing behind the post, so the leaf travels level whatever the ground under it does;
@@ -36,11 +35,11 @@ import type { Guide } from "@/lib/guide-types";
  * שערים-לחניה.ts or שערים-מתרוממים.ts, the homepage `faqs`, or the slope section of
  * content/locations/ירושלים.ts.
  *
- * No location link and no `relatedLocations` (N28, 2026-11-10). The registry makes the two travel
- * together, and a declared city renders under `guidesCopy.relatedLocationsHeading` ("אזורי שירות
- * קשורים") as "שערים חשמליים בירושלים". That reads as coverage however the sentence in the body is
- * bounded, and ירושלים is 🔶 confirm (business-facts §E, owner-actions 3.11). Do not put either back
- * until the owner answers or that heading stops saying "service areas".
+ * No location link and no `relatedLocations` (N28, 2026-11-10, when ירושלים was unconfirmed). The
+ * owner answered owner-actions 3.11 «yes» on 2026-11-11, so ירושלים needs no bound any more, but
+ * the page keeps neither: the registry makes the two travel together (lib/guides.ts throws on a
+ * declared city with no link in copy, and on a linked city that is not declared). A city link may
+ * come back only with its `relatedLocations` entry, in a sentence that promises no visit time.
  *
  * The job steps (N28) say what each installation involves, in the impersonal plural and never as
  * this business's own offer. They sit under one comparative H2 with an H3 per type, so they do not
@@ -367,18 +366,18 @@ export const guide = {
       ],
     },
     // Quote CTA after the unresolved variable: the reader cannot measure the entrance from here.
-    // 🔶 confirm — advice only; never an offer to install a cantilever gate (business-facts §C row
-    // pending, see the header comment).
+    // That the business installs and repairs all three types, cantilever included, is business-facts
+    // §C ✅ (2026-11-11, N33).
     {
       kind: "cta",
       variant: "quote",
       // Says only what the site already states (a photo or video on WhatsApp, a call in the
       // published hours) — no walk-through or callback promise (claims-verifier, 2026-11-09).
-      text: "לא בטוחים איזה סוג מתאים לכניסה שלכם? צלמו אותה מבחוץ ומבפנים, כולל הרצפה ושני צדי הפתח, ושלחו בוואטסאפ. אפשר גם להתקשר בשעות הפעילות ולתאר את הכניסה במילים.",
+      text: "לא בטוחים איזה סוג מתאים לכניסה שלכם? אנחנו מתקינים ומתקנים את שלושת הסוגים, כולל שער קונזולי. צלמו את הכניסה מבחוץ ומבפנים, כולל הרצפה ושני צדי הפתח, ושלחו בוואטסאפ. אפשר גם להתקשר בשעות הפעילות ולתאר אותה במילים.",
     },
 
-    // 🔶 confirm — the steps describe the work, in the impersonal plural. They never say this
-    // business does it on a cantilever gate (business-facts §C row, see the header comment).
+    // The steps describe the work in the impersonal plural, as a typical installation, never as
+    // this business's own order of work.
     { kind: "heading", level: 2, text: "במה שונה ההתקנה בכל אחד משלושת הסוגים?" },
     {
       kind: "paragraph",

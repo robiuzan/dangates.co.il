@@ -9,9 +9,9 @@
  * old URLs 301 here, so a reader from one of them may land on this page. The answer named no other
  * listed page, so this page never says every listed area is served: it names the service area only
  * as `serviceAreaLine` does (מרכז הארץ and the listed places), always beside the per-address check
- * by phone, and says that an unlisted place outside מרכז הארץ is outside it. ירושלים is listed but not
- * confirmed (business-facts §E, 🔶): bounded, not carved out; its own sentence says the call
- * settles whether a visit is possible at all, as its page says. Being served is still not a promise:
+ * by phone, and says that an unlisted place outside מרכז הארץ is outside it. ירושלים is served
+ * (owner-actions 3.11, answered «yes» in chat on 2026-11-11): it gets the same per-address check as
+ * every other place, and no sentence of its own. Being served is still not a promise:
  * this page may NOT state a response or arrival time, same-day or emergency availability, a travel
  * fee, any price, or how jobs are scheduled or prioritised, and it may not name any retired area or
  * invite its residents to call. No national coverage (lexicon id national-coverage): the business
@@ -54,10 +54,7 @@ export const page: PageContent = {
         // The retired קריות, צפון, דרום and באר שבע URLs 301 here (owner-actions 3.6), so this section
         // must not invite a reader from an unserved area to call: the invitation is bounded to מרכז
         // הארץ, and the service area is the site's own serviceAreaLine (מרכז הארץ and the listed areas).
-        // ירושלים is bounded, not carved out: 3.6 did not name it, so the call first settles
-        // whether a visit is possible at all — the same bound as content/locations/ירושלים.ts.
-        // 🔶 confirm — business-facts §E «Is ירושלים served?» (owner-actions 3.11); never "served" here.
-        "אנחנו לא נותנים שירות בכל אזור בארץ. אזור השירות שלנו הוא מרכז הארץ והמקומות שמופיעים ברשימה, ובכל כתובת בודקים בשיחה אם נוכל להגיע אליה, ומתי. בירושלים בודקים בשיחה קודם כול אם ביקור אפשרי בכלל. אם היישוב שלכם במרכז הארץ ואין לו עמוד באתר, זה אומר רק שלא כתבנו עליו עמוד, ואפשר לשאול עליו בטלפון. יישוב מחוץ למרכז הארץ שאינו ברשימה נמצא מחוץ לאזור השירות.",
+        "אנחנו לא נותנים שירות בכל אזור בארץ. אזור השירות שלנו הוא מרכז הארץ והמקומות שמופיעים ברשימה, ובכל כתובת בודקים בשיחה אם נוכל להגיע אליה, ומתי. אם היישוב שלכם במרכז הארץ ואין לו עמוד באתר, זה אומר רק שלא כתבנו עליו עמוד, ואפשר לשאול עליו בטלפון. יישוב מחוץ למרכז הארץ שאינו ברשימה נמצא מחוץ לאזור השירות.",
       ],
     },
     {

@@ -22,7 +22,7 @@
   "description": { "minChars": 120, "maxChars": 160 },
   "answerBlock": { "minWords": 40, "maxWords": 60 },
   "perf": {
-    "maxOutBytes": 13000000,
+    "maxOutBytes": 15000000,
     "maxJsFileBytes": 1000000,
     "maxJsTotalBytes": 1200000
   },

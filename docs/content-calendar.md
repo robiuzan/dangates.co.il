@@ -156,10 +156,9 @@ moves no longer need batching — edit `REDIRECTS.md` and rerun `node scripts/ge
   not the calendar.
 - **Export size gates the next guide.** Every copy byte ships about four times in `out/`: in the
   page HTML, in the RSC payload inlined in that HTML, in the page's `index.txt`, and — for FAQ text —
-  in the `FAQPage` JSON-LD. As of 2026-11-10 the export is 12.90 MB (`perf.mjs` → `outBytes` 12898445) against the 13 MB `maxOutBytes` in `scripts/audit/thresholds.json` — the owner's
-  limit, raised from 12 MB on 2026-11-10 after a compact build did not fit — so about 0.10 MB is
-  left. The next guide needs a byte cut elsewhere in the same change, or an owner decision on the
-  limit, before it is built. Never raise the cap without the owner's word.
+  in the `FAQPage` JSON-LD. As of 2026-11-10 the export is 12.90 MB (`perf.mjs` → `outBytes` 12898445) against the 15 MB `maxOutBytes` in `scripts/audit/thresholds.json` — the owner's
+  limit, raised from 13 MB on 2026-11-11 (12 MB before 2026-11-10) — so about 2.1 MB is
+  left. The next guide needs no byte cut first. Never raise the cap without the owner's word.
 - **Phase dependency:** Phase 3 first (`cityContent`, `serviceDepth` — built in Sprint 5 — `prefixed`, the header and
   footer reaching all 14 locations) so guides have deep pages to link down to; Phase 4 built the hub and
   the block model (`89439b7`); moving the posts onto it waits on owner-actions 3.8; guides #5+ run

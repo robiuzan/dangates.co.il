@@ -9,13 +9,11 @@
  * named storm and its date were written out on 2026-11-09 — no official source in the copy; Sprint 6
  * claims-verifier finding), the hillside apartment blocks with ramp-fed car parks, and the old industrial zones
  * beside the high-tech park. Public geography and general mechanism, stated as such; no elevation
- * figure. ירושלים was not named in the owner's 2026-11-09 answer (owner-actions 3.6 asked about it
- * by name; the answer named only חיפה, אשקלון and אזור השרון as served, and the four retired places
- * as not served). Until the owner says yes 🔶, the answer block and the meta description carry the
- * bound — call and check whether a visit is possible (the "when" came out on 2026-11-10: arrival
- * timing is 🔶, business-facts §E) — and never a flat "כן" (the old one was taken out on 2026-11-09,
- * claims-verifier).
- * Do not strengthen it. No claim about this business's jobs, technicians, travel time, response
+ * figure. The business serves ירושלים (owner-actions 3.11, answered «yes» in chat on 2026-11-11),
+ * and the answer block says so. Being served is not a booking promise: as on חיפה, the copy asks
+ * the reader to call and check whether a visit is possible (no "when": arrival timing is
+ * unconfirmed, business-facts §E), never "נתאם" or another booking certainty.
+ * No claim about this business's jobs, technicians, travel time, response
  * time, availability or presence in the city; no municipal or legal claim (the stone
  * cladding is described as a material, never as a rule); no price; no experience, warranty term,
  * licence or brand.
@@ -25,12 +23,10 @@ import type { CityContent } from "@/lib/city-content";
 export const city: CityContent = {
   title: "תיקון שערים חשמליים בירושלים",
   h1: "תיקון שערים חשמליים בירושלים",
-  // 🔶 confirm — whether ירושלים is served waits on the owner (owner-actions 3.6); the meta and the
-  // answer carry the bound, not a "כן". The business-facts §E question row for ירושלים is still to be
-  // added by the doc pass.
+  // Ends on the same per-address check as חיפה's: call and check whether a visit is possible.
   metaDescription:
     "תיקון שערים חשמליים ותריסי גלילה בירושלים: שער על חניה משופעת, מנוע שמעוגן בעמוד אבן, וקור וגשם שמשבשים את לוח הפיקוד בחורף. התקשרו ובדקו אם אפשר להגיע.",
-  answerHeading: "איך יודעים אם תוכלו לתקן שער חשמלי או תריס בירושלים?",
+  answerHeading: "האם אתם מתקנים שערים חשמליים ותריסי גלילה בירושלים?",
   // מודיעין is close; רחובות is the far end of the ירושלים–רחובות pair in lib/nearby.ts (the audit
   // 2026-11-09 L6 finding), so the shared "אילו ערים ואזורים קרובים?" would misdescribe it.
   // Two links, one close and one far, so the heading asks about one of each (P3).
@@ -38,7 +34,7 @@ export const city: CityContent = {
   // Answers the heading: geography only, the close/far split lib/nearby.ts records.
   nearbyNote: "מודיעין קרובה לירושלים. רחובות רחוקה יותר.",
   answer:
-    "כדי לדעת אם נוכל לתקן את השער החשמלי או את תריס הגלילה שלכם בירושלים, התקשרו אלינו ומסרו את הכתובת. העיר בנויה על הרים, ולכן השערים בה מתמודדים עם חניות על מדרון, עם תושבות שמעוגנות בעמודי אבן ועם חורף קר וגשום. בשיחה תארו גם את סוג השער ומה קורה לו, ונגיד לכם אם אפשר לתאם אבחון.",
+    "כן, אנחנו מתקנים שערים חשמליים ותריסי גלילה חשמליים בירושלים. העיר בנויה על הרים, ולכן השערים בה מתמודדים עם חניות על מדרון, עם תושבות שמעוגנות בעמודי אבן ועם חורף קר וגשום. כדי לבדוק אם אפשר להגיע לאבחון, התקשרו אלינו ומסרו את הכתובת. בשיחה תארו גם את סוג השער ומה קורה לו.",
   localNotes: [
     {
       heading: "מה עושה חניה על מדרון לשער נגרר ולשער כנף?",
@@ -116,9 +112,8 @@ export const city: CityContent = {
     "שער-זרוע",
     "תריסי-גלילה-חשמליים",
   ],
-  // 🔶 confirm — whether ירושלים is served waits on the owner (owner-actions 3.11). `process` opens
-  // with the same bound as the answer and the meta: call and check whether a visit is possible.
-  // Do not strengthen it. Every fact below is already stated in localNotes or the FAQs.
+  // Every fact below is already stated in localNotes or the FAQs. `process` keeps the per-address
+  // check every served page has (call, check whether a visit is possible); no timing.
   glance: {
     heading: "מה שיפוע המגרש ועמוד האבן משנים בתיקון שער בירושלים?",
     cost: {
@@ -126,11 +121,11 @@ export const city: CityContent = {
       links: [{ anchor: "אם די להחליף חלק שנשחק", href: "/מחירון/" }],
     },
     process: {
-      text: "התקשרו, מסרו את הכתובת ובדקו אם אפשר להגיע אליכם. ספרו אם המגרש משופע ואם המנוע מעוגן בעמוד אבן. אם יתואם אבחון, הטכנאי בודק את שיפוע המסילה בשער נגרר, את הקרקע בקשת הפתיחה של שער כנף ואת עיגון התושבת.",
+      text: "בשיחה ספרו אם המגרש משופע ואם המנוע מעוגן בעמוד אבן, ומסרו את הכתובת כדי לבדוק אם אפשר להגיע. באבחון הטכנאי בודק את שיפוע המסילה בשער נגרר, את הקרקע בקשת הפתיחה של שער כנף ואת עיגון התושבת.",
       links: [{ anchor: "קשת הפתיחה של שער כנף", href: "/services/שערי-כנף/" }],
     },
     check: {
-      text: "עמדו מחוץ לקשת הפתיחה והסתכלו על התושבת שבעמוד האבן: סדק סביב הברגים מעיד על עיגון שהתרופף, ואז לא מפעילים את השער. לפי המדריך לשער שלא נסגר, לקשת נכנסים רק כשהשער כבוי ושום שלט או סגירה אוטומטית לא יזיזו אותו. בספק, רק מסתכלים ומתקשרים. מכסה המנוע ולוח הפיקוד (230 וולט) נשארים סגורים. אם יתואם אבחון, שאלו אם העיגון יעבור דרך האבן אל הקיר.",
+      text: "עמדו מחוץ לקשת הפתיחה והסתכלו על התושבת שבעמוד האבן: סדק סביב הברגים מעיד על עיגון שהתרופף, ואז לא מפעילים את השער. לפי המדריך לשער שלא נסגר, לקשת נכנסים רק כשהשער כבוי ושום שלט או סגירה אוטומטית לא יזיזו אותו. בספק, רק מסתכלים ומתקשרים. מכסה המנוע ולוח הפיקוד (230 וולט) נשארים סגורים. בשיחה שאלו אם העיגון יעבור דרך האבן אל הקיר.",
       links: [{ anchor: "המדריך לשער שלא נסגר", href: "/מדריכים/שער-חשמלי-לא-נסגר/" }],
     },
   },

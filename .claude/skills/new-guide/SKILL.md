@@ -109,7 +109,7 @@ node scripts/audit/schema.mjs              # article type + FAQPage + Breadcrumb
 node scripts/audit/links.mjs               # orphans 0; one H1; heading order; breadcrumb on the page
 node scripts/audit/claims-grep.mjs         # 🔶/⛔ phrases live in out/ = stop-ship
 node scripts/audit/spam-grep.mjs           # emoji, curly quotes, fused words in content/**
-node scripts/audit/perf.mjs                # outBytes under thresholds.json perf.maxOutBytes (13 MB)
+node scripts/audit/perf.mjs                # outBytes under thresholds.json perf.maxOutBytes (15 MB)
 ```
 
 `lib/guides.ts` throws at module load on: under 900 words · zero or several `answer` blocks, or one
@@ -140,10 +140,9 @@ unknown slug in any related array · a `moreAt` with no matching guide. Rebuild 
 - **The export has almost no room left — check the size before you draft.** Every copy byte ships
   about four times in `out/`: in the page HTML, in the RSC payload inlined in it, in the page's
   `index.txt`, and — for FAQ text — in the `FAQPage` JSON-LD. As of 2026-11-10 the export is
-  12.90 MB (`perf.mjs` → `outBytes` 12898445) against `maxOutBytes` 13000000, the owner's limit
-  (raised from 12 MB on 2026-11-10 after a compact build did not fit), so about 0.10 MB is left. The
-  next guide needs a byte cut elsewhere in the same change, or an owner decision on the limit,
-  before it is built — never raise the cap yourself (`docs/content-calendar.md` §5).
+  12.90 MB (`perf.mjs` → `outBytes` 12898445) against `maxOutBytes` 15000000, the owner's limit
+  (raised from 13 MB on 2026-11-11 by the owner's word; 12 MB before 2026-11-10), so about 2.1 MB is left. No byte cut
+  is needed before the next guide; never raise the cap yourself (`docs/content-calendar.md` §5).
 - **`openGraph` merges shallowly** — the route's `generateMetadata` must restate
   `images: ogImageMeta(manifest.images)` or every guide ships without an OG image.
 - **Hebrew params arrive percent-encoded** in static export: `decodeURIComponent(param).normalize("NFC")`

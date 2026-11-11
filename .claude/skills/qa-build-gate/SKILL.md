@@ -43,8 +43,8 @@ way to clear `.next/`. `next build` rewrites `out/` itself.
 export, uploaded on every deploy. Deleting them from `out/` afterwards is not the fix; clearing
 `.next/` is. `node scripts/audit/perf.mjs` holds the line (`maxJsFileBytes` 1 MB in
 `scripts/audit/thresholds.json`, `devBuildFiles` in `edge.mjs`); as of 2026-11-10 (at `bcbf822`)
-a clean export is 12.90 MB (12898445 B) in 145 files against the 13 MB `maxOutBytes` (raised from
-12 MB on 2026-11-10, the owner's limit, after a compact build did not fit) — 11.51 MB (11512187 B)
+a clean export is 12.90 MB (12898445 B) in 145 files against the `maxOutBytes` (15 MB since 2026-11-11, raised by the owner from 13 MB; 13 MB since 2026-11-10, raised from
+12 MB) — 11.51 MB (11512187 B)
 in 143 files at `379eb0e`; 11.69 MB at
 `2b0d802` until `9886dd1` stopped serialising the header menus twice into every RSC payload; 10.61 MB
 after `7ed1acd` retired four location pages, before the header disclosures and the TOC (`fd72698`,
@@ -76,7 +76,7 @@ Counts re-measured on 2026-11-10 at `bcbf822` (`npm run build`, then `npm run au
 backlog N32): still 1 failure, the post floor. The content work since `379eb0e` (N23–N31 and the
 safety consolidation `526d19b`) moved the counts below by design — guides 4 → 5, `sitemapUrls`
 46 → 47, `contentPages` 47 → 48, `faqPages` 26 → 27 (103 → 109 questions), `images` 0 → 48 (the
-header logo, one per page), `outBytes` 11512187 → 12898445 under a cap raised to 13 MB; `about`
+header logo, one per page), `outBytes` 11512187 → 12898445 under a cap raised to 13 MB, then 15 MB on 2026-11-11; `about`
 1214 → 938 and the areas index 546 → 523 unique fell with `526d19b`, which took the release steps
 off both. One new `titles` warning: guide #5's title is 65 characters. Re-cut from `npm run audit -- --scope full` on 2026-11-10 against a clean rebuild (source tree at
 `379eb0e`, the polish's last pass: the committee guide's quorum row quoted as the bylaws word it,
@@ -147,7 +147,7 @@ distinct `/services/` + `/locations/` hrefs (§9.1; no script counts it — the 
 `schema` → `pagesWithJsonLd 47`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 27` (109 questions) · `perf` →
 `largestJsBytes 172834`, `jsTotalBytes` ≤ 783464 unless a change says why, `clientComponents 5`
 (`EngagementEvents`, `LeadForm`, `DesktopNav`, `MobileMenu`, `Reveal` — 3 from Sprint 3 until
-`fd72698`), `outBytes` under 13000000 (12898445, as of 2026-11-10), `rscBytes` ≤ 3910161, `images 48` (the header logo, one per page), `imagesUnsized 0`, `fontPreloads 2`, `unusedDeps []`,
+`fd72698`), `outBytes` under 15000000 (12898445, as of 2026-11-10), `rscBytes` ≤ 3910161, `images 48` (the header logo, one per page), `imagesUnsized 0`, `fontPreloads 2`, `unusedDeps []`,
 `devBuildFiles 0`, `sourceMaps 0` · `rtl-lint` → `bannedUtilities 0`, `hexLiterals 0` · `a11y` →
 `imgCount 48`, `unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 · `titles` →
 `ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, no warning, `ctaElements 150`,

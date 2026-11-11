@@ -32,13 +32,13 @@ with the next deploy, on the owner's word.
 
 Measured on 2026-11-10 at `bcbf822` (`npm run audit`): 1 failure, the known blog-post word floor,
 which waits on the post rewrite; 47 sitemap URLs; 5 guides; 27 `FAQPage` pages; `outBytes`
-12898445 against the 13000000 cap.
+12898445 against the 13000000 cap, raised by the owner to 15000000 on 2026-11-11.
 
 **Still open in the repo:**
 
 - Guides #6 and #7 ([content-calendar.md](content-calendar.md) §2), and moving #9 ahead of #8 —
-  they answer probe questions 2, 6 and 7. The export has about 0.10 MB left, so the next guide needs
-  a byte cut or the owner's decision on the limit first (content-calendar §5).
+  they answer probe questions 2, 6 and 7. The owner raised the cap to 15 MB on 2026-11-11, so about 2.1 MB is left and
+  no byte cut is needed first (content-calendar §5).
 - קונזולי in the comparison guide's CTA and `lib/llms.ts` — backlog N33, blocked until the owner
   fills business-facts §C. Still no 8th service page.
 - Guide #5's title is 65 characters, over the 60 the title check warns at (`titles.mjs`, backlog
@@ -110,7 +110,7 @@ which waits on the post rewrite; 47 sitemap URLs; 5 guides; 27 `FAQPage` pages; 
 - Showing a street address or invented coordinates, or using a keyword-stuffed profile name,
   per-city profile services, "open 24 hours", or paid or filtered reviews.
 - Removing the on-page disclosure beside the he.wikisource.org statute links.
-- Raising `maxOutBytes` before trying a compact build, or above 13 MB.
+- Raising `maxOutBytes` before trying a compact build, or above 15 MB (the owner's limit since 2026-11-11).
 - Treating a `robots.txt` 200 or a bare-token probe as proof that crawlers are allowed.
 - Typing search, ranking or citation numbers by hand instead of taking them from scripts or real
   exports.

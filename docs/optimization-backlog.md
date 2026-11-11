@@ -2624,32 +2624,36 @@ npm run audit -- --json          # failures 1: content-depth "post: 11 of 11 pag
 npm run audit:env                # 0 failures
 ```
 
-### N33 — P2 · S · [NOT STARTED · unblocked 2026-11-11, business-facts §C ✅] The site does not say it installs and repairs קונזולי gates
+### N33 — P2 · S · [✅ DONE 2026-11-11 · repo] The site does not say it installs and repairs קונזולי gates
 
 Filed 2026-11-10. The owner said in chat that the business does (2026-11-10), but `docs/business-facts.md`
 §C has no confirmed row and that file's Value column is the owner's. Once it does: the comparison
 guide's CTA and header comment, `lib/llms.ts`, and one short passage on `/services/שערים-נגררים/`.
 Still no 8th service page.
 
-### N34 — P1 · M · [NOT STARTED] Repeated class strings fill a fifth of the export
+**Closed 2026-11-11.** business-facts §C ✅ (owner, «record it»). The comparison guide's CTA and header say the business installs and repairs קונזולי gates; `/services/שערים-נגררים/` carries one short passage linking the guide; `/שירותים/` routes a hanging sliding gate to the sliding-gate service; `/llms.txt` glosses sliding gates as "including cantilever (קונזולי) gates". Still no 8th service page. hebrew-editor, claims-verifier and article-auditor clean. Verified: `npm run gate` exit 1 (only the post floor), `check-live-out` → 12 quoted pieces shown, `claims-grep.mjs` → `failingClaims 0`, `perf.mjs` → `outBytes 12905638` (15 MB cap).
+
+### N34 — P1 · M · [NOT STARTED · optional, not needed now — the owner raised the cap to 15 MB on 2026-11-11] Repeated class strings fill a fifth of the export
 
 Filed 2026-11-11 after the export reached 12.90 MB of the owner's 13 MB cap. Measured on `a63e619`:
 class attributes are 2.26 MB of the 11.8 MB of `index.html` and `index.txt` files, because each long
 utility string prints on every link, in the HTML and again in the RSC payload. The top strings: the
 footer link (3,066 uses), the header menu link (1,029), a secondary link style (813), the link card
 (726), the in-copy link (489), the button base. Define each once (a class in `app/globals.css` or a
-parent child-selector) with identical computed styles. The owner chose "cut size first" on 2026-11-11
-over raising the cap. Proof: `perf.mjs` → `outBytes`, `a11y.mjs` contrast pairs unchanged,
+parent child-selector) with identical computed styles. The owner first chose "cut size first", then said on 2026-11-11
+that the cap could be raised; it is now 15 MB. Proof: `perf.mjs` → `outBytes`, `a11y.mjs` contrast pairs unchanged,
 `rtl-lint.mjs`.
 
-### N35 — P2 · S · [NOT STARTED] ירושלים is still bounded though the owner says it is served
+### N35 — P2 · S · [✅ DONE 2026-11-11 · repo] ירושלים is still bounded though the owner says it is served
 
 Filed 2026-11-11. The owner answered owner-actions 3.11 «yes» in chat on 2026-11-11. The page's
 meta, answer, glance and FAQs, the `/איזורי-שירות/` sentence, the comparison guide and `/llms.txt`
 (`llmsCopy.areaBounds`) still say a visit there is unconfirmed. Make it read like the other served
 cities, still with no booking or timing promise. Proof: `claims-grep.mjs`, claims-verifier.
 
-### N36 — P1 · S · [NOT STARTED] A legacy post gives hand-release advice outside the safety rule
+**Closed 2026-11-11.** The owner answered 3.11 «yes». The ירושלים page's meta, answer, glance and FAQs, the `/איזורי-שירות/` sentence and the comparison guide read like the other served cities (whether and when a visit is possible is still checked by phone); `llmsCopy.areaBounds` is empty. The business-facts §E Value awaits the owner's own entry. hebrew-editor and claims-verifier clean. Verified: `npm run gate` exit 1 (only the post floor), `check-live-out` → 12 quoted pieces shown, `claims-grep.mjs` → `failingClaims 0`, `perf.mjs` → `outBytes 12905638` (15 MB cap).
+
+### N36 — P1 · S · [✅ DONE 2026-11-11 · repo] A legacy post gives hand-release advice outside the safety rule
 
 Filed 2026-11-11 from the pre-deploy sweep (aeo-geo-strategist). The post `שער-חשמלי-לא-מגיב` says
 any gate can be released and to oil the rails, against content-standards §6.1. The owner approved a
@@ -2660,6 +2664,8 @@ claims-verifier.
 ---
 
 ## §15. Environment
+
+**Closed 2026-11-11.** The post `שער-חשמלי-לא-מגיב` now gives the safety short form, says a lifting gate stopped open or half-way and a barrier arm are not released by hand, points to the guide by name, and says a sliding gate's track is cleaned, not oiled; its `updated` is 2026-11-11. The two release sentences it dropped were quoted by the winter power-cut line in `content/live/_campaigns.mjs`; with the owner's approval in chat on 2026-11-11 that line became «הפסקת חשמל? לא כל שער משחררים ביד», quoting the post's new sentence, and the register's `approved` stamp records it. hebrew-editor and claims-verifier clean. Verified: `npm run gate` exit 1 (only the post floor), `check-live-out` → 12 quoted pieces shown, `claims-grep.mjs` → `failingClaims 0`, `perf.mjs` → `outBytes 12905638` (15 MB cap).
 
 ### 15.1 — P2 · S · [PARTIAL] Citation drift is a measured quantity
 

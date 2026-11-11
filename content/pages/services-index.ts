@@ -17,9 +17,10 @@
  * Never a longer variant in new words. The link to the safety guide calls the devices common
  * (״הנפוצים״), as that guide's table caption does: never required by ת״י 900 or by law.
  *
- * No cantilever (קונזולי) gate in the identification list: it routes readers to service pages, and
- * whether the business works on them is 🔶 (docs/business-facts.md §C). The comparison guide covers
- * the type without a service link; this page reaches it only through the anchor below.
+ * The cantilever (קונזולי) gate is routed to the sliding-gate service in the identification list:
+ * the business installs and repairs it (docs/business-facts.md §C ✅, 2026-11-11, backlog N33), and
+ * there is no 8th service page for it. Its mechanism stays in the comparison guide, which this page
+ * reaches through the anchor below.
  */
 import type { PageContent } from "@/lib/page-content";
 
@@ -35,6 +36,7 @@ export const page: PageContent = {
       ],
       list: [
         "שער נגרר: מסילה על הקרקע לכל רוחב הפתח, ופס שיניים לאורך התחתית של השער. המנוע יושב בקופסה נמוכה בצד, וגלגל השיניים שלו משתלב בפס.",
+        "שער קונזולי: נראה כמו שער נגרר, אבל בלי מסילה בפתח. הכנף עוברת מעל הקרקע, תלויה על עגלות בצד הפתח. השער נכלל בשירות לשערים נגררים.",
         "שער כנף: כנף אחת או שתיים שתלויות על צירים בעמודים. המנוע הוא בדרך כלל זרוע או בוכנה שמחוברת בין העמוד לכנף, ובחלק מהשערים הוא קבור באדמה מתחת לציר.",
         "שער מתרומם: אין מסילה על הקרקע ואין תנועה לצדדים. הכנף עולה ונאספת מעל הפתח או מתחת לתקרת החניה. קפיצים או משקולות נגד, בצדדים או מעל הפתח, מאזנים אותה.",
         "מחסום, או שער זרוע: ארון בצד הנתיב, וממנו יוצאת זרוע ארוכה אחת שעולה ויורדת. אין כנף שסוגרת את הפתח, והזרוע לבדה עוצרת את הרכב.",

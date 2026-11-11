@@ -119,7 +119,7 @@ export const siteConfig = {
  * content/services/<slug>.ts via lib/service-depth.ts) — a substantive copy edit on every one.
  */
 export const services = [
-  { slug: "שערים-נגררים", name: "שערים נגררים", updated: "2026-11-10" },
+  { slug: "שערים-נגררים", name: "שערים נגררים", updated: "2026-11-11" },
   { slug: "שערי-כנף", name: "שערי כנף", updated: "2026-11-10" },
   { slug: "שערים-מתרוממים", name: "שערים מתרוממים", updated: "2026-11-10" },
   { slug: "שערים-לחניה", name: "שערים לחניה", updated: "2026-11-10" },
@@ -170,7 +170,7 @@ export const locations = [
     name: "ירושלים",
     kind: "city",
     prefixed: "בירושלים",
-    updated: "2026-11-10",
+    updated: "2026-11-11",
   },
   { slug: "חיפה", name: "חיפה", kind: "city", prefixed: "בחיפה", updated: "2026-11-10" },
   {
@@ -283,8 +283,8 @@ export type StaticPage = {
  */
 export const staticPages: readonly StaticPage[] = [
   { path: "", updated: "2026-11-10" },
-  { path: "שירותים", updated: "2026-11-10" },
-  { path: "איזורי-שירות", updated: "2026-11-10" },
+  { path: "שירותים", updated: "2026-11-11" },
+  { path: "איזורי-שירות", updated: "2026-11-11" },
   { path: "מחירון", updated: "2026-11-10" },
   { path: "blog", updated: "2026-11-10" },
   // The guides hub: the registry (lib/guides.ts) supplies each guide; this row is the index itself.

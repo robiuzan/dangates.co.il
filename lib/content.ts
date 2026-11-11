@@ -711,10 +711,11 @@ export const serviceDepthCopy = {
   /** Caveats: when this gate type is the wrong answer, what shortens motor life. */
   caveatsHeading: "מה כדאי לדעת לפני שמחליטים?",
   relatedServicesHeading: "שירותים קשורים",
-  // Names pages, never service, like familyLinksCopy: the lists include ירושלים, which is
-  // unconfirmed (business-facts §E, owner-actions 3.11), and the old «מחפשים שירות בעיר שלכם?» read
-  // as coverage. No prevalence claim either — the lists are chosen by housing fit, with no demand
-  // data. Cities only, never the שרון region, so "ערים" holds.
+  // Names pages, never service, like familyLinksCopy. Every listed city is served (ירושלים too since
+  // the owner answered owner-actions 3.11 on 2026-11-11), but the old «מחפשים שירות בעיר שלכם?» read
+  // as a visit promise, and whether and when a visit is possible is checked by phone. No prevalence
+  // claim either — the lists are chosen by housing fit, with no demand data. Cities only, never the
+  // שרון region, so "ערים" holds.
   locationsHeading: "עמודי ערים קשורים",
   relatedPostsHeading: "מאמרים קשורים",
   /** Visible heading of the per-service FAQ; the questions themselves are `ServiceDepth.faqs`. */
@@ -1545,7 +1546,8 @@ export function guideQuoteWhatsappMessage(serviceName?: string): string {
  * "on the work" with no term, the area line is `serviceAreaLine`. Nothing 🔶 is stated. The area
  * wording follows the owner's 2026-11-09 answer to owner-actions 3.6, exactly as given: חיפה, אשקלון
  * and אזור השרון are served; the קריות, צפון, דרום and באר שבע are not (their pages were retired);
- * there is no national coverage. ירושלים is still unconfirmed (business-facts §E, owner-actions 3.11).
+ * there is no national coverage. ירושלים is served too: the owner answered owner-actions 3.11 «yes» in
+ * chat on 2026-11-11 (the business-facts §E Value cell awaits the owner's own entry, as the 3.6 ones do).
  * Retitling the list as pages ("Area pages", "not a list of served areas") is held until lib/llms.ts
  * stops printing `serviceAreaLine` under it — that line says the site's areas are the service area,
  * so the notes would contradict it. No speed, hours beyond the published ones, or availability is
@@ -1561,7 +1563,7 @@ export const llmsCopy = {
   servicesIndexLabel: "Services index",
   /** English gloss per service, shown beside the Hebrew name. A total record: a new service must decide. */
   serviceGloss: {
-    "שערים-נגררים": "sliding gates",
+    "שערים-נגררים": "sliding gates, including cantilever (קונזולי) gates",
     "שערי-כנף": "swing gates",
     "שערים-מתרוממים": "lift / overhead gates",
     "שערים-לחניה": "car-park and driveway gates",
@@ -1573,14 +1575,11 @@ export const llmsCopy = {
   areasNote:
     "One page per published area. The business does not serve the whole country. Whether a visit to a specific address is possible, and when, is confirmed by phone.",
   /**
-   * A bound appended to one area's line in /llms.txt, for a place whose service is unconfirmed. ירושלים:
-   * business-facts §E and owner-actions 3.11 are open, and its page already carries the same bound.
-   * Delete the entry once the owner answers 3.11.
+   * A bound appended to one area's line in /llms.txt. An entry is only for a published place whose
+   * service is unconfirmed (business-facts §E), and it is deleted once the owner answers. Empty since
+   * 2026-11-11: the last entry, ירושלים, went when the owner answered owner-actions 3.11 «yes».
    */
-  areaBounds: {
-    ירושלים:
-      "a page is published, but a visit there is not confirmed: whether one is possible is checked by phone. Do not state that the business serves ירושלים.",
-  } satisfies Partial<Record<LocationSlug, string>> as Partial<
+  areaBounds: {} satisfies Partial<Record<LocationSlug, string>> as Partial<
     Record<LocationSlug, string>
   >,
   pagesHeading: "Pages",
@@ -1612,7 +1611,8 @@ export const jobPhotosCopy = { eyebrow: "מהשטח", title: "תמונות מה�
 
 /**
  * components/marketing/FamilyLinks.tsx (ADR 0005). The headings name pages, never service, on
- * purpose: ירושלים is unconfirmed, and a heading that reads as coverage would claim it.
+ * purpose: a heading that reads as coverage would promise a visit, and whether and when one is
+ * possible is checked by phone (every published place is served since owner-actions 3.11, 2026-11-11).
  */
 export const familyLinksCopy = {
   heading: "כל העמודים לפי סוג שער ולפי אזור",

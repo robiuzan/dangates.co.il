@@ -27,7 +27,8 @@
   the published areas — 14 location pages (13 cities and אזור השרון), 7 service pages, 5 guides
   (4 since Sprint 7, the fifth in `c457c31`; as of 2026-11-10), 11 blog posts. **National coverage is ❌:** the owner answered owner-actions 3.6
   on 2026-11-09 — קריות, צפון, דרום and באר שבע are not served (their four pages were retired in
-  `7ed1acd` with 301s to `/איזורי-שירות/`); חיפה, אשקלון and שרון are. Never write "פריסה ארצית".
+  `7ed1acd` with 301s to `/איזורי-שירות/`); חיפה, אשקלון and שרון are, and ירושלים too (owner-actions 3.11,
+  answered in chat 2026-11-11). Never write "פריסה ארצית".
 - **Audience:** private homeowners, ועדי בתים (building committees), property managers, businesses
   with vehicle gates.
 - **Core promise:** reliable diagnosis before repair, and a warranty on the work — write **אחריות על העבודה**, never "אחריות מלאה": the term, scope and
@@ -528,8 +529,8 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   registers say). `scripts/audit/links.mjs` strips the bar and the card as chrome (they are on every
   page). The known baseline holds with them: 26 audit failures before and after (2026-10-12). The
   export grows by about 1.15 MB — ≈16.6 KB per HTML page and ≈7.8 KB per RSC payload, every line
-  printed in both — inside `thresholds.json` → `maxOutBytes` (13 MB since 2026-11-10, the owner's
-  limit; `perf.mjs` → `outBytes` 12898445, as of 2026-11-10).
+  printed in both — inside `thresholds.json` → `maxOutBytes` (15 MB since 2026-11-11, the owner's
+  limit, raised from 13 MB on 2026-11-10; `perf.mjs` → `outBytes` 12898445, as of 2026-11-10).
 - **Reminder:** `.github/workflows/remind.yml` runs `scripts/live/check-reminders.mjs` every Sunday
   and pushes to the owner's phone only when THIS site needs something; red without the
   `NTFY_TOPIC` secret; a schedule runs only from the default branch on GitHub.
@@ -557,6 +558,9 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   owner-actions 3.8); and the privacy page — rewritten 2026-11-08
   (`68a4a7f`) to name the status-file read and the four browser-storage values, its copy signed
   off (`fba5957`); backlog §8.2 stays PARTIAL on B2 and B10 only.
+- **Amended 2026-11-11 (owner, in chat):** the winter power-cut line «הפסקת חשמל? יש שחרור ידני —
+  בזהירות» became «הפסקת חשמל? לא כל שער משחררים ביד», after the owner's safety-only fix to the post it
+  quoted (backlog N36); `check-live-out` now shows 12 quoted pieces.
 - **Before the first deploy (owner, in the kit README's order):** add the three origins (apex, www, `.pages.dev`) to the status switch's CORS list — without it the
   switch is unreadable here and every seasonal line and the card stay off; widen the one shared GTM
   trigger `CE - popup events (3locksmiths)` to this hostname; `gh secret set NTFY_TOPIC -R

@@ -98,10 +98,10 @@ export interface CityContent {
    * Meta description and og:description: 150–160 characters (keyword-map §5 — titles.mjs warns only
    * outside its sitewide 120–160 band), ending on an action and terminal punctuation, unique
    * sitewide, no unconfirmed claim. חיפה, אשקלון and אזור השרון are served (owner-actions 3.6,
-   * answered 2026-11-09); the answer named no other published place, so for the rest nothing beyond
-   * the page's own wording is confirmed — ירושלים is still 🔶 and its answer and meta keep the bound.
-   * Either way it is no booking promise: the action is a call, or the bound — check by phone whether
-   * and when a visit is possible — never "נתאם" or another booking certainty.
+   * answered 2026-11-09), and so is ירושלים (owner-actions 3.11, answered 2026-11-11); for the rest
+   * nothing beyond the page's own wording is confirmed. Either way it is no booking promise: the
+   * action is a call, or the per-address check — by phone, whether and when a visit is possible —
+   * never "נתאם" or another booking certainty.
    * Empty → `locationMetaDescription(prefixed)`.
    */
   metaDescription: string;

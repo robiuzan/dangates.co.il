@@ -7,6 +7,10 @@
  * ✅ APPROVED by the owner on 2026-10-12, on the fleet wording sign-off page — approved fingerprint
  *   4d0513a5efd6 (sha256 of _campaigns.mjs + _updates.mjs as approved). A wording change needs a
  *   new approval; the build refuses a register without its `approved` stamp.
+ *   Amended 2026-11-11 with the owner's approval in chat: the winter power-cut line «הפסקת חשמל?
+ *   יש שחרור ידני — בזהירות» became «הפסקת חשמל? לא כל שער משחררים ביד», because the owner's
+ *   safety-only fix to the post it quoted (backlog N36, content-standards §6.1) removed the two
+ *   release sentences it rested on. Nothing else changed.
  *
  * THE RULES (fleet-wide)
  *   - A tip must be something this site already says: `source` quotes the sentence, in the file
@@ -29,7 +33,7 @@
  */
 export default {
   approved:
-    "2026-10-12 — Robi (owner), fleet wording sign-off page, fingerprint 4d0513a5efd6",
+    "2026-11-11 — Robi (owner), in chat: the power-cut line «הפסקת חשמל? לא כל שער משחררים ביד»; every other line as signed off 2026-10-12 on the fleet wording sign-off page, fingerprint 4d0513a5efd6",
   ui: { close: "סגירה" },
 
   // From 1024px whenever nothing seasonal shows (app/globals.css), on the calm pages and with
@@ -83,7 +87,8 @@ export default {
     },
 
     // Winter storms cut the power, and a gate without power is stuck — the troubleshooting
-    // guide's manual release, with its own warning.
+    // post's warning that not every gate is released by hand (content-standards §6.1; the line
+    // invited a manual release until 2026-11-11).
     {
       id: "power-cut-2026",
       variant: "power-cut",
@@ -92,11 +97,11 @@ export default {
       until: "2027-01-17T00:00:00+02:00",
       priority: 20,
       topbar: {
-        text: "הפסקת חשמל? יש שחרור ידני — בזהירות",
+        text: "הפסקת חשמל? לא כל שער משחררים ביד",
         link: { label: "למדריך", href: "/blog/שער-חשמלי-לא-מגיב/" },
       },
       source:
-        "lib/posts.ts — ״האם השער מחובר לחשמל? ייתכן שיש הפסקת חשמל או שהחיבור נותק. בדקו את לוח החשמל הביתי.״ · ״בדקו את המדריך למשתמש: לכל שער חשמלי יש מנגנון שמאפשר שחרור ידני.״ · ״שחררו בזהירות: היזהרו מפציעות במהלך פתיחת השער באופן ידני.״",
+        "lib/posts.ts — ״האם השער מחובר לחשמל? ייתכן שיש הפסקת חשמל או שהחיבור נותק. בדקו את לוח החשמל הביתי.״ · ״שער מתרומם שנעצר פתוח או באמצע הדרך, וזרוע של מחסום חניה, לא משחררים ביד, גם לא בהפסקת חשמל, ולא עומדים מתחתיהם.״",
     },
 
     // The windy weeks of the winter: the maintenance guide's "don't run it in strong wind".
