@@ -75,7 +75,7 @@ export const guide = {
   family: "committee",
   targetQuery: "מחסום חניה ועד בית",
   datePublished: "2026-11-10",
-  dateModified: "2026-11-10",
+  dateModified: "2026-11-11",
   relatedServices: ["שער-זרוע", "שערים-לחניה", "שערים-לדירה"],
   sources: [
     {

@@ -62,7 +62,7 @@ export const guide = {
   targetQuery: "שער נגרר או כנף",
   // Set both to the real publish day in the integrate step (never backdated).
   datePublished: "2026-11-10",
-  dateModified: "2026-11-10",
+  dateModified: "2026-11-11",
   relatedServices: ["שערים-נגררים", "שערי-כנף", "שערים-לחניה"],
   sources: [
     {

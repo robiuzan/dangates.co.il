@@ -42,8 +42,8 @@ export const guide = {
     "שער חשמלי שלא נסגר עד הסוף: מה עוצר אותו, טבלת סיבות לפי סוג השער, מה בודקים לבד ובאיזה סדר, ומתי מפסיקים להפעיל ומזמינים טכנאי.",
   family: "symptom",
   targetQuery: "שער חשמלי לא נסגר",
-  datePublished: "2026-11-10",
-  dateModified: "2026-11-10",
+  datePublished: "2026-11-11",
+  dateModified: "2026-11-11",
   relatedServices: ["שערים-נגררים", "שערי-כנף"],
 
   blocks: [
