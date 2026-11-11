@@ -16,6 +16,7 @@
  *   security  edge spam-grep
  *   perf      perf
  *   a11y      a11y rtl-lint
+ *   images    images       (the page-images gate over out/, CLAUDE.md §15)
  *   env       env-doctor   (source-only; also `npm run audit:env`)
  *   full      everything except env-doctor
  */
@@ -48,6 +49,7 @@ export const CHECKS = {
   a11y: { file: "a11y.mjs", scopes: ["a11y"], needsOut: true },
   perf: { file: "perf.mjs", scopes: ["perf"], needsOut: true },
   edge: { file: "edge.mjs", scopes: ["security"], needsOut: true },
+  images: { file: "images.mjs", scopes: ["images"], needsOut: true },
   "env-doctor": { file: "env-doctor.mjs", scopes: ["env"], needsOut: false },
 };
 

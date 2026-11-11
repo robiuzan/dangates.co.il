@@ -317,6 +317,8 @@ export default {
     "scripts/",
     ".claude/",
     "types/",
+    // A caption or an alt is not a source a live tip may quote (CLAUDE.md §15).
+    "content/images/",
   ],
 
   /**

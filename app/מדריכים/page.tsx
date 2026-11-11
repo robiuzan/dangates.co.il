@@ -5,6 +5,7 @@ import { guidesCopy } from "@/lib/content";
 import { itemListJsonLd } from "@/lib/jsonld";
 import { pillarLabels } from "@/lib/guide-types";
 import { guideList, guidePath, guidesByPillar } from "@/lib/guides";
+import { imageFor } from "@/lib/images";
 import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageContentBlock } from "@/components/marketing/ContentSections";
@@ -29,6 +30,12 @@ export const metadata: Metadata = {
 export default function GuidesIndexPage() {
   const content = pageContent.guidesIndex;
   const groups = guidesByPillar();
+  // Each card shows the derived thumbnail of its guide's lead; the first card in DOM order that
+  // shows one owns the page's single eager image (CLAUDE.md §15).
+  const leadOf = (slug: string) => imageFor(guidePath(slug), "lead");
+  const firstWithThumb = groups
+    .flatMap((group) => group.guides)
+    .find((g) => leadOf(g.slug)?.thumb)?.slug;
 
   // The FULL list, in the order the grid renders it (pillar groups, newest first inside each). An
   // ItemList that disagrees with what is rendered is worse than none, so it is built from `groups`.
@@ -70,7 +77,12 @@ export default function GuidesIndexPage() {
               </h2>
               <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {group.guides.map((g) => (
-                  <GuideCard key={g.slug} guide={g} />
+                  <GuideCard
+                    key={g.slug}
+                    guide={g}
+                    thumb={leadOf(g.slug)}
+                    priority={g.slug === firstWithThumb}
+                  />
                 ))}
               </ul>
             </div>

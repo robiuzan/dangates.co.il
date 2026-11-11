@@ -44,6 +44,7 @@ import { articleJsonLd, businessNode, type JsonLd } from "@/lib/jsonld";
 import { schemaTypeFor, type Guide } from "@/lib/guide-types";
 import { guidePath, readingMinutes, relatedGuidesOf, wordCount } from "@/lib/guides";
 import { buildToc } from "@/lib/toc";
+import { imageFor } from "@/lib/images";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -51,6 +52,7 @@ import { Toc } from "@/components/ui/Toc";
 import { ArticleBody } from "@/components/article/ArticleBody";
 import { ArticleMeta, LinkCardList, SourcesList } from "@/components/article/chrome";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { Figure } from "@/components/images/Figure";
 
 /**
  * A source URL as the graph carries it: percent-encoded when it holds raw Hebrew (schema.mjs fails a
@@ -122,6 +124,11 @@ export function GuideView({ guide: g }: { guide: Guide }) {
   ];
   const toc = answerAt === -1 ? [] : buildToc(tocHeadings, wordCount(g));
 
+  // The lead sits under the answer block, before the table of contents; it is the page's eager image
+  // when it renders (ArticleBody hands the priority to the first figure block when it does not).
+  const route = guidePath(g.slug);
+  const lead = imageFor(route, "lead");
+
   const serviceLinks = g.relatedServices.flatMap((slug) => {
     const s = services.find((x) => x.slug === slug);
     return s ? [{ href: `/services/${s.slug}/`, label: s.name }] : [];
@@ -160,7 +167,13 @@ export function GuideView({ guide: g }: { guide: Guide }) {
               <ArticleBody
                 blocks={g.blocks}
                 guideTitle={g.title}
-                afterAnswer={<Toc items={toc} />}
+                route={route}
+                afterAnswer={
+                  <>
+                    {lead && <Figure image={lead} priority className="mt-6" />}
+                    <Toc items={toc} />
+                  </>
+                }
               />
               <SourcesList sources={g.sources} />
             </div>

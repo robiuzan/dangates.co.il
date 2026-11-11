@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { manifest } from "@/lib/site-config";
 import { ogBase, routeUrl } from "@/lib/seo";
-import { faqs, homeMetaDescription, homeFaqHeading } from "@/lib/content";
+import { aboutTeaser, faqs, homeMetaDescription, homeFaqHeading } from "@/lib/content";
+import { imageFor, stripFor } from "@/lib/images";
 import { faqJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
 import { businessNode, graph, websiteJsonLd } from "@/lib/jsonld";
 import { Section } from "@/components/ui/Section";
@@ -12,13 +13,14 @@ import { ServicesGrid } from "@/components/marketing/ServicesGrid";
 import { WhyUs } from "@/components/marketing/WhyUs";
 import { Process } from "@/components/marketing/Process";
 import { Diagnosis } from "@/components/marketing/Diagnosis";
-import { JobPhotos } from "@/components/marketing/JobPhotos";
 import { PricingTeaser } from "@/components/marketing/PricingTeaser";
 import { ServiceAreas } from "@/components/marketing/ServiceAreas";
 import { Reviews } from "@/components/marketing/Reviews";
 import { Faq } from "@/components/marketing/Faq";
 import { FinalCta } from "@/components/marketing/FinalCta";
 import { LiveUpdates } from "@/components/live/Live";
+import { FieldStrip } from "@/components/images/FieldStrip";
+import { TeamTeaser } from "@/components/images/TeamTeaser";
 
 /**
  * The homepage previously exported no metadata at all, so it fell back to the layout's
@@ -42,6 +44,8 @@ const jsonLd = graph(
 );
 
 export default function HomePage() {
+  // The strip leads the page's images; the team teaser is the LCP candidate only when it does not render.
+  const stripShown = stripFor("/").length >= 2;
   return (
     <>
       <script
@@ -49,6 +53,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <Hero />
+      <FieldStrip route="/" cols={3} band />
       <TrustBar />
       {/* The updates strip (fleet live-kit, content/live/_updates.mjs — CLAUDE.md §14).
           Server-rendered, and hidden before first paint once its newest item is 45 days old —
@@ -57,8 +62,16 @@ export default function HomePage() {
       <ServicesGrid />
       <WhyUs />
       <Process />
+      <TeamTeaser
+        image={imageFor("/", "team")}
+        eyebrow={aboutTeaser.eyebrow}
+        title={aboutTeaser.title}
+        text={aboutTeaser.text}
+        href="/אודות/"
+        linkLabel={aboutTeaser.linkLabel}
+        priority={!stripShown}
+      />
       <Diagnosis />
-      <JobPhotos />
       <PricingTeaser withMoreLink />
       <ServiceAreas />
       <Reviews />

@@ -5,6 +5,7 @@
  * invented facts — the only published price is the technician visit band (`priceRows`).
  */
 import type { InlineLink } from "@/lib/guide-types";
+import notice from "@/content/images/notice.json";
 import {
   locations,
   services,
@@ -484,6 +485,7 @@ export const aboutSections = [
 export const navItems = [
   { label: "השירותים שלנו", href: "/שירותים/" },
   { label: "אזורי שירות", href: "/איזורי-שירות/" },
+  { label: "גלריה", href: "/גלריה/" },
   { label: "מחירון", href: "/מחירון/" },
   { label: "בלוג", href: "/blog/" },
   { label: "אודות", href: "/אודות/" },
@@ -528,6 +530,7 @@ export const crumbLabels = {
   blog: "בלוג",
   about: "אודות",
   contact: "צור קשר",
+  gallery: "גלריה",
 } as const;
 
 /** Legal-page names — the `WebPage` name in their graph and their own title / crumb / H1. */
@@ -1606,8 +1609,23 @@ export const llmsCopy = {
   ],
 } as const;
 
-/** Heading of the homepage job-photos gallery (`JobPhotos`); the section renders only when the manifest has photos. */
-export const jobPhotosCopy = { eyebrow: "מהשטח", title: "תמונות מהעבודה" } as const;
+/**
+ * The site-wide image disclosure (CLAUDE.md §15) — the footer line and its link label, the about
+ * line, and the gallery's own texts. The file is the toolkit's `site.json` `disclosure.texts` and
+ * is never hand-edited; this re-export is the one place a component reads it from.
+ */
+export const imagesNote = notice;
+
+/** components/images/TeamTeaser.tsx on the homepage — claim-free, nothing about who the people are. */
+export const aboutTeaser = {
+  eyebrow: "כך נראית בדיקה של שער",
+  title: "אבחון לפני תיקון",
+  text: "כל ביקור מתחיל באבחון של השער עצמו — העיניות, לוח הפיקוד, המנוע, המסילה או הצירים. מסבירים מה נמצא ומה נדרש לפני שמתחילים.",
+  linkLabel: "עוד על שיטת העבודה",
+} as const;
+
+/** The per-service line under a service page: «הדמיות בגלריה: {service}» (rendered only when the gallery shows it). */
+export const galleryLookLabel = "הדמיות בגלריה";
 
 /**
  * components/marketing/FamilyLinks.tsx (ADR 0005). The headings name pages, never service, on

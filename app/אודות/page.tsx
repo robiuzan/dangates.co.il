@@ -13,7 +13,9 @@ import {
   aboutHeroSubtitle,
   aboutIntro,
   aboutValuesHeading,
+  imagesNote,
 } from "@/lib/content";
+import { imageFor, leadSlotOf } from "@/lib/images";
 import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageContentBlock } from "@/components/marketing/ContentSections";
@@ -22,6 +24,7 @@ import { Toc } from "@/components/ui/Toc";
 import { buildToc, headingId } from "@/lib/toc";
 import { TrustBar } from "@/components/marketing/TrustBar";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { Figure } from "@/components/images/Figure";
 
 const aboutUrl = routeUrl("אודות");
 
@@ -51,6 +54,13 @@ const nodes = [
 
 export default function AboutPage() {
   const content = pageContent.about;
+  // The team frame is the page's lead image; the about note renders only under a figure with people,
+  // so while it is held the priority moves to the story figure (CLAUDE.md §15).
+  const route = "/אודות/";
+  const team = imageFor(route, "team");
+  const story = imageFor(route, "story");
+  const work = imageFor(route, "work");
+  const eager = leadSlotOf(route, ["team", "story", "work"]);
   // After the answer block: every H2 of the page's prose, for as long as that prose passes the bar.
   const toc = buildToc(
     [
@@ -85,11 +95,31 @@ export default function AboutPage() {
         ]}
       />
 
-      <PageContentBlock content={content} afterAnswer={<Toc items={toc} />} />
+      <PageContentBlock
+        content={content}
+        afterAnswer={
+          <>
+            {team && <Figure image={team} priority={eager === "team"} className="mt-6" />}
+            {team && team.people.length > 0 && (
+              <p
+                data-images-notice="about"
+                className="mt-4 text-sm leading-relaxed text-gray-600"
+              >
+                {imagesNote.about}
+              </p>
+            )}
+            <Toc items={toc} />
+          </>
+        }
+      />
 
       <Section tone="white">
         <div className="mx-auto max-w-3xl">
           <p className="text-lg leading-relaxed text-gray-700">{aboutIntro}</p>
+
+          {story && (
+            <Figure image={story} priority={eager === "story"} className="mt-8" />
+          )}
 
           {aboutSections.map((sec) => (
             <div key={sec.title}>
@@ -119,6 +149,8 @@ export default function AboutPage() {
               </li>
             ))}
           </ul>
+
+          {work && <Figure image={work} priority={eager === "work"} className="mt-10" />}
         </div>
       </Section>
 

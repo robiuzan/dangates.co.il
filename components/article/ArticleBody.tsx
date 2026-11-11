@@ -1,9 +1,10 @@
 import { Fragment } from "react";
-import Image from "next/image";
 import { headingId, type Block } from "@/lib/guide-types";
 import { guidesCopy } from "@/lib/content";
 import { withLinks } from "@/components/ui/LinkedText";
+import { imageFor } from "@/lib/images";
 import { Faq } from "@/components/marketing/Faq";
+import { Figure } from "@/components/images/Figure";
 import {
   AnswerBlock,
   ArticleTable,
@@ -23,14 +24,25 @@ import {
 export function ArticleBody({
   blocks,
   guideTitle,
+  route,
   afterAnswer,
 }: {
   blocks: readonly Block[];
   /** The guide's title, for the WhatsApp opener a CTA block prefills. */
   guideTitle: string;
+  /** The guide's own route, for its figure blocks (the manifest places images by route + slot). */
+  route: string;
   /** Rendered directly after the answer block — where the table of contents goes. */
   afterAnswer?: React.ReactNode;
 }) {
+  // The lead (rendered by the page through afterAnswer, so only when an answer block exists) is the
+  // eager image when it renders; otherwise the first figure block that does — exactly one per page.
+  const leadShown =
+    blocks.some((b) => b.kind === "answer") && imageFor(route, "lead") !== undefined;
+  const firstFigure = blocks.findIndex(
+    (b) => b.kind === "figure" && imageFor(route, b.slot) !== undefined,
+  );
+
   return (
     <div>
       {blocks.map((block, i) => {
@@ -112,23 +124,18 @@ export function ArticleBody({
               </div>
             );
 
-          case "image":
+          case "figure": {
+            const image = imageFor(route, block.slot);
+            if (!image) return null;
             return (
-              <figure key={i} className="mt-8">
-                <Image
-                  src={block.src}
-                  alt={block.alt}
-                  width={block.width}
-                  height={block.height}
-                  className="w-full rounded-2xl"
-                />
-                {block.caption && (
-                  <figcaption className="mt-2 text-xs text-gray-600">
-                    {block.caption}
-                  </figcaption>
-                )}
-              </figure>
+              <Figure
+                key={i}
+                image={image}
+                priority={!leadShown && i === firstFigure}
+                className="mt-8"
+              />
             );
+          }
 
           case "callout":
             return <Callout key={i} tone={block.tone} text={block.text} />;

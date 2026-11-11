@@ -7,7 +7,7 @@ from them — never from a reply that evaporates at the end of a turn.
 ## Convention
 
 - **File name:** `YYYY-MM-DD-<scope>.md` — scope is `full`, `seo`, `schema`, `content`, `cro`,
-  `security`, `perf` or `a11y`. A second run on the same day appends `-2`.
+  `security`, `perf`, `a11y` or `images`. A second run on the same day appends `-2`.
 - **Template:** copy [`_template.md`](_template.md). Keep every section, even if empty ("none").
 - **Two sources, always both:** the deterministic numbers from `npm run audit -- --scope <scope>`
   (quoted verbatim into §2) and the auditor agents' judgment (§3). A finding with no number and

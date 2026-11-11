@@ -152,6 +152,7 @@ export const guide = {
         ],
       ],
     },
+    { kind: "figure", slot: "mid" },
 
     { kind: "heading", level: 2, text: "מה משמיע רעש בכל סוג של שער?" },
     {

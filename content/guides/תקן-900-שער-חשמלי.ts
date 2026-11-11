@@ -376,6 +376,7 @@ export const guide = {
         ],
       ],
     },
+    { kind: "figure", slot: "mid" },
 
     { kind: "heading", level: 2, text: "באיזה סדר בודקים את השער?" },
     {

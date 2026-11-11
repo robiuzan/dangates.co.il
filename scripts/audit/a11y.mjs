@@ -154,9 +154,9 @@ function exportChecks(r, pages) {
     );
   if (imgCount === 0)
     r.note(
-      "0 <img> tags across the export — there is nothing to alt-check until photos exist",
+      "0 <img> tags across the export — the header logo is missing; every page should carry it",
       undefined,
-      "backlog §7.5",
+      "backlog N37",
     );
   if (unlabeled.size)
     r.fail(

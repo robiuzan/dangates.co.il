@@ -128,9 +128,9 @@ should be re-cut from it.
 
 **Regression watch-list** (metrics in the `--json` output; any move in the wrong direction fails the
 gate even though the check itself still passes): `links` → `orphans 0`, `brokenLinks 0`,
-`linksToStubs 0`, `pagesNotExactlyOneH1 0`, `headingSkips 0`, `breadcrumbPages 46`,
-`sitemapUrls 47`, `contentPages 48` (47 + the `noindex` `/תודה/`), `staticRoutesRegistered 11` ·
-`titles` → `pages 48`, `uniqueTitles 48`, `uniqueDescriptions 48` (all as of 2026-11-10) ·
+`linksToStubs 0`, `pagesNotExactlyOneH1 0`, `headingSkips 0`, `breadcrumbPages 47`,
+`sitemapUrls 48`, `contentPages 49` (48 + the `noindex` `/תודה/`), `staticRoutesRegistered 12` ·
+`titles` → `pages 49`, `uniqueTitles 49`, `uniqueDescriptions 49` (all as of 2026-11-11, N37's kit commit with `/גלריה/`; 47, 48, 11 and 48 before it) ·
 `titles` → 0 warnings (since `74a92d1`) — 1 since `c457c31`, guide #5's 65-character title ·
 `spam-grep` → `spamHits 0`, `fusedWords 0`, `relatedTails 0`, `curlyQuotes 0`, `emojiCount 27` ·
 `claims-grep` → `failingClaims 0`, `totalHits 1`, `claimsChecked 18`, every `liveOccurrences`
@@ -140,17 +140,17 @@ guide `belowFloor 0` (5 pages, median 2986 unique), guides index `belowFloor 0` 
 `belowFloor 0` (1034 unique), areas index `belowFloor 0` (523 unique), about `belowFloor 0` (938
 unique), blog index 561 unique, `locationMedianDelta 357`, `serviceMedianDelta 509`,
 `sharedParagraphs 1`, no answer-block warning (one reappearing on any route is a regression) ·
-`links` → `relatedServiceTargets 7`, `relatedPostTargets 11`, `notInChrome 0`, `chromeLinks 31`, no
+`links` → `relatedServiceTargets 7`, `relatedPostTargets 11`, `notInChrome 0`, `chromeLinks 32` (31 before the footer's «גלריה» link), no
 warning · the homepage `<header>` carries 21
 distinct `/services/` + `/locations/` hrefs (§9.1; no script counts it — the grep is in backlog
 §9.1) and 25 pages carry `nav[data-toc]` (N20; 17 before the N26–N29 rework) ·
-`schema` → `pagesWithJsonLd 47`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 27` (109 questions) · `perf` →
+`schema` → `pagesWithJsonLd 48`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 27` (109 questions) · `perf` →
 `largestJsBytes 172834`, `jsTotalBytes` ≤ 783464 unless a change says why, `clientComponents 5`
 (`EngagementEvents`, `LeadForm`, `DesktopNav`, `MobileMenu`, `Reveal` — 3 from Sprint 3 until
-`fd72698`), `outBytes` under 15000000 (12898445, as of 2026-11-10; measured without `out/images/` from N37's kit commit, `imagesBytes` beside it), `rscBytes` ≤ 3910161, `images 48` (the header logo, one per page — moves at the kit commit (49, with `/גלריה/`) and at install, when N37's renderings join), `imagesUnsized 0`, `fontPreloads 2`, `unusedDeps []`,
-`devBuildFiles 0`, `sourceMaps 0` · `rtl-lint` → `bannedUtilities 0`, `hexLiterals 0` · `a11y` →
-`imgCount 48` (moves at the kit commit (49) and at install — N37), `unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 · `titles` →
-`ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, no warning, `ctaElements 150`,
+`fd72698`), `outBytes` under 15000000 (13056945, as of 2026-11-11; measured without `out/images/` since N37's kit commit, `imagesBytes 0` and `imageFiles 0` beside it — 12898445 before the gallery page), `rscBytes` ≤ 3962290, `images 49` (the header logo, one per page, with `/גלריה/`; moves again at install, when N37's renderings join), `imagesUnsized 0`, `fontPreloads 2`, `unusedDeps []`,
+`devBuildFiles 0`, `sourceMaps 0` · `images` → `emittedRoutes 50`, `contentRoutes 46`, `routesWithImages 0` (until install; N37) · `rtl-lint` → `bannedUtilities 0`, `hexLiterals 0` · `a11y` →
+`imgCount 49` (the kit commit's `/גלריה/`; moves again at install — N37; no `<img>` without `alt`), `unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 · `titles` →
+`ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, no warning, `ctaElements 152`,
 `distinctTaggedElements 47` (113 / 24 after Sprint 1; 115 / 26 with the fleet live-kit's card —
 CLAUDE.md §14; 119 / 30 with the pricing and thank-you CTAs of Sprint 3; 125 / 35 with Sprint 4's
 pricing, FAQ link-out and complaints CTAs; 152 / 46 with Sprint 7's guide CTAs; 144 / 46 after
@@ -172,8 +172,8 @@ here rather than shipping a 404 preload.
 ## Step 3 — raw sanity greps (for a human, after the scripts)
 
 ```bash
-find out -name index.html | wc -l                                                  # 49 = 47 content + /תודה/ (noindex) + /404/, as of 2026-11-10 (48 from 7ed1acd until c457c31; 52 from Sprint 7 until 7ed1acd; 47 before Sprint 7; 83 while the 37 stubs shipped)
-grep -c '<url>' out/sitemap.xml                                                    # 47 as of 2026-11-10 (46 from 7ed1acd)
+find out -name index.html | wc -l                                                  # 50 = 48 content + /תודה/ (noindex) + /404/, as of 2026-11-11 (49 before `/גלריה/`; 48 from 7ed1acd until c457c31; 52 from Sprint 7 until 7ed1acd; 47 before Sprint 7; 83 while the 37 stubs shipped)
+grep -c '<url>' out/sitemap.xml                                                    # 48 as of 2026-11-11 with `/גלריה/` (47 before it; 46 from 7ed1acd)
 grep -rl 'aggregateRating\|"@type":"Review"' out --include=index.html | wc -l      # 0 — anything else is a stop-ship
 grep -rl '"@type":"Person"' out --include=index.html | wc -l                       # 0 — no person exists; lib/authors.ts is an empty registry
 grep -rl 'דן שערים חשמליים | דן שערים חשמליים' out --include=index.html | wc -l  # 0 — doubled brand suffix

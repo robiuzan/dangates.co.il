@@ -1,14 +1,17 @@
 /**
  * perf.mjs — static-export performance budget (backlog §10, §1.3, performance-web-vitals skill).
  *
- *   - out/ total bytes ≤ thresholds.perf.maxOutBytes; no JS file > maxJsFileBytes (fail — §10.4)
+ *   - out/ bytes WITHOUT out/images/ ≤ thresholds.perf.maxOutBytes; no JS file > maxJsFileBytes
+ *     (fail — §10.4). The page images (N37, CLAUDE.md §15) are reported beside it as imagesBytes and
+ *     bounded by their own gate, scripts/images/check-images-out.mjs (the manifest's gates).
  *   - total JS ≤ maxJsTotalBytes (warn — §10.2); chunk count and the largest chunks recorded
  *   - .woff2 files shipped vs <link rel="preload" as="font"> on the homepage: 0 preloads while
  *     fonts exist is a fail — with a text-only LCP the font IS the critical path (§10.1)
  *   - RSC index.txt payloads beside every index.html: count + bytes against the out/ budget (warn — §1.3, §10.4)
  *   - package.json dependencies imported nowhere under app/ components/ lib/ scripts/ (warn — §10.3)
  *   - "use client" components: count and which (metric — §10.2)
- *   - <img> without width/height on content pages (warn, CLS — §10.5; today 0 images ship)
+ *   - <img> without width/height on content pages (warn, CLS — §10.5): the header logo and the
+ *     content images (AI renderings through components/images/Figure.tsx since N37)
  *   - preconnect / dns-prefetch hints in the homepage <head> (metric; imgquarry.com expected)
  *
  * Usage: node scripts/audit/perf.mjs [--json]
@@ -60,7 +63,11 @@ export function run() {
 
   // 1. byte budget ────────────────────────────────────────────────────────────
   const allFiles = walk(OUT);
-  const outBytes = bytesOf(allFiles);
+  // The page images (out/images/, N37) have their own budgets in content/images/manifest.json, held
+  // by the images gate in postbuild; the owner excluded them from maxOutBytes on 2026-11-11.
+  const imageFiles = allFiles.filter((f) => relOut(f).startsWith("images/"));
+  const imagesBytes = bytesOf(imageFiles);
+  const outBytes = bytesOf(allFiles) - imagesBytes;
   const jsSizes = walk(path.join(OUT, "_next"), (f) => f.endsWith(".js"))
     .map((f) => ({ file: relOut(f), bytes: statSync(f).size }))
     .sort((a, b) => b.bytes - a.bytes);
@@ -74,7 +81,7 @@ export function run() {
 
   if (outBytes > P.maxOutBytes)
     r.fail(
-      `out/ is ${fmtBytes(outBytes)} (> ${fmtBytes(P.maxOutBytes)}, thresholds.perf.maxOutBytes) — dev-only chunks from a polluted .next/?`,
+      `out/ without out/images/ is ${fmtBytes(outBytes)} (> ${fmtBytes(P.maxOutBytes)}, thresholds.perf.maxOutBytes) — dev-only chunks from a polluted .next/?`,
       `${allFiles.length} files; largest JS:\n${top(5)}`,
       "backlog §10.4",
     );
@@ -93,7 +100,7 @@ export function run() {
     );
   else
     r.note(
-      `out/ ${fmtBytes(outBytes)} in ${allFiles.length} files; JS ${fmtBytes(jsTotal)} in ${jsSizes.length} chunks, largest ${largest.file} ${fmtBytes(largest.bytes)} — within budget`,
+      `out/ ${fmtBytes(outBytes)} without out/images/ (${fmtBytes(imagesBytes)} in ${imageFiles.length} image files, held by the images gate) in ${allFiles.length} files; JS ${fmtBytes(jsTotal)} in ${jsSizes.length} chunks, largest ${largest.file} ${fmtBytes(largest.bytes)} — within budget`,
       undefined,
       "backlog §10.4",
     );
@@ -199,7 +206,7 @@ export function run() {
     );
   else if (!images)
     r.note(
-      `0 <img> on ${pages.length} content pages — no LCP-image or srcset work applies until photos exist`,
+      `0 <img> on ${pages.length} content pages — no LCP-image work applies until the renderings (N37) are installed`,
       undefined,
       "backlog §10.5",
     );
@@ -223,6 +230,8 @@ export function run() {
     );
 
   r.metric("outBytes", outBytes);
+  r.metric("imagesBytes", imagesBytes);
+  r.metric("imageFiles", imageFiles.length);
   r.metric("outFiles", allFiles.length);
   r.metric("jsFiles", jsSizes.length);
   r.metric("jsTotalBytes", jsTotal);

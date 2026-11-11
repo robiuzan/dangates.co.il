@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "site": "dangates.co.il",
+  "gates": {
+    "minPerContentPage": 0,
+    "maxImageBytes": 204800,
+    "maxPageImageBytes": 614400,
+    "maxTotalBytes": 12582912,
+    "pageBudgets": {
+      "/גלריה/": 2621440
+    }
+  },
+  "images": []
+}

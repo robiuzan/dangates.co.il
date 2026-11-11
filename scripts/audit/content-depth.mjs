@@ -34,6 +34,7 @@ const BACKLOG = {
   "guides-index": "backlog §3.13",
   pricing: "backlog §3.13",
   about: "backlog §3.13",
+  gallery: "backlog N37",
 };
 
 // ── local helpers (candidates for lib/pages.mjs) ────────────────────────────
@@ -84,7 +85,9 @@ export function run() {
     "Word floors per route type, the doorway-test proxy, the answer block and shared blocks (content-standards §1–§2, §5).",
   );
   const pages = contentPages().map((p) => {
-    const toks = tokens(mainText(p.html));
+    // Figures (a rendering and its caption, N37) never count toward a word floor or a doorway delta:
+    // a caption describes a picture, it is not the page's own copy (the betonplus rule).
+    const toks = tokens(mainText(p.html.replace(/<figure\b[\s\S]*?<\/figure>/gi, " ")));
     return {
       ...p,
       words: toks.length,

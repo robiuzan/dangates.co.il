@@ -156,6 +156,7 @@ export const guide = {
         ],
       ],
     },
+    { kind: "figure", slot: "mid" },
 
     {
       kind: "heading",

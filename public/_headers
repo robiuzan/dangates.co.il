@@ -51,3 +51,9 @@
 # (public, max-age=0, must-revalidate), which is what makes a deploy visible immediately.
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Page images (CLAUDE.md §15). An installed file is never edited in place: a replacement is a NEW
+# slug and the old file stays at least 60 days, so a month at the edge and in browsers is safe. The
+# review-only /images/_candidates/ folder is pruned from every production export.
+/images/*
+  Cache-Control: public, max-age=2592000

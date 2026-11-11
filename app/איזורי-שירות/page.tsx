@@ -13,6 +13,7 @@ import { itemListJsonLd } from "@/lib/jsonld";
 import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageContentBlock } from "@/components/marketing/ContentSections";
+import { FieldStrip } from "@/components/images/FieldStrip";
 import { FamilyLinks } from "@/components/marketing/FamilyLinks";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -59,7 +60,10 @@ export default function AreasPage() {
         ]}
       />
 
-      <PageContentBlock content={content} />
+      <PageContentBlock
+        content={content}
+        afterAnswer={<FieldStrip route="/איזורי-שירות/" cols={3} className="mt-8" />}
+      />
 
       <Section tone="white">
         <ul className="mx-auto grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-3">

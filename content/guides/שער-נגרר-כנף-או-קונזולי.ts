@@ -182,6 +182,7 @@ export const guide = {
         ],
       ],
     },
+    { kind: "figure", slot: "mid" },
 
     { kind: "heading", level: 2, text: "מה נושא את משקל הכנף בכל סוג שער?" },
     { kind: "heading", level: 3, text: "שער נגרר: כנף שמתגלגלת על מסילה" },

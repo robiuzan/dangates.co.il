@@ -1,6 +1,6 @@
 // .claude/workflows/site-audit.js — the deterministic engine behind /audit.
 //
-// Invoke as `/site-audit` with args = { scope: 'full'|'seo'|'schema'|'content'|'cro'|'security'|'perf'|'a11y', date: 'YYYY-MM-DD' }.
+// Invoke as `/site-audit` with args = { scope: 'full'|'seo'|'schema'|'content'|'cro'|'security'|'perf'|'a11y'|'images', date: 'YYYY-MM-DD' }.
 // `date` is passed in because a workflow script must be deterministic — it cannot read the clock
 // or draw randomness; when it is missing the synthesis agent reads today's date from the shell.
 //
@@ -27,7 +27,7 @@ export const meta = {
 const SCOPES = {
   full: {
     checks:
-      "titles links content-depth schema cta-coverage spam-grep claims-grep rtl-lint a11y perf edge",
+      "titles links content-depth schema cta-coverage spam-grep claims-grep rtl-lint a11y perf edge images",
     agents: [
       "seo-auditor",
       "schema-auditor",
@@ -53,6 +53,7 @@ const SCOPES = {
   security: { checks: "edge spam-grep", agents: ["security-auditor"] },
   perf: { checks: "perf", agents: ["perf-a11y-auditor", "ts-react-reviewer"] },
   a11y: { checks: "a11y rtl-lint", agents: ["perf-a11y-auditor", "ts-react-reviewer"] },
+  images: { checks: "images", agents: ["image-qa-reviewer", "perf-a11y-auditor"] },
 };
 
 const scope = (args && args.scope) || "full";

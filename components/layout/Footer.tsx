@@ -2,13 +2,22 @@ import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { siteConfig, telHref, services, locations } from "@/lib/site-config";
 import {
+  crumbLabels,
   footerCopy,
+  imagesNote,
   footerTransparencyLink,
   guidesNavItem,
   serviceAreaLine,
 } from "@/lib/content";
 import { hasGuides } from "@/lib/guides";
+import { hasApprovedRenderings } from "@/lib/images";
 import { Container } from "@/components/ui/Container";
+
+// The note is one sentence with its link label inside it; splitting around the label keeps it one
+// text for the gate, which compares the built line to content/images/notice.json verbatim.
+const noteLinkAt = imagesNote.footer.indexOf(imagesNote.footerLinkLabel);
+if (noteLinkAt < 0)
+  throw new Error("notice.json: `footer` must contain `footerLinkLabel`");
 
 /** Service and location links: a 44px row on a phone, back to a compact list from `lg`. */
 const areaLinkClass =
@@ -109,6 +118,11 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/גלריה/" className="text-white/70 hover:text-white">
+                {crumbLabels.gallery}
+              </Link>
+            </li>
+            <li>
               <Link href="/מחירון" className="text-white/70 hover:text-white">
                 מחירון
               </Link>
@@ -167,6 +181,17 @@ export function Footer() {
           </p>
           <p>{footerCopy.tagline}</p>
         </Container>
+        {hasApprovedRenderings() && (
+          <Container className="pb-5 text-center text-xs text-white/60">
+            <p data-images-notice="footer">
+              {imagesNote.footer.slice(0, noteLinkAt)}
+              <Link href="/גלריה/" className="underline hover:text-white">
+                {imagesNote.footerLinkLabel}
+              </Link>
+              {imagesNote.footer.slice(noteLinkAt + imagesNote.footerLinkLabel.length)}
+            </p>
+          </Container>
+        )}
       </div>
     </footer>
   );

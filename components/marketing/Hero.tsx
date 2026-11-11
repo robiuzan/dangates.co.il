@@ -1,6 +1,5 @@
 import { Check, MessageCircle, Phone } from "lucide-react";
-import { SiteImage } from "@ishub/site-kit/components";
-import { manifest, siteConfig, telHref, whatsappHref } from "@/lib/site-config";
+import { siteConfig, telHref, whatsappHref } from "@/lib/site-config";
 import {
   heroCopy,
   homeAnswerBlock,
@@ -12,7 +11,6 @@ import { Button } from "@/components/ui/Button";
 import { LeadForm } from "@/components/forms/LeadForm";
 
 export function Hero() {
-  const heroImage = manifest.images?.hero;
   return (
     <section className="relative overflow-hidden bg-primary text-white">
       <div
@@ -61,17 +59,6 @@ export function Hero() {
               {heroCopy.whatsappLabel}
             </Button>
           </div>
-
-          {/* Renders only once a hero photo exists in the manifest (owner-actions 4.1). */}
-          {heroImage && (
-            <SiteImage
-              image={heroImage}
-              images={manifest.images}
-              priority
-              sizes="(min-width: 1024px) 560px, (min-width: 640px) 600px, 100vw"
-              className="mt-8 h-auto w-full rounded-2xl object-cover"
-            />
-          )}
         </div>
 
         {/* Lead form card */}

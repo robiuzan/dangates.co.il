@@ -9,6 +9,7 @@ import {
   pricingPageCopy,
   type PriceDriver,
 } from "@/lib/content";
+import { imageFor, leadSlotOf } from "@/lib/images";
 import { withLinks } from "@/components/ui/LinkedText";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
@@ -16,6 +17,7 @@ import { Button } from "@/components/ui/Button";
 import { Toc } from "@/components/ui/Toc";
 import { buildToc } from "@/lib/toc";
 import { PricingTeaser } from "@/components/marketing/PricingTeaser";
+import { Figure } from "@/components/images/Figure";
 
 const pricingUrl = routeUrl("מחירון");
 
@@ -72,6 +74,13 @@ const listClass = "mt-4 list-disc space-y-2 ps-6 leading-relaxed text-gray-700";
 const h2Class = "font-heading text-2xl font-bold text-primary";
 
 export default function PricingPage() {
+  // Illustrations (CLAUDE.md §15): the survey sits under the answer block, the layers frame between
+  // the drivers and the teaser. Neither is a price; the page still lists none.
+  const route = "/מחירון/";
+  const survey = imageFor(route, "survey");
+  const layers = imageFor(route, "layers");
+  const eager = leadSlotOf(route, ["survey", "layers"]);
+
   return (
     <>
       <PageHeader
@@ -104,6 +113,9 @@ export default function PricingPage() {
               {pricingCtaCopy.whatsappLabel}
             </Button>
           </div>
+          {survey && (
+            <Figure image={survey} priority={eager === "survey"} className="mt-8" />
+          )}
           <Toc items={toc} className="mt-8" />
         </div>
       </Section>
@@ -148,6 +160,14 @@ export default function PricingPage() {
           </div>
         </div>
       </Section>
+
+      {layers && (
+        <Section tone="white">
+          <div className="mx-auto max-w-3xl">
+            <Figure image={layers} priority={eager === "layers"} />
+          </div>
+        </Section>
+      )}
 
       <PricingTeaser directCta />
 

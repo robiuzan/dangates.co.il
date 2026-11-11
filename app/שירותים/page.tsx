@@ -18,6 +18,7 @@ import { Section } from "@/components/ui/Section";
 import { FamilyLinks } from "@/components/marketing/FamilyLinks";
 import { ServicesGrid } from "@/components/marketing/ServicesGrid";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { FieldStrip } from "@/components/images/FieldStrip";
 
 const servicesUrl = routeUrl("שירותים");
 
@@ -56,7 +57,10 @@ export default function ServicesPage() {
           { label: crumbLabels.services, href: "/שירותים/" },
         ]}
       />
-      <PageContentBlock content={content} />
+      <PageContentBlock
+        content={content}
+        afterAnswer={<FieldStrip route="/שירותים/" cols={2} className="mt-8" />}
+      />
       <ServicesGrid />
       <Section tone="white">
         <FamilyLinks

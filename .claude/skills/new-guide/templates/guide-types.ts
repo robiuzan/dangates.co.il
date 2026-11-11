@@ -53,18 +53,12 @@ export type Block =
    *  attribute (`Faq.tsx:47`) — that is what keeps the derived FAQPage legitimate (schema-graph §4).
    *  Each Q string is unique sitewide, including against the homepage `faqs` (lib/content.ts:170). */
   | { kind: "faq"; items: readonly { q: string; a: string }[] }
-  /** width/height are REQUIRED: `images.unoptimized` + static export means next/image cannot infer
-   *  them, and omitting them is a guaranteed CLS regression. Unused: the content images are AI
-   *  renderings under one note (CLAUDE.md §15) rendered by the `figure` kind through
-   *  components/images/Figure.tsx, which replaces this kind in N37's kit commit. */
-  | {
-      kind: "image";
-      src: string;
-      alt: string;
-      width: number;
-      height: number;
-      caption?: string;
-    }
+  /** A content image (CLAUDE.md §15): an AI rendering placed through components/images/Figure.tsx.
+   *  The block carries NO src, alt or caption — those live in content/images/manifest.json and the
+   *  renderer looks the image up by (the guide's route, `slot`). A slot with no approved image
+   *  renders nothing. `mid` sits after the first table, `end` before the sources; at most one per
+   *  slot per guide. The `lead` image is not a block: GuideView places it under the answer. */
+  | { kind: "figure"; slot: "mid" | "end" }
   /** `warn` is the safety gate — the point past which a reader must stop and call. */
   | { kind: "callout"; tone: "note" | "warn"; text: string }
   /** `quote` = the video-or-photo-to-WhatsApp bridge; `inline` = the quieter end-of-section form.
@@ -135,7 +129,6 @@ export interface Guide {
   /** Key into lib/authors.ts — a registry that ships EMPTY. No person is coming (business-facts §B),
    *  so omit it; the Article node then carries no `author` and the publisher is the Organization. */
   authorId?: string;
-  heroImage?: { src: string; alt: string; width: number; height: number };
   blocks: readonly Block[];
   /** ≥ 1, validated against `services` at module load. Drives `guidesForService()` — the reverse
    *  index that renders this guide on those service pages, which is what makes an orphan impossible. */

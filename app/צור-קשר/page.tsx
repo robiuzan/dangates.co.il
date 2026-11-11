@@ -14,11 +14,13 @@ import {
   leadFormHeading,
   serviceAreaLine,
 } from "@/lib/content";
+import { imageFor, leadSlotOf } from "@/lib/images";
 import { isPageWritten, pageContent } from "@/lib/page-content";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageContentBlock } from "@/components/marketing/ContentSections";
 import { Section } from "@/components/ui/Section";
 import { LeadForm } from "@/components/forms/LeadForm";
+import { Figure } from "@/components/images/Figure";
 
 const contactUrl = routeUrl("צור-קשר");
 
@@ -46,6 +48,12 @@ const nodes = [
 
 export default function ContactPage() {
   const content = pageContent.contact;
+  // `main` leads the details column; `work` is a reuse of a service image, centred under the grid.
+  // Neither carries a caption here (the page's own words are the contact details).
+  const route = "/צור-קשר/";
+  const main = imageFor(route, "main");
+  const work = imageFor(route, "work");
+  const eager = leadSlotOf(route, ["main", "work"]);
   return (
     <>
       <PageHeader
@@ -65,6 +73,14 @@ export default function ContactPage() {
         <div className="grid gap-10 lg:grid-cols-2">
           {/* Details */}
           <div>
+            {main && (
+              <Figure
+                image={main}
+                priority={eager === "main"}
+                caption={false}
+                className="mb-6"
+              />
+            )}
             <h2 className="font-heading text-xl font-bold text-primary">
               {contactPageCopy.detailsHeading}
             </h2>
@@ -145,6 +161,15 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
+
+        {work && (
+          <Figure
+            image={work}
+            priority={eager === "work"}
+            caption={false}
+            className="mx-auto mt-12 max-w-xl"
+          />
+        )}
       </Section>
 
       {/* The transparency surface (backlog N15): complaints, cancellation and invoice questions

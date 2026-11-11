@@ -20,3 +20,6 @@ scripts/live/
 content/live/_calendar*.json
 public/assets/live.js
 live-kit.lock.json
+
+# page images: the Media Studio toolkit writes the manifest as stable JSON (CLAUDE.md §15)
+content/images/manifest.json

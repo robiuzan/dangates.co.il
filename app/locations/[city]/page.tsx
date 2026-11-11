@@ -19,6 +19,7 @@ import {
   locationServiceType,
   locationPageCopy,
 } from "@/lib/content";
+import { imageFor, leadSlotOf } from "@/lib/images";
 import { cityContent, isCityWritten } from "@/lib/city-content";
 import { nearby } from "@/lib/nearby";
 import { guidesForLocationPage } from "@/lib/guides";
@@ -39,6 +40,7 @@ import {
 } from "@/components/marketing/ContentSections";
 import { FamilyLinks } from "@/components/marketing/FamilyLinks";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { Figure } from "@/components/images/Figure";
 
 export function generateStaticParams(): { city: LocationSlug }[] {
   return locations.map((c) => ({ city: c.slug }));
@@ -168,6 +170,13 @@ export default function LocationPage({ params }: { params: { city: string } }) {
       : []),
   ];
 
+  // City pages are people-free (CLAUDE.md §15): the two figures show the building stock and the
+  // exposure the glance block names, never a face under a city's name.
+  const route = `/locations/${loc.slug}/`;
+  const main = imageFor(route, "main");
+  const detail = imageFor(route, "detail");
+  const eager = leadSlotOf(route, ["main", "detail"]);
+
   return (
     <>
       <PageHeader
@@ -198,11 +207,17 @@ export default function LocationPage({ params }: { params: { city: string } }) {
             </>
           )}
 
+          {main && <Figure image={main} priority={eager === "main"} className="mt-6" />}
+
           <Toc items={toc} />
 
           <CityGlanceBlock glance={glance} labels={locationPageCopy.glanceLabels} />
 
           <ContentSections sections={content.localNotes} />
+
+          {detail && (
+            <Figure image={detail} priority={eager === "detail"} className="mt-8" />
+          )}
 
           <BulletedBlock heading={neighbourhoodsHeading} items={neighbourhoods} />
 

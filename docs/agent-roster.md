@@ -107,22 +107,23 @@ show and say), then `page-images-pipeline` · "is this allowed on the site" → 
 
 ## 4. Scripts (`scripts/audit/`)
 
-| Script              | Scope(s)         | Measures                                                                                            |
-| ------------------- | ---------------- | --------------------------------------------------------------------------------------------------- |
-| `run-all.mjs`       | —                | runs the set for a scope; refuses a stale `out/`; exit code = failures                              |
-| `titles.mjs`        | seo              | unique titles, brand once, description length/punctuation, canonical = sitemap, og:url              |
-| `links.mjs`         | seo              | orphans, chrome reach, sitemap parity, one H1, heading order, breadcrumbs, broken links             |
-| `content-depth.mjs` | seo content      | word floors inside `<main>`, doorway delta vs nearest sibling, answer-block length, shared blocks   |
-| `schema.mjs`        | schema           | required types per route, dangling `@id`, raw Hebrew URLs, forbidden-until-sourced keys, FAQ parity |
-| `cta-coverage.mjs`  | cro              | `data-cta` on every tel / WhatsApp / mailto / submit; pages with no CTA                             |
-| `claims-grep.mjs`   | content          | the `claims.json` lexicon vs business-facts status, in source and in the export                     |
-| `spam-grep.mjs`     | content security | spam tokens, fused words, emoji, curly quotes, dead "פוסטים קשורים"                                 |
-| `rtl-lint.mjs`      | a11y             | banned physical utilities, hex literals, `"use client"` inventory                                   |
-| `a11y.mjs`          | a11y             | alt, labels, empty links, landmarks, Process/Faq/Header/LeadForm source checks, contrast ratios     |
-| `perf.mjs`          | perf             | `out/` weight, JS budget, font preloads, RSC payloads, unused deps                                  |
-| `edge.mjs`          | security         | `_redirects`, `_headers`, dead-host artifacts, foreign stubs, `llms.txt`, `.env.example` drift      |
-| `env-doctor.mjs`    | env              | dead `file:line` citations, frontmatter lint, `Skill()` allow parity, hooks, deny set, this roster  |
-| `gsc-ingest.mjs`    | —                | Search Console CSV → `docs/rank-tracking.md` monthly table (blocked until the token lands)          |
+| Script              | Scope(s)         | Measures                                                                                                       |
+| ------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------- |
+| `run-all.mjs`       | —                | runs the set for a scope; refuses a stale `out/`; exit code = failures                                         |
+| `titles.mjs`        | seo              | unique titles, brand once, description length/punctuation, canonical = sitemap, og:url                         |
+| `links.mjs`         | seo              | orphans, chrome reach, sitemap parity, one H1, heading order, breadcrumbs, broken links                        |
+| `content-depth.mjs` | seo content      | word floors inside `<main>`, doorway delta vs nearest sibling, answer-block length, shared blocks              |
+| `schema.mjs`        | schema           | required types per route, dangling `@id`, raw Hebrew URLs, forbidden-until-sourced keys, FAQ parity            |
+| `cta-coverage.mjs`  | cro              | `data-cta` on every tel / WhatsApp / mailto / submit; pages with no CTA                                        |
+| `claims-grep.mjs`   | content          | the `claims.json` lexicon vs business-facts status, in source and in the export                                |
+| `spam-grep.mjs`     | content security | spam tokens, fused words, emoji, curly quotes, dead "פוסטים קשורים"                                            |
+| `rtl-lint.mjs`      | a11y             | banned physical utilities, hex literals, `"use client"` inventory                                              |
+| `a11y.mjs`          | a11y             | alt, labels, empty links, landmarks, Process/Faq/Header/LeadForm source checks, contrast ratios                |
+| `perf.mjs`          | perf             | `out/` weight, JS budget, font preloads, RSC payloads, unused deps                                             |
+| `edge.mjs`          | security         | `_redirects`, `_headers`, dead-host artifacts, foreign stubs, `llms.txt`, `.env.example` drift                 |
+| `images.mjs`        | images           | wraps `scripts/images/check-images-out.mjs` (the postbuild gate) over `out/`; each failing check = one failure |
+| `env-doctor.mjs`    | env              | dead `file:line` citations, frontmatter lint, `Skill()` allow parity, hooks, deny set, this roster             |
+| `gsc-ingest.mjs`    | —                | Search Console CSV → `docs/rank-tracking.md` monthly table (blocked until the token lands)                     |
 
 `npm run audit [-- --scope x]` · `npm run audit:env` · `npm run gate` (lint → typecheck → format:check
 → build → audit). Thresholds: `scripts/audit/thresholds.json`. Lexicon: `scripts/audit/claims.json`.

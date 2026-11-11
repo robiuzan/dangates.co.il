@@ -286,6 +286,7 @@ export const staticPages: readonly StaticPage[] = [
   { path: "שירותים", updated: "2026-11-11" },
   { path: "איזורי-שירות", updated: "2026-11-11" },
   { path: "מחירון", updated: "2026-11-10" },
+  { path: "גלריה", updated: "2026-11-11" },
   { path: "blog", updated: "2026-11-10" },
   // The guides hub: the registry (lib/guides.ts) supplies each guide; this row is the index itself.
   { path: "מדריכים", updated: "2026-11-10" },

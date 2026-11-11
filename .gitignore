@@ -42,3 +42,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Page images (Media Studio/page-images). History and rules: assets/images/README.md.
+/public/images/_candidates/
+/assets/images/*
+!/assets/images/README.md

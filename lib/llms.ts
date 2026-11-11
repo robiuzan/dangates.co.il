@@ -32,6 +32,7 @@ const staticLabels: Record<string, string> = {
   שירותים: crumbLabels.services,
   "איזורי-שירות": crumbLabels.areas,
   מחירון: pricingPageCopy.h1,
+  גלריה: crumbLabels.gallery,
   blog: crumbLabels.blog,
   מדריכים: guidesCopy.hubTitle,
   אודות: crumbLabels.about,

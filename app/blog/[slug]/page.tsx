@@ -9,10 +9,12 @@ import { crumbLabels, postSeo } from "@/lib/content";
 import { ogBase, routeUrl } from "@/lib/seo";
 import { articleJsonLd, businessNode } from "@/lib/jsonld";
 import { relatedAttr } from "@/lib/engagement";
+import { imageFor, leadSlotOf } from "@/lib/images";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ArticleMeta } from "@/components/article/chrome";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { Figure } from "@/components/images/Figure";
 
 export function generateStaticParams(): { slug: string }[] {
   return posts.map((p) => ({ slug: p.slug }));
@@ -55,9 +57,30 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-/** Group consecutive `li` blocks into `<ul>`, render `h`→`<h2>` and `p`→`<p>`. */
-function renderBlocks(blocks: PostBlock[]) {
+/**
+ * Group consecutive `li` blocks into `<ul>`, render `h`→`<h2>` and `p`→`<p>`, and place the post's
+ * two illustrations (CLAUDE.md §15) without touching the flat block model: `main` after the first
+ * paragraph, `mid` after the second heading (else the last heading, else the end of the article).
+ * The first of the two that renders is the page's single priority image.
+ */
+function renderBlocks(blocks: PostBlock[], route: string) {
   const out: React.ReactNode[] = [];
+  const main = imageFor(route, "main");
+  const mid = imageFor(route, "mid");
+  const eager = leadSlotOf(route, ["main", "mid"]);
+  const mainAt = blocks.findIndex((b) => b.type === "p");
+  // mid follows the first paragraph past the article's midpoint (3–9 paragraphs after main in the
+  // 11 posts), so neither figure sits directly under a heading; else the last paragraph after main.
+  const half = Math.ceil(blocks.length / 2);
+  let midAt = blocks.findIndex((b, i) => b.type === "p" && i >= half && i > mainAt);
+  if (midAt === -1)
+    blocks.forEach((b, i) => {
+      if (b.type === "p" && i > mainAt) midAt = i;
+    });
+  const figure = (key: string, image: typeof main, slot: "main" | "mid") =>
+    image ? (
+      <Figure key={key} image={image} priority={eager === slot} className="mt-6" />
+    ) : null;
   let list: string[] = [];
   const flush = (key: number) => {
     if (list.length) {
@@ -71,12 +94,19 @@ function renderBlocks(blocks: PostBlock[]) {
       list = [];
     }
   };
+  // A figure waits until the list its paragraph introduces has closed.
+  const pending: React.ReactNode[] = [];
+  const release = () => {
+    out.push(...pending);
+    pending.length = 0;
+  };
   blocks.forEach((b, i) => {
     if (b.type === "li") {
       list.push(b.text);
       return;
     }
     flush(i);
+    release();
     if (b.type === "h") {
       out.push(
         <h2 key={i} className="mt-8 font-heading text-xl font-bold text-primary">
@@ -90,8 +120,14 @@ function renderBlocks(blocks: PostBlock[]) {
         </p>,
       );
     }
+    if (i === mainAt) pending.push(figure("fig-main", main, "main"));
+    if (i === midAt) pending.push(figure("fig-mid", mid, "mid"));
   });
   flush(blocks.length);
+  release();
+  // A post with no paragraph or no heading still shows its images, at the end of the article.
+  if (mainAt === -1) out.push(figure("fig-main", main, "main"));
+  if (midAt === -1) out.push(figure("fig-mid", mid, "mid"));
   return out;
 }
 
@@ -137,7 +173,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             datePublished={post.date}
             dateModified={post.updated ?? post.date}
           />
-          {renderBlocks(post.blocks)}
+          {renderBlocks(post.blocks, `/blog/${post.slug}/`)}
         </article>
 
         <div className="mx-auto mt-14 max-w-3xl border-t border-gray-100 pt-10">

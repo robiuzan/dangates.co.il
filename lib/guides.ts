@@ -438,9 +438,14 @@ function validateGuide(g: Guide): void {
       fail(g.slug, `cta references unknown service "${c.service}"`);
     }
   }
-  for (const b of g.blocks) {
-    if (b.kind === "image" && b.alt.trim() === "")
-      fail(g.slug, "an image needs a Hebrew alt");
+  // A figure block names a slot only; its alt and caption come from the manifest (CLAUDE.md §15).
+  const figureSlots = g.blocks.flatMap((b) => (b.kind === "figure" ? [b.slot] : []));
+  for (const slot of figureSlots) {
+    if (slot !== "mid" && slot !== "end")
+      fail(g.slug, `a figure block has an unknown slot "${slot}"`);
+  }
+  if (new Set(figureSlots).size !== figureSlots.length) {
+    fail(g.slug, "at most one figure block per slot");
   }
 
   // In-copy links (content-standards §3 item 6)

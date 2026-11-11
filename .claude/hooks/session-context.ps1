@@ -76,7 +76,7 @@ try {
 
     # 4. Entry points.
     $out.Add('### Entry points')
-    $out.Add('- /audit [full|seo|schema|content|cro|security|perf|a11y]  -> dated report in docs/audits/, backlog statuses refreshed')
+    $out.Add('- /audit [full|seo|schema|content|cro|security|perf|a11y|images]  -> dated report in docs/audits/, backlog statuses refreshed')
     $out.Add('- /improve <backlog-id>  (e.g. /improve 3.1)  -> routed via docs/agent-roster.md, gated by npm run gate')
     $out.Add('- npm run audit | npm run audit:env | npm run gate  -> deterministic checks (scripts/audit/)')
     $out.Add('- Business facts: docs/business-facts.md is the only file an agent may not fill in.')

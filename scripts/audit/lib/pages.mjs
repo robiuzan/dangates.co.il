@@ -142,6 +142,7 @@ export function routeType(p) {
   if (p === "/מחירון/") return "pricing";
   if (p === "/אודות/") return "about";
   if (p === "/צור-קשר/") return "contact";
+  if (p === "/גלריה/") return "gallery";
   if (p === "/תודה/") return "thanks";
   if (p === "/מדיניות-פרטיות/" || p === "/הצהרת-נגישות/") return "legal";
   return "other";

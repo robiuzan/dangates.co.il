@@ -7,7 +7,7 @@
     "dev": "next dev",
     "prebuild": "node scripts/gen-redirects.mjs && node scripts/live/check-live-copy.mjs && node scripts/live/check-live-register.mjs && node scripts/live/check-live-schedule.mjs",
     "build": "next build",
-    "postbuild": "node scripts/live/check-live-out.mjs",
+    "postbuild": "node scripts/live/check-live-out.mjs && node scripts/images/check-images-out.mjs out",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
@@ -16,6 +16,9 @@
     "redirects": "node scripts/gen-redirects.mjs",
     "audit": "node scripts/audit/run-all.mjs",
     "audit:env": "node scripts/audit/env-doctor.mjs",
+    "images:check": "node scripts/images/check-images-out.mjs out",
+    "images:status": "node scripts/images/images-status.mjs",
+    "dev:images": "node scripts/images/images-dev.mjs",
     "gate": "npm run lint && npm run typecheck && npm run format:check && npm run build && npm run audit",
     "live:remind": "node scripts/live/check-reminders.mjs"
   },

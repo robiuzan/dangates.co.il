@@ -4,6 +4,8 @@ import { familyPillar, headingId, pillarLabels, type Guide } from "@/lib/guide-t
 import { relatedAttr, type RelatedKind } from "@/lib/engagement";
 import { guidePath, readingMinutes } from "@/lib/guides";
 import { guidesCopy } from "@/lib/content";
+import type { PlacedImage } from "@/lib/images";
+import { Figure } from "@/components/images/Figure";
 
 /** Israeli display format (CLAUDE.md §6); the machine-readable value stays ISO in `dateTime`. */
 function formatDate(iso: string): string {
@@ -88,25 +90,46 @@ export function SourcesList({ sources }: { sources: Guide["sources"] }) {
 }
 
 /** Hub grid card. */
-export function GuideCard({ guide }: { guide: Guide }) {
+export function GuideCard({
+  guide,
+  thumb,
+  priority = false,
+}: {
+  guide: Guide;
+  /** The guide's lead image; its derived thumbnail shows at the start side. Absent → text only. */
+  thumb?: PlacedImage;
+  /** True only for the first card that shows a thumbnail: the page's single eager image. */
+  priority?: boolean;
+}) {
   return (
     <li>
       <Link
         href={guidePath(guide.slug)}
-        className="flex h-full flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-colors hover:border-secondary"
+        className="flex h-full gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-colors hover:border-secondary"
       >
-        <span className="text-xs font-semibold text-accent-600">
-          {pillarLabels[familyPillar[guide.family]]}
-        </span>
-        <span className="mt-2 font-heading text-lg font-bold text-primary">
-          {guide.title}
-        </span>
-        <span className="mt-2 flex-1 text-sm leading-relaxed text-gray-600">
-          {guide.description}
-        </span>
-        <span className="mt-4 flex items-center gap-1 text-sm font-semibold text-secondary">
-          {guidesCopy.cardCta}
-          <ChevronLeft className="h-4 w-4" aria-hidden />
+        {thumb?.thumb && (
+          <Figure
+            image={thumb}
+            thumbnail
+            caption={false}
+            priority={priority}
+            className="w-24 shrink-0 sm:w-32"
+          />
+        )}
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span className="text-xs font-semibold text-accent-600">
+            {pillarLabels[familyPillar[guide.family]]}
+          </span>
+          <span className="mt-2 font-heading text-lg font-bold text-primary">
+            {guide.title}
+          </span>
+          <span className="mt-2 flex-1 text-sm leading-relaxed text-gray-600">
+            {guide.description}
+          </span>
+          <span className="mt-4 flex items-center gap-1 text-sm font-semibold text-secondary">
+            {guidesCopy.cardCta}
+            <ChevronLeft className="h-4 w-4" aria-hidden />
+          </span>
         </span>
       </Link>
     </li>

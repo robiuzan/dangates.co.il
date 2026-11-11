@@ -24,7 +24,9 @@ import {
   serviceCtaCardTitle,
   serviceWhatsappMessage,
   crumbLabels,
+  galleryLookLabel,
 } from "@/lib/content";
+import { galleryServiceNames, imageFor, leadSlotOf } from "@/lib/images";
 import { serviceDepth, serviceProcessSteps } from "@/lib/service-depth";
 import { getPost } from "@/lib/posts";
 import { guidesForService } from "@/lib/guides";
@@ -41,6 +43,7 @@ import { Faq } from "@/components/marketing/Faq";
 import { ContentSections } from "@/components/marketing/ContentSections";
 import { FamilyLinks } from "@/components/marketing/FamilyLinks";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { Figure } from "@/components/images/Figure";
 
 export function generateStaticParams(): { service: ServiceSlug }[] {
   return services.map((s) => ({ service: s.slug }));
@@ -80,6 +83,15 @@ export default function ServicePage({ params }: { params: { service: string } })
   // An entry with an empty answer keeps the card's paragraph and tagline in its place.
   const hasAnswer = depth.answer !== "";
   const triggers = serviceTriggers[card.slug];
+
+  // Illustrations (CLAUDE.md §15): the three slots of this page, in DOM order. The first one that
+  // renders is the page's single priority image.
+  const route = `/services/${card.slug}/`;
+  const main = imageFor(route, "main");
+  const detail = imageFor(route, "detail");
+  const work = imageFor(route, "work");
+  const eager = leadSlotOf(route, ["main", "detail", "work"]);
+  const inGallery = galleryServiceNames().includes(card.name);
 
   // Declared relevance, never array order.
   const related = depth.relatedServices.flatMap(
@@ -167,9 +179,15 @@ export default function ServicePage({ params }: { params: { service: string } })
               <p className="text-lg leading-relaxed text-gray-700">{card.description}</p>
             )}
 
+            {main && <Figure image={main} priority={eager === "main"} className="mt-6" />}
+
             <Toc items={toc} />
 
-            <ContentSections sections={upfront} />
+            <ContentSections sections={[depth.upfront.cost, depth.upfront.check]} />
+            {detail && (
+              <Figure image={detail} priority={eager === "detail"} className="mt-8" />
+            )}
+            <ContentSections sections={[depth.upfront.ask]} />
 
             <h2
               id={headingId(servicePageCopy.processHeading)}
@@ -211,6 +229,21 @@ export default function ServicePage({ params }: { params: { service: string } })
             )}
 
             <ContentSections sections={depth.sections} />
+
+            {work && (
+              <Figure image={work} priority={eager === "work"} className="mt-10" />
+            )}
+            {inGallery && (
+              <p className="mt-4 text-sm text-gray-600">
+                <Link
+                  href="/גלריה/"
+                  className="font-semibold text-secondary underline underline-offset-4 hover:text-primary"
+                >
+                  {galleryLookLabel}
+                </Link>
+                : {card.name}
+              </p>
+            )}
 
             <h2
               id={headingId(servicePageCopy.triggersHeading)}
