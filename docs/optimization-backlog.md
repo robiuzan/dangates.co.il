@@ -2633,26 +2633,29 @@ Still no 8th service page.
 
 ### N34 — P1 · M · [NOT STARTED] Repeated class strings fill a fifth of the export
 
-Filed 2026-11-11 after the export reached 12.90 MB of the owner's 13 MB cap. Measured on :
-class attributes are 2.26 MB of the 11.8 MB of and files, because each long
+Filed 2026-11-11 after the export reached 12.90 MB of the owner's 13 MB cap. Measured on `a63e619`:
+class attributes are 2.26 MB of the 11.8 MB of `index.html` and `index.txt` files, because each long
 utility string prints on every link, in the HTML and again in the RSC payload. The top strings: the
 footer link (3,066 uses), the header menu link (1,029), a secondary link style (813), the link card
-(726), the in-copy link (489), the button base. Define each once (a class in or a
+(726), the in-copy link (489), the button base. Define each once (a class in `app/globals.css` or a
 parent child-selector) with identical computed styles. The owner chose "cut size first" on 2026-11-11
-over raising the cap. Proof: , contrast pairs unchanged, .
+over raising the cap. Proof: `perf.mjs` → `outBytes`, `a11y.mjs` contrast pairs unchanged,
+`rtl-lint.mjs`.
 
 ### N35 — P2 · S · [NOT STARTED] ירושלים is still bounded though the owner says it is served
 
 Filed 2026-11-11. The owner answered owner-actions 3.11 «yes» in chat on 2026-11-11. The page's
-meta, answer, glance and FAQs, the sentence, the comparison guide and () still say a visit there is unconfirmed. Make it read like the other served
-cities, still with no booking or timing promise. Proof: , claims-verifier.
+meta, answer, glance and FAQs, the `/איזורי-שירות/` sentence, the comparison guide and `/llms.txt`
+(`llmsCopy.areaBounds`) still say a visit there is unconfirmed. Make it read like the other served
+cities, still with no booking or timing promise. Proof: `claims-grep.mjs`, claims-verifier.
 
 ### N36 — P1 · S · [NOT STARTED] A legacy post gives hand-release advice outside the safety rule
 
-Filed 2026-11-11 from the pre-deploy sweep (aeo-geo-strategist). The post says
+Filed 2026-11-11 from the pre-deploy sweep (aeo-geo-strategist). The post `שער-חשמלי-לא-מגיב` says
 any gate can be released and to oil the rails, against content-standards §6.1. The owner approved a
 safety-only edit on 2026-11-11 (the full post rewrite still waits on owner-actions 3.8). Live-kit
-quotes from the post must stay intact. Proof: , , claims-verifier.
+quotes from the post must stay intact. Proof: `spam-grep.mjs`, `check-live-register`,
+claims-verifier.
 
 ---
 
