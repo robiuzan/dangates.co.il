@@ -21,10 +21,10 @@ programme, so both halves are recorded here.
 
 **Coming (⏳):**
 
-| Asset                   | Unblocks                                                                                 |
-| ----------------------- | ---------------------------------------------------------------------------------------- |
-| Google Business Profile | `sameAs`, real reviews, the map pack, entity corroboration, `REVIEW_SOURCE_URL` — §A     |
-| Real job photos         | The site's only proof of work; image search; `SiteImage` pipeline (already enabled) — §F |
+| Asset                   | Unblocks                                                                                                                                                                                                                                                                         |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Google Business Profile | `sameAs`, real reviews, the map pack, entity corroboration, `REVIEW_SOURCE_URL` — §A                                                                                                                                                                                             |
+| Real job photos         | Would replace the renderings one for one, as `owner-supplied` manifest entries through the toolkit's `import`; the first one changes the site note — §F, owner-actions 4.5 (no date; since 2026-11-11 the image slots are filled by AI renderings under one note, CLAUDE.md §15) |
 
 **NOT coming — plan around them, do not wait:**
 
@@ -108,6 +108,10 @@ gone: the copy describes what a repair involves instead (`claims-grep.mjs` → `
 | Owner's years in the trade | The experience half of E-E-A-T                                                      | content.ts `team`    |       | 🔶     |
 | Technician count / names   | "צוות מקצועי" is claimed with nobody behind it                                      | content.ts `team`    |       | 🔶     |
 
+Two AI-made characters appear in the page renderings since the owner's decision of 2026-11-11
+(§F, CLAUDE.md §15); they are not technicians, not staff and name nobody — an alt or caption calls
+one «גבר בחולצת פולו כהה», never «טכנאי». The two rows above stay 🔶 and unanswered.
+
 The ח.פ. / ע.מ. number and the legal entity name are asked for in
 [owner-actions.md](owner-actions.md) 3.12 (added 2026-11-09, audit M6); the `/אודות/` slot renders
 nothing until their rows here are ✅.
@@ -183,57 +187,105 @@ and `prefixed`; `7ed1acd` retired קריות, צפון, דרום and באר שב
 display name is «אזור השרון» since `9886dd1`. ירושלים is the one published place still bounded
 (call to check whether and when a visit is possible): the owner has not named it.
 
-| Field                                                | Why it's needed                                                                                        | Lands in                   | Value                   | Status |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------- | ----------------------- | ------ |
-| Is 24/7 emergency service real, and where?           | Claimed sitewide until `1796ee7`; sets a response expectation                                          | content.ts + Roster        |                         | 🔶     |
-| Real response-time capability per area               | Same-day was implied for all 18 location pages until Sprint 4                                          | content.ts                 |                         | 🔶     |
-| Is "פריסה ארצית" true?                               | It was in the manifest `areaServed` until `8e8843d`                                                    | Roster `schema.areaServed` |                         | 🔶     |
-| Are קריות/שרון/צפון/דרום/באר שבע genuinely served?   | Whether those pages should exist at all                                                                | `lib/site-config.ts`       |                         | 🔶     |
-| If yes — as regions, or specific cities within them? | Drives the `kind: "city" \| "region"` flag and the Hebrew prefix                                       | `lib/site-config.ts`       |                         | 🔶     |
-| Travel / call-out fee by distance                    | The far published places (חיפה, אשקלון) are not local calls                                            | content.ts                 |                         | 🔶     |
-| Is ירושלים served?                                   | 3.6 did not name it; the page was bounded until N35 (2026-11-11) and the JSON-LD `areaServed` lists it | `lib/site-config.ts`       | Yes (owner, 2026-11-11) | ✅     |
+| Field                                                | Why it's needed                                                                                                                                                                                                                                                                                                                           | Lands in                   | Value                   | Status |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ----------------------- | ------ |
+| Is 24/7 emergency service real, and where?           | Claimed sitewide until `1796ee7`; sets a response expectation. The supplied logo carries «24/7» and is the renderings' bottom-right watermark by the owner's decision of 2026-11-11 (owner-actions 3.13, ADR 0006, §F), while the copy, the alt texts, the captions and the site note still never say it — the claim lexicon is unchanged | content.ts + Roster        |                         | 🔶     |
+| Real response-time capability per area               | Same-day was implied for all 18 location pages until Sprint 4                                                                                                                                                                                                                                                                             | content.ts                 |                         | 🔶     |
+| Is "פריסה ארצית" true?                               | It was in the manifest `areaServed` until `8e8843d`                                                                                                                                                                                                                                                                                       | Roster `schema.areaServed` |                         | 🔶     |
+| Are קריות/שרון/צפון/דרום/באר שבע genuinely served?   | Whether those pages should exist at all                                                                                                                                                                                                                                                                                                   | `lib/site-config.ts`       |                         | 🔶     |
+| If yes — as regions, or specific cities within them? | Drives the `kind: "city" \| "region"` flag and the Hebrew prefix                                                                                                                                                                                                                                                                          | `lib/site-config.ts`       |                         | 🔶     |
+| Travel / call-out fee by distance                    | The far published places (חיפה, אשקלון) are not local calls                                                                                                                                                                                                                                                                               | content.ts                 |                         | 🔶     |
+| Is ירושלים served?                                   | 3.6 did not name it; the page was bounded until N35 (2026-11-11) and the JSON-LD `areaServed` lists it                                                                                                                                                                                                                                    | `lib/site-config.ts`       | Yes (owner, 2026-11-11) | ✅     |
 
 The owner answered owner-actions 3.6 in chat on 2026-11-09 (not served: קריות, צפון, דרום, באר
 שבע; served: חיפה, אשקלון, שרון; no national coverage) — the Value cells above await the owner's
 own entry. ירושלים is asked separately in owner-actions 3.11, which the owner answered «yes» in chat on
 2026-11-11 and entered in the row above the same day, at the owner's request.
 
-## F. Media — the site has no photographs at all
+## F. Media — AI renderings under one note; no photograph yet
 
-The built output contains **no photograph**: its only `<img>` is the header logo, one per page
-(`a11y.mjs` → `imgCount 48`, `pages 48`, as of 2026-11-10, since `6407f83`, not yet deployed; zero
-before it). `public/dangates-logo.png` also feeds the JSON-LD `logo` (since `02a3144`). There is no photograph of a gate, a job,
-a vehicle or a person anywhere on the site.
+**Decided by the owner in chat on 2026-11-11.** The site's image rule changes from "real job
+photographs or nothing" to "AI renderings as illustrations under one site-wide note"
+([ADR 0006](decisions/0006-ai-renderings-under-one-note.md); the working rules are
+[CLAUDE.md](../CLAUDE.md) §15; the work is backlog N37, Sprint 10). It supersedes the 2026-11-10
+answer — photos later, no date, neither stock nor generated images (owner-actions 4.1, now 4.5).
+Today the built output's only `<img>` is the header logo, one per page (`a11y.mjs` → `imgCount 48`,
+`pages 48`, as of 2026-11-10, since `6407f83`); `public/dangates-logo.png` also feeds the JSON-LD
+`logo` (since `02a3144`). There is no photograph of a gate, a job, a vehicle or a person on the
+site, and no rendering yet either: the kit and the renderings land together and go live in **one**
+deploy. Cloudflare Image Transformations stay on (owner-actions 1.4) for the OG card and the header
+logo; the renderings are static files in `public/images/` and never pass through them.
 
-For a physical trade this is a first-order trust and conversion gap, and it is also the reason there is
-no imagery provenance to audit. Cloudflare Image Transformations **are enabled on this zone** (verified:
-`/cdn-cgi/image/…` returns 200), so the kit's `SiteImage` pipeline will work the day real photos exist.
+| #   | Question                                    | Owner's decision                                                                                                                                                                                                                                                                                                                            |
+| --- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Which pages, and how is it disclosed?       | AI renderings on every content page (46 routes) as illustrations under one site-wide Hebrew note — a footer line, the gallery intro, a line under the team frame on `/אודות/` (`content/images/notice.json`, mirrored in Media Studio's `site.json`). Excluded: `/מדיניות-פרטיות/`, `/הצהרת-נגישות/`, `/תודה/`, the 404. No per-image label |
+| 2   | Who appears?                                | Two AI-made character sets, ids `tech-a` and `tech-b` — not real people, never named, never presented as staff; no consent flow. See "The characters" below                                                                                                                                                                                 |
+| 3   | The logo's «24/7» line?                     | The logo stays as supplied — on the watermark and in the header. The claim lexicon is unchanged: no copy, alt, caption or note may say 24/7 (owner-actions 3.13; §E records the contradiction; 3.5 stays open)                                                                                                                              |
+| 4   | Where do the reference portraits come from? | The toolkit's Drive pull, `portraits` role, from the one folder «תמונות עובדים» — shared with the fleet's reader account as Viewer, the folder and not its parent (owner-actions 2.5). The logo is the 1280 px RGBA PNG export; the toolkit composites it, a model never draws it                                                           |
+| 5   | Where do the images sit?                    | In the text flow at full column width — a plain `<figure>` between the paragraphs it illustrates, caption under it, the first directly after the page's answer block. No slider, lightbox, popup or floating thumbnails. The home and hub strips, the two contact figures and the index thumbnails carry no caption; every body figure does |
+| 6   | Spend?                                      | Hard cap US$60 (`runner.costCapUsd`); expected ≈ US$30 (26–36)                                                                                                                                                                                                                                                                              |
+| 7   | The size budget?                            | `out/images/` is outside the audit's 15 MB `maxOutBytes`; `perf.mjs` reports `imagesBytes` beside it; the images gate enforces ≤ 900 KB of images per page, `/גלריה/` ≤ 2.5 MB and `out/images/` ≤ 20 MB                                                                                                                                    |
+| 8   | A chest emblem?                             | No — plain charcoal-grey work polos, nothing lettered, no `badge` block                                                                                                                                                                                                                                                                     |
 
-| Field                                          | Why it's needed                                 | Lands in                   | Value | Status |
-| ---------------------------------------------- | ----------------------------------------------- | -------------------------- | ----- | ------ |
-| Real job photos (≥8, various gate types)       | The site's only possible proof of work          | `public/` via `SiteImage`  |       | ⏳     |
-| Before/after pairs for repairs                 | The highest-converting format for this trade    | `public/`                  |       | ⏳     |
-| Job context per photo (city, gate type, month) | Turns a photo into evidence; local-SEO signal   | content.ts                 |       | ⏳     |
-| Team photo with permission to name people      | Author / `Person` schema                        | `public/`                  |       | 🔶     |
-| Van / workshop photo                           | Establishes a real operation                    | `public/`                  |       | ⏳     |
-| Brand logo as an image asset                   | `public/dangates-logo.png` exists but is unused | `components/layout/Header` |       | ✅     |
+Defaults the owner did not have to decide (recommended defaults accepted): a rendering never in
+`og:image`, JSON-LD or the Business Profile; no file-level AI marker; strict two-judge QA with a
+dangates trap set; `/גלריה/` in the header before «מחירון»; city pages people-free; the team frame
+candid and placed on `/` and `/אודות/` only; own renders only on the 3 blog posts that stay, reuse
+on the 8 scheduled to fold or 301; three sentences within one screen of a character softened with
+the owner's exact-Hebrew yes in the digest (CLAUDE.md §15 lists them).
 
-### What to ask for, so the photos are usable
+**The characters.** Two AI-made character sets, ids `tech-a` and `tech-b` — AI-made, the owner's
+word 2026-11-11, so no consent applies: no `CONSENT.md`, no consent flow, no contact sheets. They
+are not technicians, not staff and name nobody; §B's technician rows stay 🔶. The source labels
+are not repeated here — this repo is public — and the record is
+`Media Studio/refs/dangates/PERSONAS.md`, outside git. Were the owner ever to say they are real
+people, every render stops until the policy and the note change together with a consent record.
 
-Shooting notes matter more than volume here — eight useful photos beat forty unusable ones:
+**The 24/7 logo record.** The logo as supplied reads «תיקון והתקנה 24/7». By the owner's decision
+of 2026-11-11 (owner-actions 3.13) it stays as supplied, in the header and as the bottom-right
+watermark on every rendering. The claim lexicon (`scripts/audit/claims.json` → `around-the-clock`)
+does not change: no copy, alt, caption or note may say it (the toolkit's alt writer reads the
+master, which carries no logo), and "Is 24/7 emergency service real?" stays 🔶 in §E. ADR 0006
+records the contradiction so nobody "fixes" it in either direction.
+
+### Install record — filled at the install commit (Sprint 10.7)
+
+| Item                                          | Planned                                                                                                                                                       | Actual |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Prompt batches approved (sha8, by whom, when) | —                                                                                                                                                             |        |
+| Board review (batch id, approved / rejected)  | —                                                                                                                                                             |        |
+| Renders installed                             | 78                                                                                                                                                            |        |
+| Reuse placements · derived thumbnails         | 36 · 8                                                                                                                                                        |        |
+| Frames with a character                       | 19 (`tech-a` 9, `tech-b` 8, both 2)                                                                                                                           |        |
+| Spend                                         | cap US$60, expected ≈ US$30                                                                                                                                   |        |
+| Heaviest page · `/גלריה/` · `out/images/`     | ≤ 900 KB · ≤ 3 MB (`pageBudgets` 3145728 — decision 7 said 2.5 MB, but the gate sums the full files and the 14 tiles at their caps are 2,652,160 B) · ≤ 20 MB |        |
+| Phone copies (`<file>-w720.webp`, 720 px)     | one per approved full file                                                                                                                                    |        |
+| Dates moved to the install day                | every route that gained a figure                                                                                                                              |        |
+| Deploy                                        | the owner's word; kit and images together                                                                                                                     |        |
+
+### Real photos, later — what still enters the ledger
+
+| Field                                                         | Why it's needed                                                                                                                                                                            | Lands in                                                          | Value | Status |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- | ----- | ------ |
+| Real job photos (any number, per gate type)                   | Enter as `owner-supplied` manifest entries through the toolkit's `import` and replace renderings one for one; the first one changes the site note under a new approval (owner-actions 4.5) | `content/images/manifest.json` + `public/images/` via the toolkit |       | ⏳     |
+| Case notes (owner-actions 4.4) — text, never a figure caption | The cheapest proof of real work on a location page: city · gate type · fault · outcome, no price, no name (eeat-and-trust §2.3). A caption never carries them                              | `content/locations/<slug>.ts`                                     |       | 🔶     |
+| Team photo with permission to name people                     | Author / `Person` schema. The renderings' two characters are not a team photo (owner-actions 4.3)                                                                                          | the manifest, as `owner-supplied`                                 |       | 🔶     |
+| Van / workshop photo                                          | Establishes a real operation                                                                                                                                                               | the manifest, as `owner-supplied`                                 |       | ⏳     |
+| Brand logo as an image asset                                  | `public/dangates-logo.png` — the header mark since `6407f83`, the JSON-LD `logo`, and the renderings' watermark since the owner's decision of 2026-11-11                                   | `components/layout/Header` · Media Studio `sites/dangates/brand/` |       | ✅     |
+
+### What to ask for, so a real photo is usable
+
+Shooting notes matter more than volume — one usable photo replaces one rendering:
 
 - **Cover each gate type** in `services` (נגרר, כנף, מתרומם, לחניה, זרוע, תריס גלילה). A service page
   with a photo of _that_ gate type is the depth signal; a generic gate photo on all seven is not.
-- **Before/after pairs** of actual repairs, shot from the same position. This is the format that
-  converts in this trade.
 - **Detail shots** of the parts customers search for — motor, control board, safety sensor, track and
-  roller. These carry the component-keyword pages in Phase 4 and are what image search surfaces.
-- **Per photo, capture:** the city, the gate type, and the month. That metadata is what turns a photo
-  into evidence on a location page instead of decoration.
-- **Landscape, ≥1600px wide, no watermark.** They ship through `SiteImage` → Cloudflare transforms, so
-  large originals are correct; the CDN downsizes per breakpoint.
+  roller. These carry the component pages and are what image search surfaces.
+- **Landscape, ≥ 1600 px wide, originals without any added mark** — the toolkit composites the logo
+  bottom-right at `finish`, exactly as on the renderings, and writes the WebP sizes and the phone copy.
 - **Anyone identifiable needs permission**, and a property owner's permission for a recognisable house
-  or gate is worth having before publishing.
+  or gate is worth having before publishing. The caption still states no city, date or customer: a
+  real photo is an illustration under the note's rules too, never `ImageObject`, never evidence.
 
 ## G. Content integrity — the migrated blog
 

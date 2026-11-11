@@ -36,8 +36,8 @@ type (`TechArticle` for safety and component, `Article` otherwise) and `FAQPage`
 
 **Built in Sprint 7 (`89439b7`, 2026-11-09; not deployed):** `lib/guide-types.ts` (galbath's typed
 `Block` union, ADR 0003), `lib/guides.ts` (the registry, `relatedGuides`, the reverse index),
-`content/guides/` (four guides: `תקן-900-שער-חשמלי`, `שער-חשמלי-רועש`, `מחסום-חניה-ועד-בית`,
-`שער-נגרר-כנף-או-קונזולי`), `app/מדריכים/` and `components/article/`; `lib/authors.ts` is the empty
+`content/guides/` (five guides: `תקן-900-שער-חשמלי`, `שער-חשמלי-רועש`, `מחסום-חניה-ועד-בית`,
+`שער-נגרר-כנף-או-קונזולי` and, since `c457c31`, `שער-חשמלי-לא-נסגר`), `app/מדריכים/` and `components/article/`; `lib/authors.ts` is the empty
 registry since Sprint 2. The registry's rules **throw at module load** — listed under `/new-guide`
 "Verification": under 900 words, title or H2 = a service `name` or `{service} ב{city}`, no single
 `answer` in the first two blocks, an uncaptioned `table`, a question another page owns, an

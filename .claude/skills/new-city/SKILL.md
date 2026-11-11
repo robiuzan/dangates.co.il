@@ -97,7 +97,9 @@ The half it cannot: `localNotes` needs **three or more** true, specific items (c
 - The local gate reality — villa streets with wide sliding gates, apartment blocks with shared
   parking barriers, moshav plots with long driveways and cable runs, coastal towns where salt air
   eats motors and tracks faster, hill towns with wind and slope.
-- A real job reference from that city (with permission), or a photo (coming — business-facts §F).
+- A case note from that city — city · gate type · fault · outcome, with permission (eeat-and-trust
+  §2.3). The page's two figures are AI renderings under one site-wide note (N37, `page-imagery`):
+  people-free, no city name in `alt`, caption or file name, never a first-hand element.
 - Travel and scheduling reality — **only once confirmed**. It is unconfirmed for every page
   (business-facts §E, owner-actions 3.5), so no page states a travel or response time.
 - A city-specific FAQ that would read oddly anywhere else.

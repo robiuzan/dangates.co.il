@@ -21,7 +21,7 @@ with the next deploy, on the owner's word.
 | 1   | The four guides' dates set to the deploy day; the deploy put the hub, the four guides and `/llms.txt` live                                                                                     | `669582e`                               | ✅ 2026-11-10 |
 | 2   | The Business Profile link `https://www.google.com/maps?cid=14267763263292409079` in the roster `schema.sameAs`, synced to `site.config.json`                                                   | `1f1b1ec`                               | next deploy   |
 | 3   | The content models carry in-text links, a table on service sections and a short local block on location pages (N25); the new fields made required                                              | `aa84b18` `f019863` `0c70e17` `bcbf822` | next deploy   |
-| 4   | The logo in the header (one `<img>` per page), and photo slots that stay empty until the owner's photos arrive (N24)                                                                           | `6407f83`                               | next deploy   |
+| 4   | The logo in the header (one `<img>` per page); the content images are N37 — AI renderings under one site-wide note, superseding N24's empty slots (ADR 0006)                                   | `6407f83`                               | next deploy   |
 | 5   | One compact block linking all 7 gate types and all 14 areas on the 21 family pages, and the hubs linked to each other and to the guides (N30, N31)                                             | `63effb1` `96679e0`                     | next deploy   |
 | 6   | The homepage leads with repair in its answer block, headings and description (N23)                                                                                                             | `96679e0`                               | next deploy   |
 | 7   | The four guides reworked for cost, steps and a safety stop (N28); guide #5 «שער חשמלי לא נסגר עד הסוף» built (N29); `maxOutBytes` 12 → 13 MB after a compact build did not fit (owner's limit) | `c457c31`                               | next deploy   |
@@ -100,7 +100,8 @@ which waits on the post rewrite; 47 sitemap URLs; 5 guides; 27 `FAQPage` pages; 
 - Dropping the ירושלים "call to check" limit while it is unconfirmed.
 - Editing the 11 old blog posts now: their rewrite is a separate, later project.
 - Adding a `Person` author, an invented byline, or an invented or backdated date.
-- Using stock or AI images.
+- Presenting a stock or AI image as a record of work — the renderings of N37 are illustrations under one
+  site-wide note, never evidence, and never in `og:image`, JSON-LD or the Business Profile.
 - Agents changing Cloudflare, Business Profile, Search Console or GA4 settings, or guessing an id or
   token.
 - Deploying without the owner's word and a dry run first, or pushing unless the owner asks.

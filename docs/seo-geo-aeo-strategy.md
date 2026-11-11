@@ -266,7 +266,8 @@ references it and added the `WebSite` node; what is still missing is off-site: `
 3. **`sameAs` populated only with confirmed profiles**, GBP first, then each citation — in the
    roster, synced down, emitted by `localBusinessJsonLd`. 🔶 on every entry until its URL exists.
 4. **`logo` and `image`** — `public/dangates-logo.png` and the manifest OG card, on the business node
-   since `02a3144` (backlog §4.5 ✅).
+   since `02a3144` (backlog §4.5 ✅). The AI renderings of N37 never enter `image`, `og:image` or the
+   Business Profile, and no `ImageObject` is emitted (schema-graph §3).
 5. **`AboutPage` with `knowsAbout`** — the standard and the gate types — on `/אודות/` — ✅ since
    `d8edb28`, limited to what the site covers; the standard joins it with its guide (Sprint 7.2). Brand strings byte-identical everywhere (§3.1). Absent on purpose: `Offer`,
    `Review` / `AggregateRating` (until quoted verbatim from the profile), `Person`, `foundingDate`,

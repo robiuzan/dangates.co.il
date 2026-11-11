@@ -36,15 +36,15 @@ any tense, or a modal + להבטיח / ליהנות, followed by operation over 
 
 ## What is not coming — and what is
 
-| Fact                                      | Row               | Status  | What the site does instead                                                                                                         |
-| ----------------------------------------- | ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Warranty term, scope, exclusions          | business-facts §D | ❌      | "אחריות על העבודה" — true, unquantified. Never "מלאה"; `claims.json` fails it                                                      |
-| Licence, insurance, manufacturer training | §C                | ❌      | Nothing claimed. Expertise is **shown** as mechanism depth, never as a badge                                                       |
-| Founding year, owner/technician name      | §B                | ❌      | No `foundingDate`, no `Person`, no byline. `lib/authors.ts` stays empty                                                            |
-| Real prices                               | §D                | ❌ / 🔶 | `/מחירון/` explains "what determines the price" since `af8ba4c` (N14). `Offer` stays forbidden                                     |
-| 24/7 emergency, response times            | §E                | 🔶      | Off the site since `1796ee7`; urgent faults handled within the hours (step 3)                                                      |
-| "פריסה ארצית"                             | §E                | ❌      | Refuted (owner-actions 3.6, 2026-11-09); copy says `serviceAreaLine` and names the 14 areas; the manifest phrase left in `8e8843d` |
-| GBP + reviews · job photos                | §A · §F           | ⏳      | Gated on `REVIEW_SOURCE_URL` (`docs/gbp-runbook.md` §11) · `/site-images`; no job photo today (the logo only)                      |
+| Fact                                      | Row               | Status  | What the site does instead                                                                                                                                                                                                   |
+| ----------------------------------------- | ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Warranty term, scope, exclusions          | business-facts §D | ❌      | "אחריות על העבודה" — true, unquantified. Never "מלאה"; `claims.json` fails it                                                                                                                                                |
+| Licence, insurance, manufacturer training | §C                | ❌      | Nothing claimed. Expertise is **shown** as mechanism depth, never as a badge                                                                                                                                                 |
+| Founding year, owner/technician name      | §B                | ❌      | No `foundingDate`, no `Person`, no byline. `lib/authors.ts` stays empty                                                                                                                                                      |
+| Real prices                               | §D                | ❌ / 🔶 | `/מחירון/` explains "what determines the price" since `af8ba4c` (N14). `Offer` stays forbidden                                                                                                                               |
+| 24/7 emergency, response times            | §E                | 🔶      | Off the site since `1796ee7`; urgent faults handled within the hours (step 3)                                                                                                                                                |
+| "פריסה ארצית"                             | §E                | ❌      | Refuted (owner-actions 3.6, 2026-11-09); copy says `serviceAreaLine` and names the 14 areas; the manifest phrase left in `8e8843d`                                                                                           |
+| GBP + reviews · job photos                | §A · §F           | ⏳      | Gated on `REVIEW_SOURCE_URL` (`docs/gbp-runbook.md` §11) · real photos have no date (owner-actions 4.5); the content images are AI renderings under one site-wide note (N37, `page-imagery`) — illustrations, not Experience |
 
 **Available now, and enough to build on:** the SII safety standard **ת״י 900 חלק 21.03** — guide #1
 since Sprint 7 (`89439b7`), its facts read on primary sources 2026-11-08/09
@@ -166,12 +166,12 @@ typed into `site.config.json`, never a directory the business has not actually c
 
 ## The day a fact arrives — data-only changes
 
-| Arrives                    | Change (data only — no component work)                                                                                           |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| A named person             | one `authors` entry + `authorId` on the pieces they wrote; §B ✅ with permission noted; `schema.mjs` then allows `Person`        |
-| Licence / insurance        | a `credentials` export in `lib/content.ts` (add it then) + §C ✅; one sentence on the About page, not a badge wall               |
-| Warranty term · 24/7       | §D / §E ✅; the term or the hours stated where the claim lives, bounded to the confirmed scope or areas                          |
-| GBP URL + reviews · photos | `docs/gbp-runbook.md` §11 (verbatim `reviews`, `REVIEW_SOURCE_URL`, roster `sameAs`) · `/site-images` (city · gate type · month) |
+| Arrives                    | Change (data only — no component work)                                                                                                                                                                                                                                          |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A named person             | one `authors` entry + `authorId` on the pieces they wrote; §B ✅ with permission noted; `schema.mjs` then allows `Person`                                                                                                                                                       |
+| Licence / insurance        | a `credentials` export in `lib/content.ts` (add it then) + §C ✅; one sentence on the About page, not a badge wall                                                                                                                                                              |
+| Warranty term · 24/7       | §D / §E ✅; the term or the hours stated where the claim lives, bounded to the confirmed scope or areas                                                                                                                                                                         |
+| GBP URL + reviews · photos | `docs/gbp-runbook.md` §11 (verbatim `reviews`, `REVIEW_SOURCE_URL`, roster `sameAs`) · real photos as `owner-supplied` entries in `content/images/manifest.json`, replacing renderings one for one; the first changes the site note (owner-actions 4.5, `page-images-pipeline`) |
 
 `claims-grep.mjs` reads the lexicon's `status`, not the ledger — a confirmed row means editing
 `scripts/audit/claims.json` in the same commit as the copy, and saying so in the backlog row.

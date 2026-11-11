@@ -35,8 +35,8 @@ removes them was deployed (11:06 UTC). Until then the site was one report away f
 action, and every other item on this page was secondary to that deploy. The fix itself is right,
 and it leaves the site with **no proof of work at all**:
 
-- **Zero photographs.** `grep -rho '<img' out --include=index.html | wc -l` → 0 across 48 `index.html` files (2026-11-09). No
-  gate, no job, no van, no person. The logo is text.
+- **No photograph.** `grep -rho '<img' out --include=index.html | wc -l` → 0 across 48 `index.html` files (2026-11-09; the header logo, one `<img>` per page, followed in `6407f83`). No
+  gate, no job, no van, no person. Since 2026-11-11 every content page carries AI renderings under one site-wide note (N37, ADR 0006) — illustrations that prove nothing; the proof-of-work gap closes only with real photos (owner-actions 4.5).
 - **No person.** No owner, founder or technician is named. For a trade that sends a stranger to your
   gate with 230V tools, anonymity costs conversions as much as it costs E-E-A-T.
 - **No reviews, no profile, no rating** — and the site is written so that none is implied.
@@ -175,8 +175,8 @@ GA4 property (§2.4) — without it the events fire into nothing.
 for that day; an `AboutPage` with `knowsAbout` (the standard, the gate types); "אחריות מלאה" softened
 sitewide to "אחריות על העבודה" and "ניסיון רב שנים" replaced by mechanism depth — claims the site can
 stand behind (the registry, the `AboutPage` and the softening are in the repo since Sprints 2 and 4); per-bot `robots.ts` rules live since 2026-09-06, and `llms.txt` built in the repo since Sprint 7 (`89439b7`), live after the next deploy; the
-photo pipeline wired the day photos arrive (Cloudflare Image Transformations are already on).
-**Blocked on you:** the AI-crawler toggle (§1.1), the profile URL (§2.1), the photos (§4.1).
+page-images kit (N37) carrying AI renderings under one note on every content page, with real photos entering the same manifest as `owner-supplied` entries whenever they come (owner-actions 4.5).
+**Blocked on you:** the AI-crawler toggle (§1.1), the profile URL (§2.1), the Drive share and the digest yes for the images (§2.5, N37).
 
 ### Phase 7 — Measurement
 
@@ -201,8 +201,10 @@ wait for them; it is written so that their absence is not a lie.
 | Founding year, a named person | No `foundingDate`, no `Person`, no byline; articles are attributed to the organisation; "ניסיון רב שנים" goes. The ת״י 900 guide carries the expertise signal instead of a CV.                                                                                                                                         |
 | Real prices                   | `/מחירון/` becomes "what determines the price" — fault type, gate weight, motor class, access, whether the visit fee is credited. The one sourced figure (₪150–350 visit) stays, marked as needing confirmation. No `Offer` schema. At least one competitor publishes a ~40-line price table; we will not copy theirs. |
 
-Two things **are** coming — the Google Business Profile and real job photos — and they are the two
-highest-leverage items in this whole document. They unblock tiers 1 and 2 of §1.
+The Google Business Profile **is** coming, and it is the highest-leverage item in this whole document.
+Real job photos have no date (owner-actions 4.5); until they come, every content page carries AI
+renderings under one site-wide note (N37, ADR 0006) — illustrations, never proof. The profile unblocks
+tiers 1 and 2 of §1.
 
 ---
 
@@ -224,9 +226,10 @@ this is the summary, in the order it pays off.
    on the site as the area, phone `072-2587772`. Send the public URL. Then reviews accumulate there and
    we quote them verbatim (§2.2) — never paraphrased, never rounded. Setup detail:
    [gbp-runbook.md](gbp-runbook.md).
-4. **Photos** (§4.1) — at least 8: each gate type, before/after pairs, detail shots of motor, control
-   board, safety eye, track and roller; per photo the city, gate type and month. Landscape, ≥ 1600 px,
-   no watermark, permission for anything identifiable.
+4. **Real photos, later** (§4.5; no date) — landscape, ≥ 1600 px, the original without any added mark
+   (the toolkit stamps the logo), permission for anything identifiable. They enter the images manifest
+   as `owner-supplied` entries through the toolkit's `import`, replace renderings one for one, and the
+   first one changes the site note. Until then the pages carry the AI renderings of N37.
 5. **The GA4 property** (§2.4) — a measurement id; it is wired inside the shared container by hostname.
 6. **Four answers** (§3.5–3.8): is 24/7 real, where, and what response time you will stand behind;
    ~~which of קריות / שרון / צפון / דרום / באר שבע are genuinely served~~ (answered 2026-11-09: only
@@ -254,8 +257,9 @@ predictions, which nobody can honestly make without the baseline §4.1 provides.
   `89439b7` (2026-11-09; every service page links 1–3 of them), none live until the next deploy.
 - **A Business Profile linked in `sameAs`, and the reviews section visible** with real reviews quoted
   verbatim — `grep -rl aggregateRating out` returns the homepage because it finally may.
-- **Photos on every service page** with Hebrew `alt` and city/gate-type/month, shipped through the kit
-  pipeline; `<img>` count > 0 for the first time.
+- **Two or more images on every content page** — AI renderings under one site-wide note through
+  `components/images/Figure.tsx` (N37), Hebrew `alt` and caption on each, `check-images-out` green;
+  later, real photos replacing them one for one as `owner-supplied` entries (§4.5).
 - **AI crawlers allowed at the edge** (`curl -A "ClaudeBot"` → 200) and `llms.txt` served; the site
   cited in an assistant answer for a symptom query — checked by hand, logged with a date.
 - **Real 301s, no stubs, one origin** — `node scripts/audit/edge.mjs` exit 0.
@@ -301,12 +305,12 @@ the business has not confirmed — unlike the cost calculator competitors run.
 
 ## 7. Suggested sequence
 
-| Order         | Work                                                                                        | Why here                                                               |
-| ------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **First**     | Deploy Phase 0 (`deploy-dangates`, on your go-ahead)                                        | The fabricated reviews are live until this happens                     |
-| **Now**       | Search Console · AI-crawler setting · GBP claim · GA4 (owner-actions §1–2)                  | None depends on code; each unblocks a phase                            |
-| **Next**      | Phase 1 correctness · Phase 2 schema                                                        | Small, mechanical, all verifiable by script                            |
-| **Then**      | Phase 3 depth + navigation                                                                  | The largest lever on the site and the one that clears the doorway risk |
-| **Then**      | Phase 4 hub + first four guides (in the repo since `89439b7`) + blog migration (needs §3.8) | The pages that get cited; the ת״י 900 anchor needed nothing from you   |
-| **Alongside** | Photos arrive → Phase 6 image pipeline; reviews arrive → restore verbatim                   | Each is a short, mechanical change once the asset exists               |
-| **Ongoing**   | Phase 5 engagement · Phase 7 measurement · 2 guides a month · monthly audit                 | Continuous                                                             |
+| Order         | Work                                                                                                                                                                              | Why here                                                                              |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **First**     | Deploy Phase 0 (`deploy-dangates`, on your go-ahead)                                                                                                                              | The fabricated reviews are live until this happens                                    |
+| **Now**       | Search Console · AI-crawler setting · GBP claim · GA4 (owner-actions §1–2)                                                                                                        | None depends on code; each unblocks a phase                                           |
+| **Next**      | Phase 1 correctness · Phase 2 schema                                                                                                                                              | Small, mechanical, all verifiable by script                                           |
+| **Then**      | Phase 3 depth + navigation                                                                                                                                                        | The largest lever on the site and the one that clears the doorway risk                |
+| **Then**      | Phase 4 hub + first four guides (in the repo since `89439b7`) + blog migration (needs §3.8)                                                                                       | The pages that get cited; the ת״י 900 anchor needed nothing from you                  |
+| **Alongside** | Phase 6 image pipeline = N37 (AI renderings under one note, Sprint 10); real photos arrive → `owner-supplied` entries replace them one for one; reviews arrive → restore verbatim | N37 is a sprint; the two arrivals are short, mechanical changes once the asset exists |
+| **Ongoing**   | Phase 5 engagement · Phase 7 measurement · 2 guides a month · monthly audit                                                                                                       | Continuous                                                                            |

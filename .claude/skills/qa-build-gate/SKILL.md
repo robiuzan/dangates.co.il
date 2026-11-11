@@ -50,7 +50,7 @@ in 143 files at `379eb0e`; 11.69 MB at
 after `7ed1acd` retired four location pages, before the header disclosures and the TOC (`fd72698`,
 `98e38f0`) printed their links in every HTML page and RSC payload; 11.51 MB in 151 after Sprint 7 (the live-kit
 surfaces added ≈1.15 MB in 2026-10, the service depth copy ≈0.7 MB, the location and index-page copy
-≈1.3 MB and the hub and four guides ≈1.5 MB) — with 33 JS chunks totalling 783 KB (783464 B), largest 173 KB.
+≈1.3 MB and the hub and the four Sprint 7 guides ≈1.5 MB; guide #5 came in `c457c31`) — with 33 JS chunks totalling 783 KB (783464 B), largest 173 KB.
 The headroom under the cap is ≈0.10 MB: a change that adds bytes to every page is the one to watch.
 
 ## Step 2 — `npm run gate`
@@ -147,9 +147,9 @@ distinct `/services/` + `/locations/` hrefs (§9.1; no script counts it — the 
 `schema` → `pagesWithJsonLd 47`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 27` (109 questions) · `perf` →
 `largestJsBytes 172834`, `jsTotalBytes` ≤ 783464 unless a change says why, `clientComponents 5`
 (`EngagementEvents`, `LeadForm`, `DesktopNav`, `MobileMenu`, `Reveal` — 3 from Sprint 3 until
-`fd72698`), `outBytes` under 15000000 (12898445, as of 2026-11-10), `rscBytes` ≤ 3910161, `images 48` (the header logo, one per page), `imagesUnsized 0`, `fontPreloads 2`, `unusedDeps []`,
+`fd72698`), `outBytes` under 15000000 (12898445, as of 2026-11-10; measured without `out/images/` from N37's kit commit, `imagesBytes` beside it), `rscBytes` ≤ 3910161, `images 48` (the header logo, one per page — moves at the kit commit (49, with `/גלריה/`) and at install, when N37's renderings join), `imagesUnsized 0`, `fontPreloads 2`, `unusedDeps []`,
 `devBuildFiles 0`, `sourceMaps 0` · `rtl-lint` → `bannedUtilities 0`, `hexLiterals 0` · `a11y` →
-`imgCount 48`, `unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 · `titles` →
+`imgCount 48` (moves at the kit commit (49) and at install — N37), `unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 · `titles` →
 `ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, no warning, `ctaElements 150`,
 `distinctTaggedElements 47` (113 / 24 after Sprint 1; 115 / 26 with the fleet live-kit's card —
 CLAUDE.md §14; 119 / 30 with the pricing and thank-you CTAs of Sprint 3; 125 / 35 with Sprint 4's
@@ -246,6 +246,9 @@ parallel, one message. Routing is `docs/agent-roster.md` §3; each agent returns
   generated `_redirects` — §1.6). `find public -name index.html` returning anything but 0 means a
   meta-refresh stub has come back and is now shadowing its own 301 rule.
 - Any file over 1 MB under `out/_next/`, or `devBuildFiles` > 0.
+- `out/.images-draft` present (`test ! -e out/.images-draft`) — an `IMAGES_DRAFT=1` build is a local
+  preview and never deploys; and, once `app/גלריה/page.tsx` exists, `npm run images:status` showing
+  0 approved entries — the kit never deploys without its images (N37).
 - A route count that moved with no reconciled reason.
 - A GTM container id change without the `https://www.googletagmanager.com/gtm.js?id=<ID>` → 200
   check (golden rule 8).

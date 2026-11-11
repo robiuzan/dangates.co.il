@@ -54,8 +54,9 @@ export type Block =
    *  Each Q string is unique sitewide, including against the homepage `faqs` (lib/content.ts:170). */
   | { kind: "faq"; items: readonly { q: string; a: string }[] }
   /** width/height are REQUIRED: `images.unoptimized` + static export means next/image cannot infer
-   *  them, and omitting them is a guaranteed CLS regression. No photo exists yet (business-facts §F);
-   *  when they arrive they ship through the kit's SiteImage pipeline (/site-images). */
+   *  them, and omitting them is a guaranteed CLS regression. Unused: the content images are AI
+   *  renderings under one note (CLAUDE.md §15) rendered by the `figure` kind through
+   *  components/images/Figure.tsx, which replaces this kind in N37's kit commit. */
   | {
       kind: "image";
       src: string;

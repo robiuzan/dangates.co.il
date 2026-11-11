@@ -32,7 +32,7 @@ assumption.
   already under their depth floor as of 2026-08-24 (`content-depth.mjs`, content-standards §1).
   Doubling thin pages doubles the doorway risk; it does not add authority.
 - The 11 migrated posts are untrusted input still under repair (golden rule 7), and the
-  `/מדריכים/` hub (ADR 0002, four guides built in Sprint 7) is a Hebrew-language authority play. Neither transfers.
+  `/מדריכים/` hub (ADR 0002, four guides built in Sprint 7, a fifth in `c457c31`) is a Hebrew-language authority play. Neither transfers.
 
 **What would change the recommendation:** Search Console verified through the roster manifest
 (owner-actions 2.3), then two quarters of monthly `gsc-ingest.mjs` snapshots in

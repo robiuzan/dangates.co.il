@@ -74,8 +74,10 @@ To pass, a location page needs at least **three** of these, and they must be tru
 - The local gate reality — villa streets with wide sliding gates, apartment blocks with shared parking
   barriers, moshav plots with long driveways and long cable runs, coastal towns where salt air eats
   tracks and motors faster.
-- A real job reference from that city (with the customer's permission), or a photo (coming —
-  business-facts §F).
+- A case note from that city — city · gate type · fault · outcome, with the customer's permission
+  (eeat-and-trust §2.3). A figure never counts: the page's images are AI renderings under one site-wide
+  note (CLAUDE.md §15), people-free on a city page and naming no city — illustrations, not a first-hand
+  element.
 - Travel and scheduling reality — how far it is, and whether the emergency claim genuinely holds at
   that distance. It was a real question for באר שבע, קריות and צפון until the owner said they are
   not served (owner-actions 3.6, 2026-11-09); for חיפה and אשקלון, served but far, the timing is

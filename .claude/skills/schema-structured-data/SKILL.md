@@ -23,8 +23,8 @@ As of 2026-11-08 (clean rebuild): **`schema.mjs` → 0 failures, 0 warnings** �
 recorded — five failures and five warnings: locations and statics with only a breadcrumb, 18 dangling
 `#business` references, no `WebSite`, 18 raw-Hebrew URLs, no `image`/`logo`, a homepage array
 instead of one `@graph`. Sprint 5 put a `FAQPage` on each service page and Sprint 6 (`7c3f2db`) on
-each location page, and Sprint 7 on each guide (§4.13 ✅ — `faqPages 26` = `/`, 7 services, 14
-locations, 4 guides; 103 questions sitewide, none twice, as of 2026-11-09 after `7ed1acd`). What is
+each location page, and Sprint 7 on each guide (§4.13 ✅ — `faqPages 27` = `/`, 7 services, 14
+locations, 5 guides; 109 questions sitewide, none twice, as of 2026-11-10 after `c457c31`; 26 and 103 at `7ed1acd`). What is
 left: `sameAs` empty (B3) and the Rich Results Test after the deploy. The five 🔶 entries' `Service`
 nodes were resolved by the owner's 3.6 answer — four retired with their pages, שרון kept. The numbers move; the script is the truth.
 

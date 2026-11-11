@@ -1,8 +1,16 @@
 # docs/ — the map
 
-Twenty-four documents, four ADRs and the audit reports, in four layers. **Read the layer, not just
+Twenty-four documents, six ADRs and the audit reports, in four layers. **Read the layer, not just
 the filename** — most contradictions between docs are a strategy doc and a defect list describing
 the same thing at different altitudes, and the resolution rule differs per layer.
+
+**The images layer** (since the owner's decisions of 2026-11-11) is the one doctrine that lives in
+[../CLAUDE.md](../CLAUDE.md) §15 rather than in a standards doc: AI renderings as illustrations on
+every content page under one site-wide note, two AI-made characters never named, the logo as the
+watermark. Its record is [business-facts.md](business-facts.md) §F, its decision
+[decisions/0006](decisions/0006-ai-renderings-under-one-note.md), its work backlog N37 and
+Sprint 10, its owner rows owner-actions 2.5, 3.13 and 4.5, its skills `page-imagery` and
+`page-images-pipeline`.
 
 ```text
 STRATEGY      what we are trying to win, and why
@@ -23,7 +31,7 @@ OPERATIONS    how to change production safely
 ```
 
 **Starting work?** → `implementation-sprints.md`. It sequences everything
-below into Sprint 0–9 plus Track B (the owner's), and its §0 records where the backlog had drifted
+below into Sprint 0–10 plus Track B (the owner's), and its §0 records where the backlog had drifted
 from the live site on 2026-09-06 — Phase 0 was not live until Sprint 0 deployed it on 2026-09-06 (11:06 UTC).
 
 **Entry points.** `/sprint <n>` walks one sprint through `/improve`, runs `npm run gate` after every
@@ -43,18 +51,18 @@ None of the three deploys; `deploy-dangates` does, on the owner's word, dry run 
 
 ### Standards — the acceptance bars
 
-| Doc                                                                  | Answers                                                                                                                                                                                 |
-| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [content-standards.md](content-standards.md)                         | Is this page deep enough to ship? Is it a doorway page? What may copy state as fact? Hebrew mechanics and location grammar. `content-depth.mjs` is the measurement, never a hand count. |
-| [keyword-map.md](keyword-map.md)                                     | What term does this route target? The title, H1 and description formulas; the service × location matrix; the evidenced gaps. No search volumes — none exist here, none may be added.    |
-| [schema-graph.md](schema-graph.md)                                   | What JSON-LD does this route emit, under which `@id`, and what is gated (`Review`, `AggregateRating`, `Offer`)? The `lib/jsonld.ts` builders (built 2026-11-08).                        |
-| [event-taxonomy.md](event-taxonomy.md)                               | What does the site push to `dataLayer` on `GTM-KWGGH438`, with which parameters, and which container trigger consumes it? UTM tagging. Never PII.                                       |
-| [eeat-and-trust.md](eeat-and-trust.md)                               | Is this trust signal allowed — a review, a photo, a credential, a warranty word, a byline, a badge — and what must it contain first? An unsourced signal is worse than none.            |
-| [ux-cro-security.md](ux-cro-security.md)                             | Does this page ask for the lead? What must the lead form, the navigation and the edge posture look like?                                                                                |
-| [performance-guidelines.md](performance-guidelines.md)               | What are the byte budgets and Core Web Vitals targets for a text-only static export? Which of the five client components earn their hydration?                                          |
-| [accessibility-and-i18n.md](accessibility-and-i18n.md)               | WCAG 2.1 AA / IS 5568 rules, the RTL rules that double as accessibility rules, and whether — and how — a second locale is ever built.                                                   |
-| [mobile-ux-and-personalization.md](mobile-ux-and-personalization.md) | What must mobile do for a visitor standing at a stuck gate? What may "personalisation" mean when one static file is served to everyone?                                                 |
-| [data-tracking-infrastructure.md](data-tracking-infrastructure.md)   | What does the site collect, what must never reach `dataLayer`, which third-party code is allowed, and where does analytics infrastructure stop being this repo's business?              |
+| Doc                                                                  | Answers                                                                                                                                                                                                                                                          |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [content-standards.md](content-standards.md)                         | Is this page deep enough to ship? Is it a doorway page? What may copy state as fact? Hebrew mechanics and location grammar. `content-depth.mjs` is the measurement, never a hand count.                                                                          |
+| [keyword-map.md](keyword-map.md)                                     | What term does this route target? The title, H1 and description formulas; the service × location matrix; the evidenced gaps. No search volumes — none exist here, none may be added.                                                                             |
+| [schema-graph.md](schema-graph.md)                                   | What JSON-LD does this route emit, under which `@id`, and what is gated (`Review`, `AggregateRating`, `Offer`)? The `lib/jsonld.ts` builders (built 2026-11-08).                                                                                                 |
+| [event-taxonomy.md](event-taxonomy.md)                               | What does the site push to `dataLayer` on `GTM-KWGGH438`, with which parameters, and which container trigger consumes it? UTM tagging. Never PII.                                                                                                                |
+| [eeat-and-trust.md](eeat-and-trust.md)                               | Is this trust signal allowed — a review, a photo, a credential, a warranty word, a byline, a badge — and what must it contain first? An unsourced signal is worse than none. A rendering is an illustration under the site note (CLAUDE.md §15), never a signal. |
+| [ux-cro-security.md](ux-cro-security.md)                             | Does this page ask for the lead? What must the lead form, the navigation and the edge posture look like?                                                                                                                                                         |
+| [performance-guidelines.md](performance-guidelines.md)               | What are the byte budgets and Core Web Vitals targets for a static export whose content images are renderings under one note (`out/images/` outside `maxOutBytes`, N37)? Which of the five client components earn their hydration?                               |
+| [accessibility-and-i18n.md](accessibility-and-i18n.md)               | WCAG 2.1 AA / IS 5568 rules, the RTL rules that double as accessibility rules, and whether — and how — a second locale is ever built.                                                                                                                            |
+| [mobile-ux-and-personalization.md](mobile-ux-and-personalization.md) | What must mobile do for a visitor standing at a stuck gate? What may "personalisation" mean when one static file is served to everyone?                                                                                                                          |
+| [data-tracking-infrastructure.md](data-tracking-infrastructure.md)   | What does the site collect, what must never reach `dataLayer`, which third-party code is allowed, and where does analytics infrastructure stop being this repo's business?                                                                                       |
 
 ### State
 
@@ -68,20 +76,22 @@ None of the three deploys; `deploy-dangates` does, on the owner's word, dry run 
 
 ### Operations
 
-| Doc                                                         | Answers                                                                                                                                                                                                                              |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [implementation-sprints.md](implementation-sprints.md)      | **What do we do next, in what order, and why that order?** Sprint 0–9 plus Track B; §0 is the live verification of 2026-09-06.                                                                                                       |
-| [geo-plan.md](geo-plan.md)                                  | The GEO plan of 2026-11-10: what is done in the repo (with commits), the owner's numbered checklist, and what the rules forbid.                                                                                                      |
-| [agent-roster.md](agent-roster.md)                          | **The routing table.** Backlog section → skill → writer → reviewer → proof script; the scripts, hooks and rules; §7 maps each standards doc to the skill that implements it, the agent that audits it and the script that proves it. |
-| [owner-actions.md](owner-actions.md)                        | The list nothing in this repo can move — each row an exact toggle or deliverable, what it unblocks, and where the value lands once supplied.                                                                                         |
-| [cloudflare-runbook.md](cloudflare-runbook.md)              | Which zone toggles matter, what they do, and how to **prove** one was flipped. Step 1 is the AI-crawler probe. Owner-only changes.                                                                                                   |
-| [gbp-runbook.md](gbp-runbook.md)                            | How the Google Business Profile gets created as a service-area business from the §0 NAP strings, and the verbatim-only path by which reviews may return to the site.                                                                 |
-| [ai-probe-sheet.md](ai-probe-sheet.md)                      | The owner's one-page monthly AI probe: the ten fixed questions, the four engines, the log table, and the Cloudflare AI Crawl Control check. `/audit full` copies the rows in.                                                        |
-| [content-calendar.md](content-calendar.md)                  | What guide gets written next for `/מדריכים/` and in what order — the five pillars, the first eight, and the keep / fold / redirect decision for each of the 11 legacy posts.                                                         |
-| [decisions/0001](decisions/0001-environment-hardening.md)   | Why the `.claude/` environment enforces its own rules with hooks, a deny list and `env-doctor.mjs` instead of prose.                                                                                                                 |
-| [decisions/0002](decisions/0002-guides-hub-route.md)        | Why new editorial pages live in a `/מדריכים/` hub, not in `/blog/` and not as top-level slugs.                                                                                                                                       |
-| [decisions/0003](decisions/0003-block-content-model.md)     | Why the flat `PostBlock` is replaced by a typed block model whose content rules throw at build time.                                                                                                                                 |
-| [decisions/0004](decisions/0004-redirects-replace-stubs.md) | Why the 37 meta-refresh stubs and the dead GitHub Pages / Apache origins give way to real 301s in `public/_redirects`.                                                                                                               |
+| Doc                                                              | Answers                                                                                                                                                                                                                              |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [implementation-sprints.md](implementation-sprints.md)           | **What do we do next, in what order, and why that order?** Sprint 0–10 plus Track B; §0 is the live verification of 2026-09-06.                                                                                                      |
+| [geo-plan.md](geo-plan.md)                                       | The GEO plan of 2026-11-10: what is done in the repo (with commits), the owner's numbered checklist, and what the rules forbid.                                                                                                      |
+| [agent-roster.md](agent-roster.md)                               | **The routing table.** Backlog section → skill → writer → reviewer → proof script; the scripts, hooks and rules; §7 maps each standards doc to the skill that implements it, the agent that audits it and the script that proves it. |
+| [owner-actions.md](owner-actions.md)                             | The list nothing in this repo can move — each row an exact toggle or deliverable, what it unblocks, and where the value lands once supplied.                                                                                         |
+| [cloudflare-runbook.md](cloudflare-runbook.md)                   | Which zone toggles matter, what they do, and how to **prove** one was flipped. Step 1 is the AI-crawler probe. Owner-only changes.                                                                                                   |
+| [gbp-runbook.md](gbp-runbook.md)                                 | How the Google Business Profile gets created as a service-area business from the §0 NAP strings, and the verbatim-only path by which reviews may return to the site.                                                                 |
+| [ai-probe-sheet.md](ai-probe-sheet.md)                           | The owner's one-page monthly AI probe: the ten fixed questions, the four engines, the log table, and the Cloudflare AI Crawl Control check. `/audit full` copies the rows in.                                                        |
+| [content-calendar.md](content-calendar.md)                       | What guide gets written next for `/מדריכים/` and in what order — the five pillars, the first eight, and the keep / fold / redirect decision for each of the 11 legacy posts.                                                         |
+| [decisions/0001](decisions/0001-environment-hardening.md)        | Why the `.claude/` environment enforces its own rules with hooks, a deny list and `env-doctor.mjs` instead of prose.                                                                                                                 |
+| [decisions/0002](decisions/0002-guides-hub-route.md)             | Why new editorial pages live in a `/מדריכים/` hub, not in `/blog/` and not as top-level slugs.                                                                                                                                       |
+| [decisions/0003](decisions/0003-block-content-model.md)          | Why the flat `PostBlock` is replaced by a typed block model whose content rules throw at build time.                                                                                                                                 |
+| [decisions/0004](decisions/0004-redirects-replace-stubs.md)      | Why the 37 meta-refresh stubs and the dead GitHub Pages / Apache origins give way to real 301s in `public/_redirects`.                                                                                                               |
+| [decisions/0005](decisions/0005-family-link-block.md)            | Why one compact all-types / all-areas block follows the curated related lists on the 21 family pages, and why it names pages, never coverage.                                                                                        |
+| [decisions/0006](decisions/0006-ai-renderings-under-one-note.md) | Why every content page carries AI renderings as illustrations under one site-wide note, with two AI-made characters never named and the logo as supplied on the watermark — and what that rules out.                                 |
 
 ## Resolution rules
 

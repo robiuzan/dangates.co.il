@@ -140,10 +140,11 @@ curl "https://dangates.co.il/cdn-cgi/image/width=200,format=auto/dangates-logo.p
 The endpoint is active on this zone — unlike the galbath zone, where the same path 404s. Nothing to
 do except **do not turn it off**: `@ishub/site-kit`'s `SiteImage` / `srcsetFor` / `mediaUrl` build
 against `/cdn-cgi/image`, the OG card is served through the `imgquarry.com` media host declared in
-`site.config.json:51-68`, and the photo pipeline in `/site-images` assumes this works the day real
-photos arrive (business-facts §F, owner-actions §4.1). Transformations carry a monthly free
-allowance and then bill per unique transformation; the site is small, but glance at the usage graph
-once photos ship.
+`site.config.json:51-68`, and the header logo goes the same way (`/site-images`). The content images
+of N37 — AI renderings under one site-wide note — are static WebP files under `public/images/` served
+by Pages itself, not through transformations, and so would real photos entered as `owner-supplied`
+entries (owner-actions 4.5). Transformations carry a monthly free allowance and then bill per unique
+transformation; the site is small, and the OG card is the only consumer.
 
 ---
 

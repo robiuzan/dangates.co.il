@@ -101,8 +101,8 @@ context, not findings to copy.
    invented ₪ figure is not.
 8. **Structured data as machine context.** 46/46 indexable pages emit one `@graph` (Sprint 2 — until
    then the location and 8 static pages carried only `BreadcrumbList`; `schema.mjs` 0 as of
-   2026-11-09); `FAQPage` on 26 pages since `7ed1acd` (§4.13 ✅ — `/`, the 7 services, the 14
-   locations and the 4 guides, 103 questions, none twice; 30 with 18 locations after Sprint 7); the guides emit `TechArticle` / `Article`
+   2026-11-09); `FAQPage` on 27 pages since `c457c31` (§4.13 ✅ — `/`, the 7 services, the 14
+   locations and the 5 guides, 109 questions, none twice; 26 and 103 at `7ed1acd`, 30 with 18 locations after Sprint 7); the guides emit `TechArticle` / `Article`
    with `citation` from their `sources`; the 14 locations, the 7 services, `/שירותים/`, `/איזורי-שירות/` and
    `/אודות/` open with a 40–60-word answer block since Sprints 5–6 (§6.2 — posts still do not); the homepage answers were 4–12 words until `af8ba4c` gave all ten real ones (§3.5 ✅), and
    they are what an assistant would quote. Point, don't re-audit.

@@ -54,13 +54,13 @@ second brand token to "work around" the template.
 
 ## Titles
 
-| Route    | What you write                                                                        |
-| -------- | ------------------------------------------------------------------------------------- |
-| Service  | `שערים נגררים` (optionally + `–` + one true differentiator)                           |
-| Location | `תיקון שערים חשמליים ${loc.prefixed}` — the city's own `cityContent.title` (Sprint 6) |
-| Static   | the page name — `מחירון תיקון שערים חשמליים`, `אזורי שירות`, `אודות`                  |
-| Article  | the question, **trimmed to fit** — the H1 keeps the full question, the title need not |
-| Guide    | the question form from the family template (`/new-guide`; four guides since Sprint 7) |
+| Route    | What you write                                                                                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------ |
+| Service  | `שערים נגררים` (optionally + `–` + one true differentiator)                                                        |
+| Location | `תיקון שערים חשמליים ${loc.prefixed}` — the city's own `cityContent.title` (Sprint 6)                              |
+| Static   | the page name — `מחירון תיקון שערים חשמליים`, `אזורי שירות`, `אודות`                                               |
+| Article  | the question, **trimmed to fit** — the H1 keeps the full question, the title need not                              |
+| Guide    | the question form from the family template (`/new-guide`; five guides — four since Sprint 7, a fifth in `c457c31`) |
 
 Keep the **rendered** title (subject + ` | דן שערים חשמליים`, 19 chars) under ~60. The 7 blog
 titles over budget are `Post.title` used verbatim; the fix is a separate `seoTitle` (or a shortened

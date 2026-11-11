@@ -149,13 +149,16 @@ and disables it otherwise — only enable it if someone actually watches it.
 
 ## 7. Photos, logo, cover
 
-Shooting notes and what to capture per photo are in `docs/business-facts.md` §F (owner-actions §4.1):
-each gate type, before/after pairs, detail shots of מנוע / לוח פיקוד / עינית / מסילה / גלגלת, with
-city + gate type + month per photo, landscape ≥ 1600 px, no watermark, permission for anything
-identifiable. The same set feeds the site (`/site-images`) and the profile.
+**The profile never gets a rendering.** The site's content images are AI illustrations under one
+site-wide note (CLAUDE.md §15, ADR 0006); the Business Profile shows real photographs only, and none
+exists yet (owner-actions 4.5 — no date). When the owner shoots them: each gate type, detail shots of
+מנוע / לוח פיקוד / עינית / מסילה / גלגלת, landscape ≥ 1600 px, the original without any added mark,
+permission for anything identifiable (`docs/business-facts.md` §F). The same originals can enter the
+site as `owner-supplied` manifest entries (4.5); the profile gets the plain original.
 
 Profile specifics: **logo** (לוגו) = a square crop of `public/dangates-logo.png` on a plain
-background; **cover** (תמונת שער) = one landscape job photo, not the logo. Google's published
+background; **cover** (תמונת שער) = one landscape real job photo when one exists — not the logo, never
+a rendering. Google's published
 minimums at the time of writing: JPG/PNG, 720 × 720 px or larger, 10 KB – 5 MB, no heavy filters or
 text overlays. Add photos in batches as jobs happen — a profile with dated, varied photos outranks one
 with a single upload.
@@ -341,7 +344,7 @@ answer the 24/7 question (§E) and does not replace photos (§F).
 - [ ] 7 services named as the site's H1s; descriptions from page copy; **no prices**.
 - [ ] Hours = the site's; no "open 24 hours"; emergency wording only after §E.
 - [ ] Website and appointment links tagged per §6.
-- [ ] Logo + cover + first photo batch per business-facts §F.
+- [ ] Logo now; cover + the first real photo batch when owner-actions 4.5 lands (business-facts §F) — never a rendering.
 - [ ] Q&A seeded — 7 now, 3 held until their claims resolve.
 - [ ] Review request sent after every job, same message, never incentivised or gated.
 - [ ] Reviews restored on the site **verbatim** with `REVIEW_SOURCE_URL` and roster `sameAs`; `npm run gate` green.

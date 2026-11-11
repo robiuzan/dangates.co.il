@@ -1,50 +1,63 @@
 ---
 name: site-images
-description: The photo pipeline for dangates, ready for the day the owner's job photos arrive (business-facts §F ⏳) — Media Studio catalog → ops/sync-media.ps1 merges the images block into the roster manifest and site.config.json → SiteImage / srcsetFor / mediaUrl from @ishub/site-kit → Cloudflare Image Transformations on imgquarry.com; the Hebrew-alt bar, mandatory width/height under a static export, per-photo city · gate type · month metadata as location-page evidence, before/after pairs as the conversion format, ImageObject on the business node and on guides, and the header logo as the first real image. Use when adding, replacing or wiring any image, or when a photo batch lands. Triggers: "add photos", "job photos", "logo image", "alt text", "before/after", "gallery", "og image", "srcset", "תמונות", "לוגו", "טקסט חלופי".
+description: The Media Studio catalog path for the OG card and the header logo on dangates — catalog → ops/sync-media.ps1 merges the images block into the roster manifest and site.config.json → ogImageMeta in lib/seo.ts for og:image and the business node, the kit's SiteImage for the header logo — and why content images never come from it (they are AI renderings under one site-wide note through the page-images kit, see page-imagery); the catalog hero and gallery slots stay null, JobPhotos and the Hero branch are retired. Use when touching the OG card, the header logo, the manifest images block or sync-media. Triggers: "og image", "logo image", "sync-media", "catalog", "the media host", "הלוגו", "תמונת שיתוף".
 allowed-tools: Read, Grep, Glob, Bash, PowerShell
 ---
 
-# Site images
+# Site images — the catalog path, for two images only
 
-The site ships **one `<img>` per page — the header logo** (`perf.mjs` → `images: 48`, `a11y.mjs` →
-`imgCount: 48`, 48 pages, as of 2026-11-10; zero until N24, `6407f83`, which is not deployed yet).
-The header renders `public/dangates-logo.png` (250×250) as a decorative mark beside the brand text
-(the home `<Link>` in `components/layout/Header.tsx`). Until the next deploy, the only image in
-production is the OG card,
-served from the manifest's media host (`app/layout.tsx:32` → `ogImageMeta(manifest.images)`). Real
-photos are **coming** (business-facts §F, owner-actions §4.1); this skill is the pipeline they go
-through, written so nothing is improvised when the batch lands.
+Since the owner's decisions of 2026-11-11 (CLAUDE.md §15, `docs/business-facts.md` §F, ADR 0006)
+this site has two kinds of image, and this skill covers only the first:
+
+| Kind                                                | Source                                                                      | Path                                                                                                                                                                                            | Skill                                  |
+| --------------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| **Brand images** — the OG card and the header logo  | the Media Studio catalog (`dangates/og.jpg`) and `public/dangates-logo.png` | catalog → `ops/sync-media.ps1` → `site.config.json` `images` → `lib/seo.ts` `ogBase` / `lib/jsonld.ts` `businessNode`; the logo through the kit's `SiteImage` in `components/layout/Header.tsx` | this one                               |
+| **Content images** — every figure on a content page | AI renderings, approved by the owner on the local site                      | `content/images/plan.json` → Media Studio page-images → `public/images/<group>/` + `content/images/manifest.json` → `components/images/Figure.tsx`                                              | `page-imagery`, `page-images-pipeline` |
+
+**Content images never come from the catalog.** A catalog photo placed on a service or location
+page would be presented as a record of this business's work with no note under it, which is the
+class of fabrication the removed reviews belonged to (golden rule 1). The renderings are
+illustrations under one site-wide disclosure, validated by `lib/images.ts` and
+`scripts/images/check-images-out.mjs`; the catalog knows nothing about them and `sync-media` never
+touches them. The catalog's `images.hero` and `images.gallery` slots **stay `null`**:
+`components/marketing/JobPhotos.tsx` («תמונות מהעבודה», with `jobPhotosCopy` in `lib/content.ts`) and
+the `manifest.images.hero` branch in `components/marketing/Hero.tsx` rendered nothing today and
+would have shown catalog photos as field work — both are retired in the kit commit (B) and are never
+revived.
 
 ## Baseline — re-measure first
 
 ```bash
 npm run build
-node scripts/audit/run-all.mjs --scope perf     # images, imagesUnsized, resourceHints
+node scripts/audit/run-all.mjs --scope perf     # images, imagesUnsized, imagesBytes, resourceHints
 node scripts/audit/run-all.mjs --scope a11y     # <img> without alt, imgCount
-node scripts/audit/run-all.mjs --scope schema   # business node image/logo (backlog §4.5)
+node scripts/audit/run-all.mjs --scope schema   # business node image/logo, rawHebrewUrls 0
 grep -n '"images"' -A 18 site.config.json        # what the manifest carries today
+grep -o '<meta property="og:image" content="[^"]*"' out/index.html   # the catalog card, never an /images/ path
 ```
 
 As of 2026-08-23 the `images` block is `mediaHost: imgquarry.com`, an `og` ref (`dangates/og.jpg`,
 1200×630, Hebrew `altHe`), `badges: []`, `gallery: null` — no `logo`, no `hero`. A
-`<link rel="preconnect">` to the media host already ships from `app/layout.tsx:49-55`.
+`<link rel="preconnect">` to the media host ships from `app/layout.tsx` (the `preconnect` link in
+the `<head>`). The header logo is one eager decorative `<img>` per page (`perf.mjs` → `images 48`,
+`a11y.mjs` → `imgCount 48`, 48 pages, as of 2026-11-10); from the kit commit the two scripts count
+the content images too, so quote their output, not this line.
 
-## The pipeline — this is the real flow, not a proposal
+## The catalog pipeline — the OG card's real flow
 
 ```
-photos (owner) ──► Media Studio  https://studio.imgquarry.com   (c:/Users/robiu/antigravity/Projects/Media Studio)
-                     scripts/studio-api.ps1 -Action Upload | AltDraft | Publish   (-DryRun, then -Confirm + "# APPROVED:")
-                     R2 bucket `media` + D1 catalog; key = <slug>/<slot>.<ext>, IMMUTABLE
+og card (ops/make-og-card.ps1) ──► Media Studio  https://studio.imgquarry.com   (c:/Users/robiu/antigravity/Projects/Media Studio)
+                                     scripts/studio-api.ps1 -Action Upload | AltDraft | Publish   (-DryRun, then -Confirm + "# APPROVED:")
+                                     R2 bucket `media` + D1 catalog; key = <slug>/<slot>.<ext>, IMMUTABLE
         │
         ▼  ops/sync-media.ps1 -Domain dangates.co.il -DryRun → -Confirm      (Israeli services sites/ops)
 roster/sites/dangates.json  ═══ MERGES the `images` key only ═══►  site.config.json   (never hand-edit either)
         │  ops/validate-manifests.ps1  (Test-ImageRef: key not a URL · width/height ≥ 1 · altHe ≥ 6 chars with Hebrew · not a filename)
         ▼
-lib/site-config.ts  `manifest.images`  (lib/site-config.ts)
+lib/site-config.ts  `manifest.images`
         │
-        ▼
-<SiteImage image={manifest.images.hero} sizes="…" priority />      import { SiteImage } from "@ishub/site-kit/components"
-srcFor / srcsetFor / mediaUrl / preloadPropsFor / ogImageMeta        import { … } from "@ishub/site-kit"   (or "/media")
+        ├──► lib/seo.ts        ogBase.images = ogImageMeta(manifest.images)   → og:image on every route
+        └──► lib/jsonld.ts     businessNode: logo "/dangates-logo.png", image = the OG card's URL
         │
         ▼
 https://imgquarry.com/cdn-cgi/image/width=W,quality=80,format=auto,fit=cover[,gravity=XxY]/<key>
@@ -59,101 +72,83 @@ Cloudflare Image Transformations — ON for imgquarry.com and for this zone (clo
   (the stale `site.config.json.bak` in the tree is one of those — not a rollback target) and caches
   the catalog to `ops/.media-catalog.json` for offline validation. The project deny set and
   `guard-protected-paths.ps1` refuse `site.config.json` edits anyway.
-- Per-photo **job metadata is not a manifest field.** `GalleryItem` carries `key`, dimensions, alt,
-  focal and one `category`. The city · gate type · month that turns a photo into evidence lives in
-  `lib/content.ts` — a `photoEvidence` record keyed by catalog key, built in Phase 3 alongside
-  `cityContent` (`serviceDepth` exists since Sprint 5, in `lib/service-depth.ts`). `photoEvidence`
-  does not exist today; do not invent the shape ad hoc.
+- The slots this site uses: `og` (in use) and, as the better end state for the header mark, `logo`
+  (`studio-api.ps1 -Slot logo`, SVG allowed there). `hero`, `gallery` and `badges` stay empty.
 
 ## Rules that do not bend
 
 1. **Hebrew `alt` for every meaningful image; `alt=""` only for decorative.** `SiteImage` defaults
    `preferHebrewAlt` to true and refuses an empty `alt` at compile time — decorative art must pass
-   `decorative` (renders `alt=""` + `aria-hidden`). Write what the photo shows with the gate type
-   and the place: «שער נגרר חשמלי אחרי החלפת מנוע, פתח תקווה». No «תמונה של», no keyword stuffing,
-   no filename. `a11y.mjs` fails any `<img>` with no `alt` attribute.
+   `decorative` (renders `alt=""` + `aria-hidden`), which is what the header logo does: the home link
+   already carries the accessible name. `a11y.mjs` fails any `<img>` with no `alt` attribute. The OG
+   card's `altHe` lives in the catalog row.
 2. **`width` and `height` always.** `output: "export"` + `images.unoptimized` means there is no
    resizer and no `next/image` placeholder — the intrinsic dimensions in the markup are the CLS
    reserve. `SiteImage` emits them from the ref; ad-hoc use requires both props. `perf.mjs` warns
-   on any unsized `<img>`. Never a raw `<img>`; never `next/image`.
-3. **`sizes` on every fluid image**, or the browser assumes `100vw` and the srcset ladder is
-   wasted. `fixed` (logo, badges) skips it: 1x/2x only.
-4. **One `priority` image per page** — the LCP candidate, paired with `preloadPropsFor` in `<head>`
-   and the existing preconnect. Everything else lazy (the component's default).
+   on any unsized `<img>`. Page code never writes a raw `<img>`, and `next/image` is not used on this
+   site (it would add client JS and no `srcset`).
+3. **`sizes` on every fluid catalog image**, or the browser assumes `100vw` and the srcset ladder is
+   wasted. `fixed` (the logo) skips it: 1x/2x only. Content images are local `public/` paths and get
+   no `srcset`, correctly (`page-imagery` §4).
+4. **One `priority` content image per page** (`page-imagery` §4), plus the header logo, which is
+   eager with its own `priority` through `SiteImage` (a 40 px above-the-fold mark must not be lazy).
+   They coexist by design: the images gate counts `fetchpriority="high"` on `/images/` paths only,
+   and the logo is not one.
 5. **Never SVG through `/cdn-cgi/image`** (`isVector` short-circuits); a local `/public` path is
-   served verbatim with no srcset. Raster originals landscape, ≥ 1600 px, no watermark.
-6. **Replacing a photo is an overwrite at the same key, same aspect ratio, width ≥ current.** The
-   dimensions are baked into every deployed page; a portrait swap behind a landscape key brings CLS
-   back fleet-wide with no build to catch it (`site-kit/src/media/types.ts`, Media Studio golden
+   served verbatim with no srcset.
+6. **Replacing a catalog image is an overwrite at the same key, same aspect ratio, width ≥ current.**
+   The dimensions are baked into every deployed page; a portrait swap behind a landscape key brings
+   CLS back fleet-wide with no build to catch it (`site-kit/src/media/types.ts`, Media Studio golden
    rule 1).
-7. **No stock photo presented as work.** If an illustrative image is ever used, its caption says
-   so, and it never sits on a location page as evidence. **Permission** for any identifiable person
-   and for a recognisable house or gate before publishing (business-facts §F).
-
-## Photos as evidence — where each one earns its place
-
-| Photo                                   | Goes to                                                                  | Carries                                                            |
-| --------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| Job photo with city · gate type · month | that city's `cityContent.localNotes` (`content/locations/<slug>.ts`)     | a dated, placed proof line: «החלפת מנוע לשער כנף, רחובות, 06/2026» |
-| Gate-type photo                         | the matching service page (its `content/services/<slug>.ts` depth entry) | the depth signal a generic gate on all 7 pages is not              |
-| Before/after pair, same position        | service page + the symptom guide (`שער-חשמלי-רועש` since Sprint 7)       | the conversion format for this trade — `templates/BeforeAfter.tsx` |
-| Detail: motor, לוח פיקוד, עינית, track  | component guides (calendar #7+, planned), image search                   | `ImageObject` with a Hebrew `caption`                              |
-| Van / workshop                          | `/אודות/`                                                                | "a real operation" (owner-actions §4.2)                            |
-| Team                                    | nothing until §B names a person                                          | 🔶 — a photo of an unnamed "team" is not a trust signal            |
-
-A photo whose city, gate type and month are unknown is decoration; park it in the gallery with a
-category and no evidence claim. Month only, never a date that implies a record we do not keep.
+7. **Content images are renderings under the note, never catalog photos.** Which picture belongs in
+   which slot, what the words beside it may say, the manifest, the gate and the never-delete policy
+   are `page-imagery`; the commands are `page-images-pipeline`. A rendering never enters the catalog,
+   `og:image`, JSON-LD or the Google Business Profile.
+8. **Real job photos, when the owner supplies them (owner-actions 4.5), do not come through the
+   catalog either.** They enter `content/images/manifest.json` as `owner-supplied` through the
+   toolkit's `import` and replace renderings one for one; the first one changes the site note under a
+   new approval. The Google Business Profile wants them too, without a note — that path is
+   `docs/gbp-runbook.md`, not this skill.
 
 ## Schema
 
-- **Business node:** `logo` = `public/dangates-logo.png` (absolute URL), `image` = the manifest OG
-  via `srcFor(manifest.images, manifest.images.og)` — schema-graph §3, backlog §4.5, built in
-  Phase 2's `businessNode()`; `schema.mjs` fails "business node carries no image/logo" until then.
-- **Guides/posts:** `image` as an `ImageObject` (`contentUrl`, `width`, `height`, Hebrew
-  `caption`) on `articleJsonLd` (schema-graph §6, Phase 4). The primary image's `contentUrl` is the
-  `srcFor` URL at intrinsic width, never an SVG — Google rejects SVG for `image`.
-- **Location `Service` node:** `image` only when the photo is from that city. A generic gate photo
-  on 14 location nodes is the schema version of a doorway page.
+- **Business node:** `logo` = `/dangates-logo.png` (absolute through the site URL), `image` = the
+  manifest OG card via `ogImageMeta(manifest.images)` — `lib/jsonld.ts` `businessNode()`, schema-graph
+  §3; `schema.mjs` fails "business node carries no image/logo" if either is dropped, and fails Hebrew
+  in an `image` or `logo` URL field.
+- **Articles and guides:** `articleJsonLd` falls back to the OG card for `image` when none is given.
+  **No `ImageObject` anywhere, and a rendering never enters an `image` field** — `schema.mjs` and the
+  images gate both check that no `/images/` path appears inside `application/ld+json`.
+- **Location `Service` node:** no `image`. A generic gate picture on 14 location nodes would be the
+  schema version of a doorway page, and the renderings are not from any city.
 
-## First image task — the header logo (done in N24, `6407f83`; the text below is the record)
+## The header logo — the record (N24, `6407f83`, 2026-11-10)
 
-`public/dangates-logo.png` is 250×250 and unused; `Header`'s home `<Link>` prints `{siteConfig.name}`.
-`Header` is `"use client"`; `SiteImage` carries no directive and is explicitly safe inside a client
-component — do not add `"use client"` to anything under the kit. Ad-hoc form, local path, no
-catalog dependency:
-
-```tsx
-import { SiteImage } from "@ishub/site-kit/components";
-// inside the <Link href="/"> in Header.tsx, replacing the bare text:
-<SiteImage src="/dangates-logo.png" alt={siteConfig.name} width={250} height={250} fixed priority className="h-10 w-10" />
-<span className="font-heading text-2xl font-extrabold text-primary">{siteConfig.name}</span>
-```
-
-Keep the visible brand text (the logo is a square mark, not a wordmark) and the existing
-`aria-label`. `priority` here means eager + `fetchpriority=high` — `SiteImage` has no plain-eager
-mode, and a 40 px above-the-fold logo must not be lazy. When a hero image lands it takes
-`priority` and the logo keeps it too; that is the one accepted exception to "one per page" (or
-extend the kit in its own repo — never in `vendor/`). The better end state is the catalog `logo`
-slot (`studio-api.ps1 -Slot logo`, SVG allowed there) → `manifest.images.logo` →
+`public/dangates-logo.png` (250×250, the supplied artwork; the same file carries «תיקון והתקנה 24/7»
+and is the renderings' watermark master — owner decision 3, ADR 0006) renders in `Header`'s home
+`<Link>` through the kit's `SiteImage` in ad-hoc form — local path, `decorative`, `width={250}
+height={250}`, `fixed`, `priority`, `className="h-10 w-10 shrink-0"` — beside the visible brand text
+(the logo is a square mark, not a wordmark). `Header` is a server shell since Sprint 3; `SiteImage`
+carries no directive and is safe in either kind of component — do not add `"use client"` to anything
+under the kit. `priority` here means eager + `fetchpriority=high`: `SiteImage` has no plain-eager
+mode. The better end state is the catalog `logo` slot → `manifest.images.logo` →
 `<SiteImage image={manifest.images.logo} fixed />`; the local PNG is the `legacySrc`-style
-transition. Done in N24 (`6407f83`, 2026-11-10): `a11y.mjs` imgCount 48 as of 2026-11-10 (one per
-page), 0 without alt; `perf.mjs` imagesUnsized 0.
+transition. Measured when it shipped: `a11y.mjs` `imgCount 48` (one per page), 0 without alt;
+`perf.mjs` `imagesUnsized 0`. Never propose a rendering for the logo, the favicon or the OG card.
 
-## Checklist
+## Checklist — OG card and logo only
 
 - [ ] Catalog row for `dangates.co.il` has `dir='rtl'`; every upload dry-run first, then `-Confirm`.
-- [ ] `altHe` read and corrected by a human per image — AI drafts are drafts (Media Studio rule 4).
+- [ ] `altHe` read and corrected by a human — AI drafts are drafts (Media Studio rule 4).
 - [ ] `ops/sync-media.ps1 -Domain dangates.co.il -DryRun` diff reviewed, then `-Confirm`;
-      `ops/validate-manifests.ps1` exits 0; `site.config.json` changed only under `images`.
-- [ ] Every `<img>` is `SiteImage`; Hebrew alt or `decorative`; width/height; `sizes` on fluid;
-      exactly one `priority` per page with a `preloadPropsFor` link.
-- [ ] Evidence photos carry city · gate type · month in `lib/content.ts` (Phase 3 shape), and the
-      visible caption says the same thing the alt says.
-- [ ] Before/after pairs shot from the same position, labelled לפני / אחרי in the captions.
-- [ ] Permission recorded for identifiable people and recognisable property.
-- [ ] `schema.mjs` shows `image`/`logo` on the business node; `ImageObject` on guides.
-- [ ] `npm run gate`; `perf.mjs` imagesUnsized 0; `a11y.mjs` no-alt 0; LCP not regressed (the
-      hero image must not push the text LCP later — measure before choosing `priority`).
+      `ops/validate-manifests.ps1` exits 0; `site.config.json` changed only under `images`, and
+      `hero` / `gallery` still `null`.
+- [ ] `og:image` on every route is the catalog card (`titles.mjs` `ogUrlMissing 0`; no `/images/`
+      path in any `og:image`); `schema.mjs` shows `image`/`logo` on the business node and 0
+      `ImageObject`.
+- [ ] The header logo is the one non-`/images/` `<img>` per page: `SiteImage`, `decorative`,
+      width/height, `fixed`, `priority`.
+- [ ] `npm run gate`; `perf.mjs` `imagesUnsized 0`; `a11y.mjs` no-alt 0; LCP not regressed.
 
 ## Gotchas
 
@@ -161,16 +156,19 @@ page), 0 without alt; `perf.mjs` imagesUnsized 0.
   renders a 1200×630 JPEG from the manifest's brand, tagline and colours (System.Drawing, no npm),
   then `studio-api.ps1 -Slot og` uploads it. **SVG OG cards render blank** on Facebook, X and
   LinkedIn, and `validate-manifests.ps1` rejects a vector `og` or `hero` outright.
-- `business-facts.md` §F says photos land in `public/`; the fleet flow is the catalog.
-  `SiteImage` serves either, but only catalog keys get srcset, format negotiation and the
-  no-rebuild photo swap. `public/` is for the logo and `legacySrc` transitions only.
-- The gallery block has `mode: "fetched"` (runtime refresh from the public
-  `/catalog/<domain>/gallery.json`). Do not use it here: it adds client JS and a runtime dependency
-  to a site whose performance story is "almost no JS". `baked` only.
+- `public/` holds the logo, the `legacySrc`-style transition and — since the kit commit — the
+  renderings under `public/images/<group>/` with their phone copies, governed by the page-images
+  manifest and gate, not by this skill. Only catalog keys get srcset, format negotiation and the
+  no-rebuild swap; a rendering gets neither and does not need them.
+- The catalog gallery block has `mode: "fetched"` (runtime refresh from the public
+  `/catalog/<domain>/gallery.json`). Never use it here: it adds client JS and a runtime dependency to
+  a site whose performance story is "almost no JS", and the gallery slot stays `null` anyway. The
+  site's `/גלריה/` is the renderings' page, built from the manifest at build time.
 - ESLint `@next/next/no-img-element` is disabled inside `SiteImage` on purpose; a raw `<img>` in
   app code trips it and `a11y.mjs`/`perf.mjs` both look for what the kit guarantees.
 - `images.unoptimized: true` is load-bearing (static export). Do not "enable optimisation" — there
-  is no server to run it; Cloudflare does that job at the edge.
+  is no server to run it; Cloudflare does that job at the edge for catalog keys, and the renderings
+  ship pre-encoded WebP at fixed boxes.
 - Transformations on **this** zone serve `/cdn-cgi/image/…/dangates-logo.png` too
   (cloudflare-runbook step 2 verifies it), but `SiteImage` never emits that URL for a local path —
   if a local asset needs a srcset, move it to the catalog rather than hand-writing `cdn-cgi` URLs.

@@ -126,7 +126,7 @@ curl -sSI "https://dangates.co.il/%D7%AA%D7%9C-%D7%90%D7%91%D7%99%D7%91/" | grep
 ```
 
 Check: the page is the new build; the title carries the brand exactly once; the sitemap lists 47
-URLs, as of 2026-11-10 (the hub and the four guides joined the 45 in Sprint 7, `7ed1acd` retired four
+URLs, as of 2026-11-10 (the hub and the first four guides joined the 45 in Sprint 7, `7ed1acd` retired four
 location pages, and guide #5 joined in `c457c31`); `/llms.txt` answers 200; GTM returns 200. After the first deploy carrying the guides, also confirm a guide's `datePublished` in the live
 JSON-LD is the deploy day (step 6 above), and run the AI-crawler full-UA probe before any claim about
 `llms.txt` being read.

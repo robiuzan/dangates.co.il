@@ -74,7 +74,7 @@ Deliberately deferred to Phase 3 (needs the `prefixed` field): the four region p
 | 1   | **Guards.** `permissions.deny` + PreToolUse `guard-protected-paths.ps1` / `secret-scan.ps1` / `guard-destructive-ops.ps1`; PostToolUse `post-edit-lint.ps1` (banned utilities, hex, spam, claim lexicon) + `audit-logger.ps1`; SessionStart `session-context.ps1`; path-scoped `.claude/rules/` | `.claude/settings.json`, `.claude/hooks/`, `.claude/rules/`                                         |
 | 2   | **Scripts.** Twelve deterministic checks + `thresholds.json` + `claims.json`; `npm run audit`, `npm run audit:env`, `npm run gate`                                                                                                                                                              | `scripts/audit/`, `package.json`                                                                    |
 | 3   | **Reports.** `docs/audits/<date>-<scope>.md` convention + template; the SessionStart hook prints the latest verdict                                                                                                                                                                             | `docs/audits/README.md`, `docs/audits/_template.md`                                                 |
-| 4   | **ADRs 0001–0004** — environment hardening · `/מדריכים/` hub · typed block model · `_redirects` replace stubs                                                                                                                                                                                   | `docs/decisions/`                                                                                   |
+| 4   | **ADRs 0001–0006** — environment hardening · `/מדריכים/` hub · typed block model · `_redirects` replace stubs · the family-link block (0005, 2026-11-10) · AI renderings under one note (0006, 2026-11-11)                                                                                      | `docs/decisions/`                                                                                   |
 | 5   | **Routing + owner docs.** Agent roster, owner actions, Cloudflare + GBP runbooks, content calendar, event taxonomy, rank tracking, competitors, growth roadmap                                                                                                                                  | `docs/agent-roster.md`, `docs/owner-actions.md`, `docs/*-runbook.md`, `docs/content-calendar.md`, … |
 | 6   | **De-stale pass + new assets** per the roster: 15 agents, 25 skills (and the saved `site-audit` workflow where workflows are available); every `file:line` re-anchored; scripts cited instead of numbers                                                                                        | `.claude/agents/`, `.claude/skills/`, `.claude/workflows/`                                          |
 
@@ -1372,13 +1372,16 @@ current `out/`:
 node scripts/audit/claims-grep.mjs   # licence 0 · certification 0 live
 ```
 
-### 7.5 — P1 · L · [NOT STARTED] The site has no photographs at all
+### 7.5 — P1 · L · [NOT STARTED] AI renderings under one note (N37); real photos later as `owner-supplied` entries
 
-`perf.mjs` / `a11y.mjs` → `images: 0` across 46 pages (2026-11-08). The logo renders as text in the
-header; `public/dangates-logo.png` reaches only the JSON-LD `logo` since `02a3144` (§4.5), never the
-page. Photos are **coming**
-(business-facts §F ⏳); the pipeline is the `site-images` skill. Cloudflare Image Transformations are
-enabled on this zone, so `SiteImage` works the day they land.
+History: `perf.mjs` / `a11y.mjs` → `images: 0` across 46 pages (2026-11-08); since `6407f83`
+(N24) the header logo is the one `<img>` per page (`images 48`, 2026-11-10). On 2026-11-11 the
+owner decided the image slots are filled by AI renderings as illustrations under one site-wide
+note — business-facts §F, ADR 0006, CLAUDE.md §15 — which is **N37**: this row is now N37's
+doctrine pointer, not a wait. A real photo, whenever one is supplied (owner-actions 4.5, no date),
+enters `content/images/manifest.json` as an `owner-supplied` entry through the toolkit's `import`
+and replaces a rendering one for one; the first one changes the note. Cloudflare Image
+Transformations stay on for the OG card and the header logo only; the renderings are static files.
 
 ### 7.6 — P2 · S · [✅ DONE 2026-11-08] The footer contradicted the CTA in a single viewport
 
@@ -1782,9 +1785,16 @@ node scripts/audit/perf.mjs   # ✅ outBytes 11509453 (95.9% of 12000000 — ≈
 The next change that adds bytes to every page (chrome, live-kit lines) is the one to price first;
 raising `maxOutBytes` is a deliberate threshold decision, never a side effect.
 
-### 10.5 — n/a · There is no image work to do
+### 10.5 — n/a · Image work is N37's gate
 
-Zero images ship (§7.5). Do not file srcset/LCP-image findings against this site until photos exist.
+Until N37's kit commit the header logo is the only `<img>` (§7.5). From that commit the images
+gate `scripts/images/check-images-out.mjs` (postbuild, last) owns every image finding — ≤ 900 KB of
+images per page, `/גלריה/` ≤ 3 MB (`pageBudgets` 3145728 — above decision 7's 2.5 MB because the
+gate sums the full files), `out/images/` ≤ 20 MB outside `maxOutBytes`, exactly one
+`fetchpriority="high"` content image per page, every `<img>` with `width`, `height` and a Hebrew
+`alt`, a 720 px phone copy offered through `<picture>` — and `perf.mjs` reports `imagesBytes` and
+`imagesUnsized` beside `outBytes`. There is no srcset and no resizer on a static export: do not
+file a srcset or LCP-image finding outside what that gate and CLAUDE.md §15 "Rendering rules" ask.
 
 ---
 
@@ -2474,8 +2484,11 @@ npm run gate   # exit 1: the content-depth baseline only ("post: 11 of 11 page(s
 Filed 2026-11-10. `public/dangates-logo.png` (250×250) goes into `components/layout/Header.tsx`
 through `SiteImage` (`site-images`, "First image task"), keeping the visible brand text. The homepage
 gets slots that render nothing until `manifest.images` carries the owner's photos. The owner said
-photos come later with no date and no stock or generated image is used. owner-actions 4.1 gets the
-exact shot list. Proof: `a11y.mjs`, `perf.mjs` (`imagesUnsized 0`), `rtl-lint.mjs`.
+on 2026-11-10 that photos come later with no date, and neither stock nor generated images —
+**superseded on 2026-11-11 by N37** (AI renderings as illustrations under one note, ADR 0006; the
+homepage slots and the Hero branch this row added are retired in N37's kit commit). owner-actions
+4.1 got the exact shot list (now 4.5). Proof: `a11y.mjs`, `perf.mjs` (`imagesUnsized 0`),
+`rtl-lint.mjs`.
 
 **Closed 2026-11-10.** The header renders `public/dangates-logo.png` through `SiteImage` as a decorative 40px mark beside the brand text (the home link keeps its `aria-label`; brand text is `text-xl` below `sm`). `components/marketing/JobPhotos.tsx` renders nothing while `manifest.images.gallery` is empty (up to 6 items, `jobPhotosCopy` in `lib/content.ts`) and sits after `<Diagnosis />`; `Hero` renders `manifest.images.hero` with `priority` below the CTAs when set. owner-actions 4.1 carries the shot list. Verified:
 
@@ -2661,11 +2674,37 @@ safety-only edit on 2026-11-11 (the full post rewrite still waits on owner-actio
 quotes from the post must stay intact. Proof: `spam-grep.mjs`, `check-live-register`,
 claims-verifier.
 
+**Closed 2026-11-11.** The post `שער-חשמלי-לא-מגיב` now gives the safety short form, says a lifting gate stopped open or half-way and a barrier arm are not released by hand, points to the guide by name, and says a sliding gate's track is cleaned, not oiled; its `updated` is 2026-11-11. The two release sentences it dropped were quoted by the winter power-cut line in `content/live/_campaigns.mjs`; with the owner's approval in chat on 2026-11-11 that line became «הפסקת חשמל? לא כל שער משחררים ביד», quoting the post's new sentence, and the register's `approved` stamp records it. hebrew-editor and claims-verifier clean. Verified: `npm run gate` exit 1 (only the post floor), `check-live-out` → 12 quoted pieces shown, `claims-grep.mjs` → `failingClaims 0`, `perf.mjs` → `outBytes 12905638` (15 MB cap).
+
+### N37 — P1 · L · [NOT STARTED] Every page is text-only; AI renderings under one site-wide note fill the image slots
+
+Filed 2026-11-11 on the owner's decisions of that day (business-facts §F, ADR 0006, CLAUDE.md §15;
+supersedes §7.5's wait for photographs and N24's empty slots): every content page — 46 routes, the
+47 sitemap URLs minus the two legal pages plus `/גלריה/` — carries two or more Gemini renderings
+through `components/images/Figure.tsx`, in the text flow at full column width, the first directly
+after the answer block, watermarked bottom-right with the logo as supplied, approved by the owner
+on the local draft site (`npm run dev:images`) before anything goes live; two AI-made characters
+(`tech-a`, `tech-b`), never named, never staff; one Hebrew note (footer line, gallery intro, about
+line) from `content/images/notice.json`; `/גלריה/` in the header before «מחירון»; 78 own renders,
+36 reuse placements, 8 derived thumbnails, 19 frames with a character; spend capped at US$60. The
+Media Studio `page-images/` toolkit does the work (`--site dangates`); this repo keeps the plan,
+the manifest, the note, the approved files, `lib/images.ts`, the components and the gate. Four
+commits — the policy commit (docs, agents, skills), the kit commit (empty manifest; the gate green
+at 46 routes / 0 images; `JobPhotos` and the Hero branch of N24 retired), the plan commit, the
+install commit — and the kit and the images go live in **one** deploy. Proof:
+`node scripts/images/check-images-out.mjs out` (46 content routes, every route ≥ 2 counting reuse,
+exactly one priority image per page), `a11y.mjs` (`imgCount`, no-alt 0), `perf.mjs`
+(`imagesUnsized 0`, `outBytes` measured without `out/images/` under 15000000, `imagesBytes` under
+the manifest's 20 MB `gates.maxTotalBytes`), `content-depth.mjs` (figures stripped from the
+measured text; no new shared block; the answer-block proxy unchanged), `links.mjs` (`/גלריה/` in
+the sitemap, not an orphan, `chromeLinks` +1), `schema.mjs` (`rawHebrewUrls 0`, no `ImageObject`,
+no `/images/` in any `image`), `claims-grep.mjs` 0 with the three `content/images/*.json` files
+scanned, and the retired-wording grep of the plan empty over `CLAUDE.md docs .claude lib app
+components scripts/audit`.
+
 ---
 
 ## §15. Environment
-
-**Closed 2026-11-11.** The post `שער-חשמלי-לא-מגיב` now gives the safety short form, says a lifting gate stopped open or half-way and a barrier arm are not released by hand, points to the guide by name, and says a sliding gate's track is cleaned, not oiled; its `updated` is 2026-11-11. The two release sentences it dropped were quoted by the winter power-cut line in `content/live/_campaigns.mjs`; with the owner's approval in chat on 2026-11-11 that line became «הפסקת חשמל? לא כל שער משחררים ביד», quoting the post's new sentence, and the register's `approved` stamp records it. hebrew-editor and claims-verifier clean. Verified: `npm run gate` exit 1 (only the post floor), `check-live-out` → 12 quoted pieces shown, `claims-grep.mjs` → `failingClaims 0`, `perf.mjs` → `outBytes 12905638` (15 MB cap).
 
 ### 15.1 — P2 · S · [PARTIAL] Citation drift is a measured quantity
 

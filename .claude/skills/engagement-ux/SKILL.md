@@ -43,8 +43,9 @@ Built in `98e38f0` (2026-11-09, Sprint 8.1 — backlog N20). The rule and where 
   page's prose passes `TOC_MIN_WORDS` (900) **and** it has `TOC_MIN_HEADINGS` (4) or more H2s;
   otherwise `[]` and nothing renders. The prose is the same data the page maps (or a guide's
   registry `wordCount`), so the count cannot drift from the copy. As of 2026-11-09: 17 pages — the
-  4 guides, the 7 service pages, `/אודות/`, and the five cities over the bar (חיפה, יבנה, ירושלים,
-  פתח-תקווה, ראשון-לציון); the other 9 cities sit under it. The set moves when copy does.
+  4 guides then built (5 since `c457c31`), the 7 service pages, `/אודות/`, and the five cities over the bar (חיפה, יבנה, ירושלים,
+  פתח-תקווה, ראשון-לציון); the other 9 cities sit under it. 25 pages as of 2026-11-10, after the
+  N26–N29 rework (`qa-build-gate` baseline). The set moves when copy does.
 - **Derived at build** — zero client JS. Every linked H2 carries a stable `id` from `headingId()`
   (the same slug the guide renderer uses, so AEO section targeting has something to anchor to) and
   `scroll-mt-24` so the sticky header never covers the target; a duplicate id throws at build. On the

@@ -98,7 +98,7 @@ Reviewer findings are fixed in the same session, then the proof script is re-run
 A new route family, a data-model change (`locations` gaining `kind`/`prefixed`, `cityContent`,
 `serviceDepth`, the block model), a redirect or hosting policy, or anything a later agent could
 "correct" back — write `docs/decisions/NNNN-<slug>.md` (next number after
-`ls docs/decisions/`), same shape as ADR 0001–0004: Context · Decision · Consequences · Verification.
+`ls docs/decisions/`), same shape as ADR 0001–0006: Context · Decision · Consequences · Verification.
 Link it from the backlog row.
 
 ## 7. Update the backlog row

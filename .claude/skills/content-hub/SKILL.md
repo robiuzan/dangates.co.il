@@ -105,8 +105,8 @@ answer are not competing; pretending they are produces thin guides that dodge th
 ## The homepage-FAQ contract
 
 Do **not** shrink the homepage FAQ. It was the only `FAQPage` on the site until Sprint 5 (the
-`graph(` call in `app/page.tsx`; `faqPages 26` since `7ed1acd` — `/`, the 7 services, the 14
-locations and the 4 guides; 30 with 18 locations after `89439b7`) and it makes the homepage convert. Each question with a deep owner gains `moreAt: { href, label }` on its
+`graph(` call in `app/page.tsx`; `faqPages 27` since `c457c31` — `/`, the 7 services, the 14
+locations and the 5 guides; 26 with 4 guides after `7ed1acd`, 30 with 18 locations after `89439b7`) and it makes the homepage convert. Each question with a deep owner gains `moreAt: { href, label }` on its
 `faqs` entry; `Faq.tsx` renders it inside the answer panel **outside the `a` string**, so
 `faqJsonLd([...faqs])` still receives clean text. `lib/guides.ts` throws if a `moreAt` href names a
 slug that is not registered. The homepage passes more equity than any other page — this turns the

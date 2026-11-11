@@ -93,9 +93,12 @@ The full form design (consent, `/תודה/`, city field, pricing-page CTA) is `/
 
 ## Images and figures
 
-`a11y.mjs` `imgCount 0` — there is nothing to alt-check until photos exist (business-facts §F).
-When they land, `/site-images` applies: Hebrew `alt` on meaningful images, `alt=""` only for
-decorative, and `SiteImage` refuses an empty `alt` at compile time. Figures get a visible caption.
+`a11y.mjs` `imgCount` counts the header logo (one per page, decorative) and, since N37, every content
+image — AI renderings under one site-wide note through `components/images/Figure.tsx` (`page-imagery`).
+Each carries a Hebrew `alt` from `content/images/manifest.json` and every body figure a visible
+`<figcaption>`; `a11y.mjs` fails a missing `alt`, and an image-only link needs an accessible name
+(the gallery tiles and the index thumbnails). `alt=""` is for the logo only; `SiteImage` (OG card,
+logo) still refuses an empty `alt` at compile time.
 
 ## Tap targets and mobile
 

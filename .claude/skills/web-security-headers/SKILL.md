@@ -86,7 +86,7 @@ must be present or something breaks:
   the `<noscript>` iframe (`app/layout.tsx:58-68`); `google-analytics.com` + regional
   `*.google-analytics.com` for GA4 beacons once the property exists (owner-actions §2.4).
 - `api.web3forms.com` — the lead-form POST (`WEB3FORMS_ENDPOINT` in `components/forms/LeadForm.tsx`), in `connect-src` **and** `form-action`.
-- `imgquarry.com` — the manifest media host (OG card; photos via `/site-images`); `/cdn-cgi/image/…` is same-origin.
+- `imgquarry.com` — the manifest media host (the OG card via `/site-images`; the content images of N37 are same-origin files under `/images/`, covered by `'self'`); `/cdn-cgi/image/…` is same-origin.
 - `font-src 'self' data:` (Rubik is self-hosted by `next/font`) · `style-src 'unsafe-inline'` (Next inline styles).
 
 **One obstacle is gone.** Until 2026-09-06 the 37 redirect stubs each carried an inline

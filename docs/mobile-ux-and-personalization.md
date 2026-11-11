@@ -133,8 +133,9 @@ physical-utility lint (`hebrew-rtl`), with no effect on `flex-row-reverse`.
    (content-standards §5). As of 2026-11-09 none of the 36 service, location and post pages has one
    (§6.2, `content-depth.mjs` answer-block proxy); `/` and `/מחירון/` gained theirs in Sprint 4. At 375 px it must be visible before the first scroll.
 8. **Nothing reflows.** Any `<table>` (guides, the price-driver table of N14) sits in a wrapper with
-   `overflow-x: auto`; the body never scrolls horizontally at 320 px; when photos land
-   (business-facts §F) every one ships with `width` and `height` through `SiteImage` (`site-images`).
+   `overflow-x: auto`; the body never scrolls horizontally at 320 px; every content image (the AI
+   renderings of N37) ships with `width` and `height` and a 720 px phone copy through
+   `components/images/Figure.tsx` (`page-imagery`), full column width and never wider than its column.
 9. **Reduced motion is honoured.** The `prefers-reduced-motion` reset in `app/globals.css` and
    `Reveal`'s visible-first paint stay. No `framer-motion` (§10.3): a JS animation would need its own
    `useReducedMotion()` gate. Nothing animates on the conversion path.

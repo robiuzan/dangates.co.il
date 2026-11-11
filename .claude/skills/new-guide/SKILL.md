@@ -1,6 +1,6 @@
 ---
 name: new-guide
-description: Build one Hebrew guide under /מדריכים/[slug]/ from a family template — symptom, component, brand, comparison, safety or committee — as a typed content/guides/<slug>.ts module: the required blocks per family in order, the answer block first, the captioned citable table each family must carry, CTA placement and cap, TechArticle/Article + FAQPage + BreadcrumbList schema, link targets into services, locations and sibling guides, registration in lib/guides.ts (built in Sprint 7 with its module-load throws; four guides built in the repo) and the reverse index, the deploy-day dates, then typecheck, build, the audit scripts and the article-auditor → hebrew-editor → claims-verifier chain. Use only after /content-hub has said the topic earns a page. Triggers: "new guide", "write a guide about", "symptom page", "component page", "comparison page", "brand page", "מדריך חדש", "עמוד תקלה", "/new-guide".
+description: Build one Hebrew guide under /מדריכים/[slug]/ from a family template — symptom, component, brand, comparison, safety or committee — as a typed content/guides/<slug>.ts module: the required blocks per family in order, the answer block first, the captioned citable table each family must carry, CTA placement and cap, TechArticle/Article + FAQPage + BreadcrumbList schema, link targets into services, locations and sibling guides, registration in lib/guides.ts (built in Sprint 7 with its module-load throws; five guides built in the repo) and the reverse index, the deploy-day dates, then typecheck, build, the audit scripts and the article-auditor → hebrew-editor → claims-verifier chain. Use only after /content-hub has said the topic earns a page. Triggers: "new guide", "write a guide about", "symptom page", "component page", "comparison page", "brand page", "מדריך חדש", "עמוד תקלה", "/new-guide".
 argument-hint: "symptom|component|brand|comparison|safety|committee <hebrew-slug>"
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 ---
@@ -17,7 +17,8 @@ calendar row. Whether the result is publishable is `article-auditor`'s verdict �
 **The hub is BUILT in the repo** (not deployed until the next deploy). Sprint 7 built the model from
 this skill's templates (ADR 0002, ADR 0003) and shipped the first four guides with it:
 `תקן-900-שער-חשמלי` (`safety`), `שער-חשמלי-רועש` (`symptom`), `מחסום-חניה-ועד-בית` (`committee`) and
-`שער-נגרר-כנף-או-קונזולי` (`comparison`). A new guide is one module plus one registry line — never a
+`שער-נגרר-כנף-או-קונזולי` (`comparison`); `שער-חשמלי-לא-נסגר` (`symptom`) followed in `c457c31`, so
+there are five as of 2026-11-10. A new guide is one module plus one registry line — never a
 guide parked in `lib/posts.ts` (the 11 legacy posts still use the flat `PostBlock` model) and never a
 one-off route.
 
@@ -34,8 +35,10 @@ one-off route.
 
 Also in place: `scripts/audit/lib/pages.mjs` `routeType()` classifies `/מדריכים/` as `guides-index`
 / `guide`; `thresholds.json` carries `guide: 900` and `guides-index: 250`; `content-depth.mjs`
-measures the answer block on `guide` pages. As of 2026-11-09 (at `2b0d802`) the four guides measure 2470.5 unique
-words (median; 2395.5 before each gained a TOC in `98e38f0`) and open with answers of 56–58 words.
+measures the answer block on `guide` pages. As of 2026-11-11 the five guides measure 2984 unique words
+(median, `content-depth.mjs` → `byType.guide.medianUnique`; the four of Sprint 7 measured 2470.5 at
+`2b0d802`, 2026-11-09, and 2395.5 before each gained a TOC in `98e38f0`) and open with answers of
+56–58 words.
 
 ## The family table
 
@@ -149,7 +152,11 @@ unknown slug in any related array · a `moreAt` with no matching guide. Rebuild 
   before matching, exactly as `app/services/[service]/page.tsx` does. Works in dev, 404s live otherwise.
 - **Widen when iterating:** `guides` is a tuple of `as const` literals; search it as `readonly Guide[]`
   or TS reports every optional field missing.
-- **No image block** until `/site-images` has a real file with width/height (business-facts §F).
+- **Figures (N37, `page-imagery`):** one `{ kind: "figure", slot: "mid" }` block after the first
+  `table` block — a reuse of a service detail or work frame; the `lead` renders under the answer block
+  through `afterAnswer` without a block. Both are AI renderings under the site note: the caption claims
+  nothing, names nobody and no city. The legacy `image` kind is unused (it rendered through
+  `next/image`) and is replaced by `figure` in N37's kit commit.
 - **Brand family:** no dealer, factory-training or manufacturer-warranty claim, ever — and no `brand`
   property in JSON-LD. It asserts an affiliation the business has not confirmed.
 - **Safety family — verified 2026-11-08/09** (`docs/research/2026-11-08-standards-and-law.md`; it

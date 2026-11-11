@@ -81,7 +81,8 @@ that references `#business`** (§4 rule 5).
 **Present and correct (2026-11-08):** `@type`, `name`, `alternateName`, `description` (the tagline —
 the roster pitch carries unconfirmed claims), `url` with the trailing slash, `telephone`, `email`,
 `priceRange`, two `OpeningHoursSpecification` entries, `knowsLanguage`, `logo`
-(`public/dangates-logo.png`), `image` (the manifest OG card), `areaServed` as the 14 published
+(`public/dangates-logo.png`), `image` (the manifest OG card — never a rendering: the content images of
+N37 stay out of the graph and no `ImageObject` is emitted anywhere), `areaServed` as the 14 published
 locations (`City` ×13, `AdministrativeArea` ×1 since `7ed1acd`; 18 before — never the roster phrase,
 which carried "פריסה ארצית" until the roster sync `8e8843d`, 2026-11-09), and `hasOfferCatalog` — an `OfferCatalog` of the 7 services as `Service`
 nodes by `@id`, no `Offer`, no price. On `/אודות/` only it also carries `knowsAbout` (the 7 services +
@@ -182,7 +183,7 @@ business node and the breadcrumb. Since `02a3144` (2026-11-08) it carries `headl
 `@id` `{pageUrl}#article`, `url` and `mainEntityOfPage` percent-encoded with the slash,
 `datePublished`, `dateModified` from `post.updated ?? post.date` (all 11 posts carry a real `updated`
 since `8768ce2`, 2026-11-09 — 8 since `9195c9b` — and the page shows the same two dates since
-`9886dd1`), `isPartOf` a full `Blog` node for `/blog/`, `image` (the OG card), `inLanguage`, and
+`9886dd1`), `isPartOf` a full `Blog` node for `/blog/`, `image` (the OG card, never a rendering), `inLanguage`, and
 `author` and `publisher` → `#business`.
 
 | Was (until 2026-11-08)                            | Now                                                                          |
@@ -229,17 +230,17 @@ a second `BreadcrumbList` to a page** (`.claude/rules/schema-jsonld.md`), and ne
 Thin wrappers over the kit, each returning a node for the page's `@graph`. Built in Sprint 2
 (`02a3144`, extended in `d8edb28`); the `schema-structured-data` skill carries the recipes.
 
-| Builder                              | Emits                                                                                                           |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| `businessNode(m, { knowsAbout? })`   | `localBusinessJsonLd` + `logo`, `image`, `areaServed` (14 places), `hasOfferCatalog`, trailing-slash `url` (§3) |
-| `websiteJsonLd(m)`                   | `WebSite` `#website`, `name`, `inLanguage`, `publisher → #business` — homepage only                             |
-| `serviceNode(m, svc)`                | the kit's `Service` with an explicit encoded `url`, `@id` `#service`, `provider → #business`                    |
-| `locationServiceJsonLd(m, svc, loc)` | §5 — `Service` with an encoded `url` and a local `City`/`AdministrativeArea` via `placeNode()`                  |
-| `articleJsonLd(m, a)`                | §6 — `BlogPosting`/`TechArticle`/`Article` with `@id`, `isPartOf`, encoded `mainEntityOfPage`                   |
-| `itemListJsonLd(m, items, page)`     | `CollectionPage` + `ItemList` for `/שירותים/`, `/איזורי-שירות/`, `/blog/` (and `/מדריכים/` later)               |
-| `pageNode(m, type, page)`            | `AboutPage` / `ContactPage` / `WebPage`, optionally joined to `#business` by `about` or `mainEntity`            |
-| `breadcrumbNode(m, crumbs)`          | §7 — called by `PageHeader` only                                                                                |
-| `graph(...nodes)`                    | One `{ "@context", "@graph": [...] }` per page, through `jsonLdScript`                                          |
+| Builder                              | Emits                                                                                                                                                                        |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `businessNode(m, { knowsAbout? })`   | `localBusinessJsonLd` + `logo`, `image` (the OG card; no `ImageObject`, renderings never in `image`), `areaServed` (14 places), `hasOfferCatalog`, trailing-slash `url` (§3) |
+| `websiteJsonLd(m)`                   | `WebSite` `#website`, `name`, `inLanguage`, `publisher → #business` — homepage only                                                                                          |
+| `serviceNode(m, svc)`                | the kit's `Service` with an explicit encoded `url`, `@id` `#service`, `provider → #business`                                                                                 |
+| `locationServiceJsonLd(m, svc, loc)` | §5 — `Service` with an encoded `url` and a local `City`/`AdministrativeArea` via `placeNode()`                                                                               |
+| `articleJsonLd(m, a)`                | §6 — `BlogPosting`/`TechArticle`/`Article` with `@id`, `isPartOf`, encoded `mainEntityOfPage`                                                                                |
+| `itemListJsonLd(m, items, page)`     | `CollectionPage` + `ItemList` for `/שירותים/`, `/איזורי-שירות/`, `/blog/` (and `/מדריכים/` later)                                                                            |
+| `pageNode(m, type, page)`            | `AboutPage` / `ContactPage` / `WebPage`, optionally joined to `#business` by `about` or `mainEntity`                                                                         |
+| `breadcrumbNode(m, crumbs)`          | §7 — called by `PageHeader` only                                                                                                                                             |
+| `graph(...nodes)`                    | One `{ "@context", "@graph": [...] }` per page, through `jsonLdScript`                                                                                                       |
 
 ---
 

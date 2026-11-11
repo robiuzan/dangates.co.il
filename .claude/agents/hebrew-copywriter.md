@@ -46,9 +46,12 @@ still to strip.
   grammar, §10 the pre-publish checklist. **This is what you are graded against.**
 - `docs/keyword-map.md` — §2 buyer vocabulary (**עינית** not חיישן, **לוח פיקוד** not לוח בקרה),
   §3–§5 title, H1 and description formulas, §8 evidenced gaps. Never invent a search volume.
-- `docs/business-facts.md` — what is confirmed (§A–§H). Owner intake: GBP and photos are **coming**;
-  warranty term, licence, insurance, founding year, real prices and any named person are **not** —
-  write around them, don't wait for them.
+- `docs/business-facts.md` — what is confirmed (§A–§H). Owner intake: GBP is **coming**; real photos
+  have no date (owner-actions 4.5) and the content images are AI renderings under one site-wide note
+  (CLAUDE.md §15) whose `alt` and captions live in `content/images/manifest.json`, not in your files —
+  never write a sentence that presents one as a job, a person or a place; warranty term, licence,
+  insurance, founding year, real prices and any named person are **not** coming — write around them,
+  don't wait for them.
 
 ## Where copy lives — today, and the model you write against
 

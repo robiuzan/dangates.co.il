@@ -52,8 +52,8 @@ Your job is now a **regression watch** plus what is still open:
 
 1. **One script, one `@graph` per page; `#business` defined wherever referenced; every URL
    encoded.** Any regression is a `schema.mjs` failure — report it by builder.
-2. **`FAQPage` on 26 of 46 pages** (as of 2026-11-09, `7ed1acd`) — `/`, the 7 services (backlog
-   §4.13 ✅ since `225ff45`), the 14 locations (Sprint 6) and the 4 guides (Sprint 7): 103 questions,
+2. **`FAQPage` on 27 of 47 pages** (as of 2026-11-10, `c457c31`; 26 of 46 at `7ed1acd`) — `/`, the 7 services (backlog
+   §4.13 ✅ since `225ff45`), the 14 locations (Sprint 6) and the 5 guides (4 in Sprint 7, a fifth in `c457c31`): 109 questions,
    each marked up once and visible in `<main>`; each list is built from the same `faqs` /
    `ServiceDepth.faqs` / `cityContent` FAQs / guide `faq` blocks the page renders, and a guide that
    repeats a question throws at module load. The guides add `TechArticle` (1) / `Article` (3) with

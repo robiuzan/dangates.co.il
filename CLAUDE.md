@@ -152,6 +152,8 @@ app/
   שירותים/ איזורי-שירות/ מחירון/ אודות/ צור-קשר/
   מדיניות-פרטיות/ הצהרת-נגישות/
   תודה/                   # thank-you page after a confirmed lead — noindex, outside the sitemap
+  גלריה/                  # the renderings gallery (§15, N37 — lands in Sprint 10's kit commit): in the
+                          #   header before «מחירון»; 48 sitemap URLs and 50 built pages with it
 components/
   ui/          Button Container Section SectionHeading Reveal Toc (build-time TOC, server, Sprint 8)
   layout/      Header (server shell) DesktopNav + MobileMenu (the two client nav leaves — every
@@ -164,6 +166,8 @@ components/
   forms/       LeadForm
   engagement/  EngagementEvents — the one client leaf behind the six engagement events (Sprint 8.1)
   live/        Live.tsx — the fleet live-kit surfaces, server components only (§14)
+  images/      Figure (the one way a content image renders) + the strip and team-teaser leaves — server
+               only, rendered by the toolkit's port (§15, N37 kit commit)
 lib/
   site-config.ts   # ⭐ NAP, services[7], locations[14] (kind · prefixed · updated), telHref, whatsappHref
   content.ts       # ⭐ all Hebrew marketing copy; reviews = [] (gated)
@@ -187,10 +191,16 @@ lib/
   phone.ts         # the Israeli phone pattern the lead form validates with (mobiles, 07X, landlines)
   seo.ts           # routeUrl() + ogBase — canonical and og:url from one place
   utils.ts         # cn()
+  images.ts        # the images manifest read at module load — placements, slots, the one priority image per
+                   #   page — throws on an entry that breaks manifest-rules (§15, N37 kit commit)
   live/            # fleet live-kit copies — byte-locked, never edit (§14)
 scripts/gen-redirects.mjs   # emits public/_redirects (80 real 301 rules) from REDIRECTS.md; runs on prebuild
 scripts/audit/     # ⭐ the measurements (12 checks + thresholds.json + claims.json) — roster §4
 scripts/live/      # fleet live-kit gates (prebuild / postbuild) and the weekly reminder — locked (§14)
+scripts/images/    # the page-images kit: check-images-out.mjs (the postbuild gate, last) + its lib/ — rendered
+                   #   by the Media Studio toolkit's port, re-rendered never hand-edited (§15, N37 kit commit)
+content/images/    # ⭐ plan.json (the slot plan) · manifest.json (toolkit-written) · notice.json (the site note) (§15)
+public/images/     # the approved renderings (full, -thumb, -w720) — only the toolkit's install writes here (§15)
 content/services/  # ⭐ one depth module per service (<slug>.ts → ServiceDepth): answer, sections, FAQs, links
 content/locations/ # ⭐ one module per location (<slug>.ts → CityContent): answer, local notes, FAQs, services
 content/pages/     # ⭐ services-index · areas-index · about · blog-index · contact · guides-index — each page's own copy
@@ -206,7 +216,7 @@ public/assets/live.js  # fleet live-kit browser behaviour (the switch, the card,
 REDIRECTS.md       # the old→new URL map the redirect generator implements
 docs/              # README (the layer map — start there) · implementation-sprints (the sequenced plan)
                    # backlog · content-standards · schema-graph · keyword-map · business-facts
-                   # agent-roster (routing) · owner-actions · audits/ · decisions/ (ADRs 0001–0004)
+                   # agent-roster (routing) · owner-actions · audits/ · decisions/ (ADRs 0001–0006)
                    # event-taxonomy · rank-tracking · content-calendar · competitors
                    # cloudflare-runbook · gbp-runbook · growth-roadmap
                    # standards: seo-geo-aeo-strategy · eeat-and-trust · ux-cro-security
@@ -219,9 +229,13 @@ docs/              # README (the layer map — start there) · implementation-sp
 `lib/guide-types.ts`, `lib/guides.ts`, `content/guides/*.ts`, `app/מדריכים/`
 ([ADR 0002](docs/decisions/0002-guides-hub-route.md), [ADR 0003](docs/decisions/0003-block-content-model.md))
 — and `/llms.txt` (§6.5), which is the generated route `app/llms.txt/route.ts`, not a `public/` file.
-Nothing on this layout is planned-but-unbuilt any more; `env-doctor.mjs` still tracks a few old
-planned names for the docs that mention them. (`lib/jsonld.ts` and `lib/authors.ts` were built in
-Sprint 2, 2026-11-08.)
+**Planned, not yet built (2026-11-11):** the images layer — `app/גלריה/`, `components/images/`,
+`lib/images.ts`, `scripts/images/`, `content/images/`, `public/images/` — lands in Sprint 10's kit
+commit (backlog N37, [ADR 0006](docs/decisions/0006-ai-renderings-under-one-note.md), §15); until
+then those paths are cited by bare path, never `path:line`, because `env-doctor.mjs` fails a line
+citation to a file that does not exist. Everything else on this layout is built; `env-doctor.mjs`
+still tracks a few old planned names for the docs that mention them. (`lib/jsonld.ts` and
+`lib/authors.ts` were built in Sprint 2, 2026-11-08.)
 
 Place by responsibility: reusable presentation primitive → `ui/`; page section → `marketing/`;
 structural chrome → `layout/`.
@@ -248,6 +262,7 @@ lib/site-config.ts   manifest · siteConfig · services · locations · telHref 
         ├── lib/page-content.ts   ← content/pages/*.ts (the indexes, /אודות/, /blog/, /צור-קשר/, the hub)
         ├── lib/guides.ts         guides · relatedGuides · guidesForService/Location  ← content/guides/<slug>.ts
         ├── lib/llms.ts           buildLlmsTxt()  → app/llms.txt/route.ts
+        ├── lib/images.ts         placements · slots · the note  ← content/images/{plan,manifest,notice}.json (§15, N37)
         ▼
 app/**/page.tsx  →  components/**
 ```
@@ -258,7 +273,11 @@ article bodies go in `lib/posts.ts`; each service page's depth prose goes in its
 `content/guides/<slug>.ts`, and the indexes', `/אודות/`'s, `/blog/`'s, `/צור-קשר/`'s and the hub's in
 `content/pages/` (UI labels around them stay in `lib/content.ts`); layout goes in
 components.** Copy never gets typed directly
-into JSX.
+into JSX. The one exception beside the live registers (§14): a figure's alt and caption live in
+`content/images/manifest.json`, written by the Media Studio toolkit's `alt` step and never typed by
+hand except the two text fields of a `candidate` entry, and the site-wide images note lives in
+`content/images/notice.json`, mirrored in `Media Studio/sites/dangates/site.json`
+`disclosure.texts` (§15).
 
 ---
 
@@ -337,11 +356,18 @@ See the `hebrew-rtl` skill for the full rule set.
   schema URL is percent-encoded. `node scripts/audit/schema.mjs` → 0 failures, 0 warnings,
   `danglingIds 0`, `rawHebrewUrls 0` as of 2026-11-09. `Review`/`AggregateRating`,
   `Offer` and a `Person` author ship **only** when sourced, which today they are not.
-- **Images:** there is **no `assets/` directory and no `image:optimize` script** on this site. Images
-  ship pre-optimized in `public/`; the OG card comes from the `imgquarry.com` media host in the
-  manifest. The header logo (`public/dangates-logo.png`, `6407f83`) is one decorative `<img>` per
-  page — `perf.mjs` → `images 48`, as of 2026-11-10. Every meaningful image needs a Hebrew `alt`;
-  decorative gets `alt=""`.
+- **Images:** content images are AI renderings under one site-wide note, and they render **only**
+  through `components/images/Figure.tsx` (§15; backlog N37 — the kit lands in Sprint 10's kit
+  commit, the renderings in its install commit). The header logo (`public/dangates-logo.png`,
+  `6407f83`, through the kit's `SiteImage`) is the only `<img>` that is not an `/images/` path —
+  one decorative mark per page, `alt=""` — and `perf.mjs` → `images` and `a11y.mjs` → `imgCount`
+  count both it and the renderings (`48` as of 2026-11-10; 49 pages once `/גלריה/` exists). The OG
+  card comes from the `imgquarry.com` media host in the manifest; a rendering is never `og:image`,
+  never an `image` in JSON-LD and never an `ImageObject`. Every content image carries a Hebrew
+  `alt` written by the toolkit from the finished pixels (40–160 characters, describing only what is
+  visible — no job, city, date, customer, count or brand) plus `width` and `height`. There is **no
+  `assets/` directory and no `image:optimize` script** on this site: `sharp` and the toolkit live in
+  Media Studio, never here.
 
 ---
 
@@ -362,6 +388,17 @@ Since 2026-10-12 `npm run build` also runs the fleet live-kit's gates (§14) thr
 (after `gen-redirects`) and `postbuild`. They fail on unapproved live wording, so a draft builds
 only as `LIVE_DRAFT=1 npm run build` — a local preview whose `out/` carries `out/.live-draft` and
 must never be deployed (`ops/deploy-site.ps1` refuses it, `-DeployOnly` included).
+
+From Sprint 10's kit commit (backlog N37, §15) `postbuild` ends with the images gate,
+`scripts/images/check-images-out.mjs` (`npm run images:check`), **after** `check-live-out` — last,
+always, because `check-live-out` rewrites `out/.live-draft`. A build that shows candidate renderings
+runs only as `IMAGES_DRAFT=1 npm run build`; it writes `out/.images-draft` and appends to
+`out/.live-draft`, so the deploy script refuses it too. `thresholds.json` → `maxOutBytes` (15 MB)
+measures `out/` **without** `out/images/` from that commit on; `perf.mjs` reports `imagesBytes`
+beside `outBytes`, bounded by the manifest's `gates.maxTotalBytes` (20 MB). The baseline moves
+twice, and only then: at the kit commit (50 `index.html` under `out/`, 48 sitemap URLs,
+`images 49`, `imgCount 49`, `imagesBytes 0`, the gate at 46 content routes / 0 images) and at the
+install commit (`qa-build-gate` records both).
 
 ---
 
@@ -426,19 +463,22 @@ probe one of them (e.g. `/locations/קריות/` → `301` to `/איזורי-ש�
 
 ## 11. Commands
 
-| Task                  | Command                                                               |
-| --------------------- | --------------------------------------------------------------------- |
-| Dev server            | `npm run dev`                                                         |
-| Production build      | `npm run build`                                                       |
-| Lint                  | `npm run lint`                                                        |
-| Type-check            | `npm run typecheck`                                                   |
-| Format / check        | `npm run format` · `npm run format:check`                             |
-| Audit the export      | `npm run audit` · `npm run audit -- --scope seo` (`--json`)           |
-| Audit the environment | `npm run audit:env`                                                   |
-| Full gate             | `npm run gate` (lint → typecheck → format:check → build → audit)      |
-| Regenerate redirects  | `npm run redirects` (also runs on `prebuild`)                         |
-| Live draft build      | `LIVE_DRAFT=1 npm run build` — local preview only, never deploy (§14) |
-| Weekly reminder       | `npm run live:remind` (prints; pushes only with `NTFY_TOPIC`, §14)    |
+| Task                  | Command                                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Dev server            | `npm run dev`                                                                                                                              |
+| Production build      | `npm run build`                                                                                                                            |
+| Lint                  | `npm run lint`                                                                                                                             |
+| Type-check            | `npm run typecheck`                                                                                                                        |
+| Format / check        | `npm run format` · `npm run format:check`                                                                                                  |
+| Audit the export      | `npm run audit` · `npm run audit -- --scope seo` (`--json`)                                                                                |
+| Audit the environment | `npm run audit:env`                                                                                                                        |
+| Full gate             | `npm run gate` (lint → typecheck → format:check → build → audit)                                                                           |
+| Regenerate redirects  | `npm run redirects` (also runs on `prebuild`)                                                                                              |
+| Live draft build      | `LIVE_DRAFT=1 npm run build` — local preview only, never deploy (§14)                                                                      |
+| Weekly reminder       | `npm run live:remind` (prints; pushes only with `NTFY_TOPIC`, §14)                                                                         |
+| Images gate           | `npm run images:check` — the postbuild gate on `out/`, 46 content routes (§15; from N37's kit commit)                                      |
+| Images coverage       | `npm run images:status` — per slot: approved, candidate, held or missing (§15)                                                             |
+| Images draft site     | `npm run dev:images` — the local site with candidate renderings (`IMAGES_DRAFT=1`), the owner's board view; never built for a deploy (§15) |
 
 ---
 
@@ -530,7 +570,9 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   page). The known baseline holds with them: 26 audit failures before and after (2026-10-12). The
   export grows by about 1.15 MB — ≈16.6 KB per HTML page and ≈7.8 KB per RSC payload, every line
   printed in both — inside `thresholds.json` → `maxOutBytes` (15 MB since 2026-11-11, the owner's
-  limit, raised from 13 MB on 2026-11-10; `perf.mjs` → `outBytes` 12898445, as of 2026-11-10).
+  limit, raised from 13 MB on 2026-11-10; `perf.mjs` → `outBytes` 12905638, as of 2026-11-11).
+  From N37's kit commit `maxOutBytes` measures `out/` without `out/images/`; `imagesBytes` is
+  reported beside it and bounded by the manifest's `gates.maxTotalBytes` (20 MB), §15.
 - **Reminder:** `.github/workflows/remind.yml` runs `scripts/live/check-reminders.mjs` every Sunday
   and pushes to the owner's phone only when THIS site needs something; red without the
   `NTFY_TOPIC` secret; a schedule runs only from the default branch on GitHub.
@@ -565,3 +607,300 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   switch is unreadable here and every seasonal line and the card stay off; widen the one shared GTM
   trigger `CE - popup events (3locksmiths)` to this hostname; `gh secret set NTFY_TOPIC -R
 robiuzan/dangates.co.il`; then deploy (`deploy-dangates`, dry run first).
+
+---
+
+## 15. Page images — AI illustrations under one note
+
+**Owner decisions 2026-11-11, in chat** (the record, with the install record to be filled at the
+install commit: [docs/business-facts.md](docs/business-facts.md) §F; the decision:
+[ADR 0006](docs/decisions/0006-ai-renderings-under-one-note.md); the work: backlog N37, Sprint 10).
+Every content page carries two or more realistic, phone-snapshot Gemini renderings of electric-gate
+and roller-shutter work, each checked for plausibility by two vision judges, watermarked
+bottom-right with the logo as supplied, and approved by the owner on the local draft site before
+anything goes live. This supersedes the owner's 2026-11-10 answer (photos later, no date, neither
+stock nor generated images — owner-actions 4.1, now 4.5) and every rule in this repo that waited for
+real photographs. The honesty rule did not go away; it moved from the pixels to the words (below).
+**Not yet in the repo:** the kit (Sprint 10.3) and the renderings (10.7) land together and go live
+in one deploy; until then the paths this section names are planned (§4) and cited by bare path.
+
+| #   | Decision                                                                                                                                                                                                                                                                                                                                                     |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | **AI renderings on every content page**, as illustrations under one site-wide Hebrew note — a footer line on every page, the gallery intro, a line under the team frame on `/אודות/`. Excluded: `/מדיניות-פרטיות/`, `/הצהרת-נגישות/`, `/תודה/` and the 404                                                                                                   |
+| 2   | **The two portrait sets are AI-made characters, not real people:** ids `tech-a` and `tech-b`, never named, never presented as staff. `policy.personaKind: "synthetic-unnamed"`; no consent flow, no contact sheets. Their source labels stay in Media Studio (`refs/dangates/PERSONAS.md`, outside git) and never enter this public repo                     |
+| 3   | **The logo stays as supplied, its «24/7» line included — on the watermark and in the header.** The claim lexicon does not change: no copy, alt, caption or note may say it (the alt writer reads the master, which carries no logo). business-facts §E and ADR 0006 record the contradiction; owner-actions 3.5 stays open                                   |
+| 4   | **Portraits come through the toolkit's `drive-pull` `portraits` role** from the one Drive folder «תמונות עובדים» (owner-actions 2.5 — the folder, not its parent). The logo is the 1280 px RGBA PNG export; `brand-prepare` composites it, a model never draws it                                                                                            |
+| 5   | **Placement: in the text flow, full column width** — a plain `<figure>` between the paragraphs it illustrates, caption under it, the first one directly after the page's answer block. No slider, lightbox, popup or floating thumbnails. The home and hub strips, the two contact figures and the index thumbnails carry no caption; every body figure does |
+| 6   | **Hard spend cap US$60** (`runner.costCapUsd`); expected ≈ US$30 (26–36)                                                                                                                                                                                                                                                                                     |
+| 7   | **`out/images/` is outside the audit's 15 MB `maxOutBytes`**; `perf.mjs` reports `imagesBytes` beside it; the images gate enforces ≤ 900 KB of images per page, `/גלריה/` ≤ 2.5 MB and `out/images/` ≤ 20 MB                                                                                                                                                 |
+| 8   | **No chest emblem** — plain charcoal-grey work polos, nothing lettered, no `badge` block                                                                                                                                                                                                                                                                     |
+
+Defaults taken from the fleet, changeable without a new decision: a rendering never in `og:image`,
+JSON-LD or the Google Business Profile; no file-level AI marker (`metadataLabel: false`); strict
+two-judge QA (`qa.strict` + `judge.json strict`) with a dangates trap set; `faceMatchStrict false`
+(the fleet lesson: "unsure" loops), `peopleCountStrict true`; `maxAttempts 6`, `maxFailures 3`, the
+operator re-scenes a slot stuck at 4; `gemini-3-pro-image` for a frame with a character,
+`gemini-nano-banana-2.1` people-free; WebP q80/74; long edges large 1400 / half 1200 / tile 960 /
+thumb 480 px at 200 / 170 / 120 / 45 KB; 720 px phone copies; `/גלריה/` in the header before
+«מחירון» and in the footer column; city pages people-free; `namedSlots ["team"]`; the team frame
+candid (working, one glancing up), never a to-camera pose, placed on `/` and `/אודות/` only; plan
+`time` ∈ morning · midday · overcast (never late-afternoon); no vehicle in any frame; every cover,
+cabinet and box closed; nobody in a gate's path, under a lifting door or in a boom's lane.
+
+### What the images are — and are not
+
+- **Illustrations, never evidence.** Every content image is a rendering, and none is evidence of a
+  job, city, date, customer, price, duration, warranty or rating. The fault and the finished state
+  are separate frames of different gates: **לפני ואחרי is banned**, no two files are a genuine pair.
+- **One note, three places.** The footer line on every page (`data-images-notice="footer"`, linking
+  to `/גלריה/`), the intro of `/גלריה/` (`"gallery"`) and the line under the team frame on
+  `/אודות/` (`"about"`). The texts live in `content/images/notice.json`, mirrored in
+  `Media Studio/sites/dangates/site.json` `disclosure.texts`; `doctor` fails when the two differ,
+  and the gate compares the built HTML to the file **verbatim**. The owner approves the wording with
+  the digest, so any later change needs a new approval. The note says «כל התמונות …», never «חלק
+  מהתמונות», and names no count, city or price. The footer line appears exactly when a rendering is
+  approved, so the site reads as before until the first batch ships.
+- **The characters are never staff.** A person in a frame is «גבר בחולצת פולו כהה» in an alt or a
+  caption — never «טכנאי», never «הטכנאי שלנו», never a name — and the about note says the two are
+  illustrations. The watermark's «24/7» is the logo as supplied (decision 3), recorded in
+  business-facts §E and ADR 0006; no alt, caption or note may say it.
+- **The words around a picture never claim a record.** Alt text (40–160 characters) and captions
+  (40–200) describe only what is visible: no job, city name, date, customer, count, brand, model,
+  price, warranty, duration, rating or credential; no first-person job verb («ביצענו», «החלפנו»),
+  no result verb («תוקן», «נפתר», «הושלם»), no «שלנו» in a caption; no הדמיה or AI inside an alt
+  (the note carries that); גרש and גרשיים, never an ASCII quote touching Hebrew. Alt and caption
+  would still be true if the picture were a real photograph. `site.json` `claims` is the single
+  source of the stems — this site's `scripts/audit/claims.json` ids and the `live.config.mjs`
+  staffing and identity stems mirrored into `claims.extraBannedRegex` — rendered into the kit's
+  `images.config.mjs` and enforced by `manifest-rules.mjs`, shared by `lib/images.ts` (throws at
+  module load) and the postbuild gate; `claims-grep.mjs` scans the three `content/images/*.json`
+  files too.
+- **Never** a rendering in `og:image`, in JSON-LD (not as `image`, and no `ImageObject` at all) or
+  on the Business Profile; never a stock photograph; never a person other than the two characters;
+  never a customer, a certificate, a rating, a vehicle (a plate is a location claim) or a readable
+  character in frame (labels, keypads, displays and packaging are blank); never a gate type this
+  market does not use.
+
+### The characters
+
+- **`tech-a` and `tech-b`** are the only people in any frame, faces shown. They are two AI-made
+  character sets the owner supplied through Drive and declared AI-made on 2026-11-11; no consent
+  applies, there is no `CONSENT.md`, no consent flow and no contact sheet. The record is
+  `Media Studio/refs/dangates/PERSONAS.md`, outside git. Were the owner ever to say they are real
+  people, every render stops until the policy becomes `real-consent-open` and a consent record
+  exists (the Media Studio runbook §2).
+- **Never named, anywhere.** Not in an alt, a caption, a file name, a commit message or a doc. The
+  two names, their surnames and the Drive file labels are `bannedNames` in `site.json` only — never
+  the brand's first word on its own — and **this repo is public**, so its docs say "two AI-made
+  character sets, `tech-a` and `tech-b`" and nothing more.
+- **Illustration, never credit.** The characters are never a byline, an author or a `Person` node;
+  business-facts §B's technician rows stay 🔶 and name nobody.
+- **Shirt:** a plain charcoal-grey work polo, no emblem, nothing lettered (decision 8); `text` is
+  a hard reject, clothing included.
+- **The watermark** is the logo bottom-right, composited by the toolkit at `finish` (width 0.13 of
+  the long edge, 120–220 px, opacity 0.92 after the preview; 0.15 only if the pilot finds it
+  unreadable at phone size). A model never draws it.
+- **Reference portraits** and the prepared brand file live in `Media Studio/refs/dangates/` and
+  `sites/dangates/brand/`, outside git, and are never copied into this repo.
+
+### The slots — 46 content routes, every route ≥ 2 images counting reuse
+
+**78 renders**, **36 reuse placements** (33 figure placements — the team frame once on `/אודות/`,
+`services-entrance-work` once on `/צור-קשר/`, 5 guide `mid` figures, 3 keeper-post `mid` figures,
+16 on the 8 departing posts, 7 gallery tiles — plus 3 `/blog/` thumbnails), **8 derived
+thumbnails** (5 guides index, 3 blog index), **19 frames with a character** (`tech-a` alone 9,
+`tech-b` alone 8, both 2 — `home-team` and `gallery-generated-4` only) and **14 gallery tiles**.
+46 content routes = the 47 sitemap URLs minus the two legal pages plus `/גלריה/`; `/תודה/` and
+the 404 carry none. Ratios are layout decisions: nothing crops, **4:3 scenes, 3:2 details**, one
+ratio per row family. Slot ids use the ASCII keys of the toolkit's `keyMap` (services `sliding
+swing overhead parking barrier shutters entrance`; cities `tel-aviv … sharon`; guides
+`standard-900 noisy-gate parking-barrier gate-types not-closing`; posts by topic) — `home-strip-1`,
+`services-sliding-main`, `cities-tel-aviv-detail`, `guides-not-closing-lead`,
+`gallery-generated-1`. Exactly one `priority` per page = the first content image in DOM order,
+computed from what renders.
+
+| Route                  | Slots (ratio · class)                                                                                     | Position (this site's own section order)                                                                                                                                                                          | People                                                 |
+| ---------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `/`                    | `home-strip-1..3` 4:3 tile, no caption · `home-team` 3:2 half, caption                                    | the strip between `Hero` and `TrustBar` · the team teaser between `Process` and `Diagnosis`                                                                                                                       | tech-a · none · tech-b · both (candid, in progress)    |
+| `/שירותים/`            | `services-pair-1..2` 4:3 tile, no caption                                                                 | inside `PageContentBlock` via `afterAnswer` — after the answer `<p>`, before the sections                                                                                                                         | none (parts on a cloth) · tech-b                       |
+| `/services/<7>/`       | `main` 4:3 large · `detail` 3:2 half · `work` 3:2 half, all captioned                                     | `main` after the answer `<p>`, before `<Toc>` · `detail` after the symptoms table, before `upfront.ask` · `work` after the depth sections, before «מתי כדאי לפנות אלינו?», followed by the per-page gallery line  | `main` one character (the triplet table) · none · none |
+| `/איזורי-שירות/`       | `areas-strip-1..3` 4:3 tile, no caption                                                                   | via `afterAnswer`; three building-stock archetypes, never a city                                                                                                                                                  | none · tech-a · none                                   |
+| `/locations/<14>/`     | `main` 4:3 large · `detail` 3:2 half, captioned                                                           | `main` after `AnswerBlock`, before `<Toc>` · `detail` after the `localNotes` sections, before the neighbourhoods block                                                                                            | none — the city-archetype table, no city name anywhere |
+| `/אודות/`              | `team` (reuse of `home-team`) + the about note · `about-story` 4:3 half · `about-work` 3:2 half           | `team` via `afterAnswer` before the Toc · `story` after the intro `<p>` · `work` after the values `<ul>`                                                                                                          | both · tech-b · none (materials)                       |
+| `/צור-קשר/`            | `contact-main` 4:3 half, **no caption** · reuse of `services-entrance-work`, no caption                   | `main` first in the details column, before «פרטי התקשרות» · the reuse centred under the two-column grid, before the complaints section (not the team frame: a held team frame would leave contact with one image) | tech-a · none                                          |
+| `/מחירון/`             | `pricing-survey` 3:2 half · `pricing-layers` 3:2 half, captioned                                          | `survey` after the CTA pair, before `<Toc>` · `layers` in its own white Section between the drivers and `PricingTeaser`                                                                                           | tech-b · none (parts on a cloth)                       |
+| `/גלריה/`              | `gallery-generated-1..7` 4:3 half, captioned, each linked to its page · the 7 service mains as tiles 8–14 | the 2-column grid under the intro, the note and the H2; every row 4:3                                                                                                                                             | 5 none · tech-a (2) · both (4); all finished states    |
+| `/מדריכים/`            | 5 derived thumbnails of the guide leads, no caption                                                       | the start side of each `GuideCard`                                                                                                                                                                                | —                                                      |
+| `/מדריכים/<5>/`        | `lead` 4:3 half, captioned · `mid` = reuse of a service `detail` or `work`                                | `lead` via `afterAnswer` before the Toc · `{ kind: "figure", slot: "mid" }` after the guide's first `table` block                                                                                                 | 2 leads with a character, 3 none                       |
+| `/blog/`               | 3 reuse thumbnails of the keeper mains                                                                    | the start side of the 3 keeper cards; departing cards stay text                                                                                                                                                   | —                                                      |
+| `/blog/<3 keepers>/`   | `main` 4:3 half, captioned, `thumb: true` · `mid` reuse                                                   | the renderer injects `main` after the first `p` block, `mid` after the second `h` block                                                                                                                           | none                                                   |
+| `/blog/<8 departing>/` | `main` reuse · `mid` reuse — no own render, zero spend                                                    | the same two positions                                                                                                                                                                                            | none                                                   |
+
+**Service triplets:** `main` = the character doing the page's own step (covers on, outside the
+path), `detail` = the fault close-up, `work` = the finished state — three illustrations, never one
+job. **City archetypes:** `main` opens with a clause unique to that city's building stock from its
+own `content/locations/<slug>.ts` `localNotes`, `detail` is the exposure the page's glance block
+tells the reader to look for; coastal cues only on the coastal cities; no city name in subject,
+alt, caption or file slug. **Blog scope** (`docs/content-calendar.md` §4): own renders only on the
+3 posts that stay; the 8 scheduled to fold or 301 reuse two service close-ups each, and when a post
+is retired its placements leave in the same commit (`lib/images.ts` throws on a placement whose
+route is gone). **Copy within one screen of a character:** three sentences in `lib/content.ts`
+(`differentiators[2]`, `aboutSections[0]`, `aboutSections[2]`) are softened with the owner's
+exact-Hebrew yes in the digest, in a small commit before install; until the yes, `about-story`
+renders people-free.
+
+**Budgets:** large 1400 px ≤ 200 KB, half 1200 px ≤ 170 KB, tile 960 px ≤ 120 KB, thumb 480 px ≤
+45 KB; a page ≤ 900 KB of images (`maxPageImageBytes 921600`), `/גלריה/` ≤ 3 MB
+(`pageBudgets["/גלריה/"] 3145728`, set by hand at the install commit: decision 7 said 2.5 MB, but
+the gate sums the full files, and 7 half + 7 large at their caps are 2,652,160 bytes — a threshold
+decision recorded in business-facts §F's install record, never a side effect), `out/images/` ≤ 20 MB
+(`maxTotalBytes 20971520`). A phone copy is 720 px wide and ≤ 120 KB (`PHONE_COPY` in
+`manifest-rules.mjs`); the page budget counts the full files, the desktop worst case. Expected
+after install: `imagesBytes` ≈ 10–11 MB, `imgCount` ≈ 168.
+
+### Rendering rules
+
+- **`components/images/Figure.tsx` is the only way** a content image renders: a plain `<img>` with
+  its true `width`/`height` and `loading="lazy"`, no `next/image`, no srcset (the export has no
+  resizer). An approved image also offers its phone copy, `<group>/<slug>-w720.webp`, through
+  `<picture><source media={PHONE_MEDIA}>` around that `<img>`. React writes no preload for an image
+  inside `<picture>`, so a phone fetches only the small file; never add `ReactDOM.preload` there
+  (it drops `media`, so a phone would fetch both). An index card shows the 480 px thumbnail and
+  offers none. Page code never writes an `<img>` for a content image.
+- **Exactly one `fetchpriority="high"` content image per image-bearing page — the first content
+  image in DOM order — and `loading="lazy"` on every other.** The header logo is eager on every page
+  with its own `priority` and is not counted: the gate reads only `/images/` paths as content.
+  Pages compute it from what actually renders (`leadSlotOf`, `stripShown`, the guide body's
+  `leadShown`), so a held `main` never leaves a page with two eager images or none.
+- **Guides:** the block model (ADR 0003) gains `{ kind: "figure"; slot }` and loses the unused
+  `image` kind that rendered through `next/image`; each guide carries one `mid` figure after its
+  first `table` block, and `lead` renders through `afterAnswer` under the answer block, above the
+  Toc. `/מדריכים/` renders all 5 thumbnails or the gate reports them as placed but not rendered.
+- **Posts** keep the flat `PostBlock` model (`.claude/rules/content-data.md`): the blog page
+  renderer injects the two figure positions; nothing is added to `lib/posts.ts`.
+- **A slot with no approved image renders nothing**, and a strip below two approved tiles renders
+  nothing, so every page reads correctly before a single image is approved. A figure illustrates;
+  it never replaces a paragraph, and no image is the sole carrier of information.
+- **`/גלריה/`** has its own title («גלריה — כך נראית עבודה על שער חשמלי»), description, canonical
+  and `og:url` (hand-fixed: this site's `PageHeader` wants `crumbs` with `href`, and the layout's
+  `og:url` must be overridden), is registered in `staticPages` so `links.mjs`, the sitemap and
+  `/llms.txt` know it, and shows the note whether or not a rendering is approved. The word שביצענו
+  never sits near a `/גלריה/` link; the per-service line «איך זה נראה — בגלריה: {service.name}»
+  stays under 12 tokens and unique per page, so `content-depth.mjs` never counts it as a shared
+  block.
+- **`JobPhotos` and the Hero's `manifest.images.hero` branch are retired** in the kit commit: both
+  would present catalog photos as real field work. The catalog (`site-images`) keeps the OG card and
+  the header logo only; `images.hero` and `images.gallery` in the manifest stay null.
+- Logical Tailwind utilities only (§6), tokens not hex (§7), server components only (§7 — the kit
+  adds no client file). The files are same-origin, so there is no new data flow for
+  `/מדיניות-פרטיות/`. In `live.config.mjs`, `forbiddenSources` lists `content/images/`, so a live
+  tip can never cite an alt or a caption.
+
+### The pipeline (skill `page-images-pipeline`; toolkit `Media Studio/page-images/`)
+
+`content/images/plan.json` (authored by `image-art-director`, built through
+`Media Studio/sites/dangates/plan-generator.mjs`: subject, Hebrew context, character / phase /
+season / time rotation, never a city in a file name) → the Media Studio toolkit,
+`cd "C:/Users/robiu/antigravity/Projects/Media Studio"` then
+`node page-images/cli.mjs <cmd> --site dangates`, every command `--dry-run` first, ASCII ids only on
+the PowerShell 5.1 command line, comma lists quoted: `doctor` → `plan lint` →
+`node sites/dangates/write-traps.mjs` → `brief` (78 prompts + the traps, `approved: null`) →
+`digest` (one page for the owner: prompts, the characters, the note, the three softened sentences,
+the watermark preview, the cost) → the owner's **yes in chat** → `approve --batch <sha8> --by "owner
+in chat"` → `generate --only "calib-*"` → `label-calibration.mjs` → `qa --calibrate` once (≥ 90 %
+recall on every scored HARD code) → a **12-frame pilot** (6 with a character, 6 people-free; the
+pilot rules in the plan decide re-scenes, ref order, NOT-clause rewrites and `maxAttempts`) → the
+four batches (`services-*` + `gallery-*` · `home-*,services-pair-*,areas-*,about-*,contact-*,
+pricing-*` · `cities-*` · `guides-*,blog-*`; `generate` is idempotent by render key, every paid call
+in the ledger, refused past the cap) → `qa` (deterministic checks and two vision judges; after any
+`judge.json` wording change `node sites/dangates/rejudge.mjs` on the stored masters, never
+`qa --force`) → `alt` (Hebrew alt and caption from the finished pixels) → `finish` (exact slot box,
+logo bottom-right, WebP) → `stage` (candidates into `public/images/_candidates/` plus `candidate`
+manifest entries) → `review` (the board at `http://localhost:4310` and `npm run dev:images`; the
+`image-qa-reviewer` agent spot-checks first) → `install` (approved → `public/images/<group>/`) →
+`node page-images/tools/phone-copies.mjs --site dangates` → `npm run images:status` →
+`npm run gate` → deploy (ask) → the post-deploy image checks in `deploy-dangates` → `mirror`. The
+contract every path, slot id, text and command obeys: `Media Studio/page-images/docs/contract.md`
+(§16 is this site's).
+
+- **The judges.** HARD codes written for this trade: `wrong-gate-type` (one judge is enough),
+  `unsafe-mechanism`, `unsafe-electrical`, `vehicle`, `legible-reading`, `impossible` (judged from
+  the picture alone — a cantilever leaf hanging free beyond its carriages is NOT impossible),
+  `wrong-trade`, `unsafe-edge`, `foreign`; the fleet codes `text`, `extra-person`, `face-mismatch`,
+  `rating-or-document`, `landmark`, `sparkle-or-watermark`, `nsfw-or-minor` keep their fleet
+  wording. The SOFT codes and every definition: `Media Studio/sites/dangates/judge.json`. Strict mode downgrades
+  nothing — a lone judge's HARD code is a `regenerate` — so judge precision (the evidence rule, the
+  NOT clauses) and `rejudge` are the cost controls, not the cap. There is no OCR, so 100 % zoom on
+  keypads and labels stays a human step.
+- **`IMAGES_DRAFT=1`** (read in RSC at build and dev time, like `LIVE_DRAFT`) renders `candidate`
+  entries from `/images/_candidates/` with a «טיוטה — ממתין לאישור» badge. In PowerShell:
+  `$env:IMAGES_DRAFT="1"; npm run build; Remove-Item env:IMAGES_DRAFT`. Without it only `approved`
+  entries render and `_candidates/` is pruned from `out/`. Review stays on the local draft site: a
+  `pages.dev` preview would publish candidates. Stop the dev server before any build.
+- **Edit here:** `content/images/plan.json` (the slot plan; the toolkit only reads it); alt and
+  captions on the board or, for `candidate` entries, the two text fields in the manifest;
+  `content/images/notice.json` only with the owner's word, together with `site.json`.
+- **After `install`:** the phone copies (the gate fails an approved image without its copy) →
+  `npm run images:status` (0 missing, or the held list named) → `gates.minPerContentPage` from 0 to
+  2, only at 46/46 → the dates to the install day on every route that gained a figure (the 5
+  guides' `dateModified`, the 11 posts' `updated`, `services`, `locations` and the `staticPages`
+  rows — never backdated) → the new bullet on `/הצהרת-נגישות/` → the renderings note in
+  `lib/llms.ts` → the install record in business-facts §F → ADR 0006's Implementation → N37's
+  Closed paragraph → the numbers here and in `qa-build-gate` → `npm run format` →
+  `npm run gate`. `git status --short` then shows only `public/images/**`,
+  `content/images/manifest.json`, the dated files and the docs; never `_candidates/`,
+  `assets/images/*` or anything from `refs/`.
+- **Fleet reuse.** The toolkit is site-agnostic; the per-site policy lives in
+  `Media Studio/sites/dangates/site.json`. `sharp` and the toolkit code live there, never here;
+  this repo keeps the plan, the manifest, the note, the approved files, `lib/images.ts`, the
+  components and the gate. The toolkit changes dangates needed — the `keyMap` for Hebrew slugs,
+  the `portraits` Drive role, the template at hambabait's live kit — are opt-in and byte-identical
+  for the eight sites before it. Next site: `Media Studio/runbooks/page-images-for-a-site.md`.
+
+### The gate — `scripts/images/check-images-out.mjs` (postbuild, last)
+
+Fails the build on: a manifest that breaks `manifest-rules.mjs`; an approved file missing from
+`public/` or `out/`, or differing from its recorded dimensions, bytes or sha256; a candidate in a
+production export; any file under `out/images/` the manifest does not vouch for; a retired entry
+past its keep whose file still exists; an approved image without its phone copy, a figure that does
+not offer it, or a `<source>` that is not a visible phone copy at `PHONE_MEDIA`; an `<img>` without
+numeric `width`/`height` or a non-empty alt; a content image outside a `Figure`; more or fewer than
+one priority content image, or one that is not the first content image (the header logo is not an
+`/images/` path and is not counted); a page over its byte budget; a page under
+`gates.minPerContentPage`; a rendered alt or caption that breaks the text rules; a placement that
+does not render, or an image that renders without a placement; one file on two `/locations/`
+pages; an `/images/` path inside JSON-LD, `og:image` or `twitter:image`; an `ImageObject` node; a
+note marker missing, doubled or not word-for-word `notice.json`; a note that contains «חלק מ» while
+no approved `owner-supplied` entry exists. It prints a coverage table per route. **With the empty
+manifest of the kit commit it prints 46 content routes and 0 images**, and the rest of the gate
+reads: 50 `index.html` under `out/`, 48 sitemap URLs, `images 49`, `imgCount 49`, `imagesBytes 0`,
+`imagesUnsized 0`, `rawHebrewUrls 0`, `/גלריה/` registered and not an orphan, `sharedParagraphs`
+unchanged, `claims-grep 0`, the one known `content-depth` failure only.
+
+### Operating rules
+
+- **Retire, never delete.** Never delete a deployed image file. A replacement is a **new slug** plus
+  `retired: "YYYY-MM-DD"` on the old entry; the old file stays ≥ 60 days, then the file and its
+  entry go in one commit. A rollback redeploys `out.prev/` or reverts the manifest commit.
+- **No revocation clause.** Nobody real is depicted (decision 2), so there is no consent to
+  withdraw and no 14-day removal path; a frame leaves only through retirement. If the owner ever
+  says the characters are real people, rendering stops before the next frame and the policy, the
+  note and a consent record change together before any further render (the toolkit runbook §2).
+- **Install** means the toolkit's `install`; nothing else moves a file into `public/images/`, except
+  `tools/phone-copies.mjs`, which writes the phone copy of an image already approved there. A file
+  there without a manifest placement fails `images:check` as a stray. Never commit
+  `public/images/_candidates/` or anything under `assets/images/` except its README.
+- **Never invent a caption's claim.** The writer is Claude, the validator is code and the reviewer
+  is the owner: if a caption states a fact, it is wrong.
+- **The kit and the images go live in one deploy.** The kit alone would publish an image-less
+  `/גלריה/` in the header menu. The pre-deploy step sets every gained figure's date to the deploy
+  day (§10).
+- **Real photos, later,** enter the same manifest as `owner-supplied` entries through the
+  toolkit's `import` and replace renderings one for one (owner-actions 4.5: landscape ≥ 1600 px,
+  originals without any added mark — the toolkit composites the logo — and permission for
+  identifiable people or property). The first one makes «כל התמונות …» untrue, so the note changes
+  with it, under a new approval. A real photo is still never `ImageObject`, never evidence of a
+  city or a date in its caption.
+- **Owner touches, four and no more:** the Drive share (2.5), one yes on the digest, one board
+  session on the local draft site, the deploy word — a second yes only if the pilot forces
+  `brief --refresh-blocks`. Nothing here is done until business-facts §F's install record is filled.

@@ -52,7 +52,7 @@ Quote the script's metrics, never a hand count. As of 2026-09-06 `cta-coverage.m
 5. **TOC on long pages (N20 ✅ since `98e38f0`) — a regression watch.** The rule (`/engagement-ux`)
    is `buildToc` in `lib/toc.ts`: a TOC only past 900 words **and** 4+ H2s, rendered by the server
    `components/ui/Toc.tsx` as `nav[data-toc]` after the answer block. As of 2026-11-09, 17 pages
-   carry one — the 4 guides, the 7 services, `/אודות/`, and חיפה, יבנה, ירושלים, פתח-תקווה,
+   carry one — the 4 guides then built (5 since `c457c31`), the 7 services, `/אודות/`, and חיפה, יבנה, ירושלים, פתח-תקווה,
    ראשון-לציון — 163 links, 0 missing targets (`grep -l 'data-toc' -r out --include=index.html`).
    The homepage and the services index clear 900 words but are not wired to `buildToc`; flag that
    as a Low finding only if their H2 count earns one. The posts are all under 900.

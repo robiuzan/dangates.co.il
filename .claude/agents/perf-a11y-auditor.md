@@ -1,6 +1,6 @@
 ---
 name: perf-a11y-auditor
-description: Read-only Core Web Vitals and WCAG 2.1 AA / IS 5568 audit of the static export in one pass with two verdicts — the text-only LCP and the two font preloads, the INP client-JS budget and the five "use client" components, the RSC payload files (kept, disallowed in robots.txt since 2026-11-09), plus computed colour contrast across hover states, list semantics around Reveal, screen-reader text, the skip link, the MobileMenu focus management and the DesktopNav disclosures, per-field form errors, FAQ answers in the DOM, tap targets, and whether the accessibility statement is truthful — a regression watch since Sprint 3 took a11y.mjs and rtl-lint.mjs to 0 (2026-11). Invoke with "perf audit", "a11y audit", "check Core Web Vitals", or "בדיקת נגישות". Never edits.
+description: Read-only Core Web Vitals and WCAG 2.1 AA / IS 5568 audit of the static export in one pass with two verdicts — the LCP path (the two font preloads and, since N37, the first content image per page), the INP client-JS budget and the five "use client" components, the RSC payload files (kept, disallowed in robots.txt since 2026-11-09), plus computed colour contrast across hover states, list semantics around Reveal, screen-reader text, the skip link, the MobileMenu focus management and the DesktopNav disclosures, per-field form errors, FAQ answers in the DOM, tap targets, and whether the accessibility statement is truthful — a regression watch since Sprint 3 took a11y.mjs and rtl-lint.mjs to 0 (2026-11). Invoke with "perf audit", "a11y audit", "check Core Web Vitals", or "בדיקת נגישות". Never edits.
 model: sonnet
 tools: Read, Grep, Glob, Bash, WebFetch
 ---
@@ -36,10 +36,17 @@ today's figures only as "as of" context and re-measure before asserting any of t
 
 ## Performance — what to audit
 
-1. **There is no imagery.** `perf.mjs` → `images: 0` across 46 pages; the header logo is text, and
-   `public/dangates-logo.png` reaches only the JSON-LD `logo` (since `02a3144`). LCP is a text element, there is
-   no srcset or image-CLS work. **Never file image findings for images that do not exist** — the
-   absence itself routes to E-E-A-T (business-facts §F, photos coming; `/site-images`).
+1. **Images exist since N37** — AI renderings under one site-wide note through
+   `components/images/Figure.tsx` (CLAUDE.md §15), two or more per content route, plus the header logo
+   (`public/dangates-logo.png`, `6407f83`) once per page; `perf.mjs` → `images` and `a11y.mjs` →
+   `imgCount` count both. Check one priority image per page — exactly one `fetchpriority="high"`, on
+   the first content image in DOM order — and that every `Figure` renders a `<picture>` with the
+   720 px phone copy and carries `width`/`height` (`perf.mjs` → `imagesUnsized 0`); that the per-page
+   weight stays under 900 KB and `imagesBytes` under the manifest's 20 MB (`perf.mjs` reports it
+   beside `outBytes`, which excludes `out/images/`); that `node scripts/images/check-images-out.mjs out`
+   exits 0 and `out/.images-draft` is absent. Where a figure sits above the fold, confirm it does not
+   push the text LCP later. Provenance and captions are not perf findings — they go to
+   `image-qa-reviewer` and `eeat-trust-auditor`.
 2. **Fonts are the LCP lever.** Rubik self-hosts via `next/font` with `display: swap`, and the export
    ships 6 `.woff2` with **2 `<link rel="preload" as="font">`** for the two `.p.woff2` faces since
    `13a6bdc` (§10.1 ✅) — `perf.mjs` fails if a preload href is not a real file, so confirm it is 2.
