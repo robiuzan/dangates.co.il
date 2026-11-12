@@ -632,7 +632,7 @@
       "slot": "main",
       "order": 1,
       "group": "services",
-      "fileSlug": "wrench-on-boom-holder-closed-cabinet-01",
+      "fileSlug": "flashlight-along-lowered-boom-closed-cabinet-01",
       "aspect": "4:3",
       "longEdge": 1400,
       "sizeClass": "large",
@@ -644,7 +644,7 @@
       "time": "morning",
       "service": "שער-זרוע",
       "city": null,
-      "subject": "Entrance lane of an office building's car park on a cold clear winter morning: the boom lies down on its rest post with its plain red and white bands, and the lane stands empty. The man crouches on the kerb beside the closed cabinet, outside the lane, a socket wrench on the bolts of the boom holder at the head of the cabinet, the cabinet door shut. A sealed loop groove crosses the asphalt before the boom, and a photocell stands on a short post at the kerb. The bottom-right corner is plain asphalt.",
+      "subject": "Entrance lane of an office building's car park on a cold clear winter morning: the boom lies down level across the empty lane, its plain red and white bands clean, its far end resting in the fork of its rest post. The man stands on the kerb beside the closed cabinet, outside the lane, a flashlight in his hand pointed along the boom at the fork where its far end rests, his face turned to the boom. The boom sits in its holder at the head of the cabinet, the cabinet door shut. A sealed loop groove crosses the asphalt before the boom, and a photocell stands on a short post at the kerb. The bottom-right corner is plain asphalt.",
       "context": "תקלות שחוזרות במחסומים: זרוע שנשברה בפגיעה, קפיץ שיצא מאיזון וזיהוי שמחזיק את הזרוע פתוחה.",
       "differentiateFrom": [
         "gallery-generated-5",
@@ -1525,8 +1525,8 @@
       "time": "morning",
       "service": "שערי-כנף",
       "city": null,
-      "subject": "At a narrow semi-detached frontage the morning after rain, a single swing gate of dark steel bars stands closed between plastered posts, reddish dust caked on its lower rails and a red mud splash drying along the kerb in front. A citrus tree and a carport show behind the bars, and the neighbouring half of the house has its own gate a step away. The bottom-right corner is plain concrete paving.",
-      "context": "בבית דו-משפחתי מגרש אחד מחולק לשתי יחידות, ולכן החזית של כל יחידה צרה יותר. שער נגרר צריך לאורך הגדר מקום לכנף כשהיא פתוחה. בקיץ היא מתייבשת לאבק דק שהרוח מפזרת על שבילי הגישה, ובחורף הגשם שוטף אותה כבוץ אל החניה ואל המסילה.",
+      "subject": "At a narrow semi-detached frontage the morning after rain, a single swing gate of dark steel bars stands closed between two plastered posts, hung on two plain welded hinges on the left post and resting against a ground stop by the right post, with a narrow gap of wet paving under its bottom rail. Reddish dust is caked on its lower rails, and a red mud splash dries along the kerb in front. A citrus tree and a carport show behind the bars, and the neighbouring half of the house has its own gate a step away. The bottom-right corner is plain concrete paving.",
+      "context": "בבית דו-משפחתי מגרש אחד מחולק לשתי יחידות, ולכן החזית של כל יחידה צרה יותר.",
       "differentiateFrom": [
         "cities-kfar-saba-detail",
         "blog-smart-upgrade-main",
