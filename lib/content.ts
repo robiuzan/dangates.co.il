@@ -166,7 +166,9 @@ export const differentiators = [
   {
     icon: "ShieldCheck",
     title: "אחריות על העבודה",
-    body: "אנחנו נותנים אחריות על העבודה בתיקונים ובהתקנות שביצענו. לפני שמסיימים, בודקים שהשער נפתח ונסגר עד הסוף ועוצר כשהעינית מזהה מכשול.",
+    // Softened 2026-11-12 with the owner's yes on the page-images digest (CLAUDE.md §15): this
+    // sentence sits within a screen of a picture with an AI-made character, so it claims no job done.
+    body: "אנחנו נותנים אחריות על העבודה בתיקונים ובהתקנות. לפני שמסיימים, בודקים שהשער נפתח ונסגר עד הסוף ועוצר כשהעינית מזהה מכשול.",
   },
   {
     icon: "Users",
@@ -467,7 +469,9 @@ export const aboutValues = [
 export const aboutSections = [
   {
     title: "החזון והמשימה",
-    body: "אנחנו מאמינים ששירות איכותי מתחיל בהבנה מעמיקה של צורכי הלקוח. המשימה שלנו היא להעניק לכל לקוח פתרון שמתאים לשער ולשימוש שלו, עם דגש על בטיחות ואמינות.",
+    // Softened 2026-11-12 with the owner's yes on the page-images digest (CLAUDE.md §15): this
+    // sentence sits within a screen of a picture with an AI-made character, so it claims no job done.
+    body: "אנחנו מאמינים ששירות איכותי מתחיל בהבנה מעמיקה של צורכי הלקוח. המשימה היא להעניק לכל לקוח פתרון שמתאים לשער ולשימוש שלו, עם דגש על בטיחות ועל הסבר ברור.",
   },
   {
     title: "תחומי ההתמחות",
@@ -477,7 +481,9 @@ export const aboutSections = [
   },
   {
     title: "המחויבות ללקוחות",
-    body: "אנחנו לא רק מתקינים ומתקנים שערים — אנחנו מחויבים להעניק לכם ביטחון ושקט נפשי. כל שירות שאנחנו מספקים מכוון לשיפור הבטיחות, השימושיות והאסתטיקה של השערים שלכם.",
+    // Softened 2026-11-12 with the owner's yes on the page-images digest (CLAUDE.md §15): this
+    // sentence sits within a screen of a picture with an AI-made character, so it claims no job done.
+    body: "אנחנו לא רק מתקינים ומתקנים שערים — אנחנו מסבירים מה נמצא ומה נדרש, כדי שתדעו מה מצב השער ומה כדאי לעשות.",
   },
 ] as const;
 
