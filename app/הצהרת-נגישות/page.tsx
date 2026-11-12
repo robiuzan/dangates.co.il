@@ -49,7 +49,7 @@ export default function AccessibilityPage() {
           <ul className="list-disc space-y-1 ps-5">
             <li>מבנה סמנטי ותמיכה בניווט באמצעות מקלדת.</li>
             <li>ניגודיות צבעים תקינה וטקסט קריא.</li>
-            <li>תיאורים חלופיים לתמונות בעלות משמעות.</li>
+            <li>טקסט חלופי בעברית לכל תמונת תוכן, שנבדק אוטומטית בכל בנייה של האתר.</li>
             <li>התאמה לקוראי מסך וכיווניות RTL מלאה.</li>
           </ul>
           <h2 className="font-heading text-lg font-bold text-primary">

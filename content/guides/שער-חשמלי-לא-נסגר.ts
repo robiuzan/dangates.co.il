@@ -43,7 +43,7 @@ export const guide = {
   family: "symptom",
   targetQuery: "שער חשמלי לא נסגר",
   datePublished: "2026-11-11",
-  dateModified: "2026-11-11",
+  dateModified: "2026-11-12",
   relatedServices: ["שערים-נגררים", "שערי-כנף"],
 
   blocks: [

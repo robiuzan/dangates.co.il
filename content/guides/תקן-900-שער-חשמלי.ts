@@ -48,7 +48,7 @@ export const guide = {
   targetQuery: "תקן שערים חשמליים",
   // Set both to the real publish day when the guide is registered and deployed (never backdated).
   datePublished: "2026-11-10",
-  dateModified: "2026-11-11",
+  dateModified: "2026-11-12",
   // Every service: a gate's safety devices and the standard's scope touch all seven page types.
   relatedServices: [
     "שערים-נגררים",

@@ -116,8 +116,8 @@ by design; that guard is the rule made mechanical.
 
 Params for `[service]`, `[city]`, `[slug]` arrive **percent-encoded** during export. The silo routes
 match with `decodeURIComponent(param).normalize("NFC")` (`findCard` in `app/services/[service]/page.tsx`,
-`findLocation` in `app/locations/[city]/page.tsx`). A new Hebrew dynamic route that skips this works in dev and 404s in
-production. Static routes are the `staticPages` registry in `lib/site-config.ts` — a new top-level page needs a row there or `links.mjs` fails (§1.4, done 2026-09-06); `navItems` hrefs carry the trailing slash the export enforces (N10, closed 2026-09-06). `/תודה/` is the
+`findLocation` in `app/locations/[city]/page.tsx`). A new Hebrew dynamic route that skips this 404s in
+production (and `next dev` serves no Hebrew dynamic route at all under `output: "export"`: preview from a build with `node scripts/serve-out.mjs`). Static routes are the `staticPages` registry in `lib/site-config.ts` — a new top-level page needs a row there or `links.mjs` fails (§1.4, done 2026-09-06); `navItems` hrefs carry the trailing slash the export enforces (N10, closed 2026-09-06). `/תודה/` is the
 one `noindex` row — it stays out of the sitemap.
 
 ## Workflow

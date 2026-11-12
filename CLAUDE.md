@@ -152,8 +152,9 @@ app/
   שירותים/ איזורי-שירות/ מחירון/ אודות/ צור-קשר/
   מדיניות-פרטיות/ הצהרת-נגישות/
   תודה/                   # thank-you page after a confirmed lead — noindex, outside the sitemap
-  גלריה/                  # the renderings gallery (§15, N37 — lands in Sprint 10's kit commit): in the
-                          #   header before «מחירון»; 48 sitemap URLs and 50 built pages with it
+  גלריה/                  # the renderings gallery (§15, N37 — kit commit ff065e4, 14 tiles since the
+                          #   install, 2026-11-12): in the header before «מחירון»; 48 sitemap URLs
+                          #   and 50 built pages with it
 components/
   ui/          Button Container Section SectionHeading Reveal Toc (build-time TOC, server, Sprint 8)
   layout/      Header (server shell) DesktopNav + MobileMenu (the two client nav leaves — every
@@ -167,7 +168,7 @@ components/
   engagement/  EngagementEvents — the one client leaf behind the six engagement events (Sprint 8.1)
   live/        Live.tsx — the fleet live-kit surfaces, server components only (§14)
   images/      Figure (the one way a content image renders) + the strip and team-teaser leaves — server
-               only, rendered by the toolkit's port (§15, N37 kit commit)
+               only, rendered by the toolkit's port (§15, N37 kit commit ff065e4)
 lib/
   site-config.ts   # ⭐ NAP, services[7], locations[14] (kind · prefixed · updated), telHref, whatsappHref
   content.ts       # ⭐ all Hebrew marketing copy; reviews = [] (gated)
@@ -192,15 +193,16 @@ lib/
   seo.ts           # routeUrl() + ogBase — canonical and og:url from one place
   utils.ts         # cn()
   images.ts        # the images manifest read at module load — placements, slots, the one priority image per
-                   #   page — throws on an entry that breaks manifest-rules (§15, N37 kit commit)
+                   #   page — throws on an entry that breaks manifest-rules (§15, N37 kit commit ff065e4)
   live/            # fleet live-kit copies — byte-locked, never edit (§14)
 scripts/gen-redirects.mjs   # emits public/_redirects (80 real 301 rules) from REDIRECTS.md; runs on prebuild
 scripts/audit/     # ⭐ the measurements (12 checks + thresholds.json + claims.json) — roster §4
 scripts/live/      # fleet live-kit gates (prebuild / postbuild) and the weekly reminder — locked (§14)
 scripts/images/    # the page-images kit: check-images-out.mjs (the postbuild gate, last) + its lib/ — rendered
-                   #   by the Media Studio toolkit's port, re-rendered never hand-edited (§15, N37 kit commit)
+                   #   by the Media Studio toolkit's port, re-rendered never hand-edited (§15, N37 kit commit ff065e4)
 content/images/    # ⭐ plan.json (the slot plan) · manifest.json (toolkit-written) · notice.json (the site note) (§15)
-public/images/     # the approved renderings (full, -thumb, -w720) — only the toolkit's install writes here (§15)
+public/images/     # the approved renderings (full, -thumb, -w720) — only the toolkit's install writes here (§15);
+                   #   78 approved, 78 phone copies and 8 derived thumbnails since the install, 2026-11-12
 content/services/  # ⭐ one depth module per service (<slug>.ts → ServiceDepth): answer, sections, FAQs, links
 content/locations/ # ⭐ one module per location (<slug>.ts → CityContent): answer, local notes, FAQs, services
 content/pages/     # ⭐ services-index · areas-index · about · blog-index · contact · guides-index — each page's own copy
@@ -229,11 +231,11 @@ docs/              # README (the layer map — start there) · implementation-sp
 `lib/guide-types.ts`, `lib/guides.ts`, `content/guides/*.ts`, `app/מדריכים/`
 ([ADR 0002](docs/decisions/0002-guides-hub-route.md), [ADR 0003](docs/decisions/0003-block-content-model.md))
 — and `/llms.txt` (§6.5), which is the generated route `app/llms.txt/route.ts`, not a `public/` file.
-**Planned, not yet built (2026-11-11):** the images layer — `app/גלריה/`, `components/images/`,
-`lib/images.ts`, `scripts/images/`, `content/images/`, `public/images/` — lands in Sprint 10's kit
-commit (backlog N37, [ADR 0006](docs/decisions/0006-ai-renderings-under-one-note.md), §15); until
-then those paths are cited by bare path, never `path:line`, because `env-doctor.mjs` fails a line
-citation to a file that does not exist. Everything else on this layout is built; `env-doctor.mjs`
+**Built in Sprint 10** (backlog N37, [ADR 0006](docs/decisions/0006-ai-renderings-under-one-note.md),
+§15; not live until the next deploy): the images layer — `app/גלריה/`, `components/images/`,
+`lib/images.ts`, `scripts/images/` and `content/images/` in the kit commit `ff065e4` (2026-11-11,
+empty manifest), the slot plan in `08e4820`, and the 78 approved renderings under `public/images/`
+in the install commit (2026-11-12). Everything else on this layout is built; `env-doctor.mjs`
 still tracks a few old planned names for the docs that mention them. (`lib/jsonld.ts` and
 `lib/authors.ts` were built in Sprint 2, 2026-11-08.)
 
@@ -357,11 +359,12 @@ See the `hebrew-rtl` skill for the full rule set.
   `danglingIds 0`, `rawHebrewUrls 0` as of 2026-11-09. `Review`/`AggregateRating`,
   `Offer` and a `Person` author ship **only** when sourced, which today they are not.
 - **Images:** content images are AI renderings under one site-wide note, and they render **only**
-  through `components/images/Figure.tsx` (§15; backlog N37 — the kit lands in Sprint 10's kit
-  commit, the renderings in its install commit). The header logo (`public/dangates-logo.png`,
-  `6407f83`, through the kit's `SiteImage`) is the only `<img>` that is not an `/images/` path —
-  one decorative mark per page, `alt=""` — and `perf.mjs` → `images` and `a11y.mjs` → `imgCount`
-  count both it and the renderings (`48` as of 2026-11-10; 49 pages once `/גלריה/` exists). The OG
+  through `components/images/Figure.tsx` (§15; backlog N37 — the kit came in the kit commit
+  `ff065e4`, the 78 renderings in the install commit of 2026-11-12, live with the next deploy).
+  The header logo (`public/dangates-logo.png`, `6407f83`, through the kit's `SiteImage`) is the
+  only `<img>` that is not an `/images/` path — one decorative mark per page, `alt=""` — and
+  `perf.mjs` → `images` and `a11y.mjs` → `imgCount` count both it and the renderings (`168` as of
+  2026-11-12, the install; 49 at the kit commit with `/גלריה/`, 48 on 2026-11-10). The OG
   card comes from the `imgquarry.com` media host in the manifest; a rendering is never `og:image`,
   never an `image` in JSON-LD and never an `ImageObject`. Every content image carries a Hebrew
   `alt` written by the toolkit from the finished pixels (40–160 characters, describing only what is
@@ -389,16 +392,20 @@ Since 2026-10-12 `npm run build` also runs the fleet live-kit's gates (§14) thr
 only as `LIVE_DRAFT=1 npm run build` — a local preview whose `out/` carries `out/.live-draft` and
 must never be deployed (`ops/deploy-site.ps1` refuses it, `-DeployOnly` included).
 
-From Sprint 10's kit commit (backlog N37, §15) `postbuild` ends with the images gate,
+Since Sprint 10's kit commit (`ff065e4`, backlog N37, §15) `postbuild` ends with the images gate,
 `scripts/images/check-images-out.mjs` (`npm run images:check`), **after** `check-live-out` — last,
 always, because `check-live-out` rewrites `out/.live-draft`. A build that shows candidate renderings
 runs only as `IMAGES_DRAFT=1 npm run build`; it writes `out/.images-draft` and appends to
 `out/.live-draft`, so the deploy script refuses it too. `thresholds.json` → `maxOutBytes` (15 MB)
 measures `out/` **without** `out/images/` from that commit on; `perf.mjs` reports `imagesBytes`
-beside `outBytes`, bounded by the manifest's `gates.maxTotalBytes` (20 MB). The baseline moves
+beside `outBytes`, bounded by the manifest's `gates.maxTotalBytes` (20 MB). The baseline moved
 twice, and only then: at the kit commit (50 `index.html` under `out/`, 48 sitemap URLs,
 `images 49`, `imgCount 49`, `imagesBytes 0`, the gate at 46 content routes / 0 images) and at the
-install commit (`qa-build-gate` records both).
+install commit, 2026-11-12 (`npm run gate`: `images 168`, `imgCount 168`, `imagesUnsized 0`,
+`imagesBytes 11766080` under `gates.maxTotalBytes` 20971520, `outBytes 13522450` without
+`out/images/` under `maxOutBytes` 15000000, the gate at 46 content routes / 46 with images and 78
+manifest entries approved, 50 `index.html` and 48 sitemap URLs unchanged, still the one known
+`content-depth` failure). `qa-build-gate` records both.
 
 ---
 
@@ -463,22 +470,22 @@ probe one of them (e.g. `/locations/קריות/` → `301` to `/איזורי-ש�
 
 ## 11. Commands
 
-| Task                  | Command                                                                                                                                    |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Dev server            | `npm run dev`                                                                                                                              |
-| Production build      | `npm run build`                                                                                                                            |
-| Lint                  | `npm run lint`                                                                                                                             |
-| Type-check            | `npm run typecheck`                                                                                                                        |
-| Format / check        | `npm run format` · `npm run format:check`                                                                                                  |
-| Audit the export      | `npm run audit` · `npm run audit -- --scope seo` (`--json`)                                                                                |
-| Audit the environment | `npm run audit:env`                                                                                                                        |
-| Full gate             | `npm run gate` (lint → typecheck → format:check → build → audit)                                                                           |
-| Regenerate redirects  | `npm run redirects` (also runs on `prebuild`)                                                                                              |
-| Live draft build      | `LIVE_DRAFT=1 npm run build` — local preview only, never deploy (§14)                                                                      |
-| Weekly reminder       | `npm run live:remind` (prints; pushes only with `NTFY_TOPIC`, §14)                                                                         |
-| Images gate           | `npm run images:check` — the postbuild gate on `out/`, 46 content routes (§15; from N37's kit commit)                                      |
-| Images coverage       | `npm run images:status` — per slot: approved, candidate, held or missing (§15)                                                             |
-| Images draft site     | `npm run dev:images` — the local site with candidate renderings (`IMAGES_DRAFT=1`), the owner's board view; never built for a deploy (§15) |
+| Task                  | Command                                                                                                                                                                                                                                            |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dev server            | `npm run dev`                                                                                                                                                                                                                                      |
+| Production build      | `npm run build`                                                                                                                                                                                                                                    |
+| Lint                  | `npm run lint`                                                                                                                                                                                                                                     |
+| Type-check            | `npm run typecheck`                                                                                                                                                                                                                                |
+| Format / check        | `npm run format` · `npm run format:check`                                                                                                                                                                                                          |
+| Audit the export      | `npm run audit` · `npm run audit -- --scope seo` (`--json`)                                                                                                                                                                                        |
+| Audit the environment | `npm run audit:env`                                                                                                                                                                                                                                |
+| Full gate             | `npm run gate` (lint → typecheck → format:check → build → audit)                                                                                                                                                                                   |
+| Regenerate redirects  | `npm run redirects` (also runs on `prebuild`)                                                                                                                                                                                                      |
+| Live draft build      | `LIVE_DRAFT=1 npm run build` — local preview only, never deploy (§14)                                                                                                                                                                              |
+| Weekly reminder       | `npm run live:remind` (prints; pushes only with `NTFY_TOPIC`, §14)                                                                                                                                                                                 |
+| Images gate           | `npm run images:check` — the postbuild gate on `out/`, 46 content routes (§15; from N37's kit commit)                                                                                                                                              |
+| Images coverage       | `npm run images:status` — per slot: approved, candidate, held or missing (§15)                                                                                                                                                                     |
+| Images draft site     | `IMAGES_DRAFT=1 npm run build`, then `node scripts/serve-out.mjs` — the local site with candidate renderings at `http://localhost:3000`, the owner's board view; never deployed. `npm run dev:images` cannot serve the Hebrew dynamic routes (§15) |
 
 ---
 
@@ -571,8 +578,9 @@ it hides itself 45 days after the newest item and never moves the sitemap `<last
   export grows by about 1.15 MB — ≈16.6 KB per HTML page and ≈7.8 KB per RSC payload, every line
   printed in both — inside `thresholds.json` → `maxOutBytes` (15 MB since 2026-11-11, the owner's
   limit, raised from 13 MB on 2026-11-10; `perf.mjs` → `outBytes` 12905638, as of 2026-11-11).
-  From N37's kit commit `maxOutBytes` measures `out/` without `out/images/`; `imagesBytes` is
-  reported beside it and bounded by the manifest's `gates.maxTotalBytes` (20 MB), §15.
+  From N37's kit commit `maxOutBytes` measures `out/` without `out/images/` (`outBytes` 13522450
+  at the install, 2026-11-12); `imagesBytes` (11766080 at the install) is reported beside it and
+  bounded by the manifest's `gates.maxTotalBytes` (20 MB), §15.
 - **Reminder:** `.github/workflows/remind.yml` runs `scripts/live/check-reminders.mjs` every Sunday
   and pushes to the owner's phone only when THIS site needs something; red without the
   `NTFY_TOPIC` secret; a schedule runs only from the default branch on GitHub.
@@ -612,8 +620,8 @@ robiuzan/dangates.co.il`; then deploy (`deploy-dangates`, dry run first).
 
 ## 15. Page images — AI illustrations under one note
 
-**Owner decisions 2026-11-11, in chat** (the record, with the install record to be filled at the
-install commit: [docs/business-facts.md](docs/business-facts.md) §F; the decision:
+**Owner decisions 2026-11-11, in chat** (the record, with the install record of 2026-11-12:
+[docs/business-facts.md](docs/business-facts.md) §F; the decision:
 [ADR 0006](docs/decisions/0006-ai-renderings-under-one-note.md); the work: backlog N37, Sprint 10).
 Every content page carries two or more realistic, phone-snapshot Gemini renderings of electric-gate
 and roller-shutter work, each checked for plausibility by two vision judges, watermarked
@@ -621,8 +629,37 @@ bottom-right with the logo as supplied, and approved by the owner on the local d
 anything goes live. This supersedes the owner's 2026-11-10 answer (photos later, no date, neither
 stock nor generated images — owner-actions 4.1, now 4.5) and every rule in this repo that waited for
 real photographs. The honesty rule did not go away; it moved from the pixels to the words (below).
-**Not yet in the repo:** the kit (Sprint 10.3) and the renderings (10.7) land together and go live
-in one deploy; until then the paths this section names are planned (§4) and cited by bare path.
+**Installed 2026-11-12, not yet live:** the kit (Sprint 10.3, `ff065e4`) and the 78 approved
+renderings (10.7, the install commit on branch `page-images`) go live together with the next
+deploy, on the owner's word of 2026-11-12 ("approved, deploy", in chat).
+
+**The install, as recorded on 2026-11-12:** 78 slots, 78 approved, 0 held — 132 page renders (120
+in the slot folders + 12 superseded by the re-scene) plus 38 calibration traps, US$22.38 of the
+US$60 cap. Six owner touches, all in chat or on the local board: the Drive share (owner-actions
+2.5, 2026-11-11); the yes on digest batch `58391645` (116 prompts — 78 page slots + 38 calibration
+traps — which also approved the three softened sentences of `c535392`); board session 1 (board
+batch `54c5ed25`), 76 of 76 approved, no text edits; a yes on two re-scened prompts (digest
+`f4d2e10f`, stamped as batch `d8025628` because only a pre-authorised fix note on another prompt
+moved the id); board session 2 (board batch `ac8deff6`), 2 of 2 approved; the deploy word.
+Calibration (Media Studio `a183bd8`): 38 traps rendered, 36 labelled (two clean controls skipped,
+each came out with a parked car), every scored HARD code at 100 % recall (16 of 18 scored; `text`
+and `nsfw-or-minor` under two labelled frames). Pilot: 12 of 12 passed (7 on attempt 1, 5 on
+attempt 2), 0 refusals, about US$2.3; `maxAttempts` stayed 6 and the watermark width 0.13 (the
+mark reads at phone width). `judge.json` changed twice during the run: `face-mismatch` only for a
+clearly different man (`9bcd072`) and a person on a kerb is not `unsafe-edge` (`60dc90a`). QA
+stopped two slots after six attempts — `services-barrier-main` (a hand on the boom holder, or a
+boom off its rest) and `cities-kfar-saba-main` (a swing leaf drawn with a sliding gate's wheels
+and rail); re-scened with the owner's yes (`f7271da`), they passed on attempts 6 and 4. Before the
+board, the `image-qa-reviewer` pass (5 reviewers + 5 verifiers) sent back one frame
+(`home-strip-3`, a boom drawn as two arms; passed on attempt 3), and the operator corrected 20 alt
+or caption texts through the toolkit (typos, a light-grey polo the alt called dark, captions that
+read as a sequence or a promise). The dark rounded panel behind the logo on busy corners is the
+`finish` step's deliberate scrim. The install commit also moved the dates to 2026-11-12 on every
+route that gained a figure (the 5 guides' `dateModified` with their publish dates unchanged, the
+11 posts' `updated`, the 7 services, the 14 locations and the `staticPages` rows `""`, `שירותים`,
+`איזורי-שירות`, `מחירון`, `גלריה`, `blog`, `מדריכים`, `אודות`, `צור-קשר`, `הצהרת-נגישות`), put
+the alt-text bullet on `/הצהרת-נגישות/` and let `lib/llms.ts` print `llmsCopy.renderingsNote` only
+while `hasApprovedRenderings()`.
 
 | #   | Decision                                                                                                                                                                                                                                                                                                                                                     |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -699,7 +736,7 @@ cabinet and box closed; nobody in a gate's path, under a lifting door or in a bo
   a hard reject, clothing included.
 - **The watermark** is the logo bottom-right, composited by the toolkit at `finish` (width 0.13 of
   the long edge, 120–220 px, opacity 0.92 after the preview; 0.15 only if the pilot finds it
-  unreadable at phone size). A model never draws it.
+  unreadable at phone size — the 2026-11-12 pilot kept 0.13). A model never draws it.
 - **Reference portraits** and the prepared brand file live in `Media Studio/refs/dangates/` and
   `sites/dangates/brand/`, outside git, and are never copied into this repo.
 
@@ -709,7 +746,8 @@ cabinet and box closed; nobody in a gate's path, under a lifting door or in a bo
 `services-entrance-work` once on `/צור-קשר/`, 5 guide `mid` figures, 3 keeper-post `mid` figures,
 16 on the 8 departing posts, 7 gallery tiles — plus 3 `/blog/` thumbnails), **8 derived
 thumbnails** (5 guides index, 3 blog index), **19 frames with a character** (`tech-a` alone 9,
-`tech-b` alone 8, both 2 — `home-team` and `gallery-generated-4` only) and **14 gallery tiles**.
+`tech-b` alone 8, both 2 — `home-team` and `gallery-generated-4` only; 59 people-free) and **14
+gallery tiles** — all 78 approved at the install, 0 held.
 46 content routes = the 47 sitemap URLs minus the two legal pages plus `/גלריה/`; `/תודה/` and
 the 404 carry none. Ratios are layout decisions: nothing crops, **4:3 scenes, 3:2 details**, one
 ratio per row family. Slot ids use the ASCII keys of the toolkit's `keyMap` (services `sliding
@@ -747,7 +785,7 @@ is retired its placements leave in the same commit (`lib/images.ts` throws on a 
 route is gone). **Copy within one screen of a character:** three sentences in `lib/content.ts`
 (`differentiators[2]`, `aboutSections[0]`, `aboutSections[2]`) are softened with the owner's
 exact-Hebrew yes in the digest, in a small commit before install; until the yes, `about-story`
-renders people-free.
+renders people-free. (Done: the yes came with digest batch `58391645`, the commit is `c535392`.)
 
 **Budgets:** large 1400 px ≤ 200 KB, half 1200 px ≤ 170 KB, tile 960 px ≤ 120 KB, thumb 480 px ≤
 45 KB; a page ≤ 900 KB of images (`maxPageImageBytes 921600`), `/גלריה/` ≤ 3 MB
@@ -755,8 +793,12 @@ renders people-free.
 the gate sums the full files, and 7 half + 7 large at their caps are 2,652,160 bytes — a threshold
 decision recorded in business-facts §F's install record, never a side effect), `out/images/` ≤ 20 MB
 (`maxTotalBytes 20971520`). A phone copy is 720 px wide and ≤ 120 KB (`PHONE_COPY` in
-`manifest-rules.mjs`); the page budget counts the full files, the desktop worst case. Expected
-after install: `imagesBytes` ≈ 10–11 MB, `imgCount` ≈ 168.
+`manifest-rules.mjs`); the page budget counts the full files, the desktop worst case. Measured at
+the install (2026-11-12; expected ≈ 10–11 MB and ≈ 168): `imagesBytes` 11766080 (`imageFiles`
+164 — full images 8,855,580 B, 78 phone copies 2,727,992 B, 8 derived thumbnails 182,508 B;
+`out/images/` 11,490 KB), `imgCount` 168; the heaviest page is `/גלריה/` (14 images, 1,474 KB of
+its 3 MB) and the heaviest under the 900 KB rule `/services/שער-זרוע/` (3 images, 435 KB).
+`gates.minPerContentPage` went from 0 to 2 at the install: 46 of 46 routes carry 2 or more.
 
 ### Rendering rules
 
@@ -816,7 +858,7 @@ in the ledger, refused past the cap) → `qa` (deterministic checks and two visi
 `judge.json` wording change `node sites/dangates/rejudge.mjs` on the stored masters, never
 `qa --force`) → `alt` (Hebrew alt and caption from the finished pixels) → `finish` (exact slot box,
 logo bottom-right, WebP) → `stage` (candidates into `public/images/_candidates/` plus `candidate`
-manifest entries) → `review` (the board at `http://localhost:4310` and `npm run dev:images`; the
+manifest entries) → `review --no-dev` (the board at `http://localhost:4310`, or the next free port, beside an `IMAGES_DRAFT=1` build served by `node scripts/serve-out.mjs`; the
 `image-qa-reviewer` agent spot-checks first) → `install` (approved → `public/images/<group>/`) →
 `node page-images/tools/phone-copies.mjs --site dangates` → `npm run images:status` →
 `npm run gate` → deploy (ask) → the post-deploy image checks in `deploy-dangates` → `mirror`. The
@@ -872,10 +914,15 @@ does not render, or an image that renders without a placement; one file on two `
 pages; an `/images/` path inside JSON-LD, `og:image` or `twitter:image`; an `ImageObject` node; a
 note marker missing, doubled or not word-for-word `notice.json`; a note that contains «חלק מ» while
 no approved `owner-supplied` entry exists. It prints a coverage table per route. **With the empty
-manifest of the kit commit it prints 46 content routes and 0 images**, and the rest of the gate
-reads: 50 `index.html` under `out/`, 48 sitemap URLs, `images 49`, `imgCount 49`, `imagesBytes 0`,
+manifest of the kit commit it printed 46 content routes and 0 images**, and the rest of the gate
+read: 50 `index.html` under `out/`, 48 sitemap URLs, `images 49`, `imgCount 49`, `imagesBytes 0`,
 `imagesUnsized 0`, `rawHebrewUrls 0`, `/גלריה/` registered and not an orphan, `sharedParagraphs`
-unchanged, `claims-grep 0`, the one known `content-depth` failure only.
+unchanged, `claims-grep 0`, the one known `content-depth` failure only. **At the install
+(2026-11-12) it prints 46 content routes, 46 with images and 78 manifest entries approved**, and
+the rest of `npm run gate` reads: 50 `index.html`, 48 sitemap URLs, `images 168`, `imgCount 168`,
+`imagesUnsized 0`, `imagesBytes 11766080`, `outBytes 13522450` (without `out/images/`),
+`rawHebrewUrls 0`, `sharedParagraphs 1`, `claims-grep` pass, `clientComponents 5`, the one known
+`content-depth` failure only (the post floor, 11 of 11 posts under 900 words).
 
 ### Operating rules
 

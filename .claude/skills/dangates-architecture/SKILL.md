@@ -100,8 +100,8 @@ the three silos. It is the live URL scheme and it stays. `/איזורי-שירו
 
 Params arrive **percent-encoded** during static export. Both silo routes match with
 `decodeURIComponent(param).normalize("NFC")` (`findCard` in `app/services/[service]/page.tsx`,
-`findLocation` in `app/locations/[city]/page.tsx`) — copy that line. A new Hebrew dynamic route that skips `decodeURIComponent` + `normalize("NFC")` **works in dev and
-404s in production**. The same concern drives `app/sitemap.ts` (`encodeURI`, so `<loc>` equals the
+`findLocation` in `app/locations/[city]/page.tsx`) — copy that line. A new Hebrew dynamic route that skips `decodeURIComponent` + `normalize("NFC")` **404s in
+production**. Separately, `next dev` (14.2.35, `output: "export"`) answers every Hebrew dynamic route with a 500 ("missing param … in generateStaticParams()"), so preview those pages from a build: `npm run build`, then `node scripts/serve-out.mjs`. The same concern drives `app/sitemap.ts` (`encodeURI`, so `<loc>` equals the
 canonical byte for byte) and the schema `url` fields (`/schema-structured-data`, §4.7).
 
 ## Redirects — real 301s from generated `public/_redirects`

@@ -1372,7 +1372,7 @@ current `out/`:
 node scripts/audit/claims-grep.mjs   # licence 0 · certification 0 live
 ```
 
-### 7.5 — P1 · L · [NOT STARTED] AI renderings under one note (N37); real photos later as `owner-supplied` entries
+### 7.5 — P1 · L · [PARTIAL · repo 2026-11-12 · the renderings done (N37), live with the next deploy · real photos not started (owner-actions 4.5)] AI renderings under one note (N37); real photos later as `owner-supplied` entries
 
 History: `perf.mjs` / `a11y.mjs` → `images: 0` across 46 pages (2026-11-08); since `6407f83`
 (N24) the header logo is the one `<img>` per page (`images 48`, 2026-11-10). On 2026-11-11 the
@@ -2676,14 +2676,14 @@ claims-verifier.
 
 **Closed 2026-11-11.** The post `שער-חשמלי-לא-מגיב` now gives the safety short form, says a lifting gate stopped open or half-way and a barrier arm are not released by hand, points to the guide by name, and says a sliding gate's track is cleaned, not oiled; its `updated` is 2026-11-11. The two release sentences it dropped were quoted by the winter power-cut line in `content/live/_campaigns.mjs`; with the owner's approval in chat on 2026-11-11 that line became «הפסקת חשמל? לא כל שער משחררים ביד», quoting the post's new sentence, and the register's `approved` stamp records it. hebrew-editor and claims-verifier clean. Verified: `npm run gate` exit 1 (only the post floor), `check-live-out` → 12 quoted pieces shown, `claims-grep.mjs` → `failingClaims 0`, `perf.mjs` → `outBytes 12905638` (15 MB cap).
 
-### N37 — P1 · L · [NOT STARTED] Every page is text-only; AI renderings under one site-wide note fill the image slots
+### N37 — P1 · L · [✅ DONE 2026-11-12 · repo] Every page is text-only; AI renderings under one site-wide note fill the image slots
 
 Filed 2026-11-11 on the owner's decisions of that day (business-facts §F, ADR 0006, CLAUDE.md §15;
 supersedes §7.5's wait for photographs and N24's empty slots): every content page — 46 routes, the
 47 sitemap URLs minus the two legal pages plus `/גלריה/` — carries two or more Gemini renderings
 through `components/images/Figure.tsx`, in the text flow at full column width, the first directly
 after the answer block, watermarked bottom-right with the logo as supplied, approved by the owner
-on the local draft site (`npm run dev:images`) before anything goes live; two AI-made characters
+on the local draft site (an `IMAGES_DRAFT=1` build served by `node scripts/serve-out.mjs`) before anything goes live; two AI-made characters
 (`tech-a`, `tech-b`), never named, never staff; one Hebrew note (footer line, gallery intro, about
 line) from `content/images/notice.json`; `/גלריה/` in the header before «מחירון»; 78 own renders,
 36 reuse placements, 8 derived thumbnails, 19 frames with a character; spend capped at US$60. The
@@ -2701,6 +2701,74 @@ the sitemap, not an orphan, `chromeLinks` +1), `schema.mjs` (`rawHebrewUrls 0`, 
 no `/images/` in any `image`), `claims-grep.mjs` 0 with the three `content/images/*.json` files
 scanned, and the retired-wording grep of the plan empty over `CLAUDE.md docs .claude lib app
 components scripts/audit`.
+
+**Closed 2026-11-12 in the repo** by the install commit on branch `page-images`, after the policy
+commit `2a86f13`, the kit commit `ff065e4`, the plan commit `08e4820` (two slots re-scened in
+`f7271da`) and the three softened sentences `c535392`. All 78 slots are approved and installed under
+`public/images/<group>/`, 0 held: 59 frames with no person, 9 with `tech-a`, 8 with `tech-b` and 2
+with both (`home-team`, `gallery-generated-4`); 14 gallery tiles. Every approved image has its
+720 px phone copy, and the 8 index thumbnails are derived. The gates in
+`content/images/manifest.json` are set at install: `minPerContentPage` 2 (46 of 46 routes carry 2
+or more), `maxPageImageBytes` 921600, `maxTotalBytes` 20971520, and `pageBudgets["/גלריה/"]`
+3145728, set by hand (7 half and 7 large files at their caps would be 2,652,160 bytes, over
+decision 7's 2.5 MB; the real gallery is 1,474 KB). The install commit also moves the dates to
+2026-11-12 on every route that gained a figure (the 5 guides' `dateModified`, their publish dates
+unchanged; the 11 posts' `updated`; the 7 services and the 14 locations; the `staticPages` rows
+`""`, `שירותים`, `איזורי-שירות`, `מחירון`, `גלריה`, `blog`, `מדריכים`, `אודות`, `צור-קשר` and
+`הצהרת-נגישות`), gives `/הצהרת-נגישות/` the bullet «טקסט חלופי בעברית לכל תמונת תוכן, שנבדק
+אוטומטית בכל בנייה של האתר.» in place of the general alt-text bullet, prints
+`llmsCopy.renderingsNote` in `/llms.txt` only while `hasApprovedRenderings()`, and adds
+`scripts/serve-out.mjs`: `next dev` (14.2.35, `output: "export"`) answers every Hebrew dynamic
+route with a 500, so the owner's board view is an `IMAGES_DRAFT=1` build served by that script.
+
+**The run** (Media Studio `page-images/`, `--site dangates`). The owner's touches, all in chat or on
+the local board: the Drive share (owner-actions 2.5, 2026-11-11); the yes on the prompt digest,
+batch `58391645` (116 prompts: 78 page slots and 38 calibration traps), which also approved the
+three softened sentences; board session 1 (board batch `54c5ed25`), 76 of 76 approved, no text
+edits; the yes on the two re-scened prompts (digest `f4d2e10f`, stamped as batch `d8025628`
+because a pre-authorised fix note on another prompt moved the id); board session 2 (board batch
+`ac8deff6`), 2 of 2 approved. Calibration (Media Studio `a183bd8`): 38 traps rendered, 36 labelled
+(two clean controls skipped, each came out with a parked car), 1 clean control; every scored HARD
+code at 100 % recall (16 of 18 scored; `text` and `nsfw-or-minor` have under two labelled frames).
+Pilot: 12 frames, 12 passed (7 on attempt 1, 5 on attempt 2), 0 refusals, about US$2.3;
+`maxAttempts` kept at 6 and the watermark width at 0.13 (the mark reads at phone width). Two
+wording changes in `sites/dangates/judge.json`: `face-mismatch` only for a clearly different man
+(`9bcd072`, after a profile face at the back of a two-man frame was flagged as too small to judge),
+and a person on a kerb is not `unsafe-edge` (`60dc90a`). QA stopped two slots after six attempts:
+`services-barrier-main` (a hand on the boom holder, or a boom off its rest) and
+`cities-kfar-saba-main` (a swing leaf drawn with a sliding gate's wheels and rail); re-scened with
+the owner's yes, they passed on attempts 6 and 4. Before the board, the `image-qa-reviewer` pass (5
+reviewers, 5 verifiers) sent back 1 frame (`home-strip-3`, a boom drawn as two arms; it passed on
+attempt 3), and the operator corrected 20 alt and caption texts through the toolkit (typos, a
+light-grey polo the alt called dark, captions that read as a sequence or a promise). The dark
+rounded panel behind the logo on busy corners is the `finish` step's deliberate scrim. Renders: 132
+page renders (120 in the slot folders, 12 superseded by the re-scene) plus 38 calibration traps.
+Spend: US$22.38 of the US$60 cap (brief, calibration, pilot, four batches, re-renders, alt text).
+Verified 2026-11-12:
+
+```bash
+npm run gate                  # exit 1: the content-depth baseline only ("post: 11 of 11 page(s) under the 900-word floor")
+npm run images:check          # 46 content routes · 46 with images · 78 manifest entries approved
+npm run images:status         # 78 slots · 78 approved · 0 held
+node scripts/audit/perf.mjs   # outBytes 13522450 (out/ without out/images/, under maxOutBytes 15000000)
+                              # imagesBytes 11766080 (under gates.maxTotalBytes 20971520) · images 168
+                              # imagesUnsized 0 · clientComponents 5
+node scripts/audit/a11y.mjs   # imgCount 168
+node scripts/audit/links.mjs  # sitemapUrls 48 (with /גלריה/)
+node scripts/audit/schema.mjs # rawHebrewUrls 0
+node scripts/audit/content-depth.mjs  # sharedParagraphs 1 (unchanged)
+node scripts/audit/claims-grep.mjs    # pass, the three content/images/*.json files scanned
+# out/: 50 index.html; out/images/ 11,490 KB in 164 files — full images 8,855,580 bytes,
+#   78 phone copies (720 px) 2,727,992 bytes, 8 derived thumbnails 182,508 bytes
+# heaviest pages: /גלריה/ 14 images 1,474 KB; /services/שער-זרוע/ 3 images 435 KB (of 900 KB)
+```
+
+The images gate passing also means one `fetchpriority="high"` content image per page, no
+`/images/` path in JSON-LD, `og:image` or `twitter:image`, no `ImageObject`, no candidate in the
+export, and the note word for word from `content/images/notice.json` on every page it belongs on.
+**Not live until the next deploy.** The owner gave the deploy word in chat on 2026-11-12
+("approved, deploy"); the kit and the images go live together in that deploy (`deploy-dangates`,
+dry run first), and the post-deploy image checks in `deploy-dangates` run after it.
 
 ---
 

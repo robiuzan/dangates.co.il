@@ -389,8 +389,8 @@ first: add the id to `SLOT_IDS` in `scripts/images/lib/manifest-rules.mjs` and t
 ## 6. Draft mode — a candidate is a 🔶
 
 Without `IMAGES_DRAFT=1` only `approved` entries render. With it, `candidate` entries render too, from
-`/images/_candidates/`, with the dev badge. `npm run dev:images` is that mode on the dev server; a
-one-off proof build in this repo's shell (PowerShell 5.1, so no `VAR=1 cmd`):
+`/images/_candidates/`, with the dev badge. `npm run dev:images` is that mode on the dev server, but it cannot serve the Hebrew dynamic routes, so the owner's view is a
+draft build served by `node scripts/serve-out.mjs` — in this repo's shell (PowerShell 5.1, so no `VAR=1 cmd`):
 
 ```powershell
 $env:IMAGES_DRAFT="1"; npm run build; Remove-Item env:IMAGES_DRAFT
@@ -641,7 +641,7 @@ too, without a note.
 content/images/plan.json  ──▶  Media Studio page-images --site dangates: write-traps → brief → digest → owner yes → approve
                                → calibrate → pilot (12) → generate → qa → alt → finish   (masters/, finished/)
                                → stage ──▶ public/images/_candidates/ + manifest `candidate`
-                               → image-qa-reviewer → review (board + npm run dev:images) → the owner decides
+                               → image-qa-reviewer → review (board + a draft build on serve-out) → the owner decides
                                → install ──▶ public/images/<group>/ + manifest `approved` → phone-copies
                                               → out/ → deploy with the kit, the plan and the softened sentences (ask)
 ```

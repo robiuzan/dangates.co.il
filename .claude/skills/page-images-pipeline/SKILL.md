@@ -273,8 +273,9 @@ and the alt and caption bar "would it still be true if the picture were real". R
 finds before the owner sees the board (or edit the alt on the board).
 
 ```powershell
-npm run dev:images                                  # next dev with IMAGES_DRAFT=1, in this repo (own port if 3000 is held)
-node page-images/cli.mjs review --site dangates     # the board at http://localhost:4310
+$env:IMAGES_DRAFT="1"; npm run build; Remove-Item env:IMAGES_DRAFT   # in this repo: the draft build (next dev 500s on Hebrew dynamic routes)
+node scripts/serve-out.mjs                          # the draft site at http://localhost:3000, in this repo
+node page-images/cli.mjs review --site dangates --no-dev   # the board at http://localhost:4310 (--port 4311 if another site's board holds it)
 ```
 
 Candidates render in place with the «טיוטה — ממתין לאישור» badge; each board card links to

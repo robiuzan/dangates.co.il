@@ -18,6 +18,7 @@ import {
   visitFeeRange,
 } from "@/lib/content";
 import { guideList, guidePath } from "@/lib/guides";
+import { hasApprovedRenderings } from "@/lib/images";
 
 /** Absolute, percent-encoded URL with the trailing slash (`""` = the homepage). */
 function url(path: string): string {
@@ -110,6 +111,7 @@ export function buildLlmsTxt(): string {
     `## ${llmsCopy.notesHeading}`,
     "",
     ...llmsCopy.notes.map((n) => `- ${n}`),
+    ...(hasApprovedRenderings() ? [`- ${llmsCopy.renderingsNote} ${url("גלריה")}`] : []),
     "",
   );
 

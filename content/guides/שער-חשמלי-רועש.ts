@@ -36,7 +36,7 @@ export const guide = {
   family: "symptom",
   targetQuery: "שער חשמלי רועש",
   datePublished: "2026-11-10",
-  dateModified: "2026-11-11",
+  dateModified: "2026-11-12",
   relatedServices: ["שערים-נגררים", "שערי-כנף", "שערים-מתרוממים", "שער-זרוע"],
 
   blocks: [

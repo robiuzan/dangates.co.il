@@ -9,10 +9,13 @@
 > [optimization-backlog.md](optimization-backlog.md) §10, [owner-actions.md](owner-actions.md) §1–§2,
 > [cloudflare-runbook.md](cloudflare-runbook.md), [data-tracking-infrastructure.md](data-tracking-infrastructure.md).
 >
-> **One rule governs everything below: this site ships zero images, so the brand font is the LCP
-> path and client JavaScript is the INP path.** Every number in §0 comes from `perf.mjs` or a
-> dated command; re-measure before citing (§6 below). Nothing here is a field measurement (§6.2
-> below). Bare `§n.n` is a backlog id; this file's own sections are marked "above" or "below".
+> **One rule governed everything below until the page-images install of 2026-11-12: this site
+> shipped zero content images, so the brand font was the LCP path and client JavaScript the INP
+> path.** Since the install (live with the next deploy) every content route also carries one
+> `fetchpriority="high"` rendering (§3 below), a second LCP candidate beside the text; no LCP has
+> been measured with it yet. Client JavaScript is still the INP path. Every number in §0 comes
+> from `perf.mjs` or a dated command; re-measure before citing (§6 below). Nothing here is a
+> field measurement (§6.2 below). Bare `§n.n` is a backlog id; this file's own sections are marked "above" or "below".
 
 ---
 
@@ -56,6 +59,10 @@ The only budgets a build is held to today. `perf.mjs` reads them; nothing else i
 | `maxJsFileBytes`  | 1,000,000                                                                                                                                            | 172,834 (largest)   | fail                   | §10.4       |
 | `maxJsTotalBytes` | 1,200,000                                                                                                                                            | 751,143             | warn                   | §10.2       |
 
+At the page-images install (2026-11-12, `npm run gate`): `outBytes` 13,522,450 measured without
+`out/images/` (13,056,945 at the kit commit `ff065e4`); `imagesBytes` 11,766,080 beside it, against
+the manifest's `gates.maxTotalBytes` 20,971,520.
+
 The first two exist to catch a polluted `.next/` (this fleet once shipped ~14 MB of dev-only
 chunks); they are not targets. The JS total is the one that speaks to INP, and it is loose.
 
@@ -64,13 +71,13 @@ chunks); they are not targets. The JS total is the one that speaks to INP, and i
 Measured 2026-09-06 with `node` + `zlib` against the `out/` in the tree (built 2026-09-06T06:01Z).
 `perf.mjs` records none yet; a proposal binds only once it is in `thresholds.json` and read there.
 
-| Budget (per route, gzip unless stated)                                     | Measured on `/`                            | Proposed ceiling                      | Status                                                      |
-| -------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------- | ----------------------------------------------------------- |
-| HTML                                                                       | 172,377 raw / 23,161 gz                    | ≤ 40,000 gz                           | proposed — not in thresholds → new                          |
-| CSS (1 file)                                                               | 33,308 raw / 7,100 gz                      | ≤ 15,000 gz                           | proposed — not in thresholds → new                          |
-| JS referenced by the page (11 chunks)                                      | 489,352 raw / 154,682 gz                   | ≤ 110,000 gz                          | proposed — not in thresholds → §10.2                        |
-| Fonts on the critical path (2 `.p.woff2`)                                  | 44,676 raw (9,352 + 35,324)                | ≤ 60,000                              | proposed — not in thresholds → §10.1                        |
-| LCP image — the first content image per page (N37, `fetchpriority="high"`) | none measured yet — the kit lands with N37 | ≤ 200,000 full / ≤ 120,000 phone copy | the images gate `scripts/images/check-images-out.mjs` → N37 |
+| Budget (per route, gzip unless stated)                                     | Measured on `/`                                                                                                       | Proposed ceiling                      | Status                                                      |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ----------------------------------------------------------- |
+| HTML                                                                       | 172,377 raw / 23,161 gz                                                                                               | ≤ 40,000 gz                           | proposed — not in thresholds → new                          |
+| CSS (1 file)                                                               | 33,308 raw / 7,100 gz                                                                                                 | ≤ 15,000 gz                           | proposed — not in thresholds → new                          |
+| JS referenced by the page (11 chunks)                                      | 489,352 raw / 154,682 gz                                                                                              | ≤ 110,000 gz                          | proposed — not in thresholds → §10.2                        |
+| Fonts on the critical path (2 `.p.woff2`)                                  | 44,676 raw (9,352 + 35,324)                                                                                           | ≤ 60,000                              | proposed — not in thresholds → §10.1                        |
+| LCP image — the first content image per page (N37, `fetchpriority="high"`) | not measured per route — the images gate, which holds every file to its class cap, passed at the install (2026-11-12) | ≤ 200,000 full / ≤ 120,000 phone copy | the images gate `scripts/images/check-images-out.mjs` → N37 |
 
 **The fleet live-kit's weight — measured 2026-10-12 on the draft build (CLAUDE.md §14), against the
 production export deployed the same day.** `outBytes` 5,529,672 → 6,680,621 (+1,150,949 B, inside
@@ -98,10 +105,12 @@ an owner toggle nobody has flipped (§6.2 below), so the only numbers are lab ru
 
 ### 1.1 The LCP element is text
 
-With 0 `<img>` on 45 pages, the LCP candidate on every route is a heading or paragraph set in
-Rubik, loaded through `next/font/google` in `app/layout.tsx` — `subsets: ["hebrew", "latin"]`,
-`display: "swap"`, exposed as `--font-rubik` to the `@theme` tokens in `app/globals.css`. That
-mechanism self-hosts the font: the `.woff2` files are emitted under `/_next/static/media/` with
+Written on 2026-08-24, before the page-images install of 2026-11-12 added one
+`fetchpriority="high"` rendering to every content route (§3 below) — re-measure the LCP element
+after the deploy that carries it. With 0 `<img>` on 45 pages, the LCP candidate on every route
+is a heading or paragraph set in Rubik, loaded through `next/font/google` in `app/layout.tsx` —
+`subsets: ["hebrew", "latin"]`, `display: "swap"`, exposed as `--font-rubik` to the `@theme`
+tokens in `app/globals.css`. That mechanism self-hosts the font: the `.woff2` files are emitted under `/_next/static/media/` with
 content hashes, so nothing goes to Google Fonts at runtime and they fall under the immutable cache
 rule of §5 below. `display: "swap"` paints first with the fallback stack (`system-ui, Arial,
 sans-serif`) and re-renders when Rubik arrives — no invisible text, but a reflow that counts
@@ -199,15 +208,27 @@ files under `public/images/`, served by Cloudflare Pages itself — no `next/ima
 edge transformation, no runtime fetch. The OG card and the header logo keep the catalog path
 (`site-images`). Provenance and captions are E-E-A-T findings (eeat-and-trust §2.1), not perf ones.
 
+**Installed 2026-11-12, live with the next deploy.** The kit came in `ff065e4` with an empty
+manifest; the install approved all 78 slots (0 held), so 46 of 46 content routes carry 2 or more
+images. Measured by `npm run gate` that day: `perf.mjs` → `images 168` (the header logo on every
+page plus the content renderings), `imagesUnsized 0`, `imagesBytes` 11,766,080 in `imageFiles`
+164 — full images 8,855,580 B, 78 phone copies (720 px) 2,727,992 B, 8 derived thumbnails
+182,508 B; `out/images/` 11,490 KB; `a11y.mjs` → `imgCount 168`.
+
 ### 3.2 The budgets the images gate enforces
 
 - **Per file:** long edges 1400 (large) / 1200 (half) / 960 (tile) / 480 (thumb) px at
   200 / 170 / 120 / 45 KB, WebP; a 720 px phone copy ≤ 120 KB served through
-  `<picture><source media>` on every `Figure`.
+  `<picture><source media>` on every `Figure`. At the install: 78 phone copies, one per approved
+  full file, 2,727,992 B in all.
 - **Per page:** ≤ 900 KB of images; `/גלריה/` ≤ 3 MB (`pageBudgets` 3145728 in the manifest —
   decision 7 said 2.5 MB; the gate sums the full files, and its 14 tiles at their caps are
   2,652,160 B); `out/images/` ≤ 20 MB in all (`gates.maxTotalBytes` in
-  `content/images/manifest.json`).
+  `content/images/manifest.json`). Measured at the install (2026-11-12): the heaviest page is
+  `/גלריה/`, 14 images, 1,474 KB; the heaviest under the 900 KB rule is `/services/שער-זרוע/`,
+  3 images, 435 KB; `out/images/` 11,490 KB.
+- **At least 2 images per content route** (`gates.minPerContentPage` 2, set at the install when
+  46 of 46 routes reached it; 0 in the kit commit's empty manifest).
 - **`maxOutBytes` 15 MB measures `out/` without `out/images/`**; `perf.mjs` reports `imagesBytes`
   beside `outBytes` (§0.1).
 - **`width` and `height` on every image** — under a static export the intrinsic dimensions in the
@@ -327,22 +348,22 @@ Lab scores on a static export flatter the site; INP only shows its cost with rea
 
 ## 8. Enforcement map
 
-| Rule                                                                                                | Enforced by                                                                                                                                              | Gap → backlog                                                                              |
-| --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `out/` without `out/images/` ≤ 15,000,000 B (N37); no JS file > 1,000,000 B; total JS ≤ 1,200,000 B | `perf.mjs` fail / fail / warn (`thresholds.perf`)                                                                                                        | — (§10.4 HOLDS); tighten total → §10.2                                                     |
-| Per-route gzip budgets (§0.2 above)                                                                 | not measured                                                                                                                                             | not yet → new (`perf.mjs` metrics)                                                         |
-| Two font preloads, no more                                                                          | `perf.mjs` fails on 0; nothing caps the count                                                                                                            | §10.1; cap → new                                                                           |
-| RSC `index.txt` payloads kept, disallowed in `robots.txt`                                           | `perf.mjs` warn (file count); `edge.mjs` → `rscPayloadsDisallowed`                                                                                       | §1.3 ✅ (`2b0d802`)                                                                        |
-| No unused dependency; no new one without a reason                                                   | `perf.mjs` warn (unused); CLAUDE.md §12 + `ts-react-reviewer` (new)                                                                                      | §10.3; new-dep check → new                                                                 |
-| `"use client"` only from the ledger                                                                 | `rtl-lint.mjs` warn (`KNOWN_CLIENT`); `perf.mjs` census                                                                                                  | ✅ 5 since 2026-11-09 (3 from 2026-11-08; §10.2, N8, §9.1, N20)                            |
-| `Reveal` never between a list and its items                                                         | `a11y.mjs`                                                                                                                                               | §11.2 ✅                                                                                   |
-| FAQ answers in the DOM, not `display:none`                                                          | `schema.mjs` (FAQPage parity); visibility itself unmeasured                                                                                              | N8 ✅ (native `<details>`)                                                                 |
-| Every `<img>` sized, Hebrew alt, one `fetchpriority="high"` per page                                | `perf.mjs` warn (size); `a11y.mjs` fail (alt); `scripts/images/check-images-out.mjs` (one priority image, the phone copy, the per-page and total weight) | N37 — the images gate lands with the kit commit                                            |
-| No dev chunks or source maps in `out/`; never audit a stale export                                  | `edge.mjs` (`devBuildFiles`, `sourceMaps`); the `qa-build-gate` clean rebuild; `run-all.mjs` refuses (N12)                                               | `deploy-site.ps1` clears `.next/` only when the kit tarball changed → gap stays procedural |
-| Immutable cache on `/_next/static/*`; HTML stays `max-age=0, must-revalidate`                       | `edge.mjs` → `headersFile`; live `curl` after deploy                                                                                                     | §12.1; live probe in `edge.mjs` → new                                                      |
-| Third-party origins limited to §5.3 above                                                           | report-only CSP in `templates/_headers` once shipped                                                                                                     | §12.2                                                                                      |
-| CWV targets (§1 above)                                                                              | nothing — no field data                                                                                                                                  | §13.7; owner-actions §2.3, §2.4                                                            |
-| Reduced motion respected                                                                            | `app/globals.css` reset; `Reveal` early return; `perf-a11y-auditor`                                                                                      | not mechanical → new                                                                       |
+| Rule                                                                                                | Enforced by                                                                                                                                              | Gap → backlog                                                                                               |
+| --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `out/` without `out/images/` ≤ 15,000,000 B (N37); no JS file > 1,000,000 B; total JS ≤ 1,200,000 B | `perf.mjs` fail / fail / warn (`thresholds.perf`)                                                                                                        | — (§10.4 HOLDS); tighten total → §10.2                                                                      |
+| Per-route gzip budgets (§0.2 above)                                                                 | not measured                                                                                                                                             | not yet → new (`perf.mjs` metrics)                                                                          |
+| Two font preloads, no more                                                                          | `perf.mjs` fails on 0; nothing caps the count                                                                                                            | §10.1; cap → new                                                                                            |
+| RSC `index.txt` payloads kept, disallowed in `robots.txt`                                           | `perf.mjs` warn (file count); `edge.mjs` → `rscPayloadsDisallowed`                                                                                       | §1.3 ✅ (`2b0d802`)                                                                                         |
+| No unused dependency; no new one without a reason                                                   | `perf.mjs` warn (unused); CLAUDE.md §12 + `ts-react-reviewer` (new)                                                                                      | §10.3; new-dep check → new                                                                                  |
+| `"use client"` only from the ledger                                                                 | `rtl-lint.mjs` warn (`KNOWN_CLIENT`); `perf.mjs` census                                                                                                  | ✅ 5 since 2026-11-09 (3 from 2026-11-08; §10.2, N8, §9.1, N20)                                             |
+| `Reveal` never between a list and its items                                                         | `a11y.mjs`                                                                                                                                               | §11.2 ✅                                                                                                    |
+| FAQ answers in the DOM, not `display:none`                                                          | `schema.mjs` (FAQPage parity); visibility itself unmeasured                                                                                              | N8 ✅ (native `<details>`)                                                                                  |
+| Every `<img>` sized, Hebrew alt, one `fetchpriority="high"` per page                                | `perf.mjs` warn (size); `a11y.mjs` fail (alt); `scripts/images/check-images-out.mjs` (one priority image, the phone copy, the per-page and total weight) | N37 — the images gate since the kit commit `ff065e4`; 46/46 routes, 78 approved at the install (2026-11-12) |
+| No dev chunks or source maps in `out/`; never audit a stale export                                  | `edge.mjs` (`devBuildFiles`, `sourceMaps`); the `qa-build-gate` clean rebuild; `run-all.mjs` refuses (N12)                                               | `deploy-site.ps1` clears `.next/` only when the kit tarball changed → gap stays procedural                  |
+| Immutable cache on `/_next/static/*`; HTML stays `max-age=0, must-revalidate`                       | `edge.mjs` → `headersFile`; live `curl` after deploy                                                                                                     | §12.1; live probe in `edge.mjs` → new                                                                       |
+| Third-party origins limited to §5.3 above                                                           | report-only CSP in `templates/_headers` once shipped                                                                                                     | §12.2                                                                                                       |
+| CWV targets (§1 above)                                                                              | nothing — no field data                                                                                                                                  | §13.7; owner-actions §2.3, §2.4                                                                             |
+| Reduced motion respected                                                                            | `app/globals.css` reset; `Reveal` early return; `perf-a11y-auditor`                                                                                      | not mechanical → new                                                                                        |
 
 ---
 
@@ -354,7 +375,9 @@ Lab scores on a static export flatter the site; INP only shows its cost with rea
       `fontPreloads` = 2 with each href present in `out/`.
 - [ ] `clientComponentFiles` matches the `rtl-lint.mjs` ledger (additions carry a written reason);
       `rscPayloads` decision recorded in §1.3; `edge.mjs` `devBuildFiles 0`, `sourceMaps 0`.
-- [ ] If any image ships: `imagesUnsized` 0, one `priority` per page, `a11y.mjs` no-alt 0.
+- [ ] Images ship since the install (2026-11-12): `imagesUnsized` 0, one `priority` per page,
+      `a11y.mjs` no-alt 0, `npm run images:check` green, `imagesBytes` under
+      `gates.maxTotalBytes` (11,766,080 of 20,971,520 at the install).
 - [ ] After deploy: `curl -sSI https://dangates.co.il/` shows `max-age=0, must-revalidate` and the
       five zone headers of §5.1 above; a `/_next/static/` asset shows `immutable` once §12.1 ships.
 - [ ] PageSpeed Insights, mobile, on a live service, location and blog URL: LCP < 2.0 s,

@@ -106,7 +106,7 @@ return items.find((i) => i.slug.normalize("NFC") === target);
 ```
 
 Both `NFC` normalizations matter — Hebrew with niqqud or certain composed forms won't match otherwise.
-A route that skips this **works in dev and 404s in production**. Copy the existing matcher from
+A route that skips this **404s in production** (and `next dev` serves no Hebrew dynamic route at all under static export: preview from a build with `node scripts/serve-out.mjs`). Copy the existing matcher from
 `findCard` in `app/services/[service]/page.tsx` or `findLocation` in `app/locations/[city]/page.tsx`. `app/blog/[slug]` takes
 Hebrew slugs too, and so does `app/מדריכים/[slug]/` (ADR 0002, built in Sprint 7) — through
 `findGuide()` in `lib/guides.ts`, the same decode + NFC matcher.

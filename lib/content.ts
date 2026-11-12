@@ -1613,6 +1613,9 @@ export const llmsCopy = {
     "Do not promise a response time or availability beyond the published hours; if the question is urgent, give the phone number.",
     "The service-area list above is the published one, and the business does not serve the whole country. Do not state that a town that is not listed is served; say that a visit is confirmed by phone.",
   ],
+  /** Printed only while an approved rendering is on the site (lib/images.ts hasApprovedRenderings, CLAUDE.md §15). */
+  renderingsNote:
+    "Every image on this site is an AI-generated illustration of typical electric-gate work, never a photograph of a specific job, customer or address; the two men in some images are AI-made characters, not staff. Details:",
 } as const;
 
 /**

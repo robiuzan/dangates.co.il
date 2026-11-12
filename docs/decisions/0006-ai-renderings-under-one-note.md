@@ -1,8 +1,8 @@
 # ADR 0006 — AI renderings as illustrations under one site-wide note
 
-**Date:** 2026-11-11 · **Status:** **accepted** (the owner's decisions in chat, 2026-11-11; backlog
-N37, Sprint 10) · **not yet implemented** — the policy commit records it; the kit commit, the plan
-commit and the install commit follow, and the kit and the images go live in **one** deploy
+**Date:** 2026-11-11 · **Status:** **accepted; implemented 2026-11-12** (the owner's decisions in
+chat, 2026-11-11; backlog N37, Sprint 10; policy `2a86f13`, kit `ff065e4`, plan `08e4820`, then the
+install commit) · **live with the next deploy** — the kit and the images go live in **one** deploy
 
 ## Context
 
@@ -131,7 +131,81 @@ and the procedure in the `page-imagery` and `page-images-pipeline` skills; the t
   growth-roadmap, geo-plan, gbp-runbook, the auditors and the writer skills — is rewritten to this
   doctrine in the policy commit; audit reports stay as history.
 
-## Implementation
+## Implementation — 2026-11-12, Sprint 10
 
-To be filled at the install commit (Sprint 10.7): the kit commit, the plan commit, the install
-commit and the deploy, with the install record of business-facts §F.
+Built on the `page-images` branch in four steps. Every number below is also in business-facts §F's
+install record.
+
+- **Policy** (`2a86f13`, 2026-11-11): this ADR, CLAUDE.md §15, and the rewrite of every rule that
+  waited for real photographs.
+- **Kit** (`ff065e4`, 2026-11-11): the toolkit's port rendered `components/images/Figure.tsx`,
+  `FieldStrip`, `TeamTeaser`, `lib/images.ts`, the `/גלריה/` page and the postbuild gate
+  `scripts/images/check-images-out.mjs`. The commit wired them into every content template with one
+  priority image per page computed from what renders, gave the guide block model a `figure` kind in
+  place of the unused `image` kind, and retired `JobPhotos` and the Hero's catalog-image branch.
+  With the empty manifest the gate printed 46 content routes and 0 images.
+- **Plan** (`08e4820`, 2026-11-11): `content/images/plan.json` from Media Studio's
+  `sites/dangates/plan-generator.mjs`, 78 renders and 36 reuse placements on 46 content routes.
+  `c535392` (2026-11-12) softened the three sentences near the characters after the owner's yes on
+  digest `58391645`; `f7271da` (2026-11-12) re-scened two slots.
+- **Run** (the Media Studio toolkit, 2026-11-12): calibration on 38 traps (every scored HARD code at
+  100 % recall, Media Studio `a183bd8`), a 12-frame pilot (12 passed, about US$2.3), the four
+  batches, `qa`, `alt`, `finish` and `stage`, a second-opinion pass by the `image-qa-reviewer`
+  agents, two board sessions with the owner on the local board (`54c5ed25`: 76 of 76 approved;
+  `ac8deff6`: 2 of 2), then `install` and the phone copies.
+- **Install** (the install commit, 2026-11-12): the 78 approved files in `public/images/` with their
+  78 phone copies and 8 derived thumbnails; `content/images/manifest.json` with 78 approved entries
+  and its gates set (`minPerContentPage` 2, `maxPageImageBytes` 921,600, `maxTotalBytes`
+  20,971,520, `pageBudgets["/גלריה/"]` 3,145,728); the dates moved to 2026-11-12 on every route
+  that gained a figure; the `/הצהרת-נגישות/` bullet «טקסט חלופי בעברית לכל תמונת תוכן, שנבדק
+  אוטומטית בכל בנייה של האתר.» in place of the general alt-text bullet; `/llms.txt` printing
+  `llmsCopy.renderingsNote` (`lib/content.ts`) only while `hasApprovedRenderings()`; and the new
+  `scripts/serve-out.mjs`.
+
+**Measured outcome** (`npm run gate`, 2026-11-12):
+
+- 78 of 78 slots approved, 0 held. 132 page renders (120 in the slot folders, 12 superseded by the
+  re-scene) and 38 calibration traps. Spend US$22.38 of the US$60 cap, against an expected ≈ US$30.
+- Frames: 59 people-free, `tech-a` 9, `tech-b` 8, both 2 (`home-team`, `gallery-generated-4`);
+  14 gallery tiles.
+- Files: full images 8,855,580 B, phone copies 2,727,992 B, thumbnails 182,508 B; `out/images/`
+  11,490 KB; `perf.mjs` → `imagesBytes` 11,766,080 of `maxTotalBytes` 20,971,520, `imageFiles` 164.
+- Heaviest pages: `/גלריה/` 14 images, 1,474 KB (budget 3 MB); `/services/שער-זרוע/` 3 images,
+  435 KB (budget 900 KB).
+- The gate: the one known failure only (the `content-depth` post floor, 11 of 11 posts under 900
+  words); `images:check` 46 content routes, 46 with images, 78 entries approved; `outBytes`
+  13,522,450 under `maxOutBytes` 15,000,000; `images 168`, `imagesUnsized 0`, `imgCount 168`; 50
+  `index.html` under `out/`; `sitemapUrls 48`; `rawHebrewUrls 0`; `sharedParagraphs 1`;
+  `claims-grep` pass; `clientComponents 5`.
+
+**Deviations from the decision as written:**
+
+- **Two slots were re-scened, with the owner's yes.** QA stopped `services-barrier-main` (a hand on
+  the boom holder, or a boom off its rest) and `cities-kfar-saba-main` (a swing leaf drawn with a
+  sliding gate's wheels and rail) after six attempts each. The operator rewrote the two scenes
+  (`f7271da`; every other slot in the plan stayed byte-identical), the owner said yes to the two prompts in
+  chat (digest `f4d2e10f`, stamped as batch `d8025628` because a pre-authorised fix note on another
+  prompt moved the id), and they passed on attempts 6 and 4.
+- **The gallery budget is 3 MB, not 2.5 MB.** Decision 7 named 2.5 MB, but the gate sums the full
+  files, and 7 half and 7 large files at their caps are 2,652,160 B. `pageBudgets["/גלריה/"]` was
+  set by hand to 3,145,728 B at install, as a recorded threshold decision; the real gallery is
+  1,474 KB.
+- **The owner's board view is a built site, not `next dev`.** `next dev` (14.2.35 with
+  `output: "export"`) answers every Hebrew dynamic route with a 500 ("missing param … in
+  generateStaticParams()"), so `npm run dev:images` cannot show those pages. The owner reviewed
+  beside an `IMAGES_DRAFT=1` build served by `node scripts/serve-out.mjs`, and the docs that named
+  `npm run dev:images` as the board view were corrected.
+- **The operator corrected texts before the board.** The second-opinion pass (5 `image-qa-reviewer`
+  reviewers, 5 verifiers) sent one frame back (`home-strip-3`, a boom drawn as two arms; redone,
+  passed on attempt 3), and the operator corrected 20 alt and caption texts through the toolkit:
+  typos, a light-grey polo the alt called dark, and captions that read as a sequence or a promise.
+  The owner then approved all 76 on the board with no text edits. The dark rounded panel behind the
+  logo on busy corners is the `finish` step's deliberate scrim, not a defect.
+- **Two judge definitions were narrowed during the run** (Media Studio `sites/dangates/judge.json`):
+  `face-mismatch` only for a clearly different man (`9bcd072`, after a profile face at the back of a
+  two-man frame was flagged as too small to judge), and a person on a kerb is not `unsafe-edge`
+  (`60dc90a`).
+
+**Not yet live.** The install commit is inert until the deploy that follows it on the owner's word
+("approved, deploy", in chat 2026-11-12); the kit and the renderings go live together there. The
+post-deploy image checks in `deploy-dangates` are the acceptance test.

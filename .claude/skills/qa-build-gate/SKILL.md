@@ -1,6 +1,6 @@
 ---
 name: qa-build-gate
-description: The release gate before any deploy on dangates — Step 0 `npm run audit:env`, a clean rebuild that clears `.next/` the hook-approved way, `npm run gate` (lint → typecheck → format:check → build → audit) read against the known-baseline table (re-cut 2026-11-10 at 379eb0e, after the 2026-11-09 full audit's pre-deploy polish 8768ce2, 9886dd1 and its last pass 379eb0e — still 1 expected failure, the content-depth post floor, which waits on owner-actions 3.8; down from 5, 8, 15, 26 and 37) so a run is judged on regressions rather than on that baseline, seven raw sanity greps a human can eyeball, the auditor sweep routed from docs/agent-roster.md §3, and the stop-ship list. Use before every deploy or when asked whether the site is ready to ship. Triggers: "run the build gate", "is this ready to ship", "pre-deploy check", "QA the site", "verify the build", "מוכן לעלות לאוויר", "בדיקה לפני פריסה".
+description: The release gate before any deploy on dangates — Step 0 `npm run audit:env`, a clean rebuild that clears `.next/` the hook-approved way, `npm run gate` (lint → typecheck → format:check → build → audit) read against the known-baseline table (re-cut 2026-11-12 at the page-images install, where only the image metrics moved; before that 2026-11-10 at 379eb0e, after the 2026-11-09 full audit's pre-deploy polish 8768ce2, 9886dd1 and its last pass 379eb0e — still 1 expected failure, the content-depth post floor, which waits on owner-actions 3.8; down from 5, 8, 15, 26 and 37) so a run is judged on regressions rather than on that baseline, seven raw sanity greps a human can eyeball, the auditor sweep routed from docs/agent-roster.md §3, and the stop-ship list. Use before every deploy or when asked whether the site is ready to ship. Triggers: "run the build gate", "is this ready to ship", "pre-deploy check", "QA the site", "verify the build", "מוכן לעלות לאוויר", "בדיקה לפני פריסה".
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -14,7 +14,7 @@ the start of the gate, not the end. Two rules frame every step:
   measuring. Numbers from an old `out/` describe a build nobody shipped.
 - **Judge on regressions, not on the baseline.** `npm run audit` does not exit 0 today and will not
   until the posts are rewritten (Sprint 7.3, ⏳ BLOCKED · owner 3.8 — §Known baseline, 1 as of
-  2026-11-10). A gate run passes when every failure it prints is in that table
+  2026-11-12). A gate run passes when every failure it prints is in that table
   (or in the latest `docs/audits/` report) and no watched metric moved the wrong way.
 
 ## Step 0 — the environment's own self-test
@@ -42,16 +42,20 @@ way to clear `.next/`. `next build` rewrites `out/` itself.
 (`main.js`, `fallback/main.js`, `fallback/amp.js`) — a `next dev` run's artifacts surviving into the
 export, uploaded on every deploy. Deleting them from `out/` afterwards is not the fix; clearing
 `.next/` is. `node scripts/audit/perf.mjs` holds the line (`maxJsFileBytes` 1 MB in
-`scripts/audit/thresholds.json`, `devBuildFiles` in `edge.mjs`); as of 2026-11-10 (at `bcbf822`)
-a clean export is 12.90 MB (12898445 B) in 145 files against the `maxOutBytes` (15 MB since 2026-11-11, raised by the owner from 13 MB; 13 MB since 2026-11-10, raised from
-12 MB) — 11.51 MB (11512187 B)
+`scripts/audit/thresholds.json`, `devBuildFiles` in `edge.mjs`); as of 2026-11-12 (the page-images
+install) a clean export is 13.52 MB (13522450 B) measured without `out/images/` (since N37's kit
+commit; `imagesBytes` 11766080 beside it, bounded by the manifest's `gates.maxTotalBytes` 20 MB)
+against the `maxOutBytes` (15 MB since 2026-11-11, raised by the owner from 13 MB; 13 MB since 2026-11-10, raised from
+12 MB) — 13.06 MB (13056945 B) at the kit commit `ff065e4`; 12.90 MB (12898445 B) in 145 files on
+2026-11-10 at `bcbf822`; 11.51 MB (11512187 B)
 in 143 files at `379eb0e`; 11.69 MB at
 `2b0d802` until `9886dd1` stopped serialising the header menus twice into every RSC payload; 10.61 MB
 after `7ed1acd` retired four location pages, before the header disclosures and the TOC (`fd72698`,
 `98e38f0`) printed their links in every HTML page and RSC payload; 11.51 MB in 151 after Sprint 7 (the live-kit
 surfaces added ≈1.15 MB in 2026-10, the service depth copy ≈0.7 MB, the location and index-page copy
 ≈1.3 MB and the hub and the four Sprint 7 guides ≈1.5 MB; guide #5 came in `c457c31`) — with 33 JS chunks totalling 783 KB (783464 B), largest 173 KB.
-The headroom under the cap is ≈0.10 MB: a change that adds bytes to every page is the one to watch.
+The headroom under the cap is ≈1.48 MB (2026-11-12; ≈0.10 MB under the 13 MB cap on 2026-11-10): a
+change that adds bytes to every page is the one to watch.
 
 ## Step 2 — `npm run gate`
 
@@ -70,7 +74,19 @@ table against the baseline below. Every inline grep the old gate carried now liv
 weight/preloads → `perf.mjs`, `_redirects`/`_headers`/dead hosts → `edge.mjs`, blog debris →
 `spam-grep.mjs`, unconfirmed claims → `claims-grep.mjs`.
 
-### Known baseline — as of 2026-11-10 (at `bcbf822`), `npm run audit` exits 1
+### Known baseline — as of 2026-11-12 (the page-images install), `npm run audit` exits 1
+
+**Re-cut 2026-11-12 at the page-images install** (branch `page-images`, after the kit commit
+`ff065e4`, the plan `08e4820`, the softened sentences `c535392` and the re-scene `f7271da`;
+`npm run gate`; backlog N37): still 1 failure, the post floor — 11 of 11 posts under 900 words.
+No failure added or removed. By design: `images` 49 → 168 and `imgCount` 49 → 168 (the header
+logo on every page plus the content renderings), `imagesUnsized 0`, `imagesBytes` 0 → 11766080
+(`imageFiles` 0 → 164, bounded by `gates.maxTotalBytes` 20971520), `outBytes` 13056945 → 13522450
+(measured without `out/images/`, under `maxOutBytes` 15000000), the images gate at 46 content
+routes, 46 with images (0 at the kit commit) and 78 manifest entries approved; 50 `index.html`,
+`sitemapUrls 48`, `rawHebrewUrls 0`, `sharedParagraphs 1`, `claims-grep` pass and
+`clientComponents 5` unchanged. The table below still describes every check; only those image
+metrics moved.
 
 Counts re-measured on 2026-11-10 at `bcbf822` (`npm run build`, then `npm run audit -- --json`;
 backlog N32): still 1 failure, the post floor. The content work since `379eb0e` (N23–N31 and the
@@ -119,7 +135,8 @@ by design — `claimsChecked` 14 → 18, `edge` → `headerProblems 0` (new metr
 The ✅ rows are green **in the repo**. Sprint 1 is live (the 2026-10-12/13 deploys, probed
 2026-11-08); Sprints 2, 3, 4, 5, 6 (content and header), 7, Sprint 8's repo rows and the 3.6 change
 set (`8e8843d` `7ed1acd`) and the pre-deploy polish (`8768ce2` `9886dd1` `379eb0e`) went live on 2026-11-10 at
-`669582e`; the content brief N23–N32 that followed (`1f1b1ec` onward) is not deployed yet. `edge` in particular measures files, not
+`669582e`; the content brief N23–N32 that followed (`1f1b1ec` onward) went live on 2026-11-11 (the second and third deploys, `a63e619` and `2d035ca` — owner-actions 5.6). The page-images kit
+and renderings (N37, `ff065e4` through the install of 2026-11-12) go live with the next deploy. `edge` in particular measures files, not
 responses — the live probe is `deploy-dangates`'s job.
 
 Phases are the "Suggested order of work" at the end of `docs/optimization-backlog.md`. When a
@@ -147,9 +164,9 @@ distinct `/services/` + `/locations/` hrefs (§9.1; no script counts it — the 
 `schema` → `pagesWithJsonLd 48`, `danglingIds 0`, `rawHebrewUrls 0`, `faqPages 27` (109 questions) · `perf` →
 `largestJsBytes 172834`, `jsTotalBytes` ≤ 783464 unless a change says why, `clientComponents 5`
 (`EngagementEvents`, `LeadForm`, `DesktopNav`, `MobileMenu`, `Reveal` — 3 from Sprint 3 until
-`fd72698`), `outBytes` under 15000000 (13056945, as of 2026-11-11; measured without `out/images/` since N37's kit commit, `imagesBytes 0` and `imageFiles 0` beside it — 12898445 before the gallery page), `rscBytes` ≤ 3962290, `images 49` (the header logo, one per page, with `/גלריה/`; moves again at install, when N37's renderings join), `imagesUnsized 0`, `fontPreloads 2`, `unusedDeps []`,
-`devBuildFiles 0`, `sourceMaps 0` · `images` → `emittedRoutes 50`, `contentRoutes 46`, `routesWithImages 0` (until install; N37) · `rtl-lint` → `bannedUtilities 0`, `hexLiterals 0` · `a11y` →
-`imgCount 49` (the kit commit's `/גלריה/`; moves again at install — N37; no `<img>` without `alt`), `unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 · `titles` →
+`fd72698`), `outBytes` under 15000000 (13522450, as of 2026-11-12, the install; measured without `out/images/` since N37's kit commit — 13056945 at the kit commit, 12898445 before the gallery page), `imagesBytes 11766080` and `imageFiles 164` beside it (0 and 0 at the kit commit; bounded by the manifest's `gates.maxTotalBytes` 20971520), `rscBytes` ≤ 3962290, `images 168` (the header logo on every page plus the content renderings, as of 2026-11-12; 49 at the kit commit with `/גלריה/`), `imagesUnsized 0`, `fontPreloads 2`, `unusedDeps []`,
+`devBuildFiles 0`, `sourceMaps 0` · `images` → `emittedRoutes 50`, `contentRoutes 46`, `routesWithImages 46` (0 at the kit commit), 78 manifest entries approved, 0 held, every route ≥ `gates.minPerContentPage` 2, the heaviest page `/גלריה/` at 1,474 KB of its 3,145,728 B budget and `/services/שער-זרוע/` at 435 KB of 900 KB (as of 2026-11-12) · `rtl-lint` → `bannedUtilities 0`, `hexLiterals 0` · `a11y` →
+`imgCount 168` (as of 2026-11-12, the install; 49 at the kit commit; no `<img>` without `alt`), `unlabeledControls 0`, `emptyLinks 0`, every `contrastPairs` value ≥ 4.5 · `titles` →
 `ogUrlMissing 0` · `cta-coverage` → `missingDataCta 0`, no warning, `ctaElements 152`,
 `distinctTaggedElements 47` (113 / 24 after Sprint 1; 115 / 26 with the fleet live-kit's card —
 CLAUDE.md §14; 119 / 30 with the pricing and thank-you CTAs of Sprint 3; 125 / 35 with Sprint 4's
@@ -247,8 +264,9 @@ parallel, one message. Routing is `docs/agent-roster.md` §3; each agent returns
   meta-refresh stub has come back and is now shadowing its own 301 rule.
 - Any file over 1 MB under `out/_next/`, or `devBuildFiles` > 0.
 - `out/.images-draft` present (`test ! -e out/.images-draft`) — an `IMAGES_DRAFT=1` build is a local
-  preview and never deploys; and, once `app/גלריה/page.tsx` exists, `npm run images:status` showing
-  0 approved entries — the kit never deploys without its images (N37).
+  preview and never deploys; and, now that `app/גלריה/page.tsx` exists (kit commit `ff065e4`),
+  `npm run images:status` showing 0 approved entries — the kit never deploys without its images
+  (N37; 78 approved, 0 held since the install, 2026-11-12).
 - A route count that moved with no reconciled reason.
 - A GTM container id change without the `https://www.googletagmanager.com/gtm.js?id=<ID>` → 200
   check (golden rule 8).

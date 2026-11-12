@@ -37,7 +37,7 @@ edit-time warning and your count must agree. As of 2026-11-08 it reports 0 banne
 2. **Hebrew dynamic routes.** `[service]`, `[city]`, `[slug]` params arrive percent-encoded during
    export. The silos match with `decodeURIComponent(param).normalize("NFC")`
    (`findCard` in `app/services/[service]/page.tsx`, `findLocation` in `app/locations/[city]/page.tsx`). A new Hebrew dynamic
-   route that skips this 404s in production and works in dev.
+   route that skips this 404s in production (`next dev` cannot serve Hebrew dynamic routes at all; a build served by `scripts/serve-out.mjs` can).
 3. **Strict typing.** No `any`; no non-null `!` to silence the compiler; every indexed read is
    `T | undefined` — narrowed, not asserted. The manifest is narrowed at the boundary by
    `parseManifest()` in `lib/manifest.ts` since `02a3144` (N16 ✅) — it used to be cast `as unknown as
