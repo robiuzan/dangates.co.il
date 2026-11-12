@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-11 · **Status:** **accepted; implemented 2026-11-12** (the owner's decisions in
 chat, 2026-11-11; backlog N37, Sprint 10; policy `2a86f13`, kit `ff065e4`, plan `08e4820`, then the
-install commit) · **live with the next deploy** — the kit and the images go live in **one** deploy
+install commit `490c1c5`) · **live since 2026-11-12** — the kit and the images went live in **one** deploy
 
 ## Context
 
@@ -206,6 +206,9 @@ install record.
   two-man frame was flagged as too small to judge), and a person on a kerb is not `unsafe-edge`
   (`60dc90a`).
 
-**Not yet live.** The install commit is inert until the deploy that follows it on the owner's word
-("approved, deploy", in chat 2026-11-12); the kit and the renderings go live together there. The
-post-deploy image checks in `deploy-dangates` are the acceptance test.
+**Live since 2026-11-12.** Deployed that day on the owner's word ("approved, deploy", in chat) after
+a passing dry run: Cloudflare deployment `7a7cc2d1`. The post-deploy checks passed on all 48 sitemap
+pages (46 with two or more renderings, exactly one `fetchpriority="high"`, every content `<img>` sized
+and with an alt; the 2 legal pages with none), the footer note once per page, no rendering in
+`og:image` or JSON-LD and no `ImageObject`, `/images/*.webp` 200 with `max-age=2592000`, `/llms.txt`
+200 with the renderings note, and the 301 probe. Lighthouse lab mobile, 2026-11-12: `/` 3.1 s (the hero text), the sliding-gate service page 3.2 s (its main rendering), `/locations/תל-אביב/` 2.5 s; CLS 0. The 2.5 s phone target is not yet met where a rendering is the LCP element; field data comes first.

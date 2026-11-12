@@ -232,7 +232,7 @@ docs/              # README (the layer map — start there) · implementation-sp
 ([ADR 0002](docs/decisions/0002-guides-hub-route.md), [ADR 0003](docs/decisions/0003-block-content-model.md))
 — and `/llms.txt` (§6.5), which is the generated route `app/llms.txt/route.ts`, not a `public/` file.
 **Built in Sprint 10** (backlog N37, [ADR 0006](docs/decisions/0006-ai-renderings-under-one-note.md),
-§15; not live until the next deploy): the images layer — `app/גלריה/`, `components/images/`,
+§15; live since the 2026-11-12 deploy): the images layer — `app/גלריה/`, `components/images/`,
 `lib/images.ts`, `scripts/images/` and `content/images/` in the kit commit `ff065e4` (2026-11-11,
 empty manifest), the slot plan in `08e4820`, and the 78 approved renderings under `public/images/`
 in the install commit (2026-11-12). Everything else on this layout is built; `env-doctor.mjs`
@@ -360,7 +360,7 @@ See the `hebrew-rtl` skill for the full rule set.
   `Offer` and a `Person` author ship **only** when sourced, which today they are not.
 - **Images:** content images are AI renderings under one site-wide note, and they render **only**
   through `components/images/Figure.tsx` (§15; backlog N37 — the kit came in the kit commit
-  `ff065e4`, the 78 renderings in the install commit of 2026-11-12, live with the next deploy).
+  `ff065e4`, the 78 renderings in the install commit `490c1c5` of 2026-11-12, live since that day's deploy).
   The header logo (`public/dangates-logo.png`, `6407f83`, through the kit's `SiteImage`) is the
   only `<img>` that is not an `/images/` path — one decorative mark per page, `alt=""` — and
   `perf.mjs` → `images` and `a11y.mjs` → `imgCount` count both it and the renderings (`168` as of
@@ -463,8 +463,8 @@ only then run the dry run (`deploy-dangates`, "Before you deploy").
 `node scripts/audit/edge.mjs` measures both — `redirectRules 80 · stubs 0 · redirectsFile true ·
 headersFile true · deadHostArtifacts 0 · foreignStubs 0 · llmsTxt true` as of 2026-11-09. The 72
 original rules are live since the 2026-10-12/13 deploys (the three-URL `301` probe passed
-2026-11-08); the 8 rules for the retired location pages are **not live until the next deploy** —
-probe one of them (e.g. `/locations/קריות/` → `301` to `/איזורי-שירות/`) after it.
+2026-11-08); the 8 rules for the retired location pages are live since the 2026-11-12 deploy
+(`/locations/קריות/` → `301` to `/איזורי-שירות/`, probed that day).
 
 ---
 
@@ -629,9 +629,9 @@ bottom-right with the logo as supplied, and approved by the owner on the local d
 anything goes live. This supersedes the owner's 2026-11-10 answer (photos later, no date, neither
 stock nor generated images — owner-actions 4.1, now 4.5) and every rule in this repo that waited for
 real photographs. The honesty rule did not go away; it moved from the pixels to the words (below).
-**Installed 2026-11-12, not yet live:** the kit (Sprint 10.3, `ff065e4`) and the 78 approved
-renderings (10.7, the install commit on branch `page-images`) go live together with the next
-deploy, on the owner's word of 2026-11-12 ("approved, deploy", in chat).
+**Live since 2026-11-12:** the kit (Sprint 10.3, `ff065e4`) and the 78 approved renderings
+(10.7, the install commit `490c1c5` on branch `page-images`) went live together in that day's
+deploy (Cloudflare deployment `7a7cc2d1`), on the owner's word ("approved, deploy", in chat).
 
 **The install, as recorded on 2026-11-12:** 78 slots, 78 approved, 0 held — 132 page renders (120
 in the slot folders + 12 superseded by the re-scene) plus 38 calibration traps, US$22.38 of the

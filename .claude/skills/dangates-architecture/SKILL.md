@@ -121,7 +121,7 @@ the stub directories, the Houston stub (N4), `deploy.yml`, `CNAME` and `.htacces
 The `public/**/index.html` deny rule stays anyway, so the pattern cannot come back. Procedure:
 `/web-security-headers`; proof: `edge.mjs` → `redirectRules 80 · stubs 0 · redirectsFile true ·
 headersFile true · deadHostArtifacts 0` (2026-11-09). The first 72 are live since the 2026-10-12/13
-deploys; the 8 for the retired location pages go live with the next deploy.
+deploys; the 8 for the retired location pages since the 2026-11-12 deploy (`/locations/קריות/` → `301`, probed that day).
 
 ## What `@ishub/site-kit` gives you
 

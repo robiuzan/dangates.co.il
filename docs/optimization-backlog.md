@@ -155,7 +155,7 @@ node scripts/audit/edge.mjs   # ✅ redirectRules 80 · stubs 0 · redirectsFile
 # 8 /locations/ rules and the 8 legacy-root rules for those four places all end in /%D7%90%D7%99%D7%96%D7%95%D7%A8%D7%99-%D7%A9%D7%99%D7%A8%D7%95%D7%AA/ 301
 ```
 
-Not live until the next deploy — probe `/locations/קריות/` → `301` to `/איזורי-שירות/` after it.
+Live since the 2026-11-12 deploy: `/locations/קריות/` → `301` to `/איזורי-שירות/`, probed that day.
 
 ### 1.2 — P1 · S · [✅ DONE] The 404 page claimed to be the homepage
 
@@ -1372,7 +1372,7 @@ current `out/`:
 node scripts/audit/claims-grep.mjs   # licence 0 · certification 0 live
 ```
 
-### 7.5 — P1 · L · [PARTIAL · repo 2026-11-12 · the renderings done (N37), live with the next deploy · real photos not started (owner-actions 4.5)] AI renderings under one note (N37); real photos later as `owner-supplied` entries
+### 7.5 — P1 · L · [PARTIAL · the renderings live since 2026-11-12 (N37) · real photos not started (owner-actions 4.5)] AI renderings under one note (N37); real photos later as `owner-supplied` entries
 
 History: `perf.mjs` / `a11y.mjs` → `images: 0` across 46 pages (2026-11-08); since `6407f83`
 (N24) the header logo is the one `<img>` per page (`images 48`, 2026-11-10). On 2026-11-11 the
@@ -2676,7 +2676,7 @@ claims-verifier.
 
 **Closed 2026-11-11.** The post `שער-חשמלי-לא-מגיב` now gives the safety short form, says a lifting gate stopped open or half-way and a barrier arm are not released by hand, points to the guide by name, and says a sliding gate's track is cleaned, not oiled; its `updated` is 2026-11-11. The two release sentences it dropped were quoted by the winter power-cut line in `content/live/_campaigns.mjs`; with the owner's approval in chat on 2026-11-11 that line became «הפסקת חשמל? לא כל שער משחררים ביד», quoting the post's new sentence, and the register's `approved` stamp records it. hebrew-editor and claims-verifier clean. Verified: `npm run gate` exit 1 (only the post floor), `check-live-out` → 12 quoted pieces shown, `claims-grep.mjs` → `failingClaims 0`, `perf.mjs` → `outBytes 12905638` (15 MB cap).
 
-### N37 — P1 · L · [✅ DONE 2026-11-12 · repo] Every page is text-only; AI renderings under one site-wide note fill the image slots
+### N37 — P1 · L · [✅ DONE 2026-11-12 · live] Every page is text-only; AI renderings under one site-wide note fill the image slots
 
 Filed 2026-11-11 on the owner's decisions of that day (business-facts §F, ADR 0006, CLAUDE.md §15;
 supersedes §7.5's wait for photographs and N24's empty slots): every content page — 46 routes, the
@@ -2766,9 +2766,9 @@ node scripts/audit/claims-grep.mjs    # pass, the three content/images/*.json fi
 The images gate passing also means one `fetchpriority="high"` content image per page, no
 `/images/` path in JSON-LD, `og:image` or `twitter:image`, no `ImageObject`, no candidate in the
 export, and the note word for word from `content/images/notice.json` on every page it belongs on.
-**Not live until the next deploy.** The owner gave the deploy word in chat on 2026-11-12
-("approved, deploy"); the kit and the images go live together in that deploy (`deploy-dangates`,
-dry run first), and the post-deploy image checks in `deploy-dangates` run after it.
+**Live since 2026-11-12.** Deployed that day on the owner's word ("approved, deploy", in chat) after
+a passing dry run (install commit `490c1c5`, Cloudflare deployment `7a7cc2d1`); the post-deploy image
+checks in `deploy-dangates` passed on all 48 sitemap pages. Lighthouse lab mobile, 2026-11-12: `/` 3.1 s (the hero text), the sliding-gate service page 3.2 s (its main rendering), `/locations/תל-אביב/` 2.5 s; CLS 0: the 2.5 s phone target is not yet met where a rendering is the LCP element.
 
 ---
 

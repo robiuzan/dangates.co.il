@@ -11,9 +11,9 @@
 >
 > **One rule governed everything below until the page-images install of 2026-11-12: this site
 > shipped zero content images, so the brand font was the LCP path and client JavaScript the INP
-> path.** Since the install (live with the next deploy) every content route also carries one
-> `fetchpriority="high"` rendering (§3 below), a second LCP candidate beside the text; no LCP has
-> been measured with it yet. Client JavaScript is still the INP path. Every number in §0 comes
+> path.** Since the install (live since the 2026-11-12 deploy) every content route also carries one
+> `fetchpriority="high"` rendering (§3 below), a second LCP candidate beside the text. Lighthouse lab mobile, 2026-11-12: `/` 3.1 s (the hero
+> text), the sliding-gate service page 3.2 s (its main rendering), `/locations/תל-אביב/` 2.5 s; CLS 0. Client JavaScript is still the INP path. Every number in §0 comes
 > from `perf.mjs` or a dated command; re-measure before citing (§6 below). Nothing here is a
 > field measurement (§6.2 below). Bare `§n.n` is a backlog id; this file's own sections are marked "above" or "below".
 
@@ -71,13 +71,13 @@ chunks); they are not targets. The JS total is the one that speaks to INP, and i
 Measured 2026-09-06 with `node` + `zlib` against the `out/` in the tree (built 2026-09-06T06:01Z).
 `perf.mjs` records none yet; a proposal binds only once it is in `thresholds.json` and read there.
 
-| Budget (per route, gzip unless stated)                                     | Measured on `/`                                                                                                       | Proposed ceiling                      | Status                                                      |
-| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ----------------------------------------------------------- |
-| HTML                                                                       | 172,377 raw / 23,161 gz                                                                                               | ≤ 40,000 gz                           | proposed — not in thresholds → new                          |
-| CSS (1 file)                                                               | 33,308 raw / 7,100 gz                                                                                                 | ≤ 15,000 gz                           | proposed — not in thresholds → new                          |
-| JS referenced by the page (11 chunks)                                      | 489,352 raw / 154,682 gz                                                                                              | ≤ 110,000 gz                          | proposed — not in thresholds → §10.2                        |
-| Fonts on the critical path (2 `.p.woff2`)                                  | 44,676 raw (9,352 + 35,324)                                                                                           | ≤ 60,000                              | proposed — not in thresholds → §10.1                        |
-| LCP image — the first content image per page (N37, `fetchpriority="high"`) | not measured per route — the images gate, which holds every file to its class cap, passed at the install (2026-11-12) | ≤ 200,000 full / ≤ 120,000 phone copy | the images gate `scripts/images/check-images-out.mjs` → N37 |
+| Budget (per route, gzip unless stated)                                     | Measured on `/`                                                                                                                                                                                                                      | Proposed ceiling                      | Status                                                      |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- | ----------------------------------------------------------- |
+| HTML                                                                       | 172,377 raw / 23,161 gz                                                                                                                                                                                                              | ≤ 40,000 gz                           | proposed — not in thresholds → new                          |
+| CSS (1 file)                                                               | 33,308 raw / 7,100 gz                                                                                                                                                                                                                | ≤ 15,000 gz                           | proposed — not in thresholds → new                          |
+| JS referenced by the page (11 chunks)                                      | 489,352 raw / 154,682 gz                                                                                                                                                                                                             | ≤ 110,000 gz                          | proposed — not in thresholds → §10.2                        |
+| Fonts on the critical path (2 `.p.woff2`)                                  | 44,676 raw (9,352 + 35,324)                                                                                                                                                                                                          | ≤ 60,000                              | proposed — not in thresholds → §10.1                        |
+| LCP image — the first content image per page (N37, `fetchpriority="high"`) | Lighthouse lab mobile 2026-11-12: the sliding-gate service page LCP 3.2 s, its main rendering the LCP element (`/` 3.1 s and `/locations/תל-אביב/` 2.5 s are text); the images gate, which holds every file to its class cap, passed | ≤ 200,000 full / ≤ 120,000 phone copy | the images gate `scripts/images/check-images-out.mjs` → N37 |
 
 **The fleet live-kit's weight — measured 2026-10-12 on the draft build (CLAUDE.md §14), against the
 production export deployed the same day.** `outBytes` 5,529,672 → 6,680,621 (+1,150,949 B, inside
@@ -208,7 +208,7 @@ files under `public/images/`, served by Cloudflare Pages itself — no `next/ima
 edge transformation, no runtime fetch. The OG card and the header logo keep the catalog path
 (`site-images`). Provenance and captions are E-E-A-T findings (eeat-and-trust §2.1), not perf ones.
 
-**Installed 2026-11-12, live with the next deploy.** The kit came in `ff065e4` with an empty
+**Installed and live since 2026-11-12** (install commit `490c1c5`, Cloudflare deployment `7a7cc2d1`). The kit came in `ff065e4` with an empty
 manifest; the install approved all 78 slots (0 held), so 46 of 46 content routes carry 2 or more
 images. Measured by `npm run gate` that day: `perf.mjs` → `images 168` (the header logo on every
 page plus the content renderings), `imagesUnsized 0`, `imagesBytes` 11,766,080 in `imageFiles`
